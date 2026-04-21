@@ -299,56 +299,6 @@ export const LandingPage = () => {
           </div>
         </section>
 
-        {/* --- SYSTEM STABILITY SECTION --- */}
-        <section className="py-40 bg-[radial-gradient(circle_at_50%_50%,#1e1b4b_0%,#020617_100%)] overflow-hidden">
-          <div className="max-w-7xl mx-auto px-6 relative">
-             <div className="flex flex-col lg:flex-row gap-24 items-center">
-                <div className="flex-1 space-y-10">
-                   <div className="inline-flex items-center gap-2 text-cyan-400">
-                      <Terminal size={20} />
-                      <span className="font-mono text-xs tracking-widest uppercase">System Core Protocol</span>
-                   </div>
-                   <h2 className="text-5xl md:text-7xl font-medium leading-[0.9]">Absolute <br /> Infrastructure.</h2>
-                   <p className="text-xl text-slate-400 leading-relaxed max-w-lg">
-                      Every instance of SEED is hardened with multi-tenant data isolation, 
-                      automatic secondary failovers, and low-latency Firebase synchronization.
-                   </p>
-                   <ul className="space-y-6">
-                      {[
-                        'End-to-End Encryption for Results',
-                        'Multi-School Subdomain Isolation',
-                        'Infinite Cloud Scalability'
-                      ].map((u, i) => (
-                        <li key={i} className="flex items-center gap-4 text-white font-medium">
-                           <div className="w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center">
-                              <Star size={12} className="text-cyan-400" />
-                           </div>
-                           {u}
-                        </li>
-                      ))}
-                   </ul>
-                </div>
-                <div className="flex-1 relative">
-                   <div className="absolute -inset-10 bg-blue-500/10 blur-[120px] rounded-full" />
-                   <div className="relative p-1 rounded-3xl bg-gradient-to-br from-white/10 to-transparent">
-                      <div className="bg-slate-950 rounded-3xl p-8 border border-white/5">
-                         <div className="space-y-4">
-                            {[...Array(6)].map((_, i) => (
-                              <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
-                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-blue-500/20" />
-                                    <div className="h-3 w-32 bg-white/10 rounded" />
-                                 </div>
-                                 <div className="h-3 w-16 bg-blue-500/20 rounded" />
-                              </div>
-                            ))}
-                         </div>
-                      </div>
-                   </div>
-                </div>
-             </div>
-          </div>
-        </section>
 
         {/* --- CTA SECTION --- */}
         <section className="py-40 px-6">
