@@ -117,20 +117,6 @@ const ScrollToTop = () => {
 };
 
 
-const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
-  ({ className, children, ...props }, ref) => {
-    return (
-      <button
-        className={`inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/10 disabled:pointer-events-none disabled:opacity-50 text-white h-9 px-5 py-2 bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/10 hover:scale-[1.02] active:scale-[0.98] border border-white/10 ${className}`}
-        ref={ref}
-        {...props}
-      >
-        {children}
-      </button>
-    )
-  },
-)
-Button.displayName = "Button"
 
 const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
