@@ -8,9 +8,21 @@ import { getFirestore } from "firebase-admin/firestore";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load config for admin using __dirname for Vercel static analysis compatibility
-const configPath = path.join(__dirname, "firebase-applet-config.json");
-const firebaseConfig = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+// Flexible config loading for different serverless environments (Vercel vs Netlify)
+const getConfig = () => {
+  const localPath = path.join(__dirname, "firebase-applet-config.json");
+  const rootPath = path.join(process.cwd(), "firebase-applet-config.json");
+  
+  if (fs.existsSync(localPath)) return JSON.parse(fs.readFileSync(localPath, "utf-8"));
+  if (fs.existsSync(rootPath)) return JSON.parse(fs.readFileSync(rootPath, "utf-8"));
+  
+  // Fallback to environment variable if file is missing (Security Best Practice)
+  if (process.env.FIREBASE_CONFIG) return JSON.parse(process.env.FIREBASE_CONFIG);
+  
+  throw new Error("Missing firebase-applet-config.json. Please ensure it exists in the root or is provided via FIREBASE_CONFIG env var.");
+};
+
+const firebaseConfig = getConfig();
 
 // Initialize Firebase Admin with the project ID from the config
 const adminApp = getApps().length === 0 
@@ -107,7 +119,7 @@ app.delete("/api/schools/:id", checkSuperAdmin, async (req, res) => {
 });
 
 // Start server if not running as a serverless function
-if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+if (process.env.NODE_ENV !== 'production' || (!process.env.VERCEL && !process.env.NETLIFY)) {
   import("vite").then(({ createServer: createViteServer }) => {
     createViteServer({
       server: { middlewareMode: true },
