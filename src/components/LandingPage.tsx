@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Users, BookOpen, Clock, Shield, Search, 
   Sparkles, CheckCircle2, ChevronRight, Zap, Globe, Cpu, 
   UserRound, GraduationCap, School as SchoolIcon, HeartHandshake,
-  MessageSquare, BarChart3, Cloud, Tablet
+  MessageSquare, BarChart3, Cloud, Tablet, Mail
 } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
