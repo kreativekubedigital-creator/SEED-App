@@ -331,14 +331,25 @@ const LoginPage = ({ onLogin }: { onLogin: (user: UserProfile) => void }) => {
       const parts = hostname.split('.');
       let slug = null;
       
-      // Generic subdomain detection:
-      // 1. If 3+ parts and not starting with www (e.g. school.domain.com)
-      if (parts.length >= 3 && parts[0] !== 'www') {
-        slug = parts[0];
-      } 
-      // 2. Special case for localhost:8085 (e.g. school.localhost)
-      else if (parts.length === 2 && parts[1] === 'localhost') {
-        slug = parts[0];
+      // Determine if we are on the main platform landing page
+      // Localhost/Vercel/Netlify are treated as main landers if no subdomain
+      const mainDomains = ['seedify.name.ng', 'seed-app.vercel.app', 'seed-app.netlify.app'];
+      const isMainDomain = mainDomains.includes(hostname) || hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'www.seedify.name.ng';
+
+      // Subdomain logic:
+      if (!isMainDomain) {
+        // 1. Specific case for the new nigerian protocol
+        if (hostname.endsWith('.seedify.name.ng')) {
+          slug = parts[0];
+        }
+        // 2. Generic subdomain detection for other environments (e.g. school.vercel.app or school.com)
+        else if (parts.length >= 3 && parts[0] !== 'www') {
+          slug = parts[0];
+        } 
+        // 3. Special case for local development (e.g. school.localhost)
+        else if (parts.length === 2 && parts[1] === 'localhost') {
+          slug = parts[0];
+        }
       }
 
       if (slug) {
@@ -604,6 +615,11 @@ const LoginPage = ({ onLogin }: { onLogin: (user: UserProfile) => void }) => {
                                 key={school.id}
                                 type="button"
                                 onClick={() => {
+                                  // Protocol adaptation: If we are on the main domain, redirect to the school's subdomain
+                                  if (school.slug && (hostname === 'seedify.name.ng' || hostname === 'www.seedify.name.ng')) {
+                                    window.location.href = `${window.location.protocol}//${school.slug}.seedify.name.ng/login`;
+                                    return;
+                                  }
                                   setSelectedSchool(school.id);
                                   setIsSchoolDropdownOpen(false);
                                   setSchoolSearchQuery('');
