@@ -30,7 +30,7 @@ export const Logo: React.FC<LogoProps> = ({ variant = 'black', className = '', s
   return (
     <img 
       src={logoSrc} 
-      alt="SEED Logo" 
+      alt="SEEDD Logo" 
       className={cn(`${sizeClasses[size]} w-auto object-contain`, className)}
     />
   );

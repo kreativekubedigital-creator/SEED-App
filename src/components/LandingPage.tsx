@@ -173,8 +173,8 @@ export const LandingPage = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-lg md:text-2xl text-slate-400 max-w-4xl mx-auto mb-16 leading-relaxed"
             >
-              SEED is the premier multi-tenant infrastructure designed to digitize, 
-              modernize, and unify the entire school ecosystem. Built for growth, 
+              SEEDD is the premier multi-tenant infrastructure designed to digitize, 
+              manage, and scale modern educational institutions. Built for growth, 
               security, and absolute performance.
             </motion.p>
 
@@ -239,7 +239,7 @@ export const LandingPage = () => {
             <div className="flex flex-col md:flex-row items-end justify-between gap-10 mb-20 text-left">
               <div className="max-w-2xl">
                 <h2 className="text-5xl font-medium tracking-tight mb-6">Designed for Every <br /> Stakeholder</h2>
-                <p className="text-xl text-slate-400">The SEED ecosystem provides customized portals optimized for the specific needs of each user class.</p>
+                <p className="text-xl text-slate-400">The SEEDD ecosystem provides customized portals optimized for the specific needs of each user class.</p>
               </div>
               <Link to="/features">
                 <button className="flex items-center gap-2 text-blue-400 font-bold hover:text-blue-300 transition-colors uppercase tracking-widest text-sm">
@@ -339,7 +339,7 @@ export const LandingPage = () => {
           <div className="col-span-2 space-y-8">
             <Logo variant="white" size="md" />
             <p className="text-slate-400 max-w-sm text-lg leading-relaxed">
-              SEED is an advanced multi-tenant academic intelligence platform, 
+              SEEDD is an advanced multi-tenant academic intelligence platform, 
               empowering schools worldwide to digitize and scale their impact.
             </p>
             <div className="flex gap-4">
@@ -368,7 +368,7 @@ export const LandingPage = () => {
           </div>
         </div>
         <div className="max-w-7xl mx-auto pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-500 text-sm font-medium">
-          <p>&copy; 2026 SEED Platform. A Kreative Kube Production.</p>
+          <p>&copy; 2026 SEEDD Platform. A Kreative Kube Production.</p>
           <div className="flex gap-8 items-center">
             <div className="flex items-center gap-2">
                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />

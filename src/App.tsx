@@ -518,7 +518,7 @@ const LoginPage = ({ onLogin }: { onLogin: (user: UserProfile) => void }) => {
           ) : (
             <>
               <Logo variant="black" size="lg" className="mx-auto mb-4" />
-              <h2 className="text-3xl font-medium">SEED {isSignUp ? 'Setup' : 'Login'}</h2>
+              <h2 className="text-3xl font-medium">SEEDD {isSignUp ? 'Setup' : 'Login'}</h2>
             </>
           )}
           {!subdomainNotFound && (
@@ -949,7 +949,7 @@ export default function App() {
         </main>
         {!isDashboardView && (
           <footer className="bg-white border-t border-black/10 py-8 text-center text-sm text-gray-800">
-            <p>&copy; 2026 SEED Nigeria. All rights reserved.</p>
+            <p>&copy; 2026 SEEDD Nigeria. All rights reserved.</p>
           </footer>
         )}
       </div>
@@ -1170,7 +1170,7 @@ const OnboardingPage = ({ user, onComplete }: { user: UserProfile, onComplete: (
         className="bg-white p-4 rounded-2xl border border-black/5 shadow-xl"
       >
         <Logo variant="black" size="lg" className="mx-auto mb-4" />
-        <h2 className="text-3xl font-serif font-medium mb-2 text-center">Welcome to SEED</h2>
+        <h2 className="text-3xl font-serif font-medium mb-2 text-center">Welcome to SEEDD</h2>
         <p className="text-gray-800 text-center mb-8">Select your role and school to get started.</p>
         
         <div className="space-y-6">
