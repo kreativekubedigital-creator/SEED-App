@@ -8,7 +8,7 @@ import { useTheme } from './components/ThemeProvider';
 import { 
   LogIn, LogOut, LayoutDashboard, User, Users, BookOpen, Bell, Settings, CreditCard, Menu, X, Home, Sparkles, Info, Mail, Clock, CheckCircle2, CheckCircle, Eye, EyeOff, Search, ChevronDown, Check 
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import { cn } from './lib/utils';
 
 
@@ -100,15 +100,39 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
 }
 
 const LoadingScreen = () => (
-  <div className="flex flex-col items-center justify-center min-h-screen bg-[#1A1A1A] text-white">
-    <Logo variant="white" size="lg" className="mb-8" />
-    <motion.div
-      animate={{ rotate: 360 }}
-      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-      className="w-10 h-10 border-4 border-[#2563EB] border-t-transparent rounded-full mb-4"
-    />
-    <p className="font-serif italic text-lg opacity-80 tracking-widest">SEEDING THE FUTURE...</p>
+  <div className="flex flex-col items-center justify-center min-h-screen bg-[#020617] text-white">
+    <div className="relative">
+      <div className="absolute inset-0 bg-blue-500/20 blur-[100px] rounded-full animate-pulse" />
+      <Logo variant="white" size="xl" className="mb-12 relative z-10 animate-float" />
+    </div>
+    <div className="w-64 h-1 bg-white/5 rounded-full overflow-hidden relative z-10">
+      <motion.div
+        initial={{ width: 0 }}
+        animate={{ width: "100%" }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        className="h-full bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.5)]"
+      />
+    </div>
+    <motion.p 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: [0.4, 1, 0.4] }}
+      transition={{ duration: 2, repeat: Infinity }}
+      className="mt-8 font-mono text-xs tracking-[0.5em] text-blue-400 uppercase"
+    >
+      SEEDDING THE FUTURE
+    </motion.p>
   </div>
+);
+
+const PageWrapper = ({ children }: { children: React.ReactNode }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.99, y: 10 }}
+    animate={{ opacity: 1, scale: 1, y: 0 }}
+    exit={{ opacity: 0, scale: 1.01, y: -10 }}
+    transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+  >
+    {children}
+  </motion.div>
 );
 
 const ScrollToTop = () => {
@@ -125,6 +149,14 @@ const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => 
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { scrollY } = useScroll();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    return scrollY.on('change', (latest) => {
+      setIsScrolled(latest > 20);
+    });
+  }, [scrollY]);
 
   const navItems = [
     { name: 'Home', path: '/', icon: Home },
@@ -144,12 +176,19 @@ const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => 
   const logoVariant = isLandingPage ? 'white' : (theme === 'dark' ? 'white' : 'black');
 
   return (
-    <div className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
+    <motion.div 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4 transition-all duration-500 pointer-events-none"
+      style={{ 
+        paddingTop: isScrolled ? '1rem' : '1.5rem'
+      }}
+    >
       <nav className={cn(
-        "backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-full px-6 py-2 flex items-center justify-between w-full max-w-4xl border",
+        "backdrop-blur-xl shadow-2xl rounded-full px-6 py-2 flex items-center justify-between w-full max-w-5xl border transition-all duration-300 pointer-events-auto",
         isLandingPage 
-          ? "bg-slate-900/50 border-white/10 text-white" 
-          : "bg-white/90 dark:bg-slate-900/90 border-gray-100 dark:border-gray-800"
+          ? (isScrolled ? "bg-slate-900/80 border-white/10 text-white" : "bg-transparent border-transparent text-white") 
+          : (isScrolled ? "bg-white/90 dark:bg-slate-930/90 border-gray-100 dark:border-white/5" : "bg-white/80 dark:bg-slate-900/80 border-gray-100 dark:border-white/10")
       )}>
         <Link to="/" className={cn(
           "flex items-center gap-2 pr-6 border-r",
@@ -225,29 +264,60 @@ const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => 
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-20 left-4 right-4 md:hidden bg-white rounded-3xl shadow-2xl border border-black/5 overflow-hidden p-4"
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="absolute top-24 left-4 right-4 md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-black/5 dark:border-white/10 overflow-hidden p-6 z-[60]"
           >
-            <div className="space-y-2">
+            <div className="space-y-3">
               {navItems.map(item => (
                 <Link
                   key={item.name}
                   to={item.path}
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 text-sm font-medium"
+                  className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800/50 text-sm font-semibold transition-all group"
                 >
-                  <item.icon size={20} className="text-gray-800" />
-                  {item.name}
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <item.icon size={20} className="text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <span className="text-gray-800 dark:text-gray-100">{item.name}</span>
                 </Link>
               ))}
-              {user && (
+              {user ? (
                 <>
                   <Link
                     to="/dashboard"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 text-sm font-medium"
+                    className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800/50 text-sm font-semibold transition-all group"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <LayoutDashboard size={20} className="text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                    <span className="text-gray-800 dark:text-gray-100">Dashboard</span>
+                  </Link>
+                  <button 
+                    onClick={() => { onLogout(); setIsOpen(false); }}
+                    className="w-full flex items-center gap-4 p-4 rounded-2xl hover:bg-red-50 dark:hover:bg-red-900/20 text-sm font-semibold transition-all group"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <LogOut size={20} className="text-red-600 dark:text-red-400" />
+                    </div>
+                    <span className="text-red-600 dark:text-red-400">Logout</span>
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="w-full h-14 mt-4 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold shadow-lg shadow-blue-500/25 active:scale-95 transition-transform"
+                >
+                  Get Started
+                </Link>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
                   >
                     <LayoutDashboard size={20} className="text-gray-800" />
                     Dashboard
@@ -936,16 +1006,18 @@ export default function App() {
       <div className="min-h-screen flex flex-col font-sans text-[#1A1A1A] bg-gradient-to-br from-blue-50 via-indigo-50/50 to-purple-50">
         <ScrollToTop />
         {!isDashboardView && <Navbar user={user} onLogout={handleLogout} />}
-        <main className={cn("flex-grow", isDashboardView && "pt-0")}>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <LoginPage onLogin={setUser} />} />
-            <Route path="/dashboard/*" element={user?.schoolId || user?.role === 'super_admin' ? <DashboardRouter user={user} onLogout={handleLogout} /> : <Navigate to="/onboarding" />} />
-            <Route path="/announcements" element={user ? <AnnouncementsPage user={user} /> : <Navigate to="/login" />} />
-            <Route path="/onboarding" element={user ? <OnboardingPage user={user} onComplete={setUser} /> : <Navigate to="/login" />} />
-            <Route path="/profile" element={user ? <UserProfileComponent user={user} onUpdate={setUser} /> : <Navigate to="/login" />} />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
+        <main className={cn("flex-grow", isDashboardView && "pt-0 overflow-hidden")}>
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+              <Route path="/" element={<PageWrapper><LandingPage /></PageWrapper>} />
+              <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <PageWrapper><LoginPage onLogin={setUser} /></PageWrapper>} />
+              <Route path="/dashboard/*" element={user?.schoolId || user?.role === 'super_admin' ? <PageWrapper><DashboardRouter user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/onboarding" />} />
+              <Route path="/announcements" element={user ? <PageWrapper><AnnouncementsPage user={user} /></PageWrapper> : <Navigate to="/login" />} />
+              <Route path="/onboarding" element={user ? <PageWrapper><OnboardingPage user={user} onComplete={setUser} /></PageWrapper> : <Navigate to="/login" />} />
+              <Route path="/profile" element={user ? <PageWrapper><UserProfileComponent user={user} onUpdate={setUser} /></PageWrapper> : <Navigate to="/login" />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </AnimatePresence>
         </main>
         {!isDashboardView && (
           <footer className="bg-white border-t border-black/10 py-8 text-center text-sm text-gray-800">

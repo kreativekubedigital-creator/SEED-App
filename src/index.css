@@ -5,6 +5,7 @@
 @theme {
   --font-sans: "Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --animate-wave: wave 2.5s infinite;
+  --animate-float: float 6s ease-in-out infinite;
   
   @keyframes wave {
     0% { transform: rotate(0.0deg) }
@@ -16,13 +17,21 @@
     60% { transform: rotate(0.0deg) }
     100% { transform: rotate(0.0deg) }
   }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
 }
 
-body {
+html, body {
   font-family: var(--font-sans);
   font-size: 16px;
   background-color: #F8F9FB;
   color: #111827;
+  overflow-x: hidden;
+  width: 100%;
+  scroll-behavior: smooth;
 }
 
 .dark body {
