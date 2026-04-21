@@ -1,8 +1,10 @@
 import React from 'react';
 import { cn } from '../lib/utils';
-import logoBlack from '../assets/logos/SEED_black.png';
-import logoWhite from '../assets/logos/SEED_white.png';
-import logoNavbar from '../assets/logos/seed-logo-navbar.webp';
+
+// Logo paths point to the public folder
+const logoBlack = '/seed-logo.webp';
+const logoWhite = '/seed-logo-2.webp';
+const logoNavbar = '/seed-logo-navbar.webp';
 
 interface LogoProps {
   variant?: 'black' | 'white' | 'navbar';
