@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '../lib/utils';
-import logoBlack from '../assets/logos/seed-logo.webp';
-import logoWhite from '../assets/logos/seed-logo-2.webp';
+import logoBlack from '../assets/logos/SEED_black.png';
+import logoWhite from '../assets/logos/SEED_white.png';
 import logoNavbar from '../assets/logos/seed-logo-navbar.webp';
 
 interface LogoProps {
