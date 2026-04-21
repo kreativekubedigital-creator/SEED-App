@@ -1,0 +1,401 @@
+{
+  "entities": {
+    "School": {
+      "title": "School",
+      "description": "A school onboarded on the platform.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the school." },
+        "address": { "type": "string", "description": "The physical address of the school." },
+        "email": { "type": "string", "description": "The contact email for the school." },
+        "phone": { "type": "string", "description": "The contact phone number for the school." },
+        "planId": { "type": "string", "description": "The current subscription plan ID." },
+        "status": { "type": "string", "enum": ["active", "suspended", "pending"], "description": "The operational status of the school." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the school was onboarded." }
+      },
+      "required": ["name", "email", "planId", "status"]
+    },
+    "User": {
+      "title": "User",
+      "description": "A user of the platform (Admin, Teacher, Student, Parent).",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID." },
+        "schoolId": { "type": "string", "description": "The ID of the school this user belongs to (null for Super Admin)." },
+        "role": { "type": "string", "enum": ["super_admin", "school_admin", "teacher", "student", "parent"], "description": "The user's role." },
+        "firstName": { "type": "string", "description": "First name." },
+        "middleName": { "type": "string", "description": "Middle name (optional)." },
+        "lastName": { "type": "string", "description": "Last name." },
+        "registrationNumber": { "type": "string", "description": "Registration number." },
+        "email": { "type": "string", "description": "Email address." },
+        "photoUrl": { "type": "string", "description": "URL of the profile photo." },
+        "dob": { "type": "string", "format": "date", "description": "Date of birth." },
+        "gender": { "type": "string", "enum": ["male", "female"], "description": "Gender of the user." },
+        "classId": { "type": "string", "description": "For students/parents: the class ID." },
+        "studentId": { "type": "string", "description": "For students: the student ID." },
+        "parentStudentId": { "type": "string", "description": "For parents: the student ID of their child." },
+        "xp": { "type": "number", "description": "Total experience points." },
+        "coins": { "type": "number", "description": "Total in-app currency." },
+        "level": { "type": "number", "description": "Current level." },
+        "streakCount": { "type": "number", "description": "Current daily streak." },
+        "lastActivityDate": { "type": "string", "format": "date", "description": "Last date of activity for streak tracking." },
+        "purchasedItems": { "type": "array", "items": { "type": "string" }, "description": "IDs of items purchased from the store." }
+      },
+      "required": ["uid", "role", "firstName", "lastName", "email"]
+    },
+    "Class": {
+      "title": "Class",
+      "description": "A class within a school.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Class name (e.g., SS1, JSS2)." },
+        "schoolId": { "type": "string", "description": "The school this class belongs to." }
+      },
+      "required": ["name", "schoolId"]
+    },
+    "Subject": {
+      "title": "Subject",
+      "description": "A subject taught in a class.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Subject name (e.g., Mathematics, English)." },
+        "classId": { "type": "string", "description": "The class this subject belongs to." },
+        "teacherId": { "type": "string", "description": "The teacher assigned to this subject." }
+      },
+      "required": ["name", "classId"]
+    },
+    "Assignment": {
+      "title": "Assignment",
+      "description": "Homework or assignment for a subject.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Assignment title." },
+        "description": { "type": "string", "description": "Assignment details." },
+        "subjectId": { "type": "string", "description": "The subject this assignment belongs to." },
+        "dueDate": { "type": "string", "format": "date-time", "description": "Deadline." }
+      },
+      "required": ["title", "subjectId"]
+    },
+    "Quiz": {
+      "title": "Quiz",
+      "description": "Objective quiz for a subject.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Quiz title." },
+        "subjectId": { "type": "string", "description": "The subject this quiz belongs to." },
+        "questions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "question": { "type": "string" },
+              "options": { "type": "array", "items": { "type": "string" } },
+              "correctOption": { "type": "number" }
+            }
+          }
+        }
+      },
+      "required": ["title", "subjectId", "questions"]
+    },
+    "Session": {
+      "title": "Session",
+      "description": "An academic session (e.g., 2025/2026).",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "schoolId": { "type": "string" },
+        "isCurrent": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "schoolId", "isCurrent"]
+    },
+    "Term": {
+      "title": "Term",
+      "description": "An academic term (1st, 2nd, 3rd).",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "schoolId": { "type": "string" },
+        "sessionId": { "type": "string" },
+        "isCurrent": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "schoolId", "sessionId", "isCurrent"]
+    },
+    "GradeScale": {
+      "title": "GradeScale",
+      "description": "Grading system configuration for a school.",
+      "type": "object",
+      "properties": {
+        "schoolId": { "type": "string" },
+        "grades": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "grade": { "type": "string" },
+              "minScore": { "type": "number" },
+              "maxScore": { "type": "number" },
+              "remark": { "type": "string" }
+            }
+          }
+        },
+        "caConfig": {
+          "type": "object",
+          "properties": {
+            "cas": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "maxScore": { "type": "number" }
+                }
+              }
+            },
+            "maxExamScore": { "type": "number" }
+          }
+        }
+      },
+      "required": ["schoolId", "grades"]
+    },
+    "Result": {
+      "title": "Result",
+      "description": "Student result for a subject including CA and Exam.",
+      "type": "object",
+      "properties": {
+        "studentId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "schoolId": { "type": "string" },
+        "classId": { "type": "string" },
+        "sessionId": { "type": "string" },
+        "termId": { "type": "string" },
+        "teacherId": { "type": "string" },
+        "ca1": { "type": "number" },
+        "ca2": { "type": "number" },
+        "ca3": { "type": "number" },
+        "exam": { "type": "number" },
+        "caTotal": { "type": "number" },
+        "finalScore": { "type": "number" },
+        "grade": { "type": "string" },
+        "remark": { "type": "string" },
+        "score": { "type": "number" },
+        "total": { "type": "number" },
+        "date": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["studentId", "subjectId", "schoolId", "classId", "sessionId", "termId", "finalScore"]
+    },
+    "Announcement": {
+      "title": "Announcement",
+      "description": "A school or class announcement.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "schoolId": { "type": "string" },
+        "classId": { "type": "string", "description": "Optional: target specific class." },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "content", "schoolId"]
+    },
+    "Plan": {
+      "title": "Plan",
+      "description": "A subscription plan.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "studentLimit": { "type": "number" },
+        "features": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["name", "price", "studentLimit"]
+    },
+    "Badge": {
+      "title": "Badge",
+      "description": "An achievement badge.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "icon": { "type": "string" },
+        "type": { "type": "string", "enum": ["bronze", "silver", "gold"] },
+        "criteria": { "type": "string", "description": "Description of how to earn it." }
+      },
+      "required": ["name", "description", "icon", "type"]
+    },
+    "UserBadge": {
+      "title": "UserBadge",
+      "description": "A badge earned by a user.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "badgeId": { "type": "string" },
+        "earnedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "badgeId", "earnedAt"]
+    },
+    "ActivityLog": {
+      "title": "ActivityLog",
+      "description": "Log of user activities for XP/Coin tracking.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "type": { "type": "string", "enum": ["lesson_complete", "quiz_pass", "game_win", "daily_login", "ai_chat"] },
+        "pointsEarned": { "type": "number" },
+        "coinsEarned": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "metadata": { "type": "object", "description": "Additional info like quizId or lessonId." }
+      },
+      "required": ["uid", "type", "pointsEarned", "timestamp"]
+    },
+    "Challenge": {
+      "title": "Challenge",
+      "description": "A time-limited challenge for students.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "xpReward": { "type": "number" },
+        "coinReward": { "type": "number" },
+        "type": { "type": "string", "enum": ["daily", "weekly"] },
+        "targetType": { "type": "string", "enum": ["quiz", "lesson", "game"] },
+        "targetCount": { "type": "number" },
+        "endDate": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "xpReward", "coinReward", "type", "targetType", "targetCount", "endDate"]
+    },
+    "MemoryFlipScore": {
+      "title": "Memory Flip Score",
+      "description": "Score record for the Memory Flip game.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "firstName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "level": { "type": "number" },
+        "mode": { "type": "string" },
+        "moves": { "type": "number" },
+        "time": { "type": "number" },
+        "score": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "level", "mode", "moves", "time", "score"]
+    },
+    "FeeStructure": {
+      "title": "Fee Structure",
+      "description": "Defines a fee for a class or term.",
+      "type": "object",
+      "properties": {
+        "schoolId": { "type": "string" },
+        "classId": { "type": "string" },
+        "termId": { "type": "string" },
+        "sessionId": { "type": "string" },
+        "name": { "type": "string" },
+        "amount": { "type": "number" },
+        "isMandatory": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["schoolId", "classId", "termId", "sessionId", "name", "amount"]
+    },
+    "Invoice": {
+      "title": "Invoice",
+      "description": "A fee invoice for a student.",
+      "type": "object",
+      "properties": {
+        "schoolId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "classId": { "type": "string" },
+        "termId": { "type": "string" },
+        "sessionId": { "type": "string" },
+        "amount": { "type": "number" },
+        "amountPaid": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "partial", "paid"] },
+        "dueDate": { "type": "string", "format": "date-time" },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "amount": { "type": "number" }
+            }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["schoolId", "studentId", "classId", "termId", "sessionId", "amount", "amountPaid", "status", "items"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "A payment record for an invoice.",
+      "type": "object",
+      "properties": {
+        "schoolId": { "type": "string" },
+        "invoiceId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "parentId": { "type": "string" },
+        "amount": { "type": "number" },
+        "method": { "type": "string", "enum": ["online", "cash", "transfer"] },
+        "reference": { "type": "string" },
+        "status": { "type": "string", "enum": ["success", "failed", "pending"] },
+        "date": { "type": "string", "format": "date-time" }
+      },
+      "required": ["schoolId", "invoiceId", "studentId", "parentId", "amount", "method", "status", "date"]
+    },
+    "AssignmentSubmission": {
+      "title": "Assignment Submission",
+      "description": "A student's submission for an assignment.",
+      "type": "object",
+      "properties": {
+        "assignmentId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "answers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "questionId": { "type": "string" },
+              "answer": { "type": "string" }
+            }
+          }
+        },
+        "status": { "type": "string", "enum": ["pending", "submitted", "graded"] },
+        "score": { "type": "number" },
+        "totalScore": { "type": "number" },
+        "feedback": { "type": "string" },
+        "submittedAt": { "type": "string", "format": "date-time" },
+        "gradedAt": { "type": "string", "format": "date-time" },
+        "gradedBy": { "type": "string" }
+      },
+      "required": ["assignmentId", "studentId", "studentName", "answers", "status", "submittedAt"]
+    }
+  },
+  "firestore": {
+    "/schools/{schoolId}": { "schema": "School", "description": "School details." },
+    "/users/{uid}": { "schema": "User", "description": "User profiles." },
+    "/schools/{schoolId}/classes/{classId}": { "schema": "Class", "description": "Classes in a school." },
+    "/schools/{schoolId}/classes/{classId}/subjects/{subjectId}": { "schema": "Subject", "description": "Subjects in a class." },
+    "/schools/{schoolId}/classes/{classId}/subjects/{subjectId}/assignments/{assignmentId}": { "schema": "Assignment", "description": "Assignments." },
+    "/schools/{schoolId}/quizzes/{quizId}": { "schema": "Quiz", "description": "Quizzes." },
+    "/schools/{schoolId}/sessions/{sessionId}": { "schema": "Session", "description": "Academic sessions." },
+    "/schools/{schoolId}/sessions/{sessionId}/terms/{termId}": { "schema": "Term", "description": "Academic terms." },
+    "/schools/{schoolId}/gradeScales/{scaleId}": { "schema": "GradeScale", "description": "Grading scales." },
+    "/schools/{schoolId}/results/{resultId}": { "schema": "Result", "description": "Student results." },
+    "/schools/{schoolId}/announcements/{announcementId}": { "schema": "Announcement", "description": "Announcements." },
+    "/schools/{schoolId}/assignments/{assignmentId}": { "schema": "Assignment", "description": "Assignments." },
+    "/schools/{schoolId}/quizzes/{quizId}": { "schema": "Quiz", "description": "Quizzes." },
+    "/schools/{schoolId}/subjects/{subjectId}": { "schema": "Subject", "description": "Subjects." },
+    "/schools/{schoolId}/challenges/{challengeId}": { "schema": "Challenge", "description": "School-wide challenges." },
+    "/schools/{schoolId}/assignmentSubmissions/{submissionId}": { "schema": "AssignmentSubmission", "description": "Student assignment submissions." },
+    "/badges/{badgeId}": { "schema": "Badge", "description": "Achievement badges." },
+    "/users/{uid}/badges/{userBadgeId}": { "schema": "UserBadge", "description": "Badges earned by users." },
+    "/users/{uid}/activities/{activityId}": { "schema": "ActivityLog", "description": "User activity logs." },
+    "/plans/{planId}": { "schema": "Plan", "description": "Subscription plans." },
+    "/memoryFlipScores/{scoreId}": { "schema": "MemoryFlipScore", "description": "Memory Flip game scores." },
+    "/schools/{schoolId}/feeStructures/{feeId}": { "schema": "FeeStructure", "description": "Fee structures." },
+    "/schools/{schoolId}/invoices/{invoiceId}": { "schema": "Invoice", "description": "Student invoices." },
+    "/schools/{schoolId}/payments/{paymentId}": { "schema": "Payment", "description": "Payment records." }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "SEED",
+  "description": "Smart Ecosystem for Education & Data - A modern, lightweight, mobile-first SaaS school management platform for Nigeria.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
