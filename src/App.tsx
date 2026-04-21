@@ -4,7 +4,10 @@ import { auth, db, onAuthStateChanged, doc, getDoc, signInWithPopup, signInWithR
 import { UserProfile, UserRole, School, Announcement } from './types';
 import { Logo } from './components/Logo';
 import { ThemeToggle } from './components/ThemeToggle';
-import { LogIn, LogOut, LayoutDashboard, User, Users, BookOpen, Bell, Settings, CreditCard, Menu, X, Home, Sparkles, Info, Mail, Clock, CheckCircle2, CheckCircle, Eye, EyeOff, Search, ChevronDown, Check } from 'lucide-react';
+import { useTheme } from './components/ThemeProvider';
+import { 
+  LogIn, LogOut, LayoutDashboard, User, Users, BookOpen, Bell, Settings, CreditCard, Menu, X, Home, Sparkles, Info, Mail, Clock, CheckCircle2, CheckCircle, Eye, EyeOff, Search, ChevronDown, Check 
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
 
@@ -134,11 +137,25 @@ const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => 
     return location.pathname.startsWith(path);
   };
 
+  const { theme } = useTheme();
+  const isLandingPage = location.pathname === '/';
+  
+  // Decide logo variant based on landing page (always dark) or current theme
+  const logoVariant = isLandingPage ? 'white' : (theme === 'dark' ? 'white' : 'black');
+
   return (
     <div className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
-      <nav className="bg-white/90 dark:bg-[#1E293B]/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-full px-6 py-2 flex items-center justify-between w-full max-w-4xl border border-gray-100 dark:border-gray-800">
-        <Link to="/" className="flex items-center gap-2 pr-6 border-r border-gray-100 dark:border-gray-800">
-          <Logo variant="navbar" size="sm" className="h-8 md:h-10" />
+      <nav className={cn(
+        "backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-full px-6 py-2 flex items-center justify-between w-full max-w-4xl border",
+        isLandingPage 
+          ? "bg-slate-900/50 border-white/10 text-white" 
+          : "bg-white/90 dark:bg-slate-900/90 border-gray-100 dark:border-gray-800"
+      )}>
+        <Link to="/" className={cn(
+          "flex items-center gap-2 pr-6 border-r",
+          isLandingPage ? "border-white/10" : "border-gray-100 dark:border-gray-800"
+        )}>
+          <Logo variant={logoVariant} size="sm" className="h-8 md:h-10" />
         </Link>
 
         {/* Desktop Nav */}
@@ -147,11 +164,12 @@ const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => 
             <Link 
               key={item.name} 
               to={item.path} 
-              className={`text-sm font-medium px-3.5 py-1.5 rounded-full transition-all duration-200 ${
+              className={cn(
+                "text-sm font-medium px-3.5 py-1.5 rounded-full transition-all duration-200",
                 isActive(item.path) 
-                  ? 'bg-blue-50 text-blue-600' 
-                  : 'text-gray-800 hover:text-gray-800 hover:bg-gray-50'
-              }`}
+                  ? (isLandingPage ? "bg-white/20 text-white" : "bg-blue-50 text-blue-600")
+                  : (isLandingPage ? "text-slate-300 hover:text-white hover:bg-white/10" : "text-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 dark:text-gray-300")
+              )}
             >
               {item.name}
             </Link>
@@ -161,11 +179,12 @@ const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => 
             <>
               <Link 
                 to="/dashboard" 
-                className={`text-sm font-medium px-3.5 py-1.5 rounded-full transition-all duration-200 ${
-                  isActive('/dashboard') 
-                    ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' 
-                    : 'text-gray-800 dark:text-gray-800 hover:text-gray-800 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'
-                }`}
+                className={cn(
+                  "text-sm font-medium px-3.5 py-1.5 rounded-full transition-all duration-200",
+                   isActive('/dashboard') 
+                    ? (isLandingPage ? "bg-white/20 text-white" : "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400")
+                    : (isLandingPage ? "text-slate-300 hover:text-white hover:bg-white/10" : "text-gray-800 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800")
+                )}
               >
                 Dashboard
               </Link>
