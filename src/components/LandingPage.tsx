@@ -231,20 +231,6 @@ export const LandingPage = () => {
                    </div>
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent" />
-                <div className="absolute bottom-12 left-1/2 -translate-x-1/2">
-                   <div className="bg-white/10 backdrop-blur-md border border-white/20 px-8 py-4 rounded-3xl flex items-center gap-6 shadow-2xl">
-                      <div className="flex items-center gap-3">
-                         <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
-                         <span className="text-sm font-medium">Real-time Sync Active</span>
-                      </div>
-                      <div className="h-4 w-px bg-white/20" />
-                      <div className="flex -space-x-2">
-                        {[...Array(4)].map((_, i) => (
-                          <div key={i} className="w-8 h-8 rounded-full bg-slate-800 border-2 border-slate-900 flex items-center justify-center text-[10px]">A{i}</div>
-                        ))}
-                      </div>
-                   </div>
-                </div>
               </div>
             </motion.div>
           </div>
