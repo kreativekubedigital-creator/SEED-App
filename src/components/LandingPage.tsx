@@ -197,42 +197,6 @@ export const LandingPage = () => {
               </Link>
             </motion.div>
 
-            {/* Premium Mockup/Dashboard Preview */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.4 }}
-              className="relative max-w-6xl mx-auto"
-            >
-              <div className="absolute -inset-2 bg-gradient-to-r from-blue-500/20 to-purple-600/20 rounded-[3rem] blur-2xl opacity-50" />
-              <div className="relative bg-slate-900/80 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden aspect-[16/10] sm:aspect-[16/8]">
-                {/* Internal UI Mockup Elements */}
-                <div className="absolute top-0 left-0 w-full h-12 bg-white/5 border-b border-white/5 flex items-center px-6 gap-2">
-                   <div className="w-3 h-3 rounded-full bg-red-500/20" />
-                   <div className="w-3 h-3 rounded-full bg-amber-500/20" />
-                   <div className="w-3 h-3 rounded-full bg-emerald-500/20" />
-                   <div className="ml-4 h-6 w-48 bg-white/10 rounded-full" />
-                </div>
-                <div className="grid grid-cols-12 h-full pt-12">
-                   <div className="col-span-3 border-r border-white/5 p-6 space-y-6">
-                      {[...Array(5)].map((_, i) => (
-                        <div key={i} className="h-4 w-full bg-white/5 rounded-md" />
-                      ))}
-                   </div>
-                   <div className="col-span-9 p-8">
-                      <div className="grid grid-cols-3 gap-6 mb-8">
-                        {[...Array(3)].map((_, i) => (
-                          <div key={i} className="h-32 bg-white/5 rounded-3xl border border-white/10" />
-                        ))}
-                      </div>
-                      <div className="h-64 bg-blue-500/5 rounded-3xl border border-blue-500/10 flex items-center justify-center">
-                         <BarChart3 className="text-blue-500/20 w-24 h-24" />
-                      </div>
-                   </div>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent" />
-              </div>
-            </motion.div>
           </div>
         </section>
 
