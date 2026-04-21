@@ -20,6 +20,33 @@ import { LandingPage } from './components/LandingPage';
 
 // --- Components ---
 
+const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
+  ({ className, ...props }, ref) => {
+    return (
+      <button
+        className={`inline-flex items-center justify-center rounded-xl text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/10 disabled:pointer-events-none disabled:opacity-50 bg-[#2563EB] text-white hover:bg-blue-600 h-10 px-6 py-2 shadow-lg shadow-blue-500/20 active:scale-95 ${className}`}
+        ref={ref}
+        {...props}
+      />
+    )
+  },
+)
+Button.displayName = "Button"
+
+const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
+  ({ className, type, ...props }, ref) => {
+    return (
+      <input
+        type={type}
+        className={`flex h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2 text-sm transition-all file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-800 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-text font-medium text-gray-800 ${className}`}
+        ref={ref}
+        {...props}
+      />
+    )
+  },
+)
+Input.displayName = "Input"
+
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, errorInfo: string | null }> {
   public state = { hasError: false, errorInfo: null };
   
@@ -49,11 +76,16 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
 
       return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-red-50 p-4 text-center">
-          <div className="bg-white p-4 rounded-2xl shadow-xl max-w-md border border-red-100">
-            <h2 className="text-2xl font-serif font-medium text-red-600 mb-4">Oops!</h2>
-            <p className="text-gray-800 mb-6">{displayMessage}</p>
-            <Button onClick={() => window.location.href = '/'} className="bg-red-600 hover:bg-red-700">
-              Go to Home
+          <div className="bg-white p-6 rounded-2xl shadow-xl max-w-2xl border border-red-100 text-left">
+            <h2 className="text-2xl font-serif font-medium text-red-600 mb-4 flex items-center gap-2">
+              <LogOut className="rotate-180" /> Oops! Something went wrong
+            </h2>
+            <div className="bg-red-50/50 p-4 rounded-xl border border-red-100 mb-6 font-mono text-sm overflow-auto max-h-60">
+              <p className="text-red-700 font-bold mb-2">{this.state.errorInfo}</p>
+            </div>
+            <p className="text-gray-800 mb-6">The application encountered an unexpected error. This often happens due to missing data or a connection issue.</p>
+            <Button onClick={() => window.location.href = '/'} className="bg-red-600 hover:bg-red-700 w-full">
+              Try Restarting
             </Button>
           </div>
         </div>
@@ -84,19 +116,6 @@ const ScrollToTop = () => {
   return null;
 };
 
-const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
-  ({ className, type, ...props }, ref) => {
-    return (
-      <input
-        type={type}
-        className={`flex h-10 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2 text-sm transition-all file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-800 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-text font-medium text-gray-800 ${className}`}
-        ref={ref}
-        {...props}
-      />
-    )
-  },
-)
-Input.displayName = "Input"
 
 const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
   ({ className, children, ...props }, ref) => {
