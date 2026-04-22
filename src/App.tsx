@@ -145,7 +145,7 @@ const ScrollToTop = () => {
 
 
 
-const Navbar = ({ user, onLogout, tenantSchool }: { user: UserProfile | null, onLogout: () => void, tenantSchool?: School | null }) => {
+const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfile | null, onLogout: () => void, tenantSchool?: School | null, logoVariant: 'white' | 'black' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -165,7 +165,6 @@ const Navbar = ({ user, onLogout, tenantSchool }: { user: UserProfile | null, on
     { name: 'About', path: '/about', icon: Info },
     { name: 'Contact', path: '/contact', icon: Mail },
   ];
-
   const isActive = (path: string) => {
     if (path === '/' && location.pathname !== '/') return false;
     return location.pathname.startsWith(path);
@@ -173,10 +172,6 @@ const Navbar = ({ user, onLogout, tenantSchool }: { user: UserProfile | null, on
 
   const { theme } = useTheme();
   const isLandingPage = location.pathname === '/';
-  
-  // Decide logo variant
-  const logoVariant = isLandingPage ? 'white' : (theme === 'dark' ? 'white' : 'black');
-
   return (
     <div className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4 pointer-events-none">
       <motion.nav 
@@ -857,6 +852,9 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const isLandingPage = location.pathname === '/';
+  const logoVariant = isLandingPage ? 'white' : (theme === 'dark' ? 'white' : 'black');
 
   useEffect(() => {
     let unsubscribeProfile: (() => void) | null = null;
@@ -994,7 +992,7 @@ export default function App() {
     <ErrorBoundary>
       <div className="min-h-screen flex flex-col font-sans text-[#1A1A1A] bg-gradient-to-br from-blue-50 via-indigo-50/50 to-purple-50">
         <ScrollToTop />
-        {!isDashboardView && <Navbar user={user} onLogout={handleLogout} tenantSchool={tenantSchool} />}
+        {!isDashboardView && <Navbar user={user} onLogout={handleLogout} tenantSchool={tenantSchool} logoVariant={logoVariant} />}
         <main className={cn("flex-grow", isDashboardView && "pt-0 overflow-hidden")}>
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
