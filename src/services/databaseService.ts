@@ -37,13 +37,23 @@ export class DatabaseService {
 
   /**
    * Converts camelCase keys to snake_case.
+   * Special handling: removes 'uid' for the users table as 'id' is used instead.
    */
-  private static toSnakeCase(obj: any): any {
-    if (Array.isArray(obj)) return obj.map(v => this.toSnakeCase(v));
+  private static toSnakeCase(obj: any, table?: string): any {
+    if (Array.isArray(obj)) return obj.map(v => this.toSnakeCase(v, table));
     if (obj !== null && typeof obj === 'object' && obj.constructor === Object) {
-      return Object.keys(obj).reduce((acc, key) => {
+      // Create a shallow copy to avoid mutating original
+      const source = { ...obj };
+      
+      // For users table, if we have uid, move it to id if id is missing, then delete uid
+      if (table === 'users' && source.uid) {
+        if (!source.id) source.id = source.uid;
+        delete source.uid;
+      }
+
+      return Object.keys(source).reduce((acc, key) => {
         const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
-        acc[snakeKey] = this.toSnakeCase(obj[key]);
+        acc[snakeKey] = this.toSnakeCase(source[key], table);
         return acc;
       }, {} as any);
     }
@@ -52,17 +62,25 @@ export class DatabaseService {
 
   /**
    * Converts snake_case keys to camelCase.
+   * Special handling: maps 'id' to 'uid' for the users table to maintain Firebase compatibility.
    */
-  private static toCamelCase(obj: any): any {
-    if (Array.isArray(obj)) return obj.map(v => this.toCamelCase(v));
+  private static toCamelCase(obj: any, table?: string): any {
+    if (Array.isArray(obj)) return obj.map(v => this.toCamelCase(v, table));
     if (obj !== null && typeof obj === 'object' && obj.constructor === Object) {
-      return Object.keys(obj).reduce((acc, key) => {
+      const result = Object.keys(obj).reduce((acc, key) => {
         const camelKey = key.replace(/([-_][a-z])/g, group =>
           group.toUpperCase().replace('-', '').replace('_', '')
         );
-        acc[camelKey] = this.toCamelCase(obj[key]);
+        acc[camelKey] = this.toCamelCase(obj[key], table);
         return acc;
       }, {} as any);
+
+      // Map id to uid for users table to satisfy UserProfile type
+      if (table === 'users' && result.id && !result.uid) {
+        result.uid = result.id;
+      }
+
+      return result;
     }
     return obj;
   }
@@ -84,7 +102,7 @@ export class DatabaseService {
 
     const { data, error } = await query;
     if (error) throw error;
-    return this.toCamelCase(data) as T[];
+    return this.toCamelCase(data, table) as T[];
   }
 
   static async getItemById<T>(path: string, id: string): Promise<T | null> {
@@ -96,12 +114,12 @@ export class DatabaseService {
       .single();
     
     if (error && error.code !== 'PGRST116') throw error;
-    return data ? this.toCamelCase(data) as T : null;
+    return data ? this.toCamelCase(data, table) as T : null;
   }
 
   static async addItem(path: string, data: any) {
     const { table, filters } = this.parsePath(path);
-    const payload = this.toSnakeCase({ ...data, ...filters });
+    const payload = this.toSnakeCase({ ...data, ...filters }, table);
     
     const { data: insertedData, error } = await supabase
       .from(table)
@@ -110,12 +128,12 @@ export class DatabaseService {
       .single();
     
     if (error) throw error;
-    return this.toCamelCase(insertedData);
+    return this.toCamelCase(insertedData, table);
   }
 
   static async updateItem(path: string, id: string, data: any) {
     const { table } = this.parsePath(path);
-    const payload = this.toSnakeCase(data);
+    const payload = this.toSnakeCase(data, table);
     
     const { data: updatedData, error } = await supabase
       .from(table)
@@ -125,12 +143,12 @@ export class DatabaseService {
       .single();
     
     if (error) throw error;
-    return this.toCamelCase(updatedData);
+    return this.toCamelCase(updatedData, table);
   }
 
   static async upsertItem(path: string, id: string, data: any) {
     const { table, filters } = this.parsePath(path);
-    const payload = this.toSnakeCase({ ...data, ...filters, id });
+    const payload = this.toSnakeCase({ ...data, ...filters, id }, table);
     
     const { data: upsertedData, error } = await supabase
       .from(table)
@@ -139,7 +157,7 @@ export class DatabaseService {
       .single();
     
     if (error) throw error;
-    return this.toCamelCase(upsertedData);
+    return this.toCamelCase(upsertedData, table);
   }
 
   static async deleteItem(path: string, id: string) {

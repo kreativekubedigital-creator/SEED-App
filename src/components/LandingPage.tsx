@@ -16,22 +16,24 @@ import { School } from '../types';
 
 const Button = ({ children, className, variant = 'primary', ...props }: any) => {
   const variants: any = {
-    primary: "bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20",
-    secondary: "bg-slate-100 hover:bg-slate-200 text-slate-900",
-    outline: "bg-transparent border border-slate-200 hover:border-slate-300 text-slate-600 hover:text-slate-900"
+    primary: "bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-500/20 border border-blue-500/50",
+    secondary: "bg-slate-950 hover:bg-black text-white shadow-xl shadow-black/10",
+    outline: "bg-white/50 backdrop-blur-sm border-2 border-slate-200 hover:border-slate-950 text-slate-900 hover:text-black transition-all duration-300"
   };
 
   return (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.02, y: -2 }}
+      whileTap={{ scale: 0.98 }}
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-bold transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/10 disabled:pointer-events-none disabled:opacity-50 h-12 px-8 py-2 active:scale-95",
+        "inline-flex items-center justify-center whitespace-nowrap rounded-2xl text-sm font-black uppercase tracking-widest transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/10 disabled:pointer-events-none disabled:opacity-50 h-14 px-10 py-2",
         variants[variant],
         className
       )}
       {...props}
     >
       {children}
-    </button>
+    </motion.button>
   );
 };
 
@@ -78,61 +80,66 @@ export const LandingPage = () => {
     <div className="relative bg-white min-h-screen text-slate-900 selection:bg-blue-100 selection:text-blue-900 overflow-x-hidden">
       
       {/* --- HERO SECTION --- */}
-      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-6 overflow-hidden">
-        {/* Subtle Background Elements */}
+      <section className="relative pt-32 pb-20 lg:pt-56 lg:pb-40 px-6 overflow-hidden">
+        {/* Advanced Background Elements */}
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden">
-          <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-blue-50 blur-[120px] rounded-full opacity-60" />
-          <div className="absolute bottom-[-10%] left-[-5%] w-[30%] h-[30%] bg-indigo-50 blur-[100px] rounded-full opacity-50" />
+          <div className="absolute top-[-15%] right-[-10%] w-[60%] h-[60%] bg-blue-100/30 blur-[140px] rounded-full opacity-60 animate-pulse" />
+          <div className="absolute bottom-[-10%] left-[-5%] w-[40%] h-[40%] bg-indigo-100/20 blur-[120px] rounded-full opacity-50" />
+          {/* Grain Overlay */}
+          <div className="absolute inset-0 opacity-[0.015] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
         </div>
 
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
             {/* Left Column: Content */}
-            <div className="space-y-8 relative z-10">
+            <div className="space-y-10 relative z-10">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-bold tracking-widest uppercase"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50/80 backdrop-blur-sm border border-blue-100/50 text-blue-700 text-[10px] font-black tracking-[0.2em] uppercase shadow-sm"
               >
-                <Sparkles size={14} />
-                <span>The Future of School Intelligence</span>
+                <Sparkles size={14} className="animate-pulse" />
+                <span>The Intelligence layer for schools</span>
               </motion.div>
 
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-5xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1]"
-              >
-                Evolve Your <br />
-                <span className="text-blue-600">Academic Core</span>
-              </motion.h1>
+              <div className="space-y-6">
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-6xl lg:text-8xl font-black tracking-tight text-slate-950 leading-[0.95]"
+                >
+                  Orchestrate <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700">Academic Flow</span>
+                </motion.h1>
 
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-lg text-slate-600 max-w-xl leading-relaxed"
-              >
-                SEEDD is the intelligent infrastructure powering modern education—uniting data, 
-                automating operations, and delivering real-time insights at scale.
-              </motion.p>
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-xl text-slate-700 max-w-xl leading-relaxed font-medium"
+                >
+                  SEEDD is the unified ecosystem powering the next generation of education—automating 
+                  complex operations and delivering predictive insights in real-time.
+                </motion.p>
+              </div>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="space-y-4"
+                transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className="space-y-6"
               >
                 <div className="flex flex-col sm:flex-row gap-4">
                   {/* School Search Dropdown */}
                   <div className="relative flex-1" ref={dropdownRef}>
                     <div className="relative group">
-                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={20} />
+                      <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={20} />
                       <input 
                         type="text"
-                        placeholder="Select your school..."
-                        className="w-full h-14 pl-12 pr-4 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-slate-900 placeholder:text-slate-400 font-medium"
+                        placeholder="Select your institution..."
+                        className="w-full h-16 pl-14 pr-6 rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-md shadow-sm focus:outline-none focus:ring-8 focus:ring-blue-500/5 focus:border-blue-500 transition-all text-slate-950 placeholder:text-slate-400 font-bold"
                         value={searchQuery}
                         onChange={(e) => {
                           setSearchQuery(e.target.value);
@@ -298,49 +305,76 @@ export const LandingPage = () => {
       </section>
 
       {/* --- LOGO BAR --- */}
-      <section className="py-12 border-y border-slate-100 bg-slate-50/50">
+      <section className="py-16 border-y border-slate-100 bg-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
-          <p className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mb-10">Trusted by Forward-Thinking Institutions</p>
-          <div className="flex flex-wrap justify-center items-center gap-x-16 gap-y-8 opacity-50">
+          <motion.p 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-12"
+          >
+            Powering Forward-Thinking Institutions
+          </motion.p>
+          <div className="flex flex-wrap justify-center items-center gap-x-20 gap-y-10">
             {['Greenfield Academy', 'Crestview College', 'NobleGate Schools', 'FutureGate College', 'Royal Oak Academy'].map((school, i) => (
-              <div key={i} className="flex items-center gap-2 grayscale hover:grayscale-0 transition-all cursor-default">
-                <SchoolIcon size={24} className="text-slate-900" />
-                <span className="font-bold text-slate-900 tracking-tight">{school}</span>
-              </div>
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 0.4, y: 0 }}
+                whileHover={{ opacity: 1, scale: 1.05 }}
+                transition={{ delay: i * 0.1 }}
+                className="flex items-center gap-3 cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                  <SchoolIcon size={24} className="text-slate-900 group-hover:text-blue-600 transition-colors" />
+                </div>
+                <span className="font-black text-slate-950 tracking-tighter text-sm uppercase">{school}</span>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* --- CHALLENGE VS SOLUTION --- */}
-      <section id="solutions" className="py-24 lg:py-32 px-6">
+      <section id="solutions" className="py-32 lg:py-48 px-6 relative">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
+          <div className="grid lg:grid-cols-2 gap-24 items-center">
             {/* Left: Challenge */}
-            <div className="space-y-6">
-              <div className="text-blue-600 font-bold text-xs uppercase tracking-widest">The Challenge</div>
-              <h2 className="text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
-                Education systems <br /> are fragmented.
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-8"
+            >
+              <div className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em]">The Friction</div>
+              <h2 className="text-5xl lg:text-7xl font-black tracking-tight leading-[0.95] text-slate-950">
+                Education is <br /> fragmented.
               </h2>
-              <p className="text-lg text-slate-600 leading-relaxed max-w-lg">
-                Schools today rely on disconnected tools, manual processes, and outdated systems that slow down operations and limit growth. 
-              </p>
-              <p className="text-lg text-slate-600 leading-relaxed max-w-lg">
-                Data is scattered. Decisions are delayed. Opportunities are missed.
-              </p>
-              <div className="pt-4 border-l-4 border-blue-600 pl-6">
-                <p className="text-xl font-bold text-slate-900">SEEDD changes that.</p>
+              <div className="space-y-6">
+                <p className="text-xl text-slate-700 leading-relaxed max-w-lg font-medium">
+                  Schools today are slowed down by disconnected tools, manual spreadsheets, and outdated systems that stifle academic potential.
+                </p>
+                <p className="text-xl text-slate-700 leading-relaxed max-w-lg font-medium">
+                  Data is silos. Operations are opaque. Growth is limited.
+                </p>
               </div>
-            </div>
+              <div className="pt-6 border-l-[6px] border-blue-600 pl-8">
+                <p className="text-2xl font-black text-slate-950 tracking-tight">SEEDD is the missing link.</p>
+              </div>
+            </motion.div>
 
             {/* Right: Solution Visualization */}
-            <div className="relative">
-              <div className="text-blue-600 font-bold text-xs uppercase tracking-widest mb-6">The Solution</div>
-              <h2 className="text-4xl lg:text-5xl font-bold tracking-tight leading-tight mb-8">
-                One ecosystem. <br /> Full control. <br /> Total clarity.
+            <motion.div 
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em] mb-8">The Ecosystem</div>
+              <h2 className="text-5xl lg:text-7xl font-black tracking-tight leading-[0.95] text-slate-950 mb-10">
+                One Core. <br /> Absolute <br /> Clarity.
               </h2>
-              <p className="text-lg text-slate-600 leading-relaxed max-w-lg mb-10">
-                SEEDD brings every part of your institution into a <span className="font-bold text-slate-900 italic">single, intelligent platform</span>—connecting people, processes, and data in real time.
+              <p className="text-xl text-slate-700 leading-relaxed max-w-lg mb-12 font-medium">
+                SEEDD centralizes every dimension of your institution into a <span className="text-blue-600 font-black italic">single intelligent nervous system</span>.
               </p>
 
               {/* Central Infographic */}
@@ -379,62 +413,70 @@ export const LandingPage = () => {
       </section>
 
       {/* --- POWERFUL FEATURES GRID --- */}
-      <section id="features" className="py-24 lg:py-32 bg-slate-50 relative overflow-hidden">
+      <section id="features" className="py-32 lg:py-48 bg-slate-50 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="text-center space-y-4 mb-20">
-            <div className="text-blue-600 font-bold text-xs uppercase tracking-[0.3em]">Powerful Features</div>
-            <h2 className="text-4xl lg:text-5xl font-bold tracking-tight">Everything you need. Built for education.</h2>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center space-y-6 mb-24"
+          >
+            <div className="text-blue-600 font-black text-[10px] uppercase tracking-[0.5em]">System Capabilities</div>
+            <h2 className="text-5xl lg:text-7xl font-black tracking-tight text-slate-950">Engineered for Excellence.</h2>
+          </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               { 
-                title: 'Unified Data Infrastructure', 
-                desc: 'All your institutional data—students, staff, academics, finance—in one secure, centralized system.', 
+                title: 'Unified Intelligence', 
+                desc: 'A centralized data architecture that unites students, staff, academics, and financials into one secure vault.', 
                 Icon: Database,
-                color: 'bg-blue-50 text-blue-600'
+                color: 'bg-blue-600 text-white'
               },
               { 
-                title: 'Automated Operations', 
-                desc: 'Reduce manual work with smart workflows that handle routine processes efficiently and accurately.', 
+                title: 'Autonomous Flows', 
+                desc: 'Advanced automation that handles routine administrative overhead, letting your staff focus on education.', 
                 Icon: Zap,
-                color: 'bg-amber-50 text-amber-600'
+                color: 'bg-slate-950 text-white'
               },
               { 
-                title: 'Real-Time Intelligence', 
-                desc: 'Access powerful dashboards and insights that help you make faster, data-driven decisions.', 
+                title: 'Predictive Analytics', 
+                desc: 'Real-time performance dashboards that forecast institutional growth and academic outcomes.', 
                 Icon: BarChart3,
-                color: 'bg-emerald-50 text-emerald-600'
+                color: 'bg-blue-600 text-white'
               },
               { 
-                title: 'Multi-Tenant Architecture', 
-                desc: 'Scale effortlessly across multiple schools or campuses—each with its own secure, customizable environment.', 
+                title: 'Global Multi-Tenancy', 
+                desc: 'Effortlessly manage an entire network of schools from a single system command center.', 
                 Icon: Globe,
-                color: 'bg-indigo-50 text-indigo-600'
+                color: 'bg-slate-950 text-white'
               },
               { 
-                title: 'Custom-Branded Portals', 
-                desc: 'Give every institution its own identity with personalized dashboards and subdomain access.', 
+                title: 'Bespoke Branding', 
+                desc: 'Every institution receives a fully personalized environment with custom domains and aesthetics.', 
                 Icon: Sparkles,
-                color: 'bg-purple-50 text-purple-600'
+                color: 'bg-blue-600 text-white'
               },
               { 
-                title: 'Enterprise-Grade Security', 
-                desc: 'Built with modern infrastructure to ensure your data is protected, isolated, and always available.', 
+                title: 'Fortress Security', 
+                desc: 'Banking-grade encryption and data isolation protocols built into the very core of the platform.', 
                 Icon: Lock,
-                color: 'bg-rose-50 text-rose-600'
+                color: 'bg-slate-950 text-white'
               },
             ].map((feature, i) => (
               <motion.div
                 key={i}
-                whileHover={{ y: -5 }}
-                className="p-8 rounded-2xl bg-white border border-slate-100 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-500/5 transition-all group"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="p-10 rounded-[2.5rem] bg-white border border-slate-100 hover:border-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500 group"
               >
-                <div className={cn("w-14 h-14 rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110", feature.color)}>
-                  <feature.Icon size={28} />
+                <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center mb-8 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-lg", feature.color)}>
+                  <feature.Icon size={32} />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-4">{feature.title}</h3>
-                <p className="text-slate-600 leading-relaxed text-sm">{feature.desc}</p>
+                <h3 className="text-2xl font-black text-slate-950 mb-4 tracking-tight">{feature.title}</h3>
+                <p className="text-slate-600 leading-relaxed font-medium">{feature.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -442,178 +484,117 @@ export const LandingPage = () => {
       </section>
 
       {/* --- HOW IT WORKS --- */}
-      <section className="py-24 lg:py-32 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center space-y-4 mb-20">
-            <div className="text-blue-600 font-bold text-xs uppercase tracking-[0.3em]">How It Works</div>
-            <h2 className="text-4xl lg:text-5xl font-bold tracking-tight">From setup to scale—in three simple steps</h2>
-          </div>
+      <section id="how-it-works" className="py-32 lg:py-48 bg-white relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center space-y-6 mb-24"
+          >
+            <div className="text-blue-600 font-black text-[10px] uppercase tracking-[0.5em]">The Methodology</div>
+            <h2 className="text-5xl lg:text-7xl font-black tracking-tight text-slate-950">Precision Deployment.</h2>
+          </motion.div>
 
-          <div className="grid lg:grid-cols-3 gap-12 relative">
-            {/* Connecting Line */}
-            <div className="absolute top-24 left-0 w-full h-0.5 bg-slate-100 -z-10 hidden lg:block" />
-
+          <div className="grid md:grid-cols-3 gap-12 relative">
+            {/* Connection Line (Desktop) */}
+            <div className="hidden md:block absolute top-1/2 left-0 w-full h-1 border-t-2 border-dashed border-slate-100 -translate-y-1/2 -z-10" />
+            
             {[
               { 
-                step: '1', 
-                title: 'Onboard Your Institution', 
-                desc: 'Set up your school, configure your structure, and import your data.',
-                Icon: SchoolIcon 
+                step: '01', 
+                title: 'Request Access', 
+                desc: 'Fill our onboarding request form. Our systems architects will evaluate your institutional structure.',
+                icon: '🚀'
               },
               { 
-                step: '2', 
-                title: 'Customize Your Environment', 
-                desc: 'Tailor workflows, roles, and branding to match your institution\'s needs.',
-                Icon: Settings 
+                step: '02', 
+                title: 'Core Integration', 
+                desc: 'We map your existing data and protocols into the SEEDD ecosystem with zero downtime.',
+                icon: '⚡'
               },
               { 
-                step: '3', 
-                title: 'Operate & Scale with Confidence', 
-                desc: 'Manage everything from one platform while gaining insights that drive growth.',
-                Icon: BarChart3 
-              },
-            ].map((step, i) => (
-              <div key={i} className="text-center space-y-6">
-                <div className="relative inline-flex">
-                  <div className="w-20 h-20 rounded-full bg-white border-2 border-slate-100 flex items-center justify-center text-blue-600 shadow-sm relative z-10 group-hover:border-blue-500 transition-colors">
-                    <step.Icon size={32} />
-                  </div>
-                  <div className="absolute -top-1 -right-1 w-8 h-8 rounded-full bg-blue-600 text-white text-xs font-black flex items-center justify-center border-4 border-white z-20">
-                    {step.step}
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold text-slate-900">{step.title}</h3>
-                <p className="text-slate-600 max-w-xs mx-auto text-sm leading-relaxed">{step.desc}</p>
-              </div>
+                step: '03', 
+                title: 'Go Live', 
+                desc: 'Unlock your personalized portal and begin orchestrating your institution with total clarity.',
+                icon: '💎'
+              }
+            ].map((item, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.2 }}
+                className="relative bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/20 group hover:border-blue-500/30 transition-all duration-500"
+              >
+                <div className="text-5xl mb-8 group-hover:scale-110 transition-transform duration-500">{item.icon}</div>
+                <div className="text-blue-600 font-black text-sm uppercase tracking-[0.3em] mb-4">Step {item.step}</div>
+                <h3 className="text-2xl font-black text-slate-950 mb-4 tracking-tight">{item.title}</h3>
+                <p className="text-slate-600 leading-relaxed font-medium">{item.desc}</p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* --- ONBOARDING FORM SECTION --- */}
-      <section id="onboard" className="py-24 lg:py-32 px-6 bg-slate-50 relative overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-blue-100/50 blur-[120px] rounded-full -z-0" />
-        <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-indigo-100/40 blur-[100px] rounded-full -z-0" />
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-start">
-            <div className="space-y-8">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold tracking-widest uppercase">
-                <MessageSquare size={14} />
-                <span>Get Started Today</span>
-              </div>
-              <h2 className="text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
-                Request Onboarding <br /> for Your School
-              </h2>
-              <p className="text-lg text-slate-600 leading-relaxed max-w-md">
-                Complete the form and our implementation team will reach out within 24 hours to begin your institution's digital transformation.
+      {/* --- ONBOARDING FORM --- */}
+      <section id="onboarding" className="py-32 lg:py-48 bg-slate-950 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-blue-600/20 blur-[140px] rounded-full" />
+        
+        <div className="max-w-4xl mx-auto px-6 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="bg-white/5 backdrop-blur-xl border border-white/10 p-12 lg:p-20 rounded-[3rem] shadow-2xl"
+          >
+            <div className="text-center space-y-6 mb-16">
+              <div className="text-blue-400 font-black text-[10px] uppercase tracking-[0.5em]">Initiate Onboarding</div>
+              <h2 className="text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">Apply for SEEDD.</h2>
+              <p className="text-xl text-slate-400 font-medium max-w-xl mx-auto">
+                Transform your institutional infrastructure. Our team will review your application within 24 hours.
               </p>
-              
-              <div className="space-y-6 pt-4">
-                {[
-                  { icon: CheckCircle2, text: "Free initial consultation & needs analysis" },
-                  { icon: CheckCircle2, text: "Step-by-step data migration support" },
-                  { icon: CheckCircle2, text: "Custom branding & subdomain setup" },
-                  { icon: CheckCircle2, text: "Comprehensive staff training sessions" },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-4">
-                    <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white shrink-0">
-                      <item.icon size={14} />
-                    </div>
-                    <span className="font-medium text-slate-700">{item.text}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="pt-8">
-                <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white">
-                    <Phone size={24} />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Urgent Inquiries?</div>
-                    <div className="text-lg font-bold text-slate-900">+234 (0) 800-SEEDD-APP</div>
-                  </div>
-                </div>
-              </div>
             </div>
 
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-3xl p-8 lg:p-10 shadow-2xl shadow-blue-500/5 border border-slate-100"
-            >
-              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-                <div className="grid sm:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 ml-1">First Name</label>
-                    <input 
-                      type="text" 
-                      placeholder="John"
-                      className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 ml-1">Last Name</label>
-                    <input 
-                      type="text" 
-                      placeholder="Doe"
-                      className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 ml-1">Official Email Address</label>
-                  <input 
-                    type="email" 
-                    placeholder="admin@school.com"
-                    className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 ml-1">Institution Name</label>
+            <form className="grid md:grid-cols-2 gap-8">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Institution Name</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g., Greenfield Academy"
+                  className="w-full h-14 px-6 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-bold"
+                />
+              </div>
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Contact Email</label>
+                <input 
+                  type="email" 
+                  placeholder="admin@school.edu"
+                  className="w-full h-14 px-6 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-bold"
+                />
+              </div>
+              <div className="space-y-3 md:col-span-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Proposed Domain Prefix</label>
+                <div className="relative">
                   <input 
                     type="text" 
-                    placeholder="Royal Oak Academy"
-                    className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none"
+                    placeholder="greenfield"
+                    className="w-full h-14 px-6 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-bold pr-32"
                   />
+                  <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 font-black">.seedify.com</div>
                 </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 ml-1">Job Title / Role</label>
-                  <select className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none bg-white">
-                    <option>School Owner / Proprietor</option>
-                    <option>Principal / Head of School</option>
-                    <option>Administrator</option>
-                    <option>IT Coordinator</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 ml-1">How can we help?</label>
-                  <textarea 
-                    placeholder="Tell us about your institution's specific needs..."
-                    rows={4}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none resize-none"
-                  />
-                </div>
-
-                <Button className="w-full h-14 text-lg">
-                  Submit Request
-                  <ArrowRight size={20} className="ml-2" />
-                </Button>
-
-                <p className="text-center text-xs text-slate-400">
-                  By submitting this form, you agree to our <a href="#" className="underline">Privacy Policy</a>.
-                </p>
-              </form>
-            </motion.div>
-          </div>
+              </div>
+              <motion.div 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="md:col-span-2 pt-6"
+              >
+                <Button className="w-full h-16 text-lg">Submit Application</Button>
+              </motion.div>
+            </form>
+          </motion.div>
         </div>
       </section>
 
@@ -664,47 +645,15 @@ export const LandingPage = () => {
       </section>
 
       {/* --- FOOTER --- */}
-      <footer id="about" className="bg-white border-t border-slate-100 pt-24 pb-12 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-12 mb-20">
-            {/* Brand Column */}
-            <div className="col-span-2 space-y-8">
+      <footer className="bg-white pt-32 pb-16 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-4 gap-20 mb-24">
+            <div className="col-span-1 md:col-span-1 space-y-8">
               <Logo variant="black" size="md" />
-              <p className="text-slate-500 max-w-sm leading-relaxed text-sm">
-                Smart Ecosystem for Education & Dynamic Data. The intelligent infrastructure for modern academic management.
+              <p className="text-slate-600 font-medium leading-relaxed">
+                The intelligent nervous system for the next generation of academic excellence.
               </p>
               <div className="flex gap-4">
-                {[Linkedin, Facebook, Twitter, Youtube].map((Icon, i) => (
-                  <a key={i} href="#" className="w-10 h-10 rounded-full border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all">
-                    <Icon size={18} />
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Links Columns */}
-            <div className="space-y-6">
-              <h4 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">Product</h4>
-              <ul className="space-y-4 text-sm font-medium text-slate-500">
-                <li><a href="#features" className="hover:text-blue-600 transition-colors">Features</a></li>
-                <li><a href="#solutions" className="hover:text-blue-600 transition-colors">Solutions</a></li>
-                <li><a href="#pricing" className="hover:text-blue-600 transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Integrations</a></li>
-              </ul>
-            </div>
-
-            <div className="space-y-6">
-              <h4 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">Company</h4>
-              <ul className="space-y-4 text-sm font-medium text-slate-500">
-                <li><Link to="/about" className="hover:text-blue-600 transition-colors">About Us</Link></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Blog</a></li>
-                <li><Link to="/contact" className="hover:text-blue-600 transition-colors">Contact</Link></li>
-              </ul>
-            </div>
-
-            <div className="space-y-6">
-              <h4 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">Resources</h4>
               <ul className="space-y-4 text-sm font-medium text-slate-500">
                 <li><a href="#" className="hover:text-blue-600 transition-colors">Help Center</a></li>
                 <li><a href="#" className="hover:text-blue-600 transition-colors">Documentation</a></li>

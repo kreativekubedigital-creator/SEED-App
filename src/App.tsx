@@ -174,61 +174,68 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
   const { theme } = useTheme();
   const isLandingPage = location.pathname === '/';
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center w-full">
+    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center w-full px-6 pt-6">
       <motion.nav 
         initial={false}
         animate={{ 
-          backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.95)" : "rgba(255, 255, 255, 0)",
-          borderBottomColor: isScrolled ? "rgba(226, 232, 240, 0.8)" : "rgba(226, 232, 240, 0)",
-          boxShadow: isScrolled ? "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)" : "none",
-          height: isScrolled ? "72px" : "88px"
+          backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.85)" : "rgba(255, 255, 255, 0.4)",
+          borderColor: isScrolled ? "rgba(226, 232, 240, 0.5)" : "rgba(255, 255, 255, 0.1)",
+          boxShadow: isScrolled ? "0 20px 40px -10px rgba(0, 0, 0, 0.05)" : "none",
+          width: isScrolled ? "90%" : "100%",
+          maxWidth: "1280px",
+          height: isScrolled ? "72px" : "88px",
+          borderRadius: isScrolled ? "24px" : "0px",
+          paddingLeft: isScrolled ? "2rem" : "1rem",
+          paddingRight: isScrolled ? "2rem" : "1rem",
         }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
-          "backdrop-blur-md px-6 md:px-12 flex items-center justify-between w-full border-b transition-all duration-300",
-          isScrolled ? "text-slate-900" : (isLandingPage ? "text-slate-900" : "text-slate-900 dark:text-white")
+          "backdrop-blur-xl flex items-center justify-between border transition-all duration-300",
+          isScrolled ? "text-slate-950" : (isLandingPage ? "text-slate-950" : "text-slate-900 dark:text-white")
         )}
       >
-        <Link to="/" className="flex items-center gap-2 transition-colors">
+        <Link to="/" className="flex items-center gap-2 transition-transform hover:scale-105 active:scale-95">
           <Logo 
             variant="black" 
             size="sm" 
-            className="h-8 md:h-9" 
+            className="h-8 md:h-10" 
             customLogo={tenantSchool?.logoUrl} 
           />
         </Link>
 
 
-        <div className="hidden md:flex items-center gap-8 pl-4">
+        <div className="hidden md:flex items-center gap-10">
           {navItems.map(item => (
             <a 
               key={item.name} 
               href={item.path} 
-              className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors"
+              className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-blue-600 transition-colors"
             >
               {item.name}
             </a>
           ))}
           
-          <div className="flex items-center gap-4 ml-4">
+          <div className="flex items-center gap-6 ml-6 border-l border-slate-100 pl-6">
             {user ? (
               <button 
                 onClick={onLogout} 
-                className="flex items-center gap-2 text-sm font-bold text-red-500 hover:text-red-600 px-4 py-2 rounded-full hover:bg-red-50 transition-all"
+                className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-red-600 transition-all"
               >
                 <LogOut size={16} /> Logout
               </button>
             ) : (
               <>
-                <Link to="/super-admin" className="text-sm font-semibold text-slate-700 hover:text-blue-600 transition-colors">
+                <Link to="/super-admin" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-950 hover:text-blue-600 transition-colors">
                   System Login
                 </Link>
-                <a href="#onboard" className="bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20 active:scale-95">
-                  Request Onboarding
+                <a href="#onboarding" className="bg-blue-600 text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95">
+                  Onboard School
                 </a>
               </>
             )}
-            <ThemeToggle />
+            <div className="scale-90">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
 
