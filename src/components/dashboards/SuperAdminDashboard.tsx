@@ -15,7 +15,13 @@ import {
   ExternalLink,
   ArrowRight,
   LayoutDashboard,
-  X
+  X,
+  Activity,
+  History,
+  Database,
+  Globe,
+  DollarSign,
+  Menu
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, OperationType, handleFirestoreError, query, where, onSnapshot, secondaryAuth, createUserWithEmailAndPassword, setDoc, logAuditAction } from '../../firebase';
@@ -36,6 +42,8 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'suspended'>('all');
+  const [activeTab, setActiveTab] = useState<'overview' | 'schools' | 'financials' | 'logs' | 'system'>('overview');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const tableRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -216,268 +224,506 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
     }
   }
 
-  if (loading) return (
-    <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-      <div className="w-24 h-24 bg-white dark:bg-slate-900/80 backdrop-blur-sm rounded-full flex items-center justify-center text-blue-600 shadow-sm border border-slate-100 dark:border-slate-800">
-        <Settings size={48} className="animate-spin-slow" />
-      </div>
-      <p className="text-blue-600 font-medium">Loading platform data...</p>
     </div>
   );
 
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'schools', label: 'Institutions', icon: SchoolIcon },
+    { id: 'financials', label: 'Financials', icon: DollarSign },
+    { id: 'logs', label: 'Audit Logs', icon: History },
+    { id: 'system', label: 'System Health', icon: Activity },
+  ] as const;
+
   return (
-    <div className="max-w-7xl mx-auto space-y-4 md:space-y-6 pb-20 px-4 md:px-0">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div className="w-full">
-          <h2 className="text-2xl md:text-3xl font-medium text-slate-900 dark:text-white transition-colors flex items-center gap-3">
-            <div className="p-3 bg-blue-600/10 dark:bg-blue-600/20 rounded-2xl text-blue-600 dark:text-blue-400 shadow-sm">
-              <Shield size={24} className="md:w-7 md:h-7" />
-            </div>
-            Platform Overview
-          </h2>
-          <p className="text-slate-600 dark:text-slate-400 mt-2 text-sm md:text-base font-medium">Manage your educational ecosystem and school subscriptions.</p>
-        </div>
-        <button
-          onClick={() => setShowAddSchool(true)}
-          className="w-full md:w-auto bg-blue-600 text-white px-8 py-4 md:py-3 rounded-2xl md:rounded-xl flex justify-center items-center gap-3 text-sm font-bold shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:translate-y-[-2px] transition-all active:translate-y-0"
-        >
-          <Plus size={20} /> Add New School
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {[
-          { label: 'Total Schools', value: schools.length, icon: SchoolIcon, colorClasses: 'bg-blue-600/10 text-blue-600 dark:text-blue-400', onClick: () => { setFilterStatus('all'); tableRef.current?.scrollIntoView({ behavior: 'smooth' }); } },
-          { label: 'Active Subscriptions', value: schools.filter(s => s.status === 'active').length, icon: CreditCard, colorClasses: 'bg-emerald-600/10 text-emerald-600 dark:text-emerald-400', onClick: () => { setFilterStatus('active'); tableRef.current?.scrollIntoView({ behavior: 'smooth' }); } },
-          { label: 'System Health', value: '99.9%', icon: CheckCircle, colorClasses: 'bg-amber-600/10 text-amber-600 dark:text-amber-400' },
-        ].map((stat, i) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            onClick={stat.onClick}
-            className={`bg-white dark:bg-slate-900 dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/20 dark:shadow-none transition-all ${stat.onClick ? 'cursor-pointer hover:shadow-2xl hover:translate-y-[-4px] active:translate-y-0' : ''}`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner ${stat.colorClasses}`}>
-                  <stat.icon size={24} />
+    <div className="flex h-screen bg-[#050505] overflow-hidden">
+      {/* Sidebar */}
+      <motion.aside
+        initial={false}
+        animate={{ width: isSidebarOpen ? 280 : 80 }}
+        className="hidden md:flex flex-col border-r border-white/5 bg-[#0a0a0a] relative z-20"
+      >
+        <div className="p-6 mb-8 flex items-center justify-between">
+          <AnimatePresence mode="wait">
+            {isSidebarOpen && (
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                className="flex items-center gap-3"
+              >
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <Shield size={18} className="text-white" />
                 </div>
-                <span className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-[10px] md:text-xs">{stat.label}</span>
-              </div>
-              <p className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+                <span className="font-bold text-white tracking-tight uppercase text-sm">System Command</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <button 
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="p-2 hover:bg-white/5 rounded-lg text-slate-400 transition-colors"
+          >
+            <Menu size={20} />
+          </button>
+        </div>
 
-      <div ref={tableRef} className="bg-white dark:bg-slate-900 dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl shadow-slate-200/20 dark:shadow-none overflow-hidden scroll-mt-24">
-        <div className="p-6 md:p-8 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 bg-slate-50/50 dark:bg-slate-900/50">
-          <div className="flex items-center gap-4">
-            <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white transition-colors">Managed Schools</h3>
-            {filterStatus !== 'all' && (
-              <span className="px-3 py-1 bg-blue-600/10 text-blue-600 dark:text-blue-400 rounded-full text-xs font-bold capitalize flex items-center gap-2">
-                {filterStatus} Only
-                <button onClick={() => setFilterStatus('all')} className="hover:text-blue-800 dark:hover:text-blue-200"><X size={14} /></button>
-              </span>
+        <nav className="flex-1 px-3 space-y-2">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all group",
+                activeTab === tab.id 
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" 
+                  : "text-slate-400 hover:bg-white/5 hover:text-white"
+              )}
+            >
+              <tab.icon size={20} className={cn(
+                "shrink-0",
+                activeTab === tab.id ? "text-white" : "group-hover:text-blue-400"
+              )} />
+              {isSidebarOpen && (
+                <span className="font-medium text-sm">{tab.label}</span>
+              )}
+              {activeTab === tab.id && isSidebarOpen && (
+                <motion.div 
+                  layoutId="activeTabIndicator"
+                  className="ml-auto w-1.5 h-1.5 rounded-full bg-white" 
+                />
+              )}
+            </button>
+          ))}
+        </nav>
+
+        <div className="p-4 border-t border-white/5">
+          <div className={cn(
+            "flex items-center gap-3 p-3 rounded-xl bg-white/5",
+            !isSidebarOpen && "justify-center"
+          )}>
+            <div className="w-8 h-8 rounded-full bg-blue-600/20 flex items-center justify-center text-blue-400 font-bold text-xs uppercase">
+              {user.firstName?.charAt(0) || 'A'}
+            </div>
+            {isSidebarOpen && (
+              <div className="min-w-0">
+                <p className="text-xs font-bold text-white truncate">{user.firstName} {user.lastName}</p>
+                <p className="text-[10px] text-slate-500 font-medium truncate uppercase tracking-tighter">Root Administrator</p>
+              </div>
             )}
           </div>
-          <div className="relative w-full sm:w-80">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <input
-              type="text"
-              placeholder="Search schools..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-4 py-4 md:py-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 dark:bg-slate-950 text-slate-900 dark:text-white hover:border-blue-500 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm"
-            />
-          </div>
         </div>
-        
-        <div className="w-full">
-          {/* Desktop Table */}
-          <div className="hidden md:block overflow-x-auto">
-            <table className="w-full text-left min-w-[800px]">
-              <thead className="bg-slate-50 dark:bg-slate-950 text-[10px] uppercase text-slate-500 dark:text-slate-400 font-bold tracking-[0.2em] border-b border-slate-200 dark:border-slate-800">
-                <tr>
-                  <th className="pl-8 pr-4 py-5 font-bold">School Info</th>
-                  <th className="px-4 py-5 font-bold">Plan & Billing</th>
-                  <th className="px-4 py-5 font-bold">Status</th>
-                  <th className="px-4 py-5 text-right font-bold">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {filteredSchools.map((school, i) => (
-                  <motion.tr 
-                    key={school.id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: i * 0.05 }}
-                    className="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all"
-                  >
-                    <td className="px-4 py-6">
-                      <div className="flex items-center gap-4 pl-4">
-                        <div className="w-12 h-12 rounded-2xl bg-blue-600/10 dark:bg-blue-600/20 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-xl shadow-inner group-hover:scale-110 transition-transform overflow-hidden border border-slate-100 dark:border-slate-800">
-                          {school.logoUrl ? (
-                            <img src={school.logoUrl} alt={school.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                          ) : (
-                            school.name?.charAt(0) || '?'
-                          )}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors truncate">{school.name}</p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">{school.email}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-6">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-sm font-bold text-slate-900 dark:text-white capitalize">{school.planId} Plan</span>
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">Billing Active</span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-6">
-                      <span className={cn(
-                        "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest inline-block shadow-sm",
-                        school.status === 'active' 
-                          ? "bg-emerald-600/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" 
-                          : "bg-red-600/10 text-red-600 dark:text-red-400 border border-red-500/20"
-                      )}>
-                        {school.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-6">
-                      <div className="flex gap-2 justify-end items-center">
-                        <button
-                          onClick={() => setSelectedSchoolId(school.id)}
-                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 hover:translate-y-[-1px] transition-all active:translate-y-0 shadow-md shadow-blue-600/10"
-                        >
-                          Manage <ArrowRight size={14} />
-                        </button>
-                        <button
-                          onClick={() => toggleSchoolStatus(school)}
-                          className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                          title={school.status === 'active' ? 'Suspend' : 'Activate'}
-                        >
-                          <Settings size={18} />
-                        </button>
-                        <button
-                          onClick={() => handleEditSchool(school)}
-                          className="p-2.5 rounded-xl bg-blue-600/10 text-blue-600 dark:text-blue-400 hover:bg-blue-600/20 transition-colors"
-                          title="Edit School"
-                        >
-                          <ExternalLink size={18} />
-                        </button>
-                        <button
-                          onClick={() => setShowDeleteConfirm(school.id)}
-                          className="p-2.5 rounded-xl bg-red-600/10 text-red-600 dark:text-red-400 hover:bg-red-600/20 transition-colors"
-                          title="Delete School"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </motion.tr>
-                ))}
-                {filteredSchools.length === 0 && (
-                  <tr>
-                    <td colSpan={4} className="px-8 py-32 text-center">
-                      <div className="flex flex-col items-center gap-4">
-                        <div className="p-6 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-400 dark:text-slate-500">
-                          <SchoolIcon size={64} />
-                        </div>
-                        <p className="text-slate-500 dark:text-slate-400 font-bold text-lg">No schools found matching your search.</p>
-                        <button onClick={() => {setSearchQuery(''); setFilterStatus('all');}} className="text-blue-600 font-bold hover:underline">Clear all filters</button>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+      </motion.aside>
 
-          {/* Mobile Cards */}
-          <div className="md:hidden flex flex-col gap-4 p-4">
-            {filteredSchools.map((school, i) => (
-              <motion.div 
-                key={school.id}
+      {/* Main Content Area */}
+      <main className="flex-1 overflow-y-auto bg-[#050505] relative custom-scrollbar">
+        {/* Top Navbar for Mobile */}
+        <div className="md:hidden flex items-center justify-between p-4 bg-[#0a0a0a] border-b border-white/5 sticky top-0 z-30">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <Shield size={18} className="text-white" />
+            </div>
+            <span className="font-bold text-white text-xs uppercase tracking-tighter">System Command</span>
+          </div>
+          <button className="p-2 text-white">
+            <Menu size={24} />
+          </button>
+        </div>
+
+        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
+          <AnimatePresence mode="wait">
+            {activeTab === 'overview' && (
+              <motion.div
+                key="overview"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className="bg-white dark:bg-slate-900 dark:bg-slate-900 rounded-3xl shadow-xl shadow-slate-200/20 dark:shadow-none border border-slate-200 dark:border-slate-800 p-6 flex flex-col gap-5"
+                exit={{ opacity: 0, y: -10 }}
+                className="space-y-8"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-blue-600/10 dark:bg-blue-600/20 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400 text-xl shrink-0 shadow-inner overflow-hidden border border-slate-100 dark:border-slate-800">
-                    {school.logoUrl ? (
-                      <img src={school.logoUrl} alt={school.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                    ) : (
-                      school.name?.charAt(0) || '?'
-                    )}
-                  </div>
-                  <div className="overflow-hidden">
-                    <p className="font-bold text-base text-slate-900 dark:text-white truncate">{school.name}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">{school.email}</p>
-                  </div>
-                </div>
-                
-                <div className="flex flex-col gap-3">
-                  <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800">
-                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Pricing Plan</span>
-                    <span className="text-sm font-bold text-slate-900 dark:text-white capitalize">
-                      {school.planId}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800">
-                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">License Status</span>
-                    <span className={cn(
-                      "text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full",
-                      school.status === 'active' 
-                        ? "bg-emerald-600/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" 
-                        : "bg-red-600/10 text-red-600 dark:text-red-400 border border-red-500/20"
-                    )}>
-                      {school.status}
-                    </span>
-                  </div>
+                {/* Header */}
+                <div>
+                  <h1 className="text-3xl font-bold text-white tracking-tight">System Overview</h1>
+                  <p className="text-slate-400 mt-1 font-medium">Global platform health and administrative intelligence.</p>
                 </div>
 
-                <div className="flex gap-2 justify-end pt-2">
-                  <button
-                    onClick={() => setSelectedSchoolId(school.id)}
-                    className="flex-1 flex justify-center items-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20"
-                  >
-                    Manage <ArrowRight size={14} />
-                  </button>
-                  <button
-                    onClick={() => toggleSchoolStatus(school)}
-                    className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition-colors"
-                  >
-                    <Settings size={18} />
-                  </button>
-                  <button
-                    onClick={() => handleEditSchool(school)}
-                    className="p-3 rounded-xl bg-blue-600/10 text-blue-600' dark:text-blue-400 hover:bg-blue-600/20 transition-colors"
-                    title="Edit School"
-                  >
-                    <ExternalLink size={16} />
-                  </button>
-                  <button
-                    onClick={() => setShowDeleteConfirm(school.id)}
-                    className="p-2 rounded-lg hover:bg-red-50 text-red-600 transition-colors"
-                    title="Delete School"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {[
+                    { label: 'Total Schools', value: schools.length, icon: SchoolIcon, trend: '+12%', color: 'blue' },
+                    { label: 'Active Users', value: '42.5k', icon: Users, trend: '+5.2%', color: 'emerald' },
+                    { label: 'System Uptime', value: '99.99%', icon: Activity, trend: 'Stable', color: 'blue' },
+                    { label: 'Revenue (MTD)', value: '₦8.4M', icon: DollarSign, trend: '+18.3%', color: 'amber' },
+                  ].map((stat, i) => (
+                    <motion.div
+                      key={stat.label}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      className="bg-white/5 border border-white/10 p-6 rounded-3xl hover:bg-white/[0.07] transition-all group"
+                    >
+                      <div className="flex justify-between items-start mb-4">
+                        <div className={cn(
+                          "p-3 rounded-2xl group-hover:scale-110 transition-transform",
+                          stat.color === 'blue' ? "bg-blue-600/20 text-blue-400" :
+                          stat.color === 'emerald' ? "bg-emerald-600/20 text-emerald-400" :
+                          "bg-amber-600/20 text-amber-400"
+                        )}>
+                          <stat.icon size={24} />
+                        </div>
+                        <span className={cn(
+                          "text-[10px] font-bold px-2 py-1 rounded-full",
+                          stat.trend.startsWith('+') ? "bg-emerald-500/10 text-emerald-400" : "bg-blue-500/10 text-blue-400"
+                        )}>
+                          {stat.trend}
+                        </span>
+                      </div>
+                      <p className="text-3xl font-bold text-white mb-1 tracking-tight">{stat.value}</p>
+                      <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{stat.label}</p>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Analytics Mock Cards */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="bg-white/5 border border-white/10 rounded-3xl p-8 relative overflow-hidden group">
+                    <div className="flex justify-between items-center mb-8 relative z-10">
+                      <div>
+                        <h3 className="text-xl font-bold text-white">Enrollment Growth</h3>
+                        <p className="text-slate-400 text-sm">Platform-wide student acquisition</p>
+                      </div>
+                      <select className="bg-white/5 border border-white/10 rounded-xl text-xs font-bold text-white px-3 py-2 outline-none">
+                        <option>Last 6 Months</option>
+                        <option>Last Year</option>
+                      </select>
+                    </div>
+                    {/* Placeholder for SVG Chart */}
+                    <div className="h-48 flex items-end justify-between gap-2 relative z-10">
+                      {[40, 65, 45, 90, 75, 100].map((height, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ height: 0 }}
+                          animate={{ height: `${height}%` }}
+                          transition={{ delay: 0.5 + i * 0.1, duration: 1 }}
+                          className="flex-1 bg-gradient-to-t from-blue-600/20 to-blue-500 rounded-t-xl relative group/bar"
+                        >
+                          <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-black text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover/bar:opacity-100 transition-opacity">
+                            {height}k
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-white/5 border border-white/10 rounded-3xl p-8 group">
+                    <h3 className="text-xl font-bold text-white mb-8">System Activity</h3>
+                    <div className="space-y-6">
+                      {[
+                        { action: 'New School Onboarded', time: '2 mins ago', detail: 'St. Andrews College', icon: Plus },
+                        { action: 'Subscription Updated', time: '45 mins ago', detail: 'Lighthouse Academy moved to Pro', icon: CreditCard },
+                        { action: 'Backup Successful', time: '2 hours ago', detail: 'Region: Lagos-West', icon: Database },
+                      ].map((item, i) => (
+                        <div key={i} className="flex gap-4">
+                          <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-slate-400 border border-white/5 group-hover:border-blue-500/30 transition-colors">
+                            <item.icon size={18} />
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-white">{item.action}</p>
+                            <p className="text-xs text-slate-500 font-medium">{item.detail} • {item.time}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <button className="w-full mt-8 py-4 bg-white/5 hover:bg-white/10 rounded-2xl text-xs font-bold text-blue-400 uppercase tracking-widest transition-all">
+                      View Audit Log
+                    </button>
+                  </div>
                 </div>
               </motion.div>
-            ))}
-            {filteredSchools.length === 0 && (
-              <div className="py-8 text-center text-slate-900 dark:text-slate-100 text-sm">No schools found matching your search.</div>
             )}
-          </div>
+
+            {activeTab === 'schools' && (
+              <motion.div
+                key="schools"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-8"
+              >
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                  <div>
+                    <h2 className="text-3xl font-bold text-white tracking-tight">Institutional Network</h2>
+                    <p className="text-slate-400 mt-1 font-medium">Monitor and control individual school environments.</p>
+                  </div>
+                  <button
+                    onClick={() => setShowAddSchool(true)}
+                    className="w-full md:w-auto bg-blue-600 text-white px-8 py-3.5 rounded-2xl flex justify-center items-center gap-3 text-sm font-bold shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:translate-y-[-2px] transition-all active:translate-y-0"
+                  >
+                    <Plus size={20} /> Register Institution
+                  </button>
+                </div>
+
+                {/* Existing Filter and Search UI wrapped in dark containers */}
+                <div className="bg-white/5 border border-white/10 rounded-3xl overflow-hidden">
+                  <div className="p-6 border-b border-white/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                    <div className="flex items-center gap-4">
+                      <h3 className="text-xl font-bold text-white">Active Management</h3>
+                      {filterStatus !== 'all' && (
+                        <span className="px-3 py-1 bg-blue-600/20 text-blue-400 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                          {filterStatus}
+                          <button onClick={() => setFilterStatus('all')} className="hover:text-white"><X size={14} /></button>
+                        </span>
+                      )}
+                    </div>
+                    <div className="relative w-full sm:w-80">
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                      <input
+                        type="text"
+                        placeholder="Filter by name or email..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-11 pr-4 py-3 rounded-2xl bg-[#0a0a0a] border border-white/10 text-white placeholder-slate-600 focus:border-blue-500 outline-none transition-all font-medium text-sm"
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Table content from existing implementation, updated with dark theme classes */}
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                      <thead className="bg-[#0a0a0a] text-[10px] uppercase text-slate-500 font-bold tracking-[0.2em] border-b border-white/5">
+                        <tr>
+                          <th className="pl-8 pr-4 py-5 font-bold">Institution</th>
+                          <th className="px-4 py-5 font-bold">Infrastructure</th>
+                          <th className="px-4 py-5 font-bold">Status</th>
+                          <th className="px-4 py-5 text-right font-bold pr-8">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/5">
+                        {filteredSchools.map((school, i) => (
+                          <motion.tr 
+                            key={school.id}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: i * 0.05 }}
+                            className="group hover:bg-white/[0.02] transition-all cursor-default"
+                          >
+                            <td className="px-4 py-6 pl-8">
+                              <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-2xl bg-blue-600/10 flex items-center justify-center text-blue-400 font-bold text-xl shadow-inner border border-white/5 group-hover:scale-110 transition-transform overflow-hidden">
+                                  {school.logoUrl ? (
+                                    <img src={school.logoUrl} alt={school.name} className="w-full h-full object-cover" />
+                                  ) : (
+                                    school.name?.charAt(0) || '?'
+                                  )}
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="font-bold text-sm text-white group-hover:text-blue-400 transition-colors truncate">{school.name}</p>
+                                  <p className="text-xs text-slate-500 font-medium truncate">{school.email}</p>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-4 py-6">
+                              <div className="flex flex-col gap-1">
+                                <span className="text-xs font-bold text-white capitalize flex items-center gap-2">
+                                  <Globe size={12} className="text-blue-400" />
+                                  {school.slug}.seedify.ng
+                                </span>
+                                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{school.planId} Tier</span>
+                              </div>
+                            </td>
+                            <td className="px-4 py-6">
+                              <span className={cn(
+                                "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest inline-block",
+                                school.status === 'active' 
+                                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" 
+                                  : "bg-red-500/10 text-red-400 border border-red-500/20"
+                              )}>
+                                {school.status}
+                              </span>
+                            </td>
+                            <td className="px-4 py-6 pr-8">
+                              <div className="flex gap-2 justify-end items-center">
+                                <button
+                                  onClick={() => setSelectedSchoolId(school.id)}
+                                  className="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/10"
+                                >
+                                  Console
+                                </button>
+                                <div className="relative group/actions">
+                                  <button className="p-2.5 rounded-xl bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+                                    <MoreVertical size={18} />
+                                  </button>
+                                  <div className="absolute right-0 top-full mt-2 w-48 bg-[#0a0a0a] border border-white/10 rounded-2xl shadow-2xl p-2 hidden group-hover/actions:block z-50">
+                                    <button onClick={() => toggleSchoolStatus(school)} className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-white/5 text-xs font-medium text-slate-300 flex items-center gap-2">
+                                      <Shield size={14} /> {school.status === 'active' ? 'Suspend' : 'Activate'} Access
+                                    </button>
+                                    <button onClick={() => handleEditSchool(school)} className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-white/5 text-xs font-medium text-slate-300 flex items-center gap-2">
+                                      <Settings size={14} /> Update Config
+                                    </button>
+                                    <button onClick={() => setShowDeleteConfirm(school.id)} className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-red-500/10 text-xs font-medium text-red-400 flex items-center gap-2">
+                                      <Trash2 size={14} /> Terminate
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </motion.tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'financials' && (
+              <motion.div
+                key="financials"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-8"
+              >
+                <div>
+                  <h2 className="text-3xl font-bold text-white tracking-tight">Financial Intelligence</h2>
+                  <p className="text-slate-400 mt-1 font-medium">Subscription revenue and market distribution.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="md:col-span-2 bg-white/5 border border-white/10 rounded-3xl p-8">
+                    <h3 className="text-xl font-bold text-white mb-8">Monthly Recurring Revenue (MRR)</h3>
+                    <div className="h-64 flex items-end gap-3">
+                      {[30, 45, 35, 60, 80, 70, 95].map((h, i) => (
+                        <div key={i} className="flex-1 flex flex-col items-center gap-4">
+                          <motion.div 
+                            initial={{ height: 0 }}
+                            animate={{ height: `${h}%` }}
+                            className="w-full bg-gradient-to-t from-emerald-600/20 to-emerald-500 rounded-t-xl"
+                          />
+                          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter">Month {i+1}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-3xl p-8">
+                    <h3 className="text-xl font-bold text-white mb-8">Plan Distribution</h3>
+                    <div className="space-y-6">
+                      {[
+                        { label: 'Free Tier', count: schools.filter(s => s.planId === 'free').length, color: 'bg-slate-500' },
+                        { label: 'Starter', count: schools.filter(s => s.planId === 'starter').length, color: 'bg-blue-500' },
+                        { label: 'Professional', count: schools.filter(s => s.planId === 'pro').length, color: 'bg-emerald-500' },
+                        { label: 'Enterprise', count: schools.filter(s => s.planId === 'enterprise').length, color: 'bg-amber-500' },
+                      ].map((plan, i) => (
+                        <div key={i} className="space-y-2">
+                          <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-slate-400">
+                            <span>{plan.label}</span>
+                            <span>{Math.round((plan.count / (schools.length || 1)) * 100)}%</span>
+                          </div>
+                          <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                            <motion.div 
+                              initial={{ width: 0 }}
+                              animate={{ width: `${(plan.count / (schools.length || 1)) * 100}%` }}
+                              className={cn("h-full", plan.color)}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'system' && (
+              <motion.div
+                key="system"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-8"
+              >
+                <div>
+                  <h2 className="text-3xl font-bold text-white tracking-tight">System Infrastructure</h2>
+                  <p className="text-slate-400 mt-1 font-medium">Real-time server and database monitoring.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[
+                    { label: 'Compute Engine', status: 'Operational', usage: '24%', icon: Activity },
+                    { label: 'Cloud SQL Cluster', status: 'Operational', usage: '12%', icon: Database },
+                    { label: 'Asset Storage', status: 'Healthy', usage: '8.4TB', icon: Globe },
+                  ].map((sys, i) => (
+                    <div key={i} className="bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-col gap-6">
+                      <div className="flex justify-between items-center">
+                        <div className="p-3 bg-white/5 rounded-2xl text-blue-400">
+                          <sys.icon size={20} />
+                        </div>
+                        <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-full text-[10px] font-bold uppercase tracking-widest border border-emerald-500/20">
+                          {sys.status}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-lg font-bold text-white">{sys.label}</p>
+                        <p className="text-xs text-slate-500 font-medium mt-1">Current Load: {sys.usage}</p>
+                      </div>
+                      <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                        <div className="h-full bg-blue-500 w-1/4 rounded-full" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'logs' && (
+              <motion.div
+                key="logs"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-8"
+              >
+                <div>
+                  <h2 className="text-3xl font-bold text-white tracking-tight">Audit Trail</h2>
+                  <p className="text-slate-400 mt-1 font-medium">Immutable record of all administrative activities.</p>
+                </div>
+
+                <div className="bg-white/5 border border-white/10 rounded-3xl overflow-hidden">
+                  <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
+                    <h3 className="text-xl font-bold text-white">Security Events</h3>
+                    <button className="text-xs font-bold text-blue-400 uppercase tracking-widest hover:text-blue-300 transition-colors">Export CSV</button>
+                  </div>
+                  <div className="divide-y divide-white/5">
+                    {[
+                      { user: 'Admin (Root)', event: 'School Suspended', target: 'Green Valley Academy', time: '10 mins ago', status: 'warning' },
+                      { user: 'System', event: 'Database Backup', target: 'Daily Automated', time: '1 hour ago', status: 'success' },
+                      { user: 'Admin (Root)', event: 'New School Created', target: 'Lighthouse Primary', time: '3 hours ago', status: 'success' },
+                      { user: 'System', event: 'Security Patch Applied', target: 'v2.4.1', time: '5 hours ago', status: 'info' },
+                      { user: 'Admin (Root)', event: 'Plan Downgrade', target: 'St. Marys High', time: 'Yesterday', status: 'error' },
+                    ].map((log, i) => (
+                      <div key={i} className="p-4 px-8 flex items-center justify-between hover:bg-white/[0.01] transition-all">
+                        <div className="flex items-center gap-4">
+                          <div className={cn(
+                            "w-2 h-2 rounded-full shadow-[0_0_8px]",
+                            log.status === 'warning' ? "bg-amber-500 shadow-amber-500/50" :
+                            log.status === 'success' ? "bg-emerald-500 shadow-emerald-500/50" :
+                            log.status === 'error' ? "bg-red-500 shadow-red-500/50" :
+                            "bg-blue-500 shadow-blue-500/50"
+                          )} />
+                          <div>
+                            <p className="text-sm font-bold text-white">{log.event}</p>
+                            <p className="text-xs text-slate-500 font-medium">By {log.user} on {log.target}</p>
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{log.time}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </div>
+      </main>
 
       {/* Modals */}
       <AnimatePresence>
