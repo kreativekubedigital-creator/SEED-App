@@ -6,7 +6,7 @@ import { Logo } from './components/Logo';
 import { ThemeToggle } from './components/ThemeToggle';
 import { useTheme } from './components/ThemeProvider';
 import { 
-  LogIn, LogOut, LayoutDashboard, User, Users, BookOpen, Bell, Settings, CreditCard, Menu, X, Home, Sparkles, Info, Mail, Clock, CheckCircle2, CheckCircle, Eye, EyeOff, Search, ChevronDown, Check, School as SchoolIcon
+  LogIn, LogOut, LayoutDashboard, User, Users, BookOpen, Bell, Settings, CreditCard, Menu, X, Home, Sparkles, Info, Mail, Clock, CheckCircle2, CheckCircle, Eye, EyeOff, Search, ChevronDown, Check, Shield, School as SchoolIcon
 } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import { cn } from './lib/utils';
@@ -161,9 +161,10 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
   }, [scrollY, isScrolled]);
 
   const navItems = [
-    { name: 'Home', path: '/', icon: Home },
-    { name: 'About', path: '/about', icon: Info },
-    { name: 'Contact', path: '/contact', icon: Mail },
+    { name: 'Features', path: '#features', icon: Info },
+    { name: 'Solutions', path: '#solutions', icon: Info },
+    { name: 'Pricing', path: '#pricing', icon: Info },
+    { name: 'About', path: '#about', icon: Info },
   ];
   const isActive = (path: string) => {
     if (path === '/' && location.pathname !== '/') return false;
@@ -173,31 +174,24 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
   const { theme } = useTheme();
   const isLandingPage = location.pathname === '/';
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4 pointer-events-none">
+    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center w-full">
       <motion.nav 
         initial={false}
         animate={{ 
-          backgroundColor: isLandingPage 
-            ? (isScrolled ? "rgba(2, 6, 23, 0.9)" : "rgba(2, 6, 23, 0)") 
-            : (theme === 'dark' ? "rgba(15, 23, 42, 0.9)" : "rgba(255, 255, 255, 0.9)"),
-          borderColor: isLandingPage
-            ? (isScrolled ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0)")
-            : (theme === 'dark' ? "rgba(255, 255, 255, 0.05)" : "rgba(226, 232, 240, 1)"),
-          y: isScrolled ? 0 : 4,
-          boxShadow: isScrolled ? "0 25px 50px -12px rgba(0, 0, 0, 0.5)" : "none"
+          backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.95)" : "rgba(255, 255, 255, 0)",
+          borderBottomColor: isScrolled ? "rgba(226, 232, 240, 0.8)" : "rgba(226, 232, 240, 0)",
+          boxShadow: isScrolled ? "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)" : "none",
+          height: isScrolled ? "72px" : "88px"
         }}
         transition={{ duration: 0.3 }}
         className={cn(
-          "backdrop-blur-xl rounded-full px-6 py-3 flex items-center justify-between w-full max-w-5xl border pointer-events-auto",
-          isLandingPage ? "text-white" : "text-slate-900 dark:text-white"
+          "backdrop-blur-md px-6 md:px-12 flex items-center justify-between w-full border-b transition-all duration-300",
+          isScrolled ? "text-slate-900" : (isLandingPage ? "text-slate-900" : "text-slate-900 dark:text-white")
         )}
       >
-        <Link to="/" className={cn(
-          "flex items-center gap-2 pr-6 border-r transition-colors",
-          isLandingPage ? "border-white/10" : "border-gray-100 dark:border-gray-800"
-        )}>
+        <Link to="/" className="flex items-center gap-2 transition-colors">
           <Logo 
-            variant={logoVariant} 
+            variant="black" 
             size="sm" 
             className="h-8 md:h-9" 
             customLogo={tenantSchool?.logoUrl} 
@@ -205,59 +199,37 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
         </Link>
 
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-2 pl-4">
+        <div className="hidden md:flex items-center gap-8 pl-4">
           {navItems.map(item => (
-            <Link 
+            <a 
               key={item.name} 
-              to={item.path} 
-              className={cn(
-                "text-sm font-medium px-3.5 py-1.5 rounded-full transition-all duration-200",
-                isActive(item.path) 
-                  ? (isLandingPage ? "bg-white/20 text-white" : "bg-blue-50 text-blue-600")
-                  : (isLandingPage ? "text-slate-300 hover:text-white hover:bg-white/10" : "text-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 dark:text-gray-300")
-              )}
+              href={item.path} 
+              className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors"
             >
               {item.name}
-            </Link>
+            </a>
           ))}
           
-          {user ? (
-            <>
-              <Link 
-                to="/dashboard" 
-                className={cn(
-                  "text-sm font-medium px-3.5 py-1.5 rounded-full transition-all duration-200",
-                   isActive('/dashboard') 
-                    ? (isLandingPage ? "bg-white/20 text-white" : "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400")
-                    : (isLandingPage ? "text-slate-300 hover:text-white hover:bg-white/10" : "text-gray-800 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800")
-                )}
-              >
-                Dashboard
-              </Link>
-              <Link 
-                to="/profile" 
-                className={`text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 ${
-                  isActive('/profile') 
-                    ? (isLandingPage ? 'bg-white/20 text-white' : 'bg-blue-600/10 text-blue-600 dark:text-blue-400') 
-                    : (isLandingPage ? 'text-slate-300 hover:text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white')
-                }`}
-              >
-                Profile
-              </Link>
+          <div className="flex items-center gap-4 ml-4">
+            {user ? (
               <button 
                 onClick={onLogout} 
-                className="flex items-center gap-2 text-sm font-bold text-red-500 hover:text-red-600 px-4 py-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                className="flex items-center gap-2 text-sm font-bold text-red-500 hover:text-red-600 px-4 py-2 rounded-full hover:bg-red-50 transition-all"
               >
                 <LogOut size={16} /> Logout
               </button>
-            </>
-          ) : (
-            <Link to="/login" className="bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm ml-4">
-              Login
-            </Link>
-          )}
-          <ThemeToggle />
+            ) : (
+              <>
+                <Link to="/login?role=super_admin" className="text-sm font-semibold text-slate-700 hover:text-blue-600 transition-colors">
+                  System Login
+                </Link>
+                <Link to="/onboarding" className="bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20 active:scale-95">
+                  Request Onboarding
+                </Link>
+              </>
+            )}
+            <ThemeToggle />
+          </div>
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -348,6 +320,14 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
       return prev;
     });
   };
+
+  useEffect(() => {
+    const roleParam = searchParams.get('role');
+    if (roleParam === 'super_admin' && step === 'school') {
+      setSelectedRole('super_admin');
+      setStep('credentials');
+    }
+  }, [searchParams, step]);
 
   const setStep = (newStep: string) => setStepAndSignUp(newStep, isSignUp);
   const setIsSignUp = (val: boolean) => setStepAndSignUp(step, val);

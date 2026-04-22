@@ -37,7 +37,7 @@ const ClassTimetable: React.FC<ClassTimetableProps> = ({ user, mode, studentClas
     if (mode === 'edit' || !studentClassId) {
       const unsubClasses = onSnapshot(collection(db, 'schools', user.schoolId, 'classes'), (snap) => {
         const clsData = snap.docs.map(d => ({ id: d.id, ...d.data() } as Class));
-        const sortedClasses = sortByName(clsData);
+        const sortedClasses = sortByName(clsData) as Class[];
         setClasses(sortedClasses);
         if (sortedClasses.length > 0 && !selectedClass) {
           setSelectedClass(sortedClasses[0].id);
