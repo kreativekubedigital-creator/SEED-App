@@ -10,9 +10,10 @@ interface LogoProps {
   variant?: 'black' | 'white' | 'mark';
   className?: string;
   size?: 'sm' | 'md' | 'lg' | 'xl';
+  customLogo?: string;
 }
 
-export const Logo: React.FC<LogoProps> = ({ variant = 'black', className = '', size = 'md' }) => {
+export const Logo: React.FC<LogoProps> = ({ variant = 'black', className = '', size = 'md', customLogo }) => {
   const sizeClasses = {
     sm: 'h-8',
     md: 'h-10',
@@ -20,18 +21,21 @@ export const Logo: React.FC<LogoProps> = ({ variant = 'black', className = '', s
     xl: 'h-20'
   };
 
-  let logoSrc = logoBlack;
-  if (variant === 'white') {
-    logoSrc = logoWhite;
-  } else if (variant === 'mark') {
-    logoSrc = logoMark;
+  let logoSrc = customLogo || logoBlack;
+  if (!customLogo) {
+    if (variant === 'white') {
+      logoSrc = logoWhite;
+    } else if (variant === 'mark') {
+      logoSrc = logoMark;
+    }
   }
 
   return (
     <img 
       src={logoSrc} 
-      alt="SEEDD Logo" 
+      alt="Logo" 
       className={cn(`${sizeClasses[size]} w-auto object-contain`, className)}
+      referrerPolicy="no-referrer"
     />
   );
 };

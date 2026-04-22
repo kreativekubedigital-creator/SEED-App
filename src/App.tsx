@@ -145,7 +145,7 @@ const ScrollToTop = () => {
 
 
 
-const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => void }) => {
+const Navbar = ({ user, onLogout, tenantSchool }: { user: UserProfile | null, onLogout: () => void, tenantSchool?: School | null }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -201,7 +201,12 @@ const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => 
           "flex items-center gap-2 pr-6 border-r transition-colors",
           isLandingPage ? "border-white/10" : "border-gray-100 dark:border-gray-800"
         )}>
-          <Logo variant={logoVariant} size="sm" className="h-8 md:h-9" />
+          <Logo 
+            variant={logoVariant} 
+            size="sm" 
+            className="h-8 md:h-9" 
+            customLogo={tenantSchool?.logoUrl} 
+          />
         </Link>
 
 
@@ -336,7 +341,7 @@ const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => 
 };
 
 
-const LoginPage = ({ onLogin }: { onLogin: (user: UserProfile) => void }) => {
+const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound }: { onLogin: (user: UserProfile) => void, tenantSchool: School | null, subdomainNotFound: boolean }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const step = (searchParams.get('step') as 'school' | 'role' | 'credentials') || 'school';
   const isSignUp = searchParams.get('signup') === 'true';
@@ -366,9 +371,6 @@ const LoginPage = ({ onLogin }: { onLogin: (user: UserProfile) => void }) => {
   const [success, setSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const [tenantSchool, setTenantSchool] = useState<School | null>(null);
-  const [subdomainNotFound, setSubdomainNotFound] = useState(false);
-
   useEffect(() => {
     const fetchSchools = async () => {
       const q = query(collection(db, 'schools'));
@@ -376,47 +378,15 @@ const LoginPage = ({ onLogin }: { onLogin: (user: UserProfile) => void }) => {
       const fetchedSchools = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as School));
       setSchools(fetchedSchools);
 
-      const hostname = window.location.hostname;
-      const parts = hostname.split('.');
-      let slug = null;
-      
-      // Determine if we are on the main platform landing page
-      // Localhost/Vercel/Netlify are treated as main landers if no subdomain
-      const mainDomains = ['seedify.name.ng', 'seed-app.vercel.app', 'seed-app.netlify.app'];
-      const isMainDomain = mainDomains.includes(hostname) || hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'www.seedify.name.ng';
-
-      // Subdomain logic:
-      if (!isMainDomain) {
-        // 1. Specific case for the new nigerian protocol
-        if (hostname.endsWith('.seedify.name.ng')) {
-          slug = parts[0];
-        }
-        // 2. Generic subdomain detection for other environments (e.g. school.vercel.app or school.com)
-        else if (parts.length >= 3 && parts[0] !== 'www') {
-          slug = parts[0];
-        } 
-        // 3. Special case for local development (e.g. school.localhost)
-        else if (parts.length === 2 && parts[1] === 'localhost') {
-          slug = parts[0];
-        }
-      }
-
-      if (slug) {
-        const found = fetchedSchools.find(s => s.slug === slug);
-        if (found) {
-          setTenantSchool(found);
-          setSelectedSchool(found.id);
-          // Auto-skip school selection step if we successfully matched a subdomain
-          if (step === 'school' && !searchParams.has('step')) {
-            setStep('role');
-          }
-        } else {
-          setSubdomainNotFound(true);
+      if (tenantSchool) {
+        setSelectedSchool(tenantSchool.id);
+        if (step === 'school' && !searchParams.has('step')) {
+          setStep('role');
         }
       }
     };
     fetchSchools();
-  }, [step, searchParams]);
+  }, [step, searchParams, tenantSchool]);
 
   const filteredSchools = schools.filter(s => s.name.toLowerCase().includes(schoolSearchQuery.toLowerCase()));
 
@@ -977,6 +947,46 @@ export default function App() {
     }
   }, [user]);
 
+  const [tenantSchool, setTenantSchool] = useState<School | null>(null);
+  const [subdomainNotFound, setSubdomainNotFound] = useState(false);
+
+  useEffect(() => {
+    const fetchTenantSchool = async () => {
+      const hostname = window.location.hostname;
+      const parts = hostname.split('.');
+      let slug = null;
+      
+      const mainDomains = ['seedify.name.ng', 'seed-app.vercel.app', 'seed-app.netlify.app'];
+      const isMainDomain = mainDomains.includes(hostname) || hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'www.seedify.name.ng';
+
+      if (!isMainDomain) {
+        if (hostname.endsWith('.seedify.name.ng')) {
+          slug = parts[0];
+        } else if (parts.length >= 3 && parts[0] !== 'www') {
+          slug = parts[0];
+        } else if (parts.length === 2 && parts[1] === 'localhost') {
+          slug = parts[0];
+        }
+      }
+
+      if (slug) {
+        try {
+          const q = query(collection(db, 'schools'), where('slug', '==', slug));
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            setTenantSchool({ id: snap.docs[0].id, ...snap.docs[0].data() } as School);
+            setSubdomainNotFound(false);
+          } else {
+            setSubdomainNotFound(true);
+          }
+        } catch (error) {
+          console.error("Error fetching tenant school:", error);
+        }
+      }
+    };
+    fetchTenantSchool();
+  }, []);
+
   if (loading) return <LoadingScreen />;
 
   const isDashboardView = location.pathname.startsWith('/dashboard');
@@ -985,12 +995,12 @@ export default function App() {
     <ErrorBoundary>
       <div className="min-h-screen flex flex-col font-sans text-[#1A1A1A] bg-gradient-to-br from-blue-50 via-indigo-50/50 to-purple-50">
         <ScrollToTop />
-        {!isDashboardView && <Navbar user={user} onLogout={handleLogout} />}
+        {!isDashboardView && <Navbar user={user} onLogout={handleLogout} tenantSchool={tenantSchool} />}
         <main className={cn("flex-grow", isDashboardView && "pt-0 overflow-hidden")}>
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<PageWrapper><LandingPage /></PageWrapper>} />
-              <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <PageWrapper><LoginPage onLogin={setUser} /></PageWrapper>} />
+              <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <PageWrapper><LoginPage onLogin={setUser} tenantSchool={tenantSchool} subdomainNotFound={subdomainNotFound} /></PageWrapper>} />
               <Route path="/dashboard/*" element={user?.schoolId || user?.role === 'super_admin' ? <PageWrapper><DashboardRouter user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/onboarding" />} />
               <Route path="/announcements" element={user ? <PageWrapper><AnnouncementsPage user={user} /></PageWrapper> : <Navigate to="/login" />} />
               <Route path="/onboarding" element={user ? <PageWrapper><OnboardingPage user={user} onComplete={setUser} /></PageWrapper> : <Navigate to="/login" />} />

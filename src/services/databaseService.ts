@@ -24,7 +24,6 @@ export class DatabaseService {
     }
 
     // Default mapping for other known nested structures
-    // For many others, we just use the last part as the table and the second as a parent ID
     const lastPart = parts[parts.length - 1];
     const parentId = parts[parts.length - 2];
     const parentType = parts[parts.length - 3];
@@ -36,6 +35,38 @@ export class DatabaseService {
     return { table: lastPart, filters: {} };
   }
 
+  /**
+   * Converts camelCase keys to snake_case.
+   */
+  private static toSnakeCase(obj: any): any {
+    if (Array.isArray(obj)) return obj.map(v => this.toSnakeCase(v));
+    if (obj !== null && typeof obj === 'object' && obj.constructor === Object) {
+      return Object.keys(obj).reduce((acc, key) => {
+        const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+        acc[snakeKey] = this.toSnakeCase(obj[key]);
+        return acc;
+      }, {} as any);
+    }
+    return obj;
+  }
+
+  /**
+   * Converts snake_case keys to camelCase.
+   */
+  private static toCamelCase(obj: any): any {
+    if (Array.isArray(obj)) return obj.map(v => this.toCamelCase(v));
+    if (obj !== null && typeof obj === 'object' && obj.constructor === Object) {
+      return Object.keys(obj).reduce((acc, key) => {
+        const camelKey = key.replace(/([-_][a-z])/g, group =>
+          group.toUpperCase().replace('-', '').replace('_', '')
+        );
+        acc[camelKey] = this.toCamelCase(obj[key]);
+        return acc;
+      }, {} as any);
+    }
+    return obj;
+  }
+
   static async getItems<T>(path: string, conditions: Record<string, any> = {}): Promise<T[]> {
     const { table, filters } = this.parsePath(path);
     let query = supabase.from(table).select('*');
@@ -45,14 +76,15 @@ export class DatabaseService {
       query = query.eq(key, value);
     });
 
-    // Apply additional conditions
+    // Apply additional conditions (mapping keys to snake_case)
     Object.entries(conditions).forEach(([key, value]) => {
-      query = query.eq(key, value);
+      const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      query = query.eq(snakeKey, value);
     });
 
     const { data, error } = await query;
     if (error) throw error;
-    return data as T[];
+    return this.toCamelCase(data) as T[];
   }
 
   static async getItemById<T>(path: string, id: string): Promise<T | null> {
@@ -63,13 +95,13 @@ export class DatabaseService {
       .eq('id', id)
       .single();
     
-    if (error && error.code !== 'PGRST116') throw error; // PGRST116 is "no rows returned"
-    return data as T | null;
+    if (error && error.code !== 'PGRST116') throw error;
+    return data ? this.toCamelCase(data) as T : null;
   }
 
   static async addItem(path: string, data: any) {
     const { table, filters } = this.parsePath(path);
-    const payload = { ...data, ...filters };
+    const payload = this.toSnakeCase({ ...data, ...filters });
     
     const { data: insertedData, error } = await supabase
       .from(table)
@@ -78,32 +110,36 @@ export class DatabaseService {
       .single();
     
     if (error) throw error;
-    return insertedData;
+    return this.toCamelCase(insertedData);
   }
 
   static async updateItem(path: string, id: string, data: any) {
     const { table } = this.parsePath(path);
+    const payload = this.toSnakeCase(data);
+    
     const { data: updatedData, error } = await supabase
       .from(table)
-      .update(data)
+      .update(payload)
       .eq('id', id)
       .select()
       .single();
     
     if (error) throw error;
-    return updatedData;
+    return this.toCamelCase(updatedData);
   }
 
   static async upsertItem(path: string, id: string, data: any) {
     const { table, filters } = this.parsePath(path);
+    const payload = this.toSnakeCase({ ...data, ...filters, id });
+    
     const { data: upsertedData, error } = await supabase
       .from(table)
-      .upsert({ ...data, ...filters, id })
+      .upsert(payload)
       .select()
       .single();
     
     if (error) throw error;
-    return upsertedData;
+    return this.toCamelCase(upsertedData);
   }
 
   static async deleteItem(path: string, id: string) {
@@ -117,7 +153,7 @@ export class DatabaseService {
   }
 
   static subscribe(path: string, callback: (data: any[]) => void, conditions: Record<string, any> = {}) {
-    const { table, filters } = this.parsePath(path);
+    const { table } = this.parsePath(path);
     
     // Initial fetch
     this.getItems(path, conditions).then(callback);

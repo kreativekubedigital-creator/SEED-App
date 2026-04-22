@@ -319,8 +319,12 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
                   >
                     <td className="px-4 py-6">
                       <div className="flex items-center gap-4 pl-4">
-                        <div className="w-12 h-12 rounded-2xl bg-blue-600/10 dark:bg-blue-600/20 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-xl shadow-inner group-hover:scale-110 transition-transform">
-                          {school.name?.charAt(0) || '?'}
+                        <div className="w-12 h-12 rounded-2xl bg-blue-600/10 dark:bg-blue-600/20 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-xl shadow-inner group-hover:scale-110 transition-transform overflow-hidden border border-slate-100 dark:border-slate-800">
+                          {school.logoUrl ? (
+                            <img src={school.logoUrl} alt={school.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                          ) : (
+                            school.name?.charAt(0) || '?'
+                          )}
                         </div>
                         <div className="min-w-0">
                           <p className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors truncate">{school.name}</p>
@@ -405,8 +409,12 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
                 className="bg-white dark:bg-slate-900 dark:bg-slate-900 rounded-3xl shadow-xl shadow-slate-200/20 dark:shadow-none border border-slate-200 dark:border-slate-800 p-6 flex flex-col gap-5"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-blue-600/10 dark:bg-blue-600/20 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400 text-xl shrink-0 shadow-inner">
-                    {school.name?.charAt(0) || '?'}
+                  <div className="w-14 h-14 rounded-2xl bg-blue-600/10 dark:bg-blue-600/20 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400 text-xl shrink-0 shadow-inner overflow-hidden border border-slate-100 dark:border-slate-800">
+                    {school.logoUrl ? (
+                      <img src={school.logoUrl} alt={school.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    ) : (
+                      school.name?.charAt(0) || '?'
+                    )}
                   </div>
                   <div className="overflow-hidden">
                     <p className="font-bold text-base text-slate-900 dark:text-white truncate">{school.name}</p>
