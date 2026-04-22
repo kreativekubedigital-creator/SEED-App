@@ -182,12 +182,12 @@ export const LandingPage = () => {
                     </AnimatePresence>
                   </div>
 
-                  <Link to="/onboarding" className="sm:w-auto">
+                  <a href="#onboard" className="sm:w-auto">
                     <Button className="h-14 px-8 w-full gap-2">
                       <Plus size={20} />
                       Onboard School
                     </Button>
-                  </Link>
+                  </a>
                 </div>
 
                 <div className="flex flex-wrap gap-6 pt-4 text-slate-500 text-xs font-bold uppercase tracking-wider">
@@ -490,6 +490,133 @@ export const LandingPage = () => {
         </div>
       </section>
 
+      {/* --- ONBOARDING FORM SECTION --- */}
+      <section id="onboard" className="py-24 lg:py-32 px-6 bg-slate-50 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-blue-100/50 blur-[120px] rounded-full -z-0" />
+        <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-indigo-100/40 blur-[100px] rounded-full -z-0" />
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            <div className="space-y-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold tracking-widest uppercase">
+                <MessageSquare size={14} />
+                <span>Get Started Today</span>
+              </div>
+              <h2 className="text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
+                Request Onboarding <br /> for Your School
+              </h2>
+              <p className="text-lg text-slate-600 leading-relaxed max-w-md">
+                Complete the form and our implementation team will reach out within 24 hours to begin your institution's digital transformation.
+              </p>
+              
+              <div className="space-y-6 pt-4">
+                {[
+                  { icon: CheckCircle2, text: "Free initial consultation & needs analysis" },
+                  { icon: CheckCircle2, text: "Step-by-step data migration support" },
+                  { icon: CheckCircle2, text: "Custom branding & subdomain setup" },
+                  { icon: CheckCircle2, text: "Comprehensive staff training sessions" },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white shrink-0">
+                      <item.icon size={14} />
+                    </div>
+                    <span className="font-medium text-slate-700">{item.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="pt-8">
+                <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white">
+                    <Phone size={24} />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Urgent Inquiries?</div>
+                    <div className="text-lg font-bold text-slate-900">+234 (0) 800-SEEDD-APP</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-3xl p-8 lg:p-10 shadow-2xl shadow-blue-500/5 border border-slate-100"
+            >
+              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                <div className="grid sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700 ml-1">First Name</label>
+                    <input 
+                      type="text" 
+                      placeholder="John"
+                      className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700 ml-1">Last Name</label>
+                    <input 
+                      type="text" 
+                      placeholder="Doe"
+                      className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 ml-1">Official Email Address</label>
+                  <input 
+                    type="email" 
+                    placeholder="admin@school.com"
+                    className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 ml-1">Institution Name</label>
+                  <input 
+                    type="text" 
+                    placeholder="Royal Oak Academy"
+                    className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 ml-1">Job Title / Role</label>
+                  <select className="w-full h-12 px-4 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none bg-white">
+                    <option>School Owner / Proprietor</option>
+                    <option>Principal / Head of School</option>
+                    <option>Administrator</option>
+                    <option>IT Coordinator</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 ml-1">How can we help?</label>
+                  <textarea 
+                    placeholder="Tell us about your institution's specific needs..."
+                    rows={4}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none resize-none"
+                  />
+                </div>
+
+                <Button className="w-full h-14 text-lg">
+                  Submit Request
+                  <ArrowRight size={20} className="ml-2" />
+                </Button>
+
+                <p className="text-center text-xs text-slate-400">
+                  By submitting this form, you agree to our <a href="#" className="underline">Privacy Policy</a>.
+                </p>
+              </form>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* --- FINAL CTA & STATS --- */}
       <section className="py-24 lg:py-32 px-6">
         <div className="max-w-7xl mx-auto">
@@ -505,12 +632,12 @@ export const LandingPage = () => {
                   Join forward-thinking schools already building the future with SEEDD.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-6 pt-4">
-                  <Link to="/onboarding">
+                  <a href="#onboard">
                     <Button className="h-16 px-12 text-lg bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
                       Get Started Now
                       <ArrowRight size={20} className="ml-2" />
                     </Button>
-                  </Link>
+                  </a>
                   <Button variant="outline" className="h-16 px-12 text-lg border-white/20 text-white hover:bg-white/10 w-full sm:w-auto">
                     Book a Demo
                   </Button>

@@ -223,9 +223,9 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
                 <Link to="/login?role=super_admin" className="text-sm font-semibold text-slate-700 hover:text-blue-600 transition-colors">
                   System Login
                 </Link>
-                <Link to="/onboarding" className="bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20 active:scale-95">
+                <a href="#onboard" className="bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20 active:scale-95">
                   Request Onboarding
-                </Link>
+                </a>
               </>
             )}
             <ThemeToggle />
@@ -289,13 +289,13 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
                     </button>
                   </>
                 ) : (
-                  <Link
-                    to="/login"
+                  <a
+                    href="#onboard"
                     onClick={() => setIsOpen(false)}
                     className="w-full h-14 mt-4 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold shadow-lg shadow-blue-500/25 active:scale-95 transition-transform"
                   >
                     Get Started
-                  </Link>
+                  </a>
                 )}
               </div>
             </motion.div>
@@ -488,6 +488,108 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
     { id: 'student', label: 'Student' },
     { id: 'parent', label: 'Parent' },
   ];
+
+  if (selectedRole === 'super_admin' && !isSignUp) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 selection:bg-blue-500/30 selection:text-blue-200 overflow-hidden relative">
+        {/* Abstract background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none" />
+        
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-[#0a1120] border border-blue-900/30 p-8 md:p-12 rounded-[2.5rem] shadow-2xl max-w-md w-full relative z-10"
+        >
+          <div className="text-center mb-10">
+            <div className="w-16 h-16 bg-blue-600/10 border border-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-inner">
+              <Shield className="text-blue-500" size={32} />
+            </div>
+            
+            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight mb-2">System Command</h1>
+            <p className="text-slate-500 font-bold text-sm tracking-wide uppercase">SEEDD Super Admin Portal</p>
+          </div>
+
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-xs font-bold text-center"
+            >
+              {error}
+            </motion.div>
+          )}
+
+          <form onSubmit={handleEmailAuth} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Admin ID</label>
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={18} />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter admin identifier..."
+                  className="w-full h-14 pl-12 pr-4 bg-slate-100/5 border border-white/5 rounded-2xl text-white placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-medium"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Auth Token</label>
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={18} />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  className="w-full h-14 pl-12 pr-4 bg-slate-100/5 border border-white/5 rounded-2xl text-white placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-medium tracking-widest"
+                  required
+                />
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-blue-600/20 active:scale-95 disabled:opacity-50"
+            >
+              {loading ? "Decrypting..." : "Access System Core"}
+            </Button>
+
+            <div className="relative py-4">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
+              <div className="relative flex justify-center text-[10px] uppercase font-black tracking-widest"><span className="bg-[#0a1120] px-4 text-slate-600">Secure SSO</span></div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={loading}
+              className="w-full h-14 bg-white/5 border border-white/5 hover:bg-white/10 text-white rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50"
+            >
+              <img src="https://www.google.com/favicon.ico" alt="" className="w-5 h-5 grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+              <span className="text-xs font-bold uppercase tracking-widest">Login with Google</span>
+            </button>
+          </form>
+
+          <div className="mt-12 text-center">
+            <button
+              onClick={() => {
+                setSelectedRole('');
+                setStep('school');
+                setSearchParams({});
+              }}
+              className="text-[10px] font-black text-slate-600 hover:text-blue-500 uppercase tracking-[0.2em] transition-colors"
+            >
+              Return to Public Grid
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4 pt-32 transition-colors duration-500">
