@@ -100,12 +100,12 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
 }
 
 const LoadingScreen = () => (
-  <div className="flex flex-col items-center justify-center min-h-screen bg-[#020617] text-white">
+  <div className="flex flex-col items-center justify-center min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-white transition-colors duration-500">
     <div className="relative">
-      <div className="absolute inset-0 bg-blue-500/20 blur-[100px] rounded-full animate-pulse" />
-      <Logo variant="white" size="xl" className="mb-12 relative z-10 animate-float" />
+      <div className="absolute inset-0 bg-blue-500/10 dark:bg-blue-500/20 blur-[100px] rounded-full animate-pulse" />
+      <Logo variant="mark" size="xl" className="mb-12 relative z-10 animate-float h-20 md:h-32" />
     </div>
-    <div className="w-64 h-1 bg-white/5 rounded-full overflow-hidden relative z-10">
+    <div className="w-64 h-1 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden relative z-10">
       <motion.div
         initial={{ width: 0 }}
         animate={{ width: "100%" }}
@@ -117,7 +117,7 @@ const LoadingScreen = () => (
       initial={{ opacity: 0 }}
       animate={{ opacity: [0.4, 1, 0.4] }}
       transition={{ duration: 2, repeat: Infinity }}
-      className="mt-8 font-mono text-xs tracking-[0.5em] text-blue-400 uppercase"
+      className="mt-8 font-mono text-xs tracking-[0.5em] text-blue-600 dark:text-blue-400 uppercase"
     >
       SEEDDING THE FUTURE
     </motion.p>
@@ -183,18 +183,18 @@ const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => 
         initial={false}
         animate={{ 
           backgroundColor: isLandingPage 
-            ? (isScrolled ? "rgba(15, 23, 42, 0.8)" : "rgba(15, 23, 42, 0)") 
-            : (isScrolled ? (theme === 'dark' ? "rgba(30, 41, 59, 0.9)" : "rgba(255, 255, 255, 0.9)") : (theme === 'dark' ? "rgba(15, 23, 42, 0.8)" : "rgba(255, 255, 255, 0.8)")),
+            ? (isScrolled ? "rgba(2, 6, 23, 0.9)" : "rgba(2, 6, 23, 0)") 
+            : (theme === 'dark' ? "rgba(15, 23, 42, 0.9)" : "rgba(255, 255, 255, 0.9)"),
           borderColor: isLandingPage
             ? (isScrolled ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0)")
-            : (theme === 'dark' ? "rgba(255, 255, 255, 0.05)" : "rgba(243, 244, 246, 1)"),
+            : (theme === 'dark' ? "rgba(255, 255, 255, 0.05)" : "rgba(226, 232, 240, 1)"),
           y: isScrolled ? 0 : 4,
-          boxShadow: isScrolled ? "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" : "none"
+          boxShadow: isScrolled ? "0 25px 50px -12px rgba(0, 0, 0, 0.5)" : "none"
         }}
-        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+        transition={{ duration: 0.3 }}
         className={cn(
-          "backdrop-blur-xl rounded-full px-6 py-2.5 flex items-center justify-between w-full max-w-5xl border pointer-events-auto",
-          isLandingPage ? "text-white" : "text-gray-800 dark:text-gray-100"
+          "backdrop-blur-xl rounded-full px-6 py-3 flex items-center justify-between w-full max-w-5xl border pointer-events-auto",
+          isLandingPage ? "text-white" : "text-slate-900 dark:text-white"
         )}
       >
         <Link to="/" className={cn(
@@ -237,15 +237,18 @@ const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => 
               </Link>
               <Link 
                 to="/profile" 
-                className={`text-sm font-medium px-3.5 py-1.5 rounded-full transition-all duration-200 ${
+                className={`text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 ${
                   isActive('/profile') 
-                    ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' 
-                    : 'text-gray-800 dark:text-gray-800 hover:text-gray-800 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'
+                    ? (isLandingPage ? 'bg-white/20 text-white' : 'bg-blue-600/10 text-blue-600 dark:text-blue-400') 
+                    : (isLandingPage ? 'text-slate-300 hover:text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white')
                 }`}
               >
                 Profile
               </Link>
-              <button onClick={onLogout} className="flex items-center gap-2 text-sm font-medium text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 px-3.5 py-1.5 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-all ml-2">
+              <button 
+                onClick={onLogout} 
+                className="flex items-center gap-2 text-sm font-bold text-red-500 hover:text-red-600 px-4 py-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+              >
                 <LogOut size={16} /> Logout
               </button>
             </>
@@ -254,16 +257,18 @@ const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => 
               Login
             </Link>
           )}
-          <div className="ml-2 pl-2 border-l border-gray-100 dark:border-gray-800 flex items-center">
             <ThemeToggle />
           </div>
         </div>
 
         {/* Mobile Menu Toggle */}
-        <div className="md:hidden flex items-center gap-2">
+        <div className="md:hidden flex items-center gap-3">
           <ThemeToggle />
-          <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-gray-800 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full">
-            {isOpen ? <X size={20} /> : <Menu size={20} />}
+          <button 
+            onClick={() => setIsOpen(!isOpen)} 
+            className="p-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </nav>
@@ -541,11 +546,11 @@ const LoginPage = ({ onLogin }: { onLogin: (user: UserProfile) => void }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F5F2ED] flex items-center justify-center p-4 pt-32">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4 pt-32 transition-colors duration-500">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white p-4 rounded-2xl shadow-xl max-w-md w-full border border-black/5"
+        className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-[2rem] shadow-2xl shadow-blue-500/5 max-w-md w-full border border-black/5 dark:border-white/5"
       >
         <div className="text-center mb-8">
           {tenantSchool ? (
@@ -553,20 +558,20 @@ const LoginPage = ({ onLogin }: { onLogin: (user: UserProfile) => void }) => {
               {tenantSchool.logoUrl ? (
                 <img src={tenantSchool.logoUrl} alt={tenantSchool.name} className="h-16 mx-auto mb-4 object-contain" />
               ) : (
-                <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center font-medium text-2xl mx-auto mb-4">
+                <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center font-medium text-2xl mx-auto mb-4 border border-blue-100/50 dark:border-blue-400/20">
                   {tenantSchool.name.charAt(0)}
                 </div>
               )}
-              <h2 className="text-3xl font-medium">{tenantSchool.name} Login</h2>
+              <h2 className="text-2xl md:text-3xl font-medium text-slate-900 dark:text-white leading-tight">{tenantSchool.name} Login</h2>
             </>
           ) : (
             <>
-              <Logo variant="black" size="lg" className="mx-auto mb-4" />
-              <h2 className="text-3xl font-medium">SEEDD {isSignUp ? 'Setup' : 'Login'}</h2>
+              <Logo variant={theme === 'dark' ? 'white' : 'black'} size="lg" className="mx-auto mb-4 h-12 md:h-16" />
+              <h2 className="text-2xl md:text-3xl font-medium text-slate-900 dark:text-white leading-tight">SEEDD {isSignUp ? 'Setup' : 'Login'}</h2>
             </>
           )}
           {!subdomainNotFound && (
-            <p className="text-gray-800 mt-2">
+            <p className="text-slate-600 dark:text-slate-400 mt-3 text-sm md:text-base">
               {isSignUp ? 'One-time Super Admin Setup' : 
                step === 'school' ? 'Select your school' : 
                step === 'role' ? 'Select your role' : 
@@ -576,28 +581,28 @@ const LoginPage = ({ onLogin }: { onLogin: (user: UserProfile) => void }) => {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm border border-red-100 font-medium">
+          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 rounded-2xl text-sm border border-red-100 dark:border-red-900/20 font-medium">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="mb-6 p-4 bg-emerald-50 text-emerald-600 rounded-xl text-sm border border-emerald-100 font-medium">
+          <div className="mb-6 p-4 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 rounded-2xl text-sm border border-emerald-100 dark:border-emerald-900/20 font-medium">
             {success}
           </div>
         )}
 
         {subdomainNotFound ? (
           <div className="text-center py-8 space-y-4">
-            <div className="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <div className="w-16 h-16 bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-red-100 dark:border-red-900/20">
               <SchoolIcon size={24} />
             </div>
-            <h3 className="text-xl font-medium text-gray-800">School Not Found</h3>
-            <p className="text-gray-800 text-sm">
+            <h3 className="text-xl font-medium text-slate-900 dark:text-white">School Not Found</h3>
+            <p className="text-slate-600 dark:text-slate-400 text-sm">
               We couldn't find a school matching this web address. Please check the URL and try again.
             </p>
             <div className="pt-4">
-              <a href="/" className="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors cursor-pointer">
+              <a href="/" className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 font-semibold text-sm transition-colors cursor-pointer">
                 Return Home
               </a>
             </div>
@@ -995,8 +1000,12 @@ export default function App() {
           </AnimatePresence>
         </main>
         {!isDashboardView && (
-          <footer className="bg-white border-t border-black/10 py-8 text-center text-sm text-gray-800">
-            <p>&copy; 2026 SEEDD Nigeria. All rights reserved.</p>
+          <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-12 text-center transition-colors">
+            <div className="max-w-7xl mx-auto px-6">
+              <Logo variant={logoVariant} size="sm" className="h-8 mx-auto mb-6 opacity-80" />
+              <p className="text-sm font-bold text-slate-500 dark:text-slate-400 tracking-widest uppercase mb-2">&copy; 2026 SEEDD Smart Ecosystem. All rights reserved.</p>
+              <p className="text-[10px] text-slate-400 dark:text-slate-500 max-w-sm mx-auto leading-relaxed">The premier multi-tenant infrastructure designed to digitize educational institutions at scale.</p>
+            </div>
           </footer>
         )}
       </div>
@@ -1025,14 +1034,19 @@ const DashboardRouter = ({ user, onLogout }: { user: UserProfile, onLogout: () =
 
   if (user.role === 'super_admin') {
     return (
-      <div className="pt-20 lg:pt-32 px-4 min-h-screen bg-transparent">
-        <div className="max-w-7xl mx-auto mb-8 flex items-center justify-between bg-white/80 backdrop-blur-md p-3 md:p-4 rounded-2xl md:rounded-3xl border border-white/40 shadow-sm">
-          <div className="flex items-center gap-2 md:gap-4">
-            <Logo variant="black" size="md" />
-            <h1 className="text-base md:text-xl font-medium truncate max-w-[120px] md:max-w-none">Platform Admin</h1>
+      <div className="pt-24 lg:pt-32 px-4 min-h-screen bg-transparent container mx-auto mb-20">
+        <div className="max-w-7xl mx-auto mb-10 flex items-center justify-between bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-4 md:p-5 rounded-[2rem] border border-slate-200/50 dark:border-slate-800/50 shadow-2xl shadow-slate-200/20 dark:shadow-none">
+          <div className="flex items-center gap-4">
+            <div className="p-2.5 bg-blue-600/10 dark:bg-blue-600/20 rounded-2xl">
+              <Shield size={24} className="text-blue-600 dark:text-blue-400" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white truncate">Platform Admin</h1>
+              <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">SEEDD Infrastructure</p>
+            </div>
           </div>
-          <button onClick={onLogout} className="flex items-center gap-2 text-xs md:text-sm font-medium text-red-500 hover:text-red-600 px-3 py-1.5 md:px-4 md:py-2 rounded-xl hover:bg-red-50 transition-all shrink-0">
-            <LogOut size={16} className="md:w-[18px] md:h-[18px]" /> <span className="hidden xs:inline">Logout</span>
+          <button onClick={onLogout} className="flex items-center gap-2 text-xs md:text-sm font-bold text-red-500 hover:text-red-600 px-4 py-2.5 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/10 transition-all shadow-sm border border-red-500/10">
+            <LogOut size={16} /> <span className="hidden xs:inline">Logout</span>
           </button>
         </div>
         <Routes>
@@ -1045,31 +1059,32 @@ const DashboardRouter = ({ user, onLogout }: { user: UserProfile, onLogout: () =
   return (
     <div className="max-w-7xl mx-auto px-4 pt-8 pb-8 min-h-screen">
       {/* School Branding Header */}
-      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/80 backdrop-blur-md p-4 rounded-2xl border border-white/40 shadow-sm">
+      <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-5 rounded-[2rem] border border-slate-200/50 dark:border-slate-800/50 shadow-2xl shadow-slate-200/20 dark:shadow-none">
         <div className="flex items-center gap-4">
           {school?.logoUrl ? (
-            <img src={school.logoUrl} alt={school.name} className="w-10 h-10 rounded-xl object-cover shadow-sm border border-white" referrerPolicy="no-referrer" />
+            <img src={school.logoUrl} alt={school.name} className="w-12 h-12 rounded-2xl object-cover shadow-sm border border-white dark:border-slate-700" referrerPolicy="no-referrer" />
           ) : (
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-medium text-xl shadow-md border border-white/50">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg border border-white/20">
               {school?.name?.charAt(0) || 'S'}
             </div>
           )}
-          <div>
-            <h2 className="text-lg font-medium text-gray-800">{school?.name || 'School Dashboard'}</h2>
-            <p className="text-xs text-blue-600 font-medium uppercase tracking-widest">{user.role.replace('_', ' ')} Portal</p>
+          <div className="min-w-0">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white truncate">{school?.name || 'School Dashboard'}</h2>
+            <p className="text-[10px] text-blue-600 dark:text-blue-400 font-bold uppercase tracking-[0.2em]">{user.role.replace('_', ' ')} Portal</p>
           </div>
         </div>
-        <button onClick={onLogout} className="flex items-center gap-2 text-sm font-medium text-red-500 hover:text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 transition-all border border-red-100/50">
+        <button onClick={onLogout} className="flex items-center gap-3 text-sm font-bold text-red-500 hover:text-red-600 px-5 py-3 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/10 transition-all border border-red-500/10 md:w-auto w-full justify-center">
           <LogOut size={18} /> Logout
         </button>
       </div>
 
-      <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-4xl md:text-5xl font-medium tracking-tight text-gray-800 flex items-center gap-3">
-            Welcome, {user.firstName} <span className="text-3xl md:text-4xl animate-wave origin-bottom-right">👋</span>
-          </h1>
-        </div>
+      <div className="mb-12">
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-4 flex-wrap">
+          Welcome, {user.firstName} <span className="text-4xl md:text-5xl animate-wave origin-bottom-right">👋</span>
+        </h1>
+        <p className="text-slate-500 dark:text-slate-400 mt-4 text-base md:text-lg font-medium max-w-2xl">
+          Empowering your educational journey with data-driven intelligence and dynamic ecosystem management.
+        </p>
       </div>
       
       <Routes>

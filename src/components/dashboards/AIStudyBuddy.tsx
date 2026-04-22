@@ -118,14 +118,14 @@ Refuse to answer any inappropriate, harmful, or unsafe questions politely. Keep 
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm overflow-hidden flex flex-col h-[600px]">
-      <div className="p-4 border-b border-white/50 bg-white/50 flex items-center gap-4">
-        <div className="w-10 h-10 bg-blue-200 text-gray-800 rounded-2xl flex items-center justify-center shadow-md shrink-0 border border-white/20">
+    <div className="bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm overflow-hidden flex flex-col h-[600px]">
+      <div className="p-4 border-b border-white/50 bg-white dark:bg-slate-900/50 flex items-center gap-4">
+        <div className="w-10 h-10 bg-blue-200 text-slate-900 dark:text-slate-100 rounded-2xl flex items-center justify-center shadow-md shrink-0 border border-white/20">
           <Sparkles size={20} />
         </div>
         <div>
-          <h3 className="font-medium text-2xl text-gray-800">AI Study Buddy</h3>
-          <p className="text-sm font-medium text-gray-800 mt-1">Safe, guided help for your subjects and homework.</p>
+          <h3 className="font-medium text-2xl text-slate-900 dark:text-slate-100">AI Study Buddy</h3>
+          <p className="text-sm font-medium text-slate-900 dark:text-slate-100 mt-1">Safe, guided help for your subjects and homework.</p>
         </div>
       </div>
 
@@ -137,14 +137,14 @@ Refuse to answer any inappropriate, harmful, or unsafe questions politely. Keep 
             animate={{ opacity: 1, y: 0 }}
             className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
           >
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-white/80 backdrop-blur-sm border border-white/40 text-gray-800 shadow-sm' : 'bg-blue-600 text-white shadow-sm border border-white/20'}`}>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-white dark:bg-slate-900/80 backdrop-blur-sm border border-white/40 text-slate-900 dark:text-slate-100 shadow-sm' : 'bg-blue-600 text-white shadow-sm border border-white/20'}`}>
               {msg.role === 'user' ? <User size={20} /> : <Bot size={20} />}
             </div>
-            <div className={`max-w-[80%] rounded-2xl p-4 ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-sm shadow-md border border-white/10' : 'bg-white/80 backdrop-blur-sm border border-white/50 shadow-sm rounded-tl-sm text-gray-800'}`}>
+            <div className={`max-w-[80%] rounded-2xl p-4 ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-sm shadow-md border border-white/10' : 'bg-white dark:bg-slate-900/80 backdrop-blur-sm border border-white/50 shadow-sm rounded-tl-sm text-slate-900 dark:text-slate-100'}`}>
               {msg.role === 'user' ? (
                 <p className="font-medium leading-relaxed">{msg.text}</p>
               ) : (
-                <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-pre:bg-white/50 prose-pre:border prose-pre:border-white/50 prose-pre:text-gray-800 prose-a:text-blue-600 prose-strong:text-gray-800">
+                <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-pre:bg-white dark:bg-slate-900/50 prose-pre:border prose-pre:border-white/50 prose-pre:text-slate-900 dark:text-slate-100 prose-a:text-blue-600 prose-strong:text-slate-900 dark:text-slate-100">
                   <ReactMarkdown>{msg.text}</ReactMarkdown>
                 </div>
               )}
@@ -153,10 +153,10 @@ Refuse to answer any inappropriate, harmful, or unsafe questions politely. Keep 
         ))}
         {loading && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-4">
-            <div className="w-10 h-10 rounded-full bg-blue-200 text-gray-800 flex items-center justify-center shadow-sm shrink-0 border border-white/20">
+            <div className="w-10 h-10 rounded-full bg-blue-200 text-slate-900 dark:text-slate-100 flex items-center justify-center shadow-sm shrink-0 border border-white/20">
               <Bot size={20} />
             </div>
-            <div className="bg-white/80 backdrop-blur-sm border border-white/50 shadow-sm rounded-2xl rounded-tl-sm p-4 flex items-center gap-2">
+            <div className="bg-white dark:bg-slate-900/80 backdrop-blur-sm border border-white/50 shadow-sm rounded-2xl rounded-tl-sm p-4 flex items-center gap-2">
               <div className="w-2.5 h-2.5 bg-blue-100 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
               <div className="w-2.5 h-2.5 bg-blue-100 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
               <div className="w-2.5 h-2.5 bg-blue-100 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
@@ -166,7 +166,7 @@ Refuse to answer any inappropriate, harmful, or unsafe questions politely. Keep 
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-4 bg-white/50 backdrop-blur-md border-t border-white/50">
+      <div className="p-4 bg-white dark:bg-slate-900/50 backdrop-blur-md border-t border-white/50">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -179,7 +179,7 @@ Refuse to answer any inappropriate, harmful, or unsafe questions politely. Keep 
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask a question about your studies..."
-            className="flex-grow px-6 py-2.5 rounded-full border border-white/50 bg-white/50 hover:border-white focus:bg-white/80 focus:border-blue-400 focus:ring-4 focus:ring-blue-400/20 outline-none transition-all font-medium text-gray-800 placeholder:text-gray-800 cursor-text shadow-sm"
+            className="flex-grow px-6 py-2.5 rounded-full border border-white/50 bg-white dark:bg-slate-900/50 hover:border-white focus:bg-white dark:bg-slate-900/80 focus:border-blue-400 focus:ring-4 focus:ring-blue-400/20 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-900 dark:text-slate-100 cursor-text shadow-sm"
             disabled={loading}
           />
           <button

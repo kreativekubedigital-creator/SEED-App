@@ -139,16 +139,16 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
 
   return (
     <div className="space-y-6">
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 print:hidden">
-        <h2 className="text-xl font-medium text-gray-800 mb-6">Generate Report Cards</h2>
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 print:hidden">
+        <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100 mb-6">Generate Report Cards</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Session</label>
+            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Session</label>
             <select
               value={selectedSession}
               onChange={e => setSelectedSession(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm text-gray-800 cursor-pointer"
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm text-slate-900 dark:text-slate-100 cursor-pointer"
             >
               <option value="">Select Session</option>
               {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -156,12 +156,12 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
           </div>
           
           <div className="space-y-1.5">
-            <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Term</label>
+            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Term</label>
             <select
               value={selectedTerm}
               onChange={e => setSelectedTerm(e.target.value)}
               disabled={!selectedSession}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm text-gray-800 cursor-pointer disabled:opacity-50"
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm text-slate-900 dark:text-slate-100 cursor-pointer disabled:opacity-50"
             >
               <option value="">Select Term</option>
               {terms.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
@@ -169,11 +169,11 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Class</label>
+            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Class</label>
             <select
               value={selectedClass}
               onChange={e => setSelectedClass(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm text-gray-800 cursor-pointer"
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm text-slate-900 dark:text-slate-100 cursor-pointer"
             >
               <option value="">Select Class</option>
               {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -195,14 +195,14 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
 
       {students.length > 0 && (
         <div className="space-y-6">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 print:hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 print:hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
                 <Users size={20} />
               </div>
               <div>
-                <h3 className="font-medium text-gray-800">Report Cards Ready</h3>
-                <p className="text-xs text-gray-800 font-medium">{students.length} students found in {classObj?.name}</p>
+                <h3 className="font-medium text-slate-900 dark:text-slate-100">Report Cards Ready</h3>
+                <p className="text-xs text-slate-900 dark:text-slate-100 font-medium">{students.length} students found in {classObj?.name}</p>
               </div>
             </div>
             <div className="flex gap-3 w-full md:w-auto">
@@ -225,18 +225,18 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 print:hidden">
             {students.map(student => (
-              <div key={student.uid} className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex items-center justify-between group">
+              <div key={student.uid} className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-all flex items-center justify-between group">
                 <div className="flex items-center gap-3 overflow-hidden">
                   {student.photoUrl ? (
                     <img src={student.photoUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover shadow-sm border border-gray-200 shrink-0" referrerPolicy="no-referrer" />
                   ) : (
-                    <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-800 shrink-0 border border-gray-100">
+                    <div className="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-900 dark:text-slate-100 shrink-0 border border-slate-100 dark:border-slate-800">
                       {student.firstName.charAt(0)}
                     </div>
                   )}
                   <div className="overflow-hidden">
-                    <p className="font-medium text-gray-800 truncate">{student.firstName} {student.lastName}</p>
-                    <p className="text-[10px] text-gray-800 font-medium uppercase tracking-wider truncate">{student.registrationNumber || 'No Reg No'}</p>
+                    <p className="font-medium text-slate-900 dark:text-slate-100 truncate">{student.firstName} {student.lastName}</p>
+                    <p className="text-[10px] text-slate-900 dark:text-slate-100 font-medium uppercase tracking-wider truncate">{student.registrationNumber || 'No Reg No'}</p>
                   </div>
                 </div>
                 <button
@@ -260,10 +260,10 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
+              className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
             >
-              <div className="flex items-center justify-between p-6 border-b border-gray-100">
-                <h3 className="text-xl font-medium text-gray-800">Preview: {previewStudent.firstName} {previewStudent.lastName}</h3>
+              <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
+                <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100">Preview: {previewStudent.firstName} {previewStudent.lastName}</h3>
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => {
@@ -278,7 +278,7 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
                   </button>
                   <button
                     onClick={() => setPreviewStudent(null)}
-                    className="p-2 text-gray-800 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-colors"
+                    className="p-2 text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-gray-100 rounded-xl transition-colors"
                   >
                     <X size={24} />
                   </button>
@@ -309,10 +309,10 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
+              className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
             >
-              <div className="flex items-center justify-between p-6 border-b border-gray-100">
-                <h3 className="text-xl font-medium text-gray-800">Preview All Report Cards</h3>
+              <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
+                <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100">Preview All Report Cards</h3>
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => window.print()}
@@ -323,15 +323,15 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
                   </button>
                   <button
                     onClick={() => setShowAllPreview(false)}
-                    className="p-2 text-gray-800 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-colors"
+                    className="p-2 text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-gray-100 rounded-xl transition-colors"
                   >
                     <X size={24} />
                   </button>
                 </div>
               </div>
-              <div className="p-6 overflow-y-auto space-y-8 bg-gray-50">
+              <div className="p-6 overflow-y-auto space-y-8 bg-slate-50 dark:bg-slate-800">
                 {students.map(student => (
-                  <div key={student.uid} className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                  <div key={student.uid} className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
                     <ReportCard
                       student={student}
                       school={school}

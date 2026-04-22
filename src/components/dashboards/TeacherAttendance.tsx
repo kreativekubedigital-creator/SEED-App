@@ -110,35 +110,35 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
     setSelectedDate(d.toISOString().split('T')[0]);
   };
 
-  if (loading) return <div className="p-8 text-center text-gray-800">Loading classes...</div>;
+  if (loading) return <div className="p-8 text-center text-slate-900 dark:text-slate-100">Loading classes...</div>;
 
   return (
     <div className="space-y-6">
-      <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <div>
-            <h2 className="text-xl font-medium text-gray-800">Daily Attendance</h2>
-            <p className="text-sm text-gray-800 mt-1">Mark and manage student attendance</p>
+            <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">Daily Attendance</h2>
+            <p className="text-sm text-slate-900 dark:text-slate-100 mt-1">Mark and manage student attendance</p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
             <select
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value)}
-              className="px-4 py-2 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+              className="px-4 py-2 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 focus:bg-white dark:bg-slate-900 focus:ring-2 focus:ring-blue-500 outline-none"
             >
               {classes.map(c => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
             
-            <div className="flex items-center bg-gray-50 rounded-xl border border-gray-200 p-1">
-              <button onClick={() => changeDate(-1)} className="p-2 hover:bg-white rounded-lg transition-colors"><ChevronLeft size={18} /></button>
-              <div className="px-4 py-1 flex items-center gap-2 font-medium text-gray-800 min-w-[140px] justify-center">
+            <div className="flex items-center bg-slate-50 dark:bg-slate-800 rounded-xl border border-gray-200 p-1">
+              <button onClick={() => changeDate(-1)} className="p-2 hover:bg-white dark:bg-slate-900 rounded-lg transition-colors"><ChevronLeft size={18} /></button>
+              <div className="px-4 py-1 flex items-center gap-2 font-medium text-slate-900 dark:text-slate-100 min-w-[140px] justify-center">
                 <CalendarIcon size={16} className="text-blue-500" />
                 {new Date(selectedDate).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
               </div>
-              <button onClick={() => changeDate(1)} className="p-2 hover:bg-white rounded-lg transition-colors"><ChevronRight size={18} /></button>
+              <button onClick={() => changeDate(1)} className="p-2 hover:bg-white dark:bg-slate-900 rounded-lg transition-colors"><ChevronRight size={18} /></button>
             </div>
           </div>
         </div>
@@ -150,8 +150,8 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
         )}
 
         {students.length === 0 ? (
-          <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-100 border-dashed">
-            <p className="text-gray-800">No students found in this class.</p>
+          <div className="text-center py-12 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-800 border-dashed">
+            <p className="text-slate-900 dark:text-slate-100">No students found in this class.</p>
           </div>
         ) : (
           <>
@@ -167,27 +167,27 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-gray-50 border-y border-gray-100">
-                    <th className="px-4 py-3 text-xs font-medium text-gray-800 uppercase tracking-wider">Student</th>
-                    <th className="px-4 py-3 text-xs font-medium text-gray-800 uppercase tracking-wider text-center">Present</th>
-                    <th className="px-4 py-3 text-xs font-medium text-gray-800 uppercase tracking-wider text-center">Absent</th>
-                    <th className="px-4 py-3 text-xs font-medium text-gray-800 uppercase tracking-wider text-center">Late</th>
-                    <th className="px-4 py-3 text-xs font-medium text-gray-800 uppercase tracking-wider text-center">Excused</th>
+                  <tr className="bg-slate-50 dark:bg-slate-800 border-y border-slate-100 dark:border-slate-800">
+                    <th className="px-4 py-3 text-xs font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider">Student</th>
+                    <th className="px-4 py-3 text-xs font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider text-center">Present</th>
+                    <th className="px-4 py-3 text-xs font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider text-center">Absent</th>
+                    <th className="px-4 py-3 text-xs font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider text-center">Late</th>
+                    <th className="px-4 py-3 text-xs font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider text-center">Excused</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                   {students.map(student => {
                     const status = attendance[student.uid];
                     return (
-                      <tr key={student.uid} className="hover:bg-gray-50/50 transition-colors">
+                      <tr key={student.uid} className="hover:bg-slate-50 dark:bg-slate-800/50 transition-colors">
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-medium text-xs shrink-0">
                               {student.firstName?.[0]}{student.lastName?.[0]}
                             </div>
                             <div>
-                              <p className="font-medium text-gray-800 text-sm">{student.firstName} {student.lastName}</p>
-                              <p className="text-xs text-gray-800">{student.registrationNumber || 'No ID'}</p>
+                              <p className="font-medium text-slate-900 dark:text-slate-100 text-sm">{student.firstName} {student.lastName}</p>
+                              <p className="text-xs text-slate-900 dark:text-slate-100">{student.registrationNumber || 'No ID'}</p>
                             </div>
                           </div>
                         </td>

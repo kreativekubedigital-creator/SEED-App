@@ -264,18 +264,18 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
     });
   };
 
-  if (loading) return <div className="p-20 text-center text-gray-800 font-medium">Loading configuration...</div>;
+  if (loading) return <div className="p-20 text-center text-slate-900 dark:text-slate-100 font-medium">Loading configuration...</div>;
 
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="space-y-5">
-          <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm">
                 <Calendar size={20} />
               </div>
-              <h3 className="text-xl font-medium text-gray-800">Academic Sessions</h3>
+              <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100">Academic Sessions</h3>
             </div>
             
             <div className="flex gap-2 mb-6">
@@ -284,7 +284,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                 placeholder="e.g. 2025/2026"
                 value={newSessionName}
                 onChange={e => setNewSessionName(e.target.value)}
-                className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
               />
               <button
                 onClick={handleAddSession}
@@ -296,12 +296,12 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
 
             <div className="space-y-3">
               {sessions.map(session => (
-                <div key={session.id} className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 border border-gray-100">
-                  <span className="font-medium text-gray-800">{session.name}</span>
+                <div key={session.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800">
+                  <span className="font-medium text-slate-900 dark:text-slate-100">{session.name}</span>
                   <button
                     onClick={() => handleSetCurrentSession(session.id)}
                     className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                      session.isCurrent ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                      session.isCurrent ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-slate-900 dark:text-slate-100 hover:bg-gray-300'
                     }`}
                   >
                     {session.isCurrent ? 'Current' : 'Set Current'}
@@ -311,19 +311,19 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-sm">
                 <Settings size={20} />
               </div>
-              <h3 className="text-xl font-medium text-gray-800">Academic Terms</h3>
+              <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100">Academic Terms</h3>
             </div>
 
             <div className="space-y-6 mb-6">
               <select
                 value={selectedSessionForTerm}
                 onChange={e => setSelectedSessionForTerm(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-pointer"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
               >
                 <option value="">Select Session</option>
                 {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -334,7 +334,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                   placeholder="e.g. 1st Term"
                   value={newTermName}
                   onChange={e => setNewTermName(e.target.value)}
-                  className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                  className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                 />
                 <button
                   onClick={handleAddTerm}
@@ -347,12 +347,12 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
 
             <div className="space-y-3">
               {terms.filter(t => t.sessionId === selectedSessionForTerm).map(term => (
-                <div key={term.id} className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 border border-gray-100">
-                  <span className="font-medium text-gray-800">{term.name}</span>
+                <div key={term.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800">
+                  <span className="font-medium text-slate-900 dark:text-slate-100">{term.name}</span>
                   <button
                     onClick={() => handleSetCurrentTerm(term.id, term.sessionId)}
                     className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                      term.isCurrent ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                      term.isCurrent ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-slate-900 dark:text-slate-100 hover:bg-gray-300'
                     }`}
                   >
                     {term.isCurrent ? 'Current' : 'Set Current'}
@@ -363,13 +363,13 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
           </div>
         </div>
 
-        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm shrink-0">
                 <Award size={20} />
               </div>
-              <h3 className="text-lg sm:text-xl font-medium text-gray-800">Grading System</h3>
+              <h3 className="text-lg sm:text-xl font-medium text-slate-900 dark:text-slate-100">Grading System</h3>
             </div>
             <button
               onClick={handleSaveGradeScale}
@@ -382,8 +382,8 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-gray-50 p-4 sm:p-6 rounded-2xl border border-gray-100 mb-6">
-              <h4 className="text-sm font-medium text-gray-800 mb-4">CA & Exam Configuration</h4>
+            <div className="bg-slate-50 dark:bg-slate-800 p-4 sm:p-6 rounded-2xl border border-slate-100 dark:border-slate-800 mb-6">
+              <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-4">CA & Exam Configuration</h4>
               
               <div className="space-y-4">
                 {gradeScale?.caConfig?.cas.map((ca, idx) => (
@@ -393,19 +393,19 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                       value={ca.name}
                       onChange={e => updateCaItem(idx, 'name', e.target.value)}
                       placeholder="CA Name (e.g., CA 1)"
-                      className="w-full sm:flex-1 px-3 py-2.5 rounded-xl border border-gray-200 bg-white hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-gray-800 text-sm"
+                      className="w-full sm:flex-1 px-3 py-2.5 rounded-xl border border-gray-200 bg-white dark:bg-slate-900 hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 text-sm"
                     />
                     <div className="flex items-center justify-between w-full sm:w-auto gap-3">
                       <div className="flex items-center gap-2 flex-1 sm:flex-none justify-end">
-                        <span className="text-xs text-gray-800 font-medium whitespace-nowrap">Max Score:</span>
+                        <span className="text-xs text-slate-900 dark:text-slate-100 font-medium whitespace-nowrap">Max Score:</span>
                         <input
                           type="number"
                           value={ca.maxScore}
                           onChange={e => updateCaItem(idx, 'maxScore', Number(e.target.value))}
-                          className="w-20 sm:w-24 px-3 py-2.5 rounded-xl border border-gray-200 bg-white hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-gray-800 text-sm text-center"
+                          className="w-20 sm:w-24 px-3 py-2.5 rounded-xl border border-gray-200 bg-white dark:bg-slate-900 hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 text-sm text-center"
                         />
                       </div>
-                      <button onClick={() => removeCaItem(idx)} className="p-2.5 text-gray-800 hover:text-red-500 transition-colors bg-white rounded-xl border border-gray-200 hover:border-red-200 shrink-0">
+                      <button onClick={() => removeCaItem(idx)} className="p-2.5 text-slate-900 dark:text-slate-100 hover:text-red-500 transition-colors bg-white dark:bg-slate-900 rounded-xl border border-gray-200 hover:border-red-200 shrink-0">
                         <Trash2 size={16} />
                       </button>
                     </div>
@@ -414,19 +414,19 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                 
                 <button
                   onClick={addCaItem}
-                  className="w-full py-3 rounded-xl border border-dashed border-gray-300 text-gray-800 font-medium hover:border-emerald-500 hover:text-emerald-600 transition-all flex items-center justify-center gap-2 text-sm bg-white"
+                  className="w-full py-3 rounded-xl border border-dashed border-gray-300 text-slate-900 dark:text-slate-100 font-medium hover:border-emerald-500 hover:text-emerald-600 transition-all flex items-center justify-center gap-2 text-sm bg-white dark:bg-slate-900"
                 >
                   <Plus size={16} />
                   Add Continuous Assessment (CA)
                 </button>
 
                 <div className="pt-4 mt-4 border-t border-gray-200 flex items-center justify-between">
-                  <span className="font-medium text-gray-800 text-sm">Exam Max Score</span>
+                  <span className="font-medium text-slate-900 dark:text-slate-100 text-sm">Exam Max Score</span>
                   <input
                     type="number"
                     value={gradeScale?.caConfig?.maxExamScore || 70}
                     onChange={e => updateCaConfig('maxExamScore', Number(e.target.value))}
-                    className="w-20 sm:w-24 px-3 py-2.5 rounded-xl border border-gray-200 bg-white hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-gray-800 text-sm text-center"
+                    className="w-20 sm:w-24 px-3 py-2.5 rounded-xl border border-gray-200 bg-white dark:bg-slate-900 hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 text-sm text-center"
                   />
                 </div>
                 
@@ -439,8 +439,8 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
               </div>
             </div>
 
-            <h4 className="text-sm font-medium text-gray-800 mb-4">Grade Scale</h4>
-            <div className="hidden sm:grid grid-cols-12 gap-4 px-4 text-[10px] font-medium text-gray-800 uppercase tracking-widest">
+            <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-4">Grade Scale</h4>
+            <div className="hidden sm:grid grid-cols-12 gap-4 px-4 text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-widest">
               <div className="col-span-2">Grade</div>
               <div className="col-span-3">Min Score</div>
               <div className="col-span-3">Max Score</div>
@@ -450,45 +450,45 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
             
             <div className="space-y-4">
               {gradeScale?.grades.map((g, idx) => (
-                <div key={idx} className="bg-gray-50/50 sm:bg-transparent p-4 sm:p-0 rounded-2xl border sm:border-0 border-gray-100 sm:grid sm:grid-cols-12 sm:gap-4 sm:items-center space-y-4 sm:space-y-0">
+                <div key={idx} className="bg-slate-50 dark:bg-slate-800/50 sm:bg-transparent p-4 sm:p-0 rounded-2xl border sm:border-0 border-slate-100 dark:border-slate-800 sm:grid sm:grid-cols-12 sm:gap-4 sm:items-center space-y-4 sm:space-y-0">
                   <div className="sm:col-span-2">
-                    <label className="block sm:hidden text-[10px] font-medium text-gray-800 uppercase tracking-widest mb-1">Grade</label>
+                    <label className="block sm:hidden text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-widest mb-1">Grade</label>
                     <input
                       type="text"
                       value={g.grade}
                       onChange={e => updateGrade(idx, 'grade', e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-white sm:bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-gray-800 text-center cursor-text"
+                      className="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-white dark:bg-slate-900 sm:bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 text-center cursor-text"
                     />
                   </div>
                   <div className="sm:col-span-3">
-                    <label className="block sm:hidden text-[10px] font-medium text-gray-800 uppercase tracking-widest mb-1">Min Score</label>
+                    <label className="block sm:hidden text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-widest mb-1">Min Score</label>
                     <input
                       type="number"
                       value={g.minScore}
                       onChange={e => updateGrade(idx, 'minScore', Number(e.target.value))}
-                      className="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-white sm:bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-gray-800 text-center cursor-text"
+                      className="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-white dark:bg-slate-900 sm:bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 text-center cursor-text"
                     />
                   </div>
                   <div className="sm:col-span-3">
-                    <label className="block sm:hidden text-[10px] font-medium text-gray-800 uppercase tracking-widest mb-1">Max Score</label>
+                    <label className="block sm:hidden text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-widest mb-1">Max Score</label>
                     <input
                       type="number"
                       value={g.maxScore}
                       onChange={e => updateGrade(idx, 'maxScore', Number(e.target.value))}
-                      className="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-white sm:bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-gray-800 text-center cursor-text"
+                      className="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-white dark:bg-slate-900 sm:bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 text-center cursor-text"
                     />
                   </div>
                   <div className="sm:col-span-3">
-                    <label className="block sm:hidden text-[10px] font-medium text-gray-800 uppercase tracking-widest mb-1">Remark</label>
+                    <label className="block sm:hidden text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-widest mb-1">Remark</label>
                     <input
                       type="text"
                       value={g.remark}
                       onChange={e => updateGrade(idx, 'remark', e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-white sm:bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-gray-800 text-center cursor-text"
+                      className="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-white dark:bg-slate-900 sm:bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 text-center cursor-text"
                     />
                   </div>
                   <div className="sm:col-span-1 flex justify-end">
-                    <button onClick={() => removeGradeRow(idx)} className="p-2 text-gray-300 hover:text-red-500 transition-colors bg-white sm:bg-transparent rounded-lg border sm:border-0 border-gray-100">
+                    <button onClick={() => removeGradeRow(idx)} className="p-2 text-gray-300 hover:text-red-500 transition-colors bg-white dark:bg-slate-900 sm:bg-transparent rounded-lg border sm:border-0 border-slate-100 dark:border-slate-800">
                       <Trash2 size={18} />
                     </button>
                   </div>
@@ -498,7 +498,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
 
             <button
               onClick={addGradeRow}
-              className="w-full py-4 rounded-2xl border-2 border-dashed border-gray-200 text-gray-800 font-medium hover:border-emerald-500 hover:text-emerald-500 transition-all flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-2xl border-2 border-dashed border-gray-200 text-slate-900 dark:text-slate-100 font-medium hover:border-emerald-500 hover:text-emerald-500 transition-all flex items-center justify-center gap-2"
             >
               <Plus size={20} />
               Add Grade Level

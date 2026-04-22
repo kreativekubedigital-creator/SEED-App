@@ -278,36 +278,36 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
 
   return (
     <div className="space-y-5">
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+      <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Session</label>
+            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Session</label>
             <select
               value={selectedSession}
               onChange={e => setSelectedSession(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-pointer"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
             >
               <option value="">Select Session</option>
               {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Term</label>
+            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Term</label>
             <select
               value={selectedTerm}
               onChange={e => setSelectedTerm(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-pointer"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
             >
               <option value="">Select Term</option>
               {terms.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Class</label>
+            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Class</label>
             <select
               value={selectedClass}
               onChange={e => setSelectedClass(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-pointer"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
             >
               <option value="">Select Class</option>
               {classes
@@ -316,11 +316,11 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Subject</label>
+            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Subject</label>
             <select
               value={selectedSubject}
               onChange={e => setSelectedSubject(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-pointer"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
             >
               <option value="">Select Subject</option>
               {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -330,9 +330,9 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
       </div>
 
       {selectedSubject && (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="p-4 border-b border-gray-100 flex justify-between items-center">
-            <h3 className="font-medium text-lg text-gray-800">Score Entry</h3>
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+            <h3 className="font-medium text-lg text-slate-900 dark:text-slate-100">Score Entry</h3>
             <button
               onClick={handleSave}
               disabled={saving}
@@ -349,7 +349,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="p-20 flex flex-col items-center justify-center text-gray-800"
+                className="p-20 flex flex-col items-center justify-center text-slate-900 dark:text-slate-100"
               >
                 <Loader2 className="animate-spin mb-4" size={40} />
                 <p className="font-medium">Loading students and scores...</p>
@@ -363,7 +363,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                 {/* Desktop Table */}
                 <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-left">
-                    <thead className="bg-gray-50/50 text-[10px] uppercase tracking-widest text-gray-800 font-medium">
+                    <thead className="bg-slate-50 dark:bg-slate-800/50 text-[10px] uppercase tracking-widest text-slate-900 dark:text-slate-100 font-medium">
                       <tr>
                         <th className="px-6 py-4">Student</th>
                         {caConfig.cas.map((ca, idx) => (
@@ -380,10 +380,10 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                       {students.map(student => {
                         const score = scores[student.uid] || {};
                         return (
-                          <tr key={student.uid} className={`transition-colors ${activeRow === student.uid ? 'bg-blue-50/30' : 'hover:bg-gray-50/50'}`} onFocus={() => setActiveRow(student.uid)} onBlur={() => setActiveRow(null)}>
+                          <tr key={student.uid} className={`transition-colors ${activeRow === student.uid ? 'bg-blue-50/30' : 'hover:bg-slate-50 dark:bg-slate-800/50'}`} onFocus={() => setActiveRow(student.uid)} onBlur={() => setActiveRow(null)}>
                             <td className="px-6 py-4">
-                              <div className="font-medium text-gray-800">{student.firstName} {student.lastName}</div>
-                              <div className="text-[10px] text-gray-800 font-medium uppercase tracking-wider">{student.registrationNumber || 'No Reg No'}</div>
+                              <div className="font-medium text-slate-900 dark:text-slate-100">{student.firstName} {student.lastName}</div>
+                              <div className="text-[10px] text-slate-900 dark:text-slate-100 font-medium uppercase tracking-wider">{student.registrationNumber || 'No Reg No'}</div>
                             </td>
                             {caConfig.cas.map((ca, idx) => {
                               const val = score.cas?.[ca.name] !== undefined ? score.cas[ca.name] : (idx === 0 ? score.ca1 : idx === 1 ? score.ca2 : idx === 2 ? score.ca3 : 0);
@@ -394,12 +394,12 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                                     placeholder="-"
                                     value={val === 0 && !score.id && !score.cas?.[ca.name] ? '' : val}
                                     onChange={e => handleScoreChange(student.uid, `ca_${idx}`, e.target.value)}
-                                    className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-gray-800 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
+                                    className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
                                   />
                                 </td>
                               );
                             })}
-                            <td className="px-4 py-4 bg-gray-100/80 text-center font-medium text-gray-800 border-x border-gray-50">
+                            <td className="px-4 py-4 bg-gray-100/80 text-center font-medium text-slate-900 dark:text-slate-100 border-x border-gray-50">
                               {score.caTotal || 0}
                             </td>
                             <td className="px-4 py-4">
@@ -408,7 +408,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                                 placeholder="-"
                                 value={score.exam === 0 && !score.id ? '' : score.exam}
                                 onChange={e => handleScoreChange(student.uid, 'exam', e.target.value)}
-                                className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-gray-800 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
+                                className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
                               />
                             </td>
                             <td className="px-4 py-4 bg-blue-50/50 text-center font-medium text-blue-800 border-x border-blue-50/50">
@@ -425,7 +425,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                               </span>
                             </td>
                             <td className="px-6 py-4">
-                              <span className="text-[10px] font-medium text-gray-800 uppercase tracking-wider">{score.remark || '-'}</span>
+                              <span className="text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider">{score.remark || '-'}</span>
                             </td>
                           </tr>
                         );
@@ -435,11 +435,11 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                 </div>
 
                 {/* Mobile Cards */}
-                <div className="md:hidden flex flex-col gap-4 p-4 bg-gray-50/30">
+                <div className="md:hidden flex flex-col gap-4 p-4 bg-slate-50 dark:bg-slate-800/30">
                   {students.map((student) => {
                     const score = scores[student.uid] || {};
                     return (
-                      <div key={student.uid} className={`bg-white rounded-2xl shadow-sm border ${activeRow === student.uid ? 'border-blue-300 bg-blue-50/20 ring-4 ring-blue-500/5' : 'border-gray-200'} p-4 flex flex-col gap-4 transition-all duration-200`} onFocus={() => setActiveRow(student.uid)} onBlur={() => setActiveRow(null)}>
+                      <div key={student.uid} className={`bg-white dark:bg-slate-900 rounded-2xl shadow-sm border ${activeRow === student.uid ? 'border-blue-300 bg-blue-50/20 ring-4 ring-blue-500/5' : 'border-gray-200'} p-4 flex flex-col gap-4 transition-all duration-200`} onFocus={() => setActiveRow(student.uid)} onBlur={() => setActiveRow(null)}>
                         <div className="flex items-center gap-3">
                           {student.photoUrl ? (
                             <img src={student.photoUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover shadow-sm border border-gray-200 shrink-0" referrerPolicy="no-referrer" />
@@ -449,8 +449,8 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                             </div>
                           )}
                           <div>
-                            <p className="font-medium text-sm text-gray-800">{student.firstName} {student.lastName}</p>
-                            <p className="text-[10px] text-gray-800 font-medium uppercase tracking-wider">{student.registrationNumber || 'No Reg No'}</p>
+                            <p className="font-medium text-sm text-slate-900 dark:text-slate-100">{student.firstName} {student.lastName}</p>
+                            <p className="text-[10px] text-slate-900 dark:text-slate-100 font-medium uppercase tracking-wider">{student.registrationNumber || 'No Reg No'}</p>
                           </div>
                         </div>
                         
@@ -459,13 +459,13 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                             const val = score.cas?.[ca.name] !== undefined ? score.cas[ca.name] : (idx === 0 ? score.ca1 : idx === 1 ? score.ca2 : idx === 2 ? score.ca3 : 0);
                             return (
                               <div key={idx} className="flex flex-col">
-                                <span className="text-[10px] text-gray-800 text-center mb-1">{ca.name} ({ca.maxScore})</span>
+                                <span className="text-[10px] text-slate-900 dark:text-slate-100 text-center mb-1">{ca.name} ({ca.maxScore})</span>
                                 <input
                                   type="number"
                                   placeholder="-"
                                   value={val === 0 && !score.id && !score.cas?.[ca.name] ? '' : val}
                                   onChange={e => handleScoreChange(student.uid, `ca_${idx}`, e.target.value)}
-                                  className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-gray-800 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
+                                  className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
                                 />
                               </div>
                             );
@@ -474,17 +474,17 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                         
                         <div className="grid grid-cols-3 gap-2 pt-3 border-t border-gray-50">
                           <div className="flex flex-col items-center justify-center bg-gray-100/80 rounded-xl p-2">
-                            <span className="text-[10px] text-gray-800 mb-1 font-medium">CA Total</span>
-                            <span className="font-medium text-gray-800">{score.caTotal || 0}</span>
+                            <span className="text-[10px] text-slate-900 dark:text-slate-100 mb-1 font-medium">CA Total</span>
+                            <span className="font-medium text-slate-900 dark:text-slate-100">{score.caTotal || 0}</span>
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-[10px] text-gray-800 text-center mb-1">Exam ({caConfig.maxExamScore})</span>
+                            <span className="text-[10px] text-slate-900 dark:text-slate-100 text-center mb-1">Exam ({caConfig.maxExamScore})</span>
                             <input
                               type="number"
                               placeholder="-"
                               value={score.exam === 0 && !score.id ? '' : score.exam}
                               onChange={e => handleScoreChange(student.uid, 'exam', e.target.value)}
-                              className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-gray-800 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
+                              className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
                             />
                           </div>
                           <div className="flex flex-col items-center justify-center bg-blue-50/80 rounded-xl p-2 border border-blue-100/50">
@@ -495,7 +495,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                         
                         <div className="flex justify-between items-center pt-3 border-t border-gray-50">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-800">Grade</span>
+                            <span className="text-xs text-slate-900 dark:text-slate-100">Grade</span>
                             <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-medium text-sm ${
                               score.grade === 'A' ? 'bg-emerald-50 text-emerald-600' :
                               score.grade === 'B' ? 'bg-blue-50 text-blue-600' :
@@ -506,8 +506,8 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                             </span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-800">Remark</span>
-                            <span className="text-[10px] font-medium text-gray-800 uppercase tracking-wider">{score.remark || '-'}</span>
+                            <span className="text-xs text-slate-900 dark:text-slate-100">Remark</span>
+                            <span className="text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider">{score.remark || '-'}</span>
                           </div>
                         </div>
                       </div>

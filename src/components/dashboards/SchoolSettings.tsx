@@ -46,8 +46,8 @@ export const SchoolSettings = ({ school }: { school: School }) => {
           <Settings size={20} />
         </div>
         <div>
-          <h3 className="text-lg font-medium text-gray-800">School Settings</h3>
-          <p className="text-sm text-gray-800 font-medium mt-1">Update your school's basic information and logo</p>
+          <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">School Settings</h3>
+          <p className="text-sm text-slate-900 dark:text-slate-100 font-medium mt-1">Update your school's basic information and logo</p>
         </div>
       </div>
 
@@ -63,16 +63,16 @@ export const SchoolSettings = ({ school }: { school: School }) => {
         </div>
       )}
 
-      <form onSubmit={handleUpdate} className="space-y-5 bg-white p-4 rounded-2xl border border-white/40 shadow-sm relative overflow-hidden">
+      <form onSubmit={handleUpdate} className="space-y-5 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-white/40 shadow-sm relative overflow-hidden">
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
           <div className="col-span-1 md:col-span-2">
-            <label className="block text-sm font-medium text-gray-800 mb-3">School Logo</label>
-            <div className="flex gap-4 items-center bg-gray-50/50 p-4 rounded-2xl border border-gray-100">
+            <label className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-3">School Logo</label>
+            <div className="flex gap-4 items-center bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
               {formData.logoUrl ? (
                 <img src={formData.logoUrl} alt="School Logo" className="w-20 h-20 rounded-2xl object-cover border-2 border-white shadow-md" referrerPolicy="no-referrer" />
               ) : (
-                <div className="w-20 h-20 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-800">
+                <div className="w-20 h-20 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center text-slate-900 dark:text-slate-100">
                   <span className="text-xs font-medium">No Logo</span>
                 </div>
               )}
@@ -89,39 +89,39 @@ export const SchoolSettings = ({ school }: { school: School }) => {
                     reader.readAsDataURL(file);
                   }
                 }}
-                className="flex-1 px-4 py-3 rounded-xl border border-gray-200/50 bg-white/50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all file:mr-4 file:py-2.5 file:px-5 file:rounded-full file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+                className="flex-1 px-4 py-3 rounded-xl border border-gray-200/50 bg-white dark:bg-slate-900/50 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all file:mr-4 file:py-2.5 file:px-5 file:rounded-full file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
               />
             </div>
           </div>
           <div className="col-span-1 md:col-span-2">
-            <label className="block text-sm font-medium text-gray-800 mb-2">School Name</label>
+            <label className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">School Name</label>
             <input
               type="text"
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-800 mb-2">Email</label>
+            <label className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">Email</label>
             <input
               type="email"
               required
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-800 mb-2">Phone Number</label>
+            <label className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">Phone Number</label>
             <input
               type="tel"
               required
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
             />
           </div>
         </div>

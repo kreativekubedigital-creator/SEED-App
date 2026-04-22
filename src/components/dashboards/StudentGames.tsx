@@ -252,7 +252,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
   if (activeGame && gameOver) {
     return (
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white p-4 rounded-2xl border border-white/20 shadow-sm text-center max-w-2xl mx-auto relative overflow-hidden">
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-white/20 shadow-sm text-center max-w-2xl mx-auto relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-200/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 bg-emerald-500/10 rounded-full blur-2xl -ml-10 -mb-10"></div>
         
@@ -260,8 +260,8 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           <div className="w-24 h-24 bg-gradient-to-br from-yellow-100 to-amber-200 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-yellow-200/50">
             <Trophy size={48} />
           </div>
-          <h2 className="text-xl font-medium text-gray-800 mb-3">Game Over!</h2>
-          <p className="text-gray-800 font-medium mb-8 text-lg">Great job exercising your brain.</p>
+          <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100 mb-3">Game Over!</h2>
+          <p className="text-slate-900 dark:text-slate-100 font-medium mb-8 text-lg">Great job exercising your brain.</p>
           
           <div className="grid grid-cols-2 gap-4 mb-10">
             <div className="bg-blue-50 border border-blue-100/50 p-4 rounded-2xl">
@@ -283,7 +283,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
             </button>
             <button 
               onClick={() => setActiveGame(null)}
-              className="bg-white text-gray-800 px-8 py-2.5 rounded-full font-medium hover:bg-gray-50 transition-all border border-gray-200 shadow-sm hover:shadow-md"
+              className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-8 py-2.5 rounded-full font-medium hover:bg-slate-50 dark:bg-slate-800 transition-all border border-gray-200 shadow-sm hover:shadow-md"
             >
               Choose Another Game
             </button>
@@ -299,9 +299,9 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
   if (activeGame === 'math') {
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-4 md:p-4 rounded-2xl border border-white/20 shadow-sm max-w-2xl mx-auto text-center">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-slate-900 p-4 md:p-4 rounded-2xl border border-white/20 shadow-sm max-w-2xl mx-auto text-center">
         <div className="flex justify-between items-center mb-12">
-          <button onClick={() => setActiveGame(null)} className="flex items-center gap-2 text-gray-800 hover:text-gray-800 transition-colors font-medium bg-white/80 backdrop-blur-sm border border-white/40 shadow-sm px-3.5 py-1.5 rounded-full">
+          <button onClick={() => setActiveGame(null)} className="flex items-center gap-2 text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 transition-colors font-medium bg-white dark:bg-slate-900/80 backdrop-blur-sm border border-white/40 shadow-sm px-3.5 py-1.5 rounded-full">
             <ArrowLeft size={20} /> Exit
           </button>
           <div className="flex items-center gap-4">
@@ -314,7 +314,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           </div>
         </div>
 
-        <div className="text-6xl md:text-7xl font-medium mb-16 tracking-tight text-gray-800 drop-shadow-sm">
+        <div className="text-6xl md:text-7xl font-medium mb-16 tracking-tight text-slate-900 dark:text-slate-100 drop-shadow-sm">
           {mathQuestion.num1} <span className="text-blue-600">{mathQuestion.op}</span> {mathQuestion.num2} = ?
         </div>
 
@@ -322,13 +322,13 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           {mathOptions.map((option, i) => {
             let btnClass = "p-4 rounded-2xl text-xl font-medium border transition-all ";
             if (selectedAnswer === null) {
-              btnClass += "border-white/40 hover:border-blue-400/50 hover:bg-white/80 hover:text-blue-600 hover:shadow-md bg-white/60 backdrop-blur-sm text-gray-800 shadow-sm";
+              btnClass += "border-white/40 hover:border-blue-400/50 hover:bg-white dark:bg-slate-900/80 hover:text-blue-600 hover:shadow-md bg-white dark:bg-slate-900/60 backdrop-blur-sm text-slate-900 dark:text-slate-100 shadow-sm";
             } else if (option === mathQuestion.answer) {
               btnClass += "border-emerald-500 bg-emerald-50/80 text-emerald-600 shadow-sm";
             } else if (option === selectedAnswer) {
               btnClass += "border-red-500 bg-red-50/80 text-red-600 shadow-sm";
             } else {
-              btnClass += "border-white/20 opacity-50 bg-white/60 text-gray-800";
+              btnClass += "border-white/20 opacity-50 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100";
             }
 
             return (
@@ -351,9 +351,9 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
   if (activeGame === 'word') {
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-4 md:p-4 rounded-2xl border border-white/20 shadow-sm max-w-2xl mx-auto text-center">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-slate-900 p-4 md:p-4 rounded-2xl border border-white/20 shadow-sm max-w-2xl mx-auto text-center">
         <div className="flex justify-between items-center mb-12">
-          <button onClick={() => setActiveGame(null)} className="flex items-center gap-2 text-gray-800 hover:text-gray-800 transition-colors font-medium bg-white/80 backdrop-blur-sm border border-white/40 shadow-sm px-3.5 py-1.5 rounded-full">
+          <button onClick={() => setActiveGame(null)} className="flex items-center gap-2 text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 transition-colors font-medium bg-white dark:bg-slate-900/80 backdrop-blur-sm border border-white/40 shadow-sm px-3.5 py-1.5 rounded-full">
             <ArrowLeft size={20} /> Exit
           </button>
           <div className="flex items-center gap-4">
@@ -366,9 +366,9 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           </div>
         </div>
 
-        <div className="text-5xl md:text-6xl font-medium mb-16 tracking-widest text-gray-800 flex justify-center gap-3 md:gap-4 flex-wrap drop-shadow-sm">
+        <div className="text-5xl md:text-6xl font-medium mb-16 tracking-widest text-slate-900 dark:text-slate-100 flex justify-center gap-3 md:gap-4 flex-wrap drop-shadow-sm">
           {wordQuestion.word.split('').map((char, i) => (
-            <span key={i} className={`inline-block w-14 md:w-16 h-20 md:h-24 border-b-4 flex items-center justify-center rounded-t-xl ${i === wordQuestion.missingIndex ? 'border-purple-500 text-purple-600 bg-purple-50/80 backdrop-blur-sm' : 'border-gray-200/50 bg-white/60 backdrop-blur-sm shadow-sm'}`}>
+            <span key={i} className={`inline-block w-14 md:w-16 h-20 md:h-24 border-b-4 flex items-center justify-center rounded-t-xl ${i === wordQuestion.missingIndex ? 'border-purple-500 text-purple-600 bg-purple-50/80 backdrop-blur-sm' : 'border-gray-200/50 bg-white dark:bg-slate-900/60 backdrop-blur-sm shadow-sm'}`}>
               {i === wordQuestion.missingIndex ? (selectedLetter || '?') : char}
             </span>
           ))}
@@ -378,13 +378,13 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           {wordQuestion.options.map((option, i) => {
             let btnClass = "p-4 rounded-2xl text-xl font-medium border transition-all ";
             if (selectedLetter === null) {
-              btnClass += "border-white/40 hover:border-purple-400/50 hover:bg-white/80 hover:text-purple-600 hover:shadow-md bg-white/60 backdrop-blur-sm text-gray-800 shadow-sm";
+              btnClass += "border-white/40 hover:border-purple-400/50 hover:bg-white dark:bg-slate-900/80 hover:text-purple-600 hover:shadow-md bg-white dark:bg-slate-900/60 backdrop-blur-sm text-slate-900 dark:text-slate-100 shadow-sm";
             } else if (option === wordQuestion.word[wordQuestion.missingIndex]) {
               btnClass += "border-emerald-500 bg-emerald-50/80 text-emerald-600 shadow-sm";
             } else if (option === selectedLetter) {
               btnClass += "border-red-500 bg-red-50/80 text-red-600 shadow-sm";
             } else {
-              btnClass += "border-white/20 opacity-50 bg-white/60 text-gray-800";
+              btnClass += "border-white/20 opacity-50 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100";
             }
 
             return (
@@ -407,9 +407,9 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
   if (activeGame === 'science') {
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-4 md:p-4 rounded-2xl border border-white/20 shadow-sm max-w-2xl mx-auto text-center">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-slate-900 p-4 md:p-4 rounded-2xl border border-white/20 shadow-sm max-w-2xl mx-auto text-center">
         <div className="flex justify-between items-center mb-12">
-          <button onClick={() => setActiveGame(null)} className="flex items-center gap-2 text-gray-800 hover:text-gray-800 transition-colors font-medium bg-white/80 backdrop-blur-sm border border-white/40 shadow-sm px-3.5 py-1.5 rounded-full">
+          <button onClick={() => setActiveGame(null)} className="flex items-center gap-2 text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 transition-colors font-medium bg-white dark:bg-slate-900/80 backdrop-blur-sm border border-white/40 shadow-sm px-3.5 py-1.5 rounded-full">
             <ArrowLeft size={20} /> Exit
           </button>
           <div className="flex items-center gap-4">
@@ -422,7 +422,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           </div>
         </div>
 
-        <div className="text-xl font-medium mb-12 text-gray-800 leading-snug">
+        <div className="text-xl font-medium mb-12 text-slate-900 dark:text-slate-100 leading-snug">
           {scienceQuestion.question}
         </div>
 
@@ -430,13 +430,13 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           {scienceQuestion.options.map((option, i) => {
             let btnClass = "p-4 rounded-2xl text-xl font-medium border transition-all text-left flex items-center justify-between ";
             if (selectedScienceOption === null) {
-              btnClass += "border-white/40 hover:border-emerald-400/50 hover:bg-white/80 hover:text-emerald-700 hover:shadow-md bg-white/60 backdrop-blur-sm text-gray-800 shadow-sm";
+              btnClass += "border-white/40 hover:border-emerald-400/50 hover:bg-white dark:bg-slate-900/80 hover:text-emerald-700 hover:shadow-md bg-white dark:bg-slate-900/60 backdrop-blur-sm text-slate-900 dark:text-slate-100 shadow-sm";
             } else if (option === scienceQuestion.answer) {
               btnClass += "border-emerald-500 bg-emerald-50/80 text-emerald-600 shadow-sm";
             } else if (option === selectedScienceOption) {
               btnClass += "border-red-500 bg-red-50/80 text-red-600 shadow-sm";
             } else {
-              btnClass += "border-white/20 opacity-50 bg-white/60 text-gray-800";
+              btnClass += "border-white/20 opacity-50 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100";
             }
 
             return (
@@ -462,7 +462,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
   return (
     <div className={containerClass}>
-      <div className="flex flex-wrap bg-white/80 backdrop-blur-md p-1 rounded-xl border border-gray-200/50 bg-gray-50/50 w-fit">
+      <div className="flex flex-wrap bg-white dark:bg-slate-900/80 backdrop-blur-md p-1 rounded-xl border border-gray-200/50 bg-slate-50 dark:bg-slate-800/50 w-fit">
         {(['play', 'leaderboard', 'rewards', 'badges'] as const).map((tab, index) => {
           const colors = ['bg-orange-100', 'bg-blue-100', 'bg-purple-100', 'bg-pink-100'];
           const colorClass = colors[index % colors.length];
@@ -471,7 +471,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
               key={tab}
               onClick={() => setGameTab(tab)}
               className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize transition-all duration-300 ${
-                gameTab === tab ? `${colorClass} text-gray-800 shadow-md` : 'text-gray-800 hover:text-gray-800 hover:bg-gray-50'
+                gameTab === tab ? `${colorClass} text-slate-900 dark:text-slate-100 shadow-md` : 'text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800'
               }`}
             >
               {tab}
@@ -482,15 +482,15 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
       {gameTab === 'play' && (
         <>
-          <div className="bg-gradient-to-br from-blue-400 via-indigo-400 to-purple-400 p-4 rounded-2xl text-gray-800 overflow-hidden relative shadow-lg">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+          <div className="bg-gradient-to-br from-blue-400 via-indigo-400 to-purple-400 p-4 rounded-2xl text-slate-900 dark:text-slate-100 overflow-hidden relative shadow-lg">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white dark:bg-slate-900/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-100/20 rounded-full -ml-32 -mb-32 blur-3xl"></div>
             
             <div className="relative z-10 text-center">
               <h2 className="text-5xl font-medium mb-6 drop-shadow-sm">Brain Games</h2>
               <p className="text-xl text-blue-900 max-w-2xl mx-auto leading-relaxed font-medium">
                 Sharpen your mind, reinforce your learning, and earn points for your profile. 
-                Games are tailored to your level: <span className="font-medium text-gray-800 underline decoration-blue-200/50 underline-offset-4">{classLevel}</span>.
+                Games are tailored to your level: <span className="font-medium text-slate-900 dark:text-slate-100 underline decoration-blue-200/50 underline-offset-4">{classLevel}</span>.
               </p>
             </div>
           </div>
@@ -502,15 +502,15 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
               className="bg-orange-100 p-4 rounded-2xl border border-white/40 shadow-sm hover:shadow-md transition-all group cursor-pointer flex flex-col relative overflow-hidden" 
               onClick={() => startGame('math')}
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-              <div className="w-20 h-20 bg-white/60 text-gray-800 rounded-2xl flex items-center justify-center mb-8 transition-all duration-500 shadow-sm group-hover:shadow-md group-hover:scale-110 border border-white/50 relative z-10">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+              <div className="w-20 h-20 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 rounded-2xl flex items-center justify-center mb-8 transition-all duration-500 shadow-sm group-hover:shadow-md group-hover:scale-110 border border-white/50 relative z-10">
                 <Calculator size={40} />
               </div>
-              <h3 className="text-lg font-medium text-gray-800 mb-3 group-hover:text-gray-800 transition-colors relative z-10">Math Ninja</h3>
+              <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-3 group-hover:text-slate-900 dark:text-slate-100 transition-colors relative z-10">Math Ninja</h3>
               <p className="text-gray-700 font-medium mb-8 flex-1 leading-relaxed relative z-10">Quick-fire arithmetic challenges. Addition, subtraction, and more based on your grade.</p>
               <div className="flex items-center justify-between relative z-10">
                 <span className="text-sm font-medium text-blue-700 bg-blue-50 px-4 py-1.5 rounded-full border border-blue-200/50">Math</span>
-                <button className="w-10 h-10 bg-white text-gray-800 rounded-full flex items-center justify-center group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:text-white transition-all shadow-sm border border-gray-100/50 group-hover:border-transparent">
+                <button className="w-10 h-10 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-full flex items-center justify-center group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:text-white transition-all shadow-sm border border-slate-100 dark:border-slate-800/50 group-hover:border-transparent">
                   <Play size={20} fill="currentColor" className="ml-1" />
                 </button>
               </div>
@@ -522,15 +522,15 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
               className="bg-blue-100 p-4 rounded-2xl border border-white/40 shadow-sm hover:shadow-md transition-all group cursor-pointer flex flex-col relative overflow-hidden" 
               onClick={() => startGame('word')}
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-              <div className="w-20 h-20 bg-white/60 text-gray-800 rounded-2xl flex items-center justify-center mb-8 transition-all duration-500 shadow-sm group-hover:shadow-md group-hover:scale-110 border border-white/50 relative z-10">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+              <div className="w-20 h-20 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 rounded-2xl flex items-center justify-center mb-8 transition-all duration-500 shadow-sm group-hover:shadow-md group-hover:scale-110 border border-white/50 relative z-10">
                 <BookA size={40} />
               </div>
-              <h3 className="text-lg font-medium text-gray-800 mb-3 group-hover:text-gray-800 transition-colors relative z-10">Word Wizard</h3>
+              <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-3 group-hover:text-slate-900 dark:text-slate-100 transition-colors relative z-10">Word Wizard</h3>
               <p className="text-gray-700 font-medium mb-8 flex-1 leading-relaxed relative z-10">Vocabulary and spelling puzzles. Find the missing letters in academic and common words.</p>
               <div className="flex items-center justify-between relative z-10">
-                <span className="text-sm font-medium text-gray-800 bg-white/60 px-4 py-1.5 rounded-full border border-white/50">English</span>
-                <button className="w-10 h-10 bg-white/40 text-gray-800 rounded-full flex items-center justify-center hover:bg-white/60 transition-all shadow-sm border border-white/50">
+                <span className="text-sm font-medium text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900/60 px-4 py-1.5 rounded-full border border-white/50">English</span>
+                <button className="w-10 h-10 bg-white dark:bg-slate-900/40 text-slate-900 dark:text-slate-100 rounded-full flex items-center justify-center hover:bg-white dark:bg-slate-900/60 transition-all shadow-sm border border-white/50">
                   <Play size={20} fill="currentColor" className="ml-1" />
                 </button>
               </div>
@@ -542,15 +542,15 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
               className="bg-purple-100 p-4 rounded-2xl border border-white/40 shadow-sm hover:shadow-md transition-all group cursor-pointer flex flex-col relative overflow-hidden" 
               onClick={() => startGame('science')}
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-              <div className="w-20 h-20 bg-white/60 text-gray-800 rounded-2xl flex items-center justify-center mb-8 transition-all duration-500 shadow-sm group-hover:shadow-md group-hover:scale-110 border border-white/50 relative z-10">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+              <div className="w-20 h-20 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 rounded-2xl flex items-center justify-center mb-8 transition-all duration-500 shadow-sm group-hover:shadow-md group-hover:scale-110 border border-white/50 relative z-10">
                 <Beaker size={40} />
               </div>
-              <h3 className="text-lg font-medium text-gray-800 mb-3 group-hover:text-gray-800 transition-colors relative z-10">Science Explorer</h3>
+              <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-3 group-hover:text-slate-900 dark:text-slate-100 transition-colors relative z-10">Science Explorer</h3>
               <p className="text-gray-700 font-medium mb-8 flex-1 leading-relaxed relative z-10">Discover the wonders of science. Biology, Chemistry, and Physics concepts made fun.</p>
               <div className="flex items-center justify-between relative z-10">
-                <span className="text-sm font-medium text-gray-800 bg-white/60 px-4 py-1.5 rounded-full border border-white/50">Science</span>
-                <button className="w-10 h-10 bg-white/40 text-gray-800 rounded-full flex items-center justify-center hover:bg-white/60 transition-all shadow-sm border border-white/50">
+                <span className="text-sm font-medium text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900/60 px-4 py-1.5 rounded-full border border-white/50">Science</span>
+                <button className="w-10 h-10 bg-white dark:bg-slate-900/40 text-slate-900 dark:text-slate-100 rounded-full flex items-center justify-center hover:bg-white dark:bg-slate-900/60 transition-all shadow-sm border border-white/50">
                   <Play size={20} fill="currentColor" className="ml-1" />
                 </button>
               </div>
@@ -562,15 +562,15 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
               className="bg-pink-100 p-4 rounded-2xl border border-white/40 shadow-sm hover:shadow-md transition-all group cursor-pointer flex flex-col relative overflow-hidden" 
               onClick={() => startGame('memory')}
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-              <div className="w-20 h-20 bg-white/60 text-gray-800 rounded-2xl flex items-center justify-center mb-8 transition-all duration-500 shadow-sm group-hover:shadow-md group-hover:scale-110 border border-white/50 relative z-10">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+              <div className="w-20 h-20 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 rounded-2xl flex items-center justify-center mb-8 transition-all duration-500 shadow-sm group-hover:shadow-md group-hover:scale-110 border border-white/50 relative z-10">
                 <Star size={40} />
               </div>
-              <h3 className="text-lg font-medium text-gray-800 mb-3 group-hover:text-gray-800 transition-colors relative z-10">Memory Flip</h3>
+              <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-3 group-hover:text-slate-900 dark:text-slate-100 transition-colors relative z-10">Memory Flip</h3>
               <p className="text-gray-700 font-medium mb-8 flex-1 leading-relaxed relative z-10">Train your memory and focus with this classic card matching game. Earn XP and Coins!</p>
               <div className="flex items-center justify-between relative z-10">
-                <span className="text-sm font-medium text-gray-800 bg-white/60 px-4 py-1.5 rounded-full border border-white/50">Focus</span>
-                <button className="w-10 h-10 bg-white/40 text-gray-800 rounded-full flex items-center justify-center hover:bg-white/60 transition-all shadow-sm border border-white/50">
+                <span className="text-sm font-medium text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900/60 px-4 py-1.5 rounded-full border border-white/50">Focus</span>
+                <button className="w-10 h-10 bg-white dark:bg-slate-900/40 text-slate-900 dark:text-slate-100 rounded-full flex items-center justify-center hover:bg-white dark:bg-slate-900/60 transition-all shadow-sm border border-white/50">
                   <Play size={20} fill="currentColor" className="ml-1" />
                 </button>
               </div>
@@ -582,14 +582,14 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
       {gameTab === 'leaderboard' && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-800 flex items-center gap-2">
+            <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 flex items-center gap-2">
               <TrendingUp className="text-blue-600" size={20} />
               School Leaderboard
             </h3>
           </div>
-          <div className="bg-white/80 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm overflow-hidden">
-            <div className="p-4 border-b border-white/50 bg-white/50">
-              <div className="grid grid-cols-12 text-xs font-medium text-gray-800 uppercase tracking-wider">
+          <div className="bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm overflow-hidden">
+            <div className="p-4 border-b border-white/50 bg-white dark:bg-slate-900/50">
+              <div className="grid grid-cols-12 text-xs font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider">
                 <div className="col-span-1">Rank</div>
                 <div className="col-span-7">Student</div>
                 <div className="col-span-2 text-right">Level</div>
@@ -600,9 +600,9 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
               {leaderboard.map((u, i) => (
                 <div key={u.id} className={cn(
                   "grid grid-cols-12 items-center p-4 transition-colors",
-                  u.uid === user.uid ? "bg-blue-50/50" : "hover:bg-white/50"
+                  u.uid === user.uid ? "bg-blue-50/50" : "hover:bg-white dark:bg-slate-900/50"
                 )}>
-                  <div className="col-span-1 font-medium text-gray-800">
+                  <div className="col-span-1 font-medium text-slate-900 dark:text-slate-100">
                     {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
                   </div>
                   <div className="col-span-7 flex items-center gap-3">
@@ -610,16 +610,16 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
                       {u.firstName[0]}{u.lastName[0]}
                     </div>
                     <div>
-                      <p className="font-medium text-gray-800 text-sm">{u.firstName} {u.lastName}</p>
-                      <p className="text-[10px] text-gray-800 uppercase tracking-wider">{u.registrationNumber || 'Student'}</p>
+                      <p className="font-medium text-slate-900 dark:text-slate-100 text-sm">{u.firstName} {u.lastName}</p>
+                      <p className="text-[10px] text-slate-900 dark:text-slate-100 uppercase tracking-wider">{u.registrationNumber || 'Student'}</p>
                     </div>
                   </div>
-                  <div className="col-span-2 text-right font-medium text-gray-800 text-sm">{u.level || 1}</div>
+                  <div className="col-span-2 text-right font-medium text-slate-900 dark:text-slate-100 text-sm">{u.level || 1}</div>
                   <div className="col-span-2 text-right font-medium text-blue-600 text-sm">{u.xp || 0}</div>
                 </div>
               ))}
               {leaderboard.length === 0 && (
-                <div className="p-12 text-center text-gray-800">
+                <div className="p-12 text-center text-slate-900 dark:text-slate-100">
                   No data available yet.
                 </div>
               )}
@@ -631,7 +631,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
       {gameTab === 'rewards' && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-800 flex items-center gap-2">
+            <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 flex items-center gap-2">
               <ShoppingBag className="text-purple-600" size={20} />
               Rewards Store
             </h3>
@@ -641,22 +641,22 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
-              { id: 'gold_frame', name: 'Golden Avatar Frame', price: 500, icon: Award, colorClass: 'bg-yellow-100 text-gray-800', description: 'A shiny gold border for your avatar.' },
-              { id: 'premium_theme', name: 'Premium Theme', price: 1000, icon: Sparkles, colorClass: 'bg-purple-100 text-gray-800', description: 'Unlock a premium dark mode interface.' },
-              { id: 'early_access', name: 'Early Access Badge', price: 250, icon: Star, colorClass: 'bg-blue-100 text-gray-800', description: 'Show off your early supporter status.' },
-              { id: 'streak_freeze', name: 'Streak Freeze', price: 200, icon: Flame, colorClass: 'bg-orange-100 text-gray-800', description: 'Protect your streak for one missed day.' },
-              { id: 'xp_booster', name: 'XP Booster', price: 300, icon: TrendingUp, colorClass: 'bg-green-100 text-gray-800', description: 'Earn 2x XP for the next 24 hours.' },
-              { id: 'mystery_box', name: 'Mystery Box', price: 400, icon: ShoppingBag, colorClass: 'bg-pink-100 text-gray-800', description: 'Win a random rare reward!' },
+              { id: 'gold_frame', name: 'Golden Avatar Frame', price: 500, icon: Award, colorClass: 'bg-yellow-100 text-slate-900 dark:text-slate-100', description: 'A shiny gold border for your avatar.' },
+              { id: 'premium_theme', name: 'Premium Theme', price: 1000, icon: Sparkles, colorClass: 'bg-purple-100 text-slate-900 dark:text-slate-100', description: 'Unlock a premium dark mode interface.' },
+              { id: 'early_access', name: 'Early Access Badge', price: 250, icon: Star, colorClass: 'bg-blue-100 text-slate-900 dark:text-slate-100', description: 'Show off your early supporter status.' },
+              { id: 'streak_freeze', name: 'Streak Freeze', price: 200, icon: Flame, colorClass: 'bg-orange-100 text-slate-900 dark:text-slate-100', description: 'Protect your streak for one missed day.' },
+              { id: 'xp_booster', name: 'XP Booster', price: 300, icon: TrendingUp, colorClass: 'bg-green-100 text-slate-900 dark:text-slate-100', description: 'Earn 2x XP for the next 24 hours.' },
+              { id: 'mystery_box', name: 'Mystery Box', price: 400, icon: ShoppingBag, colorClass: 'bg-pink-100 text-slate-900 dark:text-slate-100', description: 'Win a random rare reward!' },
             ].map(item => {
               const isPurchased = user.purchasedItems?.includes(item.id);
               return (
-                <div key={item.id} className="bg-white/80 backdrop-blur-md p-5 rounded-3xl border border-white/50 shadow-sm flex flex-col gap-4">
+                <div key={item.id} className="bg-white dark:bg-slate-900/80 backdrop-blur-md p-5 rounded-3xl border border-white/50 shadow-sm flex flex-col gap-4">
                   <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", item.colorClass)}>
                     <item.icon size={24} />
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-800">{item.name}</h4>
-                    <p className="text-xs text-gray-800 mt-1">{item.description}</p>
+                    <h4 className="font-medium text-slate-900 dark:text-slate-100">{item.name}</h4>
+                    <p className="text-xs text-slate-900 dark:text-slate-100 mt-1">{item.description}</p>
                   </div>
                   <button 
                     disabled={isPurchased || (user.coins || 0) < item.price}
@@ -667,7 +667,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
                         ? "bg-green-50 text-green-600 cursor-default" 
                         : (user.coins || 0) >= item.price
                           ? "bg-blue-600 text-white hover:bg-blue-700 shadow-md active:scale-95"
-                          : "bg-gray-100 text-gray-800 cursor-not-allowed"
+                          : "bg-gray-100 text-slate-900 dark:text-slate-100 cursor-not-allowed"
                     )}
                   >
                     {isPurchased ? 'Owned' : `${item.price} 🪙 Buy Now`}
@@ -682,7 +682,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
       {gameTab === 'badges' && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-800 flex items-center gap-2">
+            <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 flex items-center gap-2">
               <Award className="text-yellow-600" size={20} />
               Achievements & Badges
             </h3>
@@ -697,9 +697,9 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
                   whileHover={{ y: -5 }}
                   className={`${colorClass} p-6 rounded-3xl border border-white/50 shadow-sm flex flex-col items-center text-center gap-3 relative overflow-hidden`}
                 >
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-white/40 rounded-full blur-2xl -mr-8 -mt-8"></div>
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-white dark:bg-slate-900/40 rounded-full blur-2xl -mr-8 -mt-8"></div>
                   <div className="text-5xl mb-2 relative z-10">{badge.icon}</div>
-                  <h4 className="font-medium text-gray-800 text-sm relative z-10">{badge.title}</h4>
+                  <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm relative z-10">{badge.title}</h4>
                   <p className="text-[10px] text-gray-700 leading-tight relative z-10">{badge.description}</p>
                   <div className="mt-auto pt-3 text-[8px] text-gray-600 uppercase tracking-widest relative z-10">
                     Earned {new Date(badge.earnedAt?.toDate()).toLocaleDateString()}
@@ -708,11 +708,11 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
               );
             })}
             {badges.length === 0 && (
-              <div className="col-span-full py-20 text-center bg-white/80 backdrop-blur-md rounded-3xl border border-white/50">
-                <div className="w-20 h-20 bg-white/50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-800 border border-white/50">
+              <div className="col-span-full py-20 text-center bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-3xl border border-white/50">
+                <div className="w-20 h-20 bg-white dark:bg-slate-900/50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-900 dark:text-slate-100 border border-white/50">
                   <Award size={40} />
                 </div>
-                <p className="text-gray-800 font-medium">You haven't earned any badges yet. Keep studying!</p>
+                <p className="text-slate-900 dark:text-slate-100 font-medium">You haven't earned any badges yet. Keep studying!</p>
               </div>
             )}
           </div>

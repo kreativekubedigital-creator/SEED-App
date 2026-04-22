@@ -359,35 +359,35 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
   return (
     <div className="min-h-screen bg-transparent flex flex-col md:flex-row font-sans text-[#1A1A1A]">
       {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-white/40 sticky top-0 z-50 shadow-sm">
-        <button onClick={handleBack} className="p-2 text-gray-800 hover:text-blue-600 transition-colors bg-gray-50 hover:bg-blue-50 rounded-xl">
+      <div className="md:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-white/40 sticky top-0 z-50 shadow-sm">
+        <button onClick={handleBack} className="p-2 text-slate-900 dark:text-slate-100 hover:text-blue-600 transition-colors bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 rounded-xl">
           <ArrowLeft size={20} />
         </button>
-        <span className="font-medium text-lg truncate px-4 text-gray-800">{school.name}</span>
-        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-gray-800 hover:text-blue-600 transition-colors bg-gray-50 hover:bg-blue-50 rounded-xl">
+        <span className="font-medium text-lg truncate px-4 text-slate-900 dark:text-slate-100">{school.name}</span>
+        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-slate-900 dark:text-slate-100 hover:text-blue-600 transition-colors bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 rounded-xl">
           {isMobileMenuOpen ? <X size={20} /> : <LayoutDashboard size={20} />}
         </button>
       </div>
 
       {/* Sidebar - Desktop */}
-      <aside className="hidden lg:flex w-72 bg-white/80 backdrop-blur-xl border-r border-white/40 flex-col p-4 gap-4 sticky top-0 h-screen shadow-[4px_0_24px_rgb(0,0,0,0.02)]">
+      <aside className="hidden lg:flex w-72 bg-white dark:bg-slate-900/80 backdrop-blur-xl border-r border-white/40 flex-col p-4 gap-4 sticky top-0 h-screen shadow-[4px_0_24px_rgb(0,0,0,0.02)]">
         <button 
           onClick={handleBack}
-          className="flex items-center gap-2 text-gray-800 hover:text-blue-600 transition-colors font-medium text-sm bg-gray-50/50 hover:bg-blue-50/50 px-4 py-2 rounded-xl w-fit"
+          className="flex items-center gap-2 text-slate-900 dark:text-slate-100 hover:text-blue-600 transition-colors font-medium text-sm bg-slate-50 dark:bg-slate-800/50 hover:bg-blue-50/50 px-4 py-2 rounded-xl w-fit"
         >
           <ArrowLeft size={18} /> {activeTab !== 'overview' ? 'Back to Overview' : (currentUserRole === 'super_admin' ? 'Back to Schools' : 'Logout')}
         </button>
 
-        <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-white to-gray-50/50 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm">
+        <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-white to-gray-50/50 backdrop-blur-sm rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
           {school.logoUrl ? (
             <img src={school.logoUrl} alt={school.name} className="w-10 h-10 rounded-2xl object-cover shadow-sm border-2 border-white" referrerPolicy="no-referrer" />
           ) : (
-            <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-medium text-2xl shadow-md border-2 border-gray-100">
+            <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-medium text-2xl shadow-md border-2 border-slate-100 dark:border-slate-800">
               {school.name?.charAt(0) || '?'}
             </div>
           )}
           <div className="overflow-hidden">
-            <h3 className="font-medium text-gray-800 truncate text-base">{school.name}</h3>
+            <h3 className="font-medium text-slate-900 dark:text-slate-100 truncate text-base">{school.name}</h3>
             <p className="text-[10px] text-blue-600 font-medium uppercase tracking-widest mt-0.5">{school.planId} Plan</p>
           </div>
         </div>
@@ -401,7 +401,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
             }}
             className={cn(
               "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-medium transition-all w-full text-left",
-              activeTab === 'overview' ? "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/30" : "text-gray-800 hover:bg-gray-50 hover:text-gray-800"
+              activeTab === 'overview' ? "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/30" : "text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-100"
             )}
           >
             <LayoutDashboard size={18} /> Overview
@@ -411,7 +411,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
           <div className="space-y-1">
             <button 
               onClick={() => toggleSection('users')}
-              className="w-full flex items-center justify-between px-4 py-2 text-[10px] font-medium uppercase tracking-widest text-gray-800/50 hover:text-gray-800/80 transition-colors"
+              className="w-full flex items-center justify-between px-4 py-2 text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100/50 hover:text-slate-900 dark:text-slate-100/80 transition-colors"
             >
               <span>User Management</span>
               {expandedSections.users ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
@@ -442,7 +442,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                         }}
                         className={cn(
                           "flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all w-full text-left",
-                          isActive ? "bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50" : "text-gray-800 hover:bg-gray-50 hover:text-gray-800"
+                          isActive ? "bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50" : "text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-100"
                         )}
                       >
                         <item.icon size={18} /> {item.label}
@@ -458,7 +458,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
           <div className="space-y-1">
             <button 
               onClick={() => toggleSection('academics')}
-              className="w-full flex items-center justify-between px-4 py-2 text-[10px] font-medium uppercase tracking-widest text-gray-800 hover:text-gray-800 transition-colors"
+              className="w-full flex items-center justify-between px-4 py-2 text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 transition-colors"
             >
               <span>Academics</span>
               {expandedSections.academics ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
@@ -478,7 +478,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                     }}
                     className={cn(
                       "flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all w-full text-left",
-                      activeTab === 'classes' ? "bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50" : "text-gray-800 hover:bg-gray-50 hover:text-gray-800"
+                      activeTab === 'classes' ? "bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50" : "text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-100"
                     )}
                   >
                     <BookOpen size={18} /> Classes & Subjects
@@ -490,7 +490,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                     }}
                     className={cn(
                       "flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all w-full text-left",
-                      activeTab === 'grading' ? "bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50" : "text-gray-800 hover:bg-gray-50 hover:text-gray-800"
+                      activeTab === 'grading' ? "bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50" : "text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-100"
                     )}
                   >
                     <Award size={18} /> Grading System
@@ -502,7 +502,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                     }}
                     className={cn(
                       "flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all w-full text-left",
-                      activeTab === 'reports' ? "bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50" : "text-gray-800 hover:bg-gray-50 hover:text-gray-800"
+                      activeTab === 'reports' ? "bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50" : "text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-100"
                     )}
                   >
                     <BookOpen size={18} /> Report Cards
@@ -514,7 +514,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                     }}
                     className={cn(
                       "flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all w-full text-left",
-                      activeTab === 'timetable' ? "bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50" : "text-gray-800 hover:bg-gray-50 hover:text-gray-800"
+                      activeTab === 'timetable' ? "bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50" : "text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-100"
                     )}
                   >
                     <BookOpen size={18} /> Timetable
@@ -529,7 +529,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
             <div className="space-y-1">
               <button 
                 onClick={() => toggleSection('finance')}
-                className="w-full flex items-center justify-between px-4 py-2 text-[10px] font-medium uppercase tracking-widest text-gray-800 hover:text-gray-800 transition-colors"
+                className="w-full flex items-center justify-between px-4 py-2 text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 transition-colors"
               >
                 <span>Finance</span>
                 {expandedSections.finance ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
@@ -549,7 +549,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                       }}
                       className={cn(
                         "flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all w-full text-left",
-                        activeTab === 'finance' ? "bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50" : "text-gray-800 hover:bg-gray-50 hover:text-gray-800"
+                        activeTab === 'finance' ? "bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50" : "text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-100"
                       )}
                     >
                       <Award size={18} /> Fees & Payments
@@ -565,7 +565,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
             <div className="space-y-1">
               <button 
                 onClick={() => toggleSection('settings')}
-                className="w-full flex items-center justify-between px-4 py-2 text-[10px] font-medium uppercase tracking-widest text-gray-800 hover:text-gray-800 transition-colors"
+                className="w-full flex items-center justify-between px-4 py-2 text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 transition-colors"
               >
                 <span>Settings & Comms</span>
                 {expandedSections.settings ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
@@ -592,7 +592,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                           }}
                           className={cn(
                             "flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all w-full text-left",
-                            isActive ? "bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50" : "text-gray-800 hover:bg-gray-50 hover:text-gray-800"
+                            isActive ? "bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50" : "text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-100"
                           )}
                         >
                           <item.icon size={18} /> {item.label}
@@ -608,20 +608,20 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
       </aside>
 
       {/* Mobile Top Bar */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 flex items-center justify-between z-50">
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 px-4 flex items-center justify-between z-50">
         <div className="flex items-center gap-3">
           {school.logoUrl ? (
-            <img src={school.logoUrl} alt={school.name} className="w-8 h-8 rounded-lg object-cover shadow-sm border border-gray-100" referrerPolicy="no-referrer" />
+            <img src={school.logoUrl} alt={school.name} className="w-8 h-8 rounded-lg object-cover shadow-sm border border-slate-100 dark:border-slate-800" referrerPolicy="no-referrer" />
           ) : (
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-sm font-medium text-sm">
               {school.name?.charAt(0) || '?'}
             </div>
           )}
-          <span className="font-medium text-lg text-gray-800 truncate max-w-[150px]">{school.name}</span>
+          <span className="font-medium text-lg text-slate-900 dark:text-slate-100 truncate max-w-[150px]">{school.name}</span>
         </div>
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-2 text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 text-slate-900 dark:text-slate-100 hover:bg-gray-100 rounded-lg transition-colors"
         >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -643,27 +643,27 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="lg:hidden fixed top-0 left-0 bottom-0 w-[300px] bg-white z-[70] p-6 shadow-2xl flex flex-col overflow-y-auto"
+              className="lg:hidden fixed top-0 left-0 bottom-0 w-[300px] bg-white dark:bg-slate-900 z-[70] p-6 shadow-2xl flex flex-col overflow-y-auto"
             >
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
                   {school.logoUrl ? (
-                    <img src={school.logoUrl} alt={school.name} className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-blue-100 border border-gray-100" referrerPolicy="no-referrer" />
+                    <img src={school.logoUrl} alt={school.name} className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-blue-100 border border-slate-100 dark:border-slate-800" referrerPolicy="no-referrer" />
                   ) : (
                     <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200 font-medium text-xl">
                       {school.name?.charAt(0) || '?'}
                     </div>
                   )}
-                  <h1 className="font-medium text-xl text-gray-800 truncate max-w-[180px]">{school.name}</h1>
+                  <h1 className="font-medium text-xl text-slate-900 dark:text-slate-100 truncate max-w-[180px]">{school.name}</h1>
                 </div>
-                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-gray-800 hover:text-gray-800">
+                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100">
                   <X size={24} />
                 </button>
               </div>
 
               <button 
                 onClick={handleBack}
-                className="flex items-center gap-2 text-gray-800 hover:text-blue-600 transition-colors font-medium text-sm bg-gray-50/50 hover:bg-blue-50/50 px-4 py-3 rounded-xl w-full mb-6"
+                className="flex items-center gap-2 text-slate-900 dark:text-slate-100 hover:text-blue-600 transition-colors font-medium text-sm bg-slate-50 dark:bg-slate-800/50 hover:bg-blue-50/50 px-4 py-3 rounded-xl w-full mb-6"
               >
                 <ArrowLeft size={18} /> {activeTab !== 'overview' ? 'Back to Overview' : (currentUserRole === 'super_admin' ? 'Back to Schools' : 'Logout')}
               </button>
@@ -677,7 +677,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                   }}
                   className={cn(
                     "flex items-center gap-3 px-4 py-4 rounded-2xl text-sm font-medium transition-all w-full text-left",
-                    activeTab === 'overview' ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "text-gray-800 hover:bg-gray-50"
+                    activeTab === 'overview' ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30" : "text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800"
                   )}
                 >
                   <LayoutDashboard size={20} /> Overview
@@ -686,7 +686,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                 {/* Re-using the same navigation structure for mobile */}
                 <div className="space-y-4 mt-4">
                   <div className="space-y-1">
-                    <p className="px-4 text-[10px] font-medium uppercase tracking-widest text-gray-800 mb-2">User Management</p>
+                    <p className="px-4 text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 mb-2">User Management</p>
                     {[
                       { id: 'users', label: 'User Directory', icon: Users, role: 'all' },
                       { id: 'users', label: 'Teachers', icon: Users, role: 'teacher' },
@@ -701,7 +701,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                         }}
                         className={cn(
                           "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left",
-                          activeTab === item.id && roleFilter === item.role ? "bg-blue-50 text-blue-700" : "text-gray-800"
+                          activeTab === item.id && roleFilter === item.role ? "bg-blue-50 text-blue-700" : "text-slate-900 dark:text-slate-100"
                         )}
                       >
                         <item.icon size={18} /> {item.label}
@@ -710,14 +710,14 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                   </div>
 
                   <div className="space-y-1">
-                    <p className="px-4 text-[10px] font-medium uppercase tracking-widest text-gray-800 mb-2">Academics</p>
-                    <button onClick={() => { setActiveTab('classes'); setIsMobileMenuOpen(false); }} className={cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left", activeTab === 'classes' ? "bg-blue-50 text-blue-700" : "text-gray-800")}>
+                    <p className="px-4 text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 mb-2">Academics</p>
+                    <button onClick={() => { setActiveTab('classes'); setIsMobileMenuOpen(false); }} className={cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left", activeTab === 'classes' ? "bg-blue-50 text-blue-700" : "text-slate-900 dark:text-slate-100")}>
                       <BookOpen size={18} /> Classes & Subjects
                     </button>
-                    <button onClick={() => { setActiveTab('grading'); setIsMobileMenuOpen(false); }} className={cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left", activeTab === 'grading' ? "bg-blue-50 text-blue-700" : "text-gray-800")}>
+                    <button onClick={() => { setActiveTab('grading'); setIsMobileMenuOpen(false); }} className={cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left", activeTab === 'grading' ? "bg-blue-50 text-blue-700" : "text-slate-900 dark:text-slate-100")}>
                       <Award size={18} /> Grading System
                     </button>
-                    <button onClick={() => { setActiveTab('reports'); setIsMobileMenuOpen(false); }} className={cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left", activeTab === 'reports' ? "bg-blue-50 text-blue-700" : "text-gray-800")}>
+                    <button onClick={() => { setActiveTab('reports'); setIsMobileMenuOpen(false); }} className={cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left", activeTab === 'reports' ? "bg-blue-50 text-blue-700" : "text-slate-900 dark:text-slate-100")}>
                       <BookOpen size={18} /> Report Cards
                     </button>
                   </div>
@@ -733,14 +733,14 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
         <div className="max-w-7xl mx-auto space-y-6 pb-20 lg:pb-0">
           <header className="mb-8 hidden lg:block">
           {activeTab === 'overview' ? (
-            <div className="bg-white p-4 rounded-3xl border border-white/40 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-white/40 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center shadow-sm">
                   <span className="text-2xl">👋</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-medium text-gray-800">Welcome back, {school.name}</h3>
-                  <p className="text-sm text-gray-800 font-medium">Manage your school's operations</p>
+                  <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100">Welcome back, {school.name}</h3>
+                  <p className="text-sm text-slate-900 dark:text-slate-100 font-medium">Manage your school's operations</p>
                 </div>
               </div>
               <div className="text-sm font-medium text-blue-600 bg-blue-50 border border-blue-100 rounded-xl px-4 py-2 shadow-sm">
@@ -750,10 +750,10 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
           ) : (
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-4">
               <div>
-                <h2 className="text-2xl md:text-xl font-medium text-gray-800 capitalize tracking-tight">
+                <h2 className="text-2xl md:text-xl font-medium text-slate-900 dark:text-slate-100 capitalize tracking-tight">
                   {`${activeTab} Management`}
                 </h2>
-                <p className="text-gray-800 mt-1 md:mt-2 text-sm md:text-base font-medium">
+                <p className="text-slate-900 dark:text-slate-100 mt-1 md:mt-2 text-sm md:text-base font-medium">
                   {`Add, edit, and manage school ${activeTab}.`}
                 </p>
               </div>
@@ -775,7 +775,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploadingBulk}
-                    className="w-full sm:w-auto bg-white text-gray-800 hover:bg-gray-50 px-6 md:px-8 py-3 md:py-4 rounded-2xl flex items-center justify-center gap-3 text-sm font-medium shadow-sm border border-gray-200 hover:scale-[1.02] transition-all shrink-0 disabled:opacity-50"
+                    className="w-full sm:w-auto bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 px-6 md:px-8 py-3 md:py-4 rounded-2xl flex items-center justify-center gap-3 text-sm font-medium shadow-sm border border-gray-200 hover:scale-[1.02] transition-all shrink-0 disabled:opacity-50"
                   >
                     <Upload size={20} /> {isUploadingBulk ? 'Uploading...' : 'Bulk Upload'}
                   </button>
@@ -798,21 +798,21 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
         {activeTab === 'overview' ? (
           <div className="space-y-5 md:space-y-12">
             {/* School Info Card */}
-            <div className="bg-white p-4 md:p-4 rounded-2xl md:rounded-2xl border border-white/40 shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-4 relative overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 p-4 md:p-4 rounded-2xl md:rounded-2xl border border-white/40 shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-4 relative overflow-hidden">
               
 
               <div className="flex items-center gap-4 relative z-10">
                 <div className="p-3 md:p-4 bg-indigo-50 rounded-2xl text-indigo-600 shrink-0 shadow-sm border border-indigo-100/50"><Mail size={20} /></div>
                 <div className="overflow-hidden">
-                  <p className="text-[10px] font-medium uppercase tracking-widest text-gray-800">Email</p>
-                  <p className="font-medium text-sm text-gray-800 truncate mt-1">{school.email}</p>
+                  <p className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100">Email</p>
+                  <p className="font-medium text-sm text-slate-900 dark:text-slate-100 truncate mt-1">{school.email}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 relative z-10">
                 <div className="p-3 md:p-4 bg-purple-50 rounded-2xl text-purple-600 shrink-0 shadow-sm border border-purple-100/50"><Phone size={20} /></div>
                 <div className="overflow-hidden">
-                  <p className="text-[10px] font-medium uppercase tracking-widest text-gray-800">Phone</p>
-                  <p className="font-medium text-sm text-gray-800 truncate mt-1">{school.phone}</p>
+                  <p className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100">Phone</p>
+                  <p className="font-medium text-sm text-slate-900 dark:text-slate-100 truncate mt-1">{school.phone}</p>
                 </div>
               </div>
             </div>
@@ -825,20 +825,20 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                 { label: 'Students', value: stats.students, icon: GraduationCap, colorClass: 'from-purple-50 to-purple-100 text-purple-600 border-purple-200/50' },
                 { label: 'Parents', value: stats.parents, icon: Users, colorClass: 'from-pink-50 to-pink-100 text-pink-600 border-pink-200/50' },
               ].map(stat => (
-                <div key={stat.label} className="bg-white p-4 rounded-2xl border border-white/40 shadow-sm flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                <div key={stat.label} className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-white/40 shadow-sm flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all duration-300">
                   <div className={`w-10 h-10 bg-gradient-to-br ${stat.colorClass} rounded-2xl flex items-center justify-center shadow-sm border`}>
                     <stat.icon size={20} />
                   </div>
                   <div>
-                    <p className="text-[10px] font-medium text-gray-800 uppercase tracking-wider">{stat.label}</p>
-                    <p className="text-xl font-medium text-gray-800 mt-1">{stat.value}</p>
+                    <p className="text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider">{stat.label}</p>
+                    <p className="text-xl font-medium text-slate-900 dark:text-slate-100 mt-1">{stat.value}</p>
                   </div>
                 </div>
               ))}
             </div>
             {/* Quick Actions */}
             <div>
-              <h3 className="text-[10px] font-medium text-gray-800 mb-4 uppercase tracking-wider">Quick Actions</h3>
+              <h3 className="text-[10px] font-medium text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wider">Quick Actions</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
                   { label: 'Manage Students', desc: 'Add, edit & assign students', icon: Users, tab: 'users', role: 'student', colorClass: 'from-blue-50 to-blue-100 text-blue-600 border-blue-200/50' },
@@ -850,13 +850,13 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                     { label: 'School Settings', desc: 'Update school info & logo', icon: Settings, tab: 'settings', colorClass: 'from-orange-50 to-orange-100 text-orange-600 border-orange-200/50' }
                   ] : [])
                 ].map(action => (
-                  <div key={action.label} onClick={() => { setActiveTab(action.tab as any); if (action.role) setRoleFilter(action.role as any); }} className="bg-white p-4 rounded-2xl border border-white/40 shadow-sm flex items-center gap-4 hover:border-blue-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer min-w-0 group">
+                  <div key={action.label} onClick={() => { setActiveTab(action.tab as any); if (action.role) setRoleFilter(action.role as any); }} className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-white/40 shadow-sm flex items-center gap-4 hover:border-blue-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer min-w-0 group">
                     <div className={`w-10 h-10 bg-gradient-to-br ${action.colorClass} rounded-2xl flex items-center justify-center shrink-0 shadow-sm border group-hover:scale-110 transition-transform duration-300`}>
                       <action.icon size={20} />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-base font-medium text-gray-800 truncate">{action.label}</p>
-                      <p className="text-xs text-gray-800 font-medium truncate mt-0.5">{action.desc}</p>
+                      <p className="text-base font-medium text-slate-900 dark:text-slate-100 truncate">{action.label}</p>
+                      <p className="text-xs text-slate-900 dark:text-slate-100 font-medium truncate mt-0.5">{action.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -864,17 +864,17 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
             </div>
           </div>
         ) : activeTab === 'users' ? (
-          <div className="bg-white rounded-2xl border border-white/40 shadow-sm overflow-hidden flex flex-col">
-            <div className="p-4 md:p-4 border-b border-gray-100/50 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-gray-50/50">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-white/40 shadow-sm overflow-hidden flex flex-col">
+            <div className="p-4 md:p-4 border-b border-slate-100 dark:border-slate-800/50 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-slate-50 dark:bg-slate-800/50">
               <div>
-                <h3 className="font-medium text-2xl text-gray-800 capitalize">User Directory</h3>
-                <p className="text-sm text-gray-800 font-medium mt-1">Manage all school users</p>
+                <h3 className="font-medium text-2xl text-slate-900 dark:text-slate-100 capitalize">User Directory</h3>
+                <p className="text-sm text-slate-900 dark:text-slate-100 font-medium mt-1">Manage all school users</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
                 <select
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value as UserRole | 'all')}
-                  className="w-full sm:w-auto px-4 py-2 rounded-xl border border-gray-200/50 bg-white/60 backdrop-blur-sm focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none text-sm font-medium text-gray-800 transition-all shadow-sm"
+                  className="w-full sm:w-auto px-4 py-2 rounded-xl border border-gray-200/50 bg-white dark:bg-slate-900/60 backdrop-blur-sm focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none text-sm font-medium text-slate-900 dark:text-slate-100 transition-all shadow-sm"
                 >
                   <option value="all">All Roles</option>
                   {(currentUserRole === 'super_admin' || currentUserRole === 'school_admin') && <option value="school_admin">Admins</option>}
@@ -885,7 +885,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                 <select
                   value={classFilter}
                   onChange={(e) => setClassFilter(e.target.value)}
-                  className="w-full sm:w-auto px-4 py-2 rounded-xl border border-gray-200/50 bg-white/60 backdrop-blur-sm focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none text-sm font-medium text-gray-800 transition-all shadow-sm"
+                  className="w-full sm:w-auto px-4 py-2 rounded-xl border border-gray-200/50 bg-white dark:bg-slate-900/60 backdrop-blur-sm focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none text-sm font-medium text-slate-900 dark:text-slate-100 transition-all shadow-sm"
                 >
                   <option value="all">All Classes</option>
                   {sortedClasses.map(c => (
@@ -893,13 +893,13 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                   ))}
                 </select>
                 <div className="relative w-full sm:w-64">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-800" size={18} />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-900 dark:text-slate-100" size={18} />
                   <input
                     type="text"
                     placeholder="Search users..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-11 pr-5 py-3 rounded-2xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-gray-800 transition-all shadow-sm cursor-text"
+                    className="w-full pl-11 pr-5 py-3 rounded-2xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all shadow-sm cursor-text"
                   />
                 </div>
                 <div className="flex gap-2 w-full sm:w-auto">
@@ -920,7 +920,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
               {/* Desktop Table */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left min-w-[600px]">
-                  <thead className="bg-gray-50/50 text-[10px] uppercase text-gray-800 font-medium tracking-[0.2em] border-b border-gray-100/50">
+                  <thead className="bg-slate-50 dark:bg-slate-800/50 text-[10px] uppercase text-slate-900 dark:text-slate-100 font-medium tracking-[0.2em] border-b border-slate-100 dark:border-slate-800/50">
                     <tr>
                       <th className="px-6 md:px-8 py-4 md:py-5">Name & Email</th>
                       <th className="px-6 md:px-8 py-4 md:py-5">Role & Details</th>
@@ -928,7 +928,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                       <th className="px-6 md:px-8 py-4 md:py-5 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100/50">
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
                     {filteredUsers.map((u, i) => (
                       <motion.tr 
                         key={u.uid}
@@ -947,8 +947,8 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                               </div>
                             )}
                             <div className="overflow-hidden">
-                              <p className="font-medium text-sm text-gray-800 truncate">{u.firstName} {u.lastName}</p>
-                              <p className="text-xs text-gray-800 font-medium truncate mt-0.5">{u.email}</p>
+                              <p className="font-medium text-sm text-slate-900 dark:text-slate-100 truncate">{u.firstName} {u.lastName}</p>
+                              <p className="text-xs text-slate-900 dark:text-slate-100 font-medium truncate mt-0.5">{u.email}</p>
                             </div>
                           </div>
                         </td>
@@ -958,13 +958,13 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                               {u.role.replace('_', ' ')}
                             </span>
                             {(u.role === 'student' || u.role === 'teacher') && (
-                              <p className="text-xs text-gray-800 font-medium mt-1">
+                              <p className="text-xs text-slate-900 dark:text-slate-100 font-medium mt-1">
                                 {u.role === 'student' ? (u.studentId || 'No ID') : 'Teacher'} • {classes.find(c => c.id === u.classId)?.name || 'Unassigned'}
                               </p>
                             )}
                           </div>
                         </td>
-                        <td className="px-6 md:px-8 py-4 md:py-6 text-sm text-gray-800 font-medium whitespace-nowrap">
+                        <td className="px-6 md:px-8 py-4 md:py-6 text-sm text-slate-900 dark:text-slate-100 font-medium whitespace-nowrap">
                           {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '---'}
                         </td>
                         <td className="px-6 md:px-8 py-4 md:py-6">
@@ -973,7 +973,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                               onClick={() => {
                                 setViewingUser(u);
                               }}
-                              className="p-2.5 hover:bg-gray-100 text-gray-800 rounded-xl transition-colors hover:shadow-sm"
+                              className="p-2.5 hover:bg-gray-100 text-slate-900 dark:text-slate-100 rounded-xl transition-colors hover:shadow-sm"
                               title="View Details"
                             >
                               <Eye size={18} />
@@ -1009,7 +1009,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                     ))}
                     {filteredUsers.length === 0 && (
                       <tr>
-                        <td colSpan={4} className="px-6 md:px-8 py-16 text-center text-gray-800 font-medium bg-transparent">No users found matching your filters.</td>
+                        <td colSpan={4} className="px-6 md:px-8 py-16 text-center text-slate-900 dark:text-slate-100 font-medium bg-transparent">No users found matching your filters.</td>
                       </tr>
                     )}
                   </tbody>
@@ -1024,7 +1024,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex flex-col gap-4"
+                    className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-4 flex flex-col gap-4"
                   >
                     <div className="flex items-center gap-3">
                       {u.photoUrl ? (
@@ -1035,29 +1035,29 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                         </div>
                       )}
                       <div className="overflow-hidden">
-                        <p className="font-medium text-sm text-gray-800 truncate">{u.firstName} {u.lastName}</p>
-                        <p className="text-xs text-gray-800 truncate">{u.email}</p>
+                        <p className="font-medium text-sm text-slate-900 dark:text-slate-100 truncate">{u.firstName} {u.lastName}</p>
+                        <p className="text-xs text-slate-900 dark:text-slate-100 truncate">{u.email}</p>
                       </div>
                     </div>
                     
                     <div className="flex flex-col gap-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-xs text-gray-800">Role</span>
+                        <span className="text-xs text-slate-900 dark:text-slate-100">Role</span>
                         <span className="text-[10px] font-medium uppercase tracking-widest text-blue-700 bg-blue-50 border border-blue-100/50 px-2 py-0.5 rounded-full">
                           {u.role.replace('_', ' ')}
                         </span>
                       </div>
                       {(u.role === 'student' || u.role === 'teacher') && (
                         <div className="flex justify-between items-center">
-                          <span className="text-xs text-gray-800">Class/Details</span>
-                          <span className="text-xs text-gray-800">
+                          <span className="text-xs text-slate-900 dark:text-slate-100">Class/Details</span>
+                          <span className="text-xs text-slate-900 dark:text-slate-100">
                             {u.role === 'student' ? (u.studentId || 'No ID') : 'Teacher'} • {classes.find(c => c.id === u.classId)?.name || 'Unassigned'}
                           </span>
                         </div>
                       )}
                       <div className="flex justify-between items-center">
-                        <span className="text-xs text-gray-800">Joined</span>
-                        <span className="text-xs text-gray-800">
+                        <span className="text-xs text-slate-900 dark:text-slate-100">Joined</span>
+                        <span className="text-xs text-slate-900 dark:text-slate-100">
                           {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '---'}
                         </span>
                       </div>
@@ -1068,7 +1068,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                         onClick={() => {
                           setViewingUser(u);
                         }}
-                        className="p-2 hover:bg-gray-100 text-gray-800 rounded-lg transition-colors"
+                        className="p-2 hover:bg-gray-100 text-slate-900 dark:text-slate-100 rounded-lg transition-colors"
                       >
                         <Eye size={16} />
                       </button>
@@ -1098,27 +1098,27 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                   </motion.div>
                 ))}
                 {filteredUsers.length === 0 && (
-                  <div className="py-8 text-center text-gray-800 text-sm">No users found matching your filters.</div>
+                  <div className="py-8 text-center text-slate-900 dark:text-slate-100 text-sm">No users found matching your filters.</div>
                 )}
               </div>
             </div>
           </div>
         ) : activeTab === 'parents' ? (
-          <div className="bg-white rounded-2xl border border-white/40 shadow-sm overflow-hidden flex flex-col">
-            <div className="p-4 md:p-4 border-b border-gray-100/50 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-gray-50/50">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-white/40 shadow-sm overflow-hidden flex flex-col">
+            <div className="p-4 md:p-4 border-b border-slate-100 dark:border-slate-800/50 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-slate-50 dark:bg-slate-800/50">
               <div>
-                <h3 className="font-medium text-2xl text-gray-800">Parents Directory</h3>
-                <p className="text-sm text-gray-800 font-medium mt-1">View and manage parent accounts and their children</p>
+                <h3 className="font-medium text-2xl text-slate-900 dark:text-slate-100">Parents Directory</h3>
+                <p className="text-sm text-slate-900 dark:text-slate-100 font-medium mt-1">View and manage parent accounts and their children</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
                 <div className="relative w-full sm:w-64">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-800" size={18} />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-900 dark:text-slate-100" size={18} />
                   <input
                     type="text"
                     placeholder="Search parents..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-11 pr-5 py-3 rounded-2xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-gray-800 transition-all shadow-sm cursor-text"
+                    className="w-full pl-11 pr-5 py-3 rounded-2xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all shadow-sm cursor-text"
                   />
                 </div>
                 <button
@@ -1136,7 +1136,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
             <div className="w-full">
               <div className="overflow-x-auto">
                 <table className="w-full text-left min-w-[600px]">
-                  <thead className="bg-gray-50/50 text-[10px] uppercase text-gray-800 font-medium tracking-[0.2em] border-b border-gray-100/50">
+                  <thead className="bg-slate-50 dark:bg-slate-800/50 text-[10px] uppercase text-slate-900 dark:text-slate-100 font-medium tracking-[0.2em] border-b border-slate-100 dark:border-slate-800/50">
                     <tr>
                       <th className="px-6 md:px-8 py-4 md:py-5">Parent Name</th>
                       <th className="px-6 md:px-8 py-4 md:py-5">Contact</th>
@@ -1144,7 +1144,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                       <th className="px-6 md:px-8 py-4 md:py-5 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100/50">
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
                     {sortedUsers.filter(u => u.role === 'parent' && (
                       u.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                       u.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -1169,14 +1169,14 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                               </div>
                             )}
                             <div className="overflow-hidden">
-                              <p className="font-medium text-sm text-gray-800 truncate">{u.firstName} {u.lastName}</p>
-                              <p className="text-xs text-gray-800 font-medium truncate mt-0.5">{u.email}</p>
+                              <p className="font-medium text-sm text-slate-900 dark:text-slate-100 truncate">{u.firstName} {u.lastName}</p>
+                              <p className="text-xs text-slate-900 dark:text-slate-100 font-medium truncate mt-0.5">{u.email}</p>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 md:px-8 py-4 md:py-6">
-                          <div className="flex items-center gap-2 text-gray-800">
-                            <Phone size={14} className="text-gray-800" />
+                          <div className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                            <Phone size={14} className="text-slate-900 dark:text-slate-100" />
                             <span className="text-sm font-medium">{u.phone || 'No phone'}</span>
                           </div>
                         </td>
@@ -1187,7 +1187,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                                 {sid}
                               </span>
                             ))}
-                            {!(u.parentStudentIds?.length || u.parentStudentId) && <span className="text-xs text-gray-800">No children linked</span>}
+                            {!(u.parentStudentIds?.length || u.parentStudentId) && <span className="text-xs text-slate-900 dark:text-slate-100">No children linked</span>}
                           </div>
                         </td>
                         <td className="px-6 md:px-8 py-4 md:py-6">
@@ -1197,7 +1197,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                                 e.stopPropagation();
                                 setViewingUser(u);
                               }}
-                              className="p-2.5 hover:bg-gray-100 text-gray-800 rounded-xl transition-colors hover:shadow-sm"
+                              className="p-2.5 hover:bg-gray-100 text-slate-900 dark:text-slate-100 rounded-xl transition-colors hover:shadow-sm"
                             >
                               <Eye size={18} />
                             </button>
@@ -1236,13 +1236,13 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
         ) : activeTab === 'settings' && (currentUserRole === 'school_admin' || currentUserRole === 'super_admin') ? (
           <SchoolSettings school={school} />
         ) : (
-          <div className="bg-white p-16 md:p-20 rounded-2xl border border-white/40 shadow-sm text-center max-w-2xl mx-auto relative overflow-hidden">
+          <div className="bg-white dark:bg-slate-900 p-16 md:p-20 rounded-2xl border border-white/40 shadow-sm text-center max-w-2xl mx-auto relative overflow-hidden">
              
              <div className="w-24 h-24 bg-blue-50 rounded-3xl flex items-center justify-center mx-auto mb-8 text-blue-600 shadow-sm border border-blue-100/50 relative z-10">
                 <Settings size={40} className="animate-spin-slow" />
              </div>
-             <h2 className="text-xl font-medium text-gray-800 mb-4 capitalize relative z-10">{activeTab.replace('_', ' ')} Module</h2>
-             <p className="text-gray-800 max-w-md mx-auto font-medium relative z-10">
+             <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100 mb-4 capitalize relative z-10">{activeTab.replace('_', ' ')} Module</h2>
+             <p className="text-slate-900 dark:text-slate-100 max-w-md mx-auto font-medium relative z-10">
                We are currently refining the {activeTab.replace('_', ' ')} management experience to match our new design standards.
              </p>
           </div>
@@ -1256,14 +1256,14 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                 initial={{ scale: 0.95, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                className="bg-white/95 backdrop-blur-xl p-5 sm:p-8 rounded-2xl sm:rounded-3xl max-w-2xl w-full shadow-2xl my-4 max-h-[95vh] overflow-y-auto border border-gray-100 relative"
+                className="bg-white dark:bg-slate-900/95 backdrop-blur-xl p-5 sm:p-8 rounded-2xl sm:rounded-3xl max-w-2xl w-full shadow-2xl my-4 max-h-[95vh] overflow-y-auto border border-slate-100 dark:border-slate-800 relative"
               >
                 <div className="flex justify-between items-start mb-6 sm:mb-8 relative z-10">
                   <div>
-                    <h3 className="text-xl font-medium text-gray-800">{editingUser ? 'Edit User' : `Add New ${newUser.role.replace('_', ' ')}`}</h3>
-                    <p className="text-gray-800 text-sm mt-1 font-medium">Manage school staff and student accounts.</p>
+                    <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100">{editingUser ? 'Edit User' : `Add New ${newUser.role.replace('_', ' ')}`}</h3>
+                    <p className="text-slate-900 dark:text-slate-100 text-sm mt-1 font-medium">Manage school staff and student accounts.</p>
                   </div>
-                  <button onClick={() => setShowAddUser(false)} className="p-2 text-gray-800 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors shrink-0">
+                  <button onClick={() => setShowAddUser(false)} className="p-2 text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-gray-100 rounded-full transition-colors shrink-0">
                     <X size={20} />
                   </button>
                 </div>
@@ -1272,11 +1272,11 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
 
                 <form onSubmit={handleSaveUser} className="space-y-6 md:space-y-5 relative z-10">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Role</label>
+                    <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Role</label>
                     <select
                       value={newUser.role}
                       onChange={e => setNewUser({ ...newUser, role: e.target.value as UserRole })}
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                       disabled={!!editingUser}
                     >
                       {(currentUserRole === 'super_admin' || currentUserRole === 'school_admin') && <option value="school_admin">Admin</option>}
@@ -1288,47 +1288,47 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">First Name</label>
+                      <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">First Name</label>
                       <input
                         required
                         type="text"
                         value={newUser.firstName}
                         onChange={e => setNewUser({ ...newUser, firstName: e.target.value })}
-                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                         placeholder="John"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Middle Name (Optional)</label>
+                      <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Middle Name (Optional)</label>
                       <input
                         type="text"
                         value={newUser.middleName}
                         onChange={e => setNewUser({ ...newUser, middleName: e.target.value })}
-                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                         placeholder="Middle Name"
                       />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Last Name</label>
+                      <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Last Name</label>
                       <input
                         required
                         type="text"
                         value={newUser.lastName}
                         onChange={e => setNewUser({ ...newUser, lastName: e.target.value })}
-                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                         placeholder="Doe"
                       />
                     </div>
                     {newUser.role === 'student' && (
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Registration Number</label>
+                        <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Registration Number</label>
                         <input
                           type="text"
                           value={newUser.registrationNumber}
                           onChange={e => setNewUser({ ...newUser, registrationNumber: e.target.value })}
-                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                           placeholder="e.g. REG-2023-001"
                         />
                       </div>
@@ -1337,7 +1337,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Photo</label>
+                      <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Photo</label>
                       <input
                         type="file"
                         accept="image/*"
@@ -1351,7 +1351,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                             reader.readAsDataURL(file);
                           }
                         }}
-                        className="w-full px-4 py-2.5 rounded-2xl border border-gray-200/50 bg-white/50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm file:mr-4 file:py-1.5 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 cursor-pointer"
+                        className="w-full px-4 py-2.5 rounded-2xl border border-gray-200/50 bg-white dark:bg-slate-900/50 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm file:mr-4 file:py-1.5 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 cursor-pointer"
                       />
                       {newUser.photoUrl && (
                         <div className="mt-3">
@@ -1361,12 +1361,12 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                     </div>
                     {newUser.role === 'student' && (
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Date of Birth</label>
+                        <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Date of Birth</label>
                         <input
                           type="date"
                           value={newUser.dob}
                           onChange={e => setNewUser({ ...newUser, dob: e.target.value })}
-                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                         />
                       </div>
                     )}
@@ -1375,11 +1375,11 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                   {newUser.role === 'student' && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Gender</label>
+                        <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Gender</label>
                         <select
                           value={newUser.gender || ''}
                           onChange={e => setNewUser({ ...newUser, gender: e.target.value as 'male' | 'female' })}
-                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                         >
                           <option value="">Select Gender</option>
                           <option value="male">Male</option>
@@ -1391,23 +1391,23 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Email Address</label>
+                      <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Email Address</label>
                       <input
                         required
                         type="email"
                         value={newUser.email}
                         onChange={e => setNewUser({ ...newUser, email: e.target.value })}
-                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                         placeholder="john@example.com"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Phone Number</label>
+                      <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Phone Number</label>
                       <input
                         type="tel"
                         value={newUser.phone}
                         onChange={e => setNewUser({ ...newUser, phone: e.target.value })}
-                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                         placeholder="e.g. +234..."
                       />
                     </div>
@@ -1415,26 +1415,26 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                   
                   {!editingUser && (
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Temporary Password</label>
+                      <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Temporary Password</label>
                       <div className="relative">
                         <input
                           required
                           type={showPassword ? "text" : "password"}
                           value={newUser.password}
                           onChange={e => setNewUser({ ...newUser, password: e.target.value })}
-                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200/50 bg-white/50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 pr-12"
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200/50 bg-white dark:bg-slate-900/50 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 pr-12"
                           placeholder="Min 6 characters"
                           minLength={6}
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-800 hover:text-gray-800 transition-colors"
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 transition-colors"
                         >
                           {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
                       </div>
-                      <p className="text-[10px] text-gray-800 ml-1 font-medium">User can log in with this password.</p>
+                      <p className="text-[10px] text-slate-900 dark:text-slate-100 ml-1 font-medium">User can log in with this password.</p>
                     </div>
                   )}
 
@@ -1442,24 +1442,24 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {newUser.role === 'student' && (
                         <div className="space-y-1.5">
-                          <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Student ID</label>
+                          <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Student ID</label>
                           <input
                             type="text"
                             value={newUser.studentId || ''}
                             onChange={e => setNewUser({ ...newUser, studentId: e.target.value })}
-                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                             placeholder="e.g. STU-2023-001"
                           />
                         </div>
                       )}
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">
+                        <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">
                           {newUser.role === 'student' ? 'Assign Class' : 'Primary Class'}
                         </label>
                         <select
                           value={newUser.classId}
                           onChange={e => setNewUser({ ...newUser, classId: e.target.value })}
-                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                         >
                           <option value="">Select Class</option>
                           {sortedClasses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -1470,7 +1470,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
 
                   {newUser.role === 'parent' && (
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Children Student IDs (Comma separated)</label>
+                      <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Children Student IDs (Comma separated)</label>
                       <input
                         type="text"
                         value={newUser._rawParentStudentIds !== undefined ? newUser._rawParentStudentIds : (newUser.parentStudentIds?.join(', ') || newUser.parentStudentId || '')}
@@ -1479,10 +1479,10 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                           const ids = val.split(',').map(id => id.trim()).filter(id => id.length > 0);
                           setNewUser({ ...newUser, parentStudentIds: ids, parentStudentId: ids[0] || '', _rawParentStudentIds: val });
                         }}
-                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                         placeholder="e.g. STU-001, STU-002"
                       />
-                      <p className="text-[10px] text-gray-800 ml-1 font-medium">Enter the Student IDs of the parent's children, separated by commas.</p>
+                      <p className="text-[10px] text-slate-900 dark:text-slate-100 ml-1 font-medium">Enter the Student IDs of the parent's children, separated by commas.</p>
                     </div>
                   )}
 
@@ -1490,7 +1490,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                     <button
                       type="button"
                       onClick={() => setShowAddUser(false)}
-                      className="w-full sm:flex-1 py-4 rounded-2xl border border-gray-200/50 font-medium text-gray-800 hover:bg-gray-50 hover:text-gray-800 transition-all text-sm shadow-sm"
+                      className="w-full sm:flex-1 py-4 rounded-2xl border border-gray-200/50 font-medium text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-100 transition-all text-sm shadow-sm"
                     >
                       Cancel
                     </button>
@@ -1515,7 +1515,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-white p-8 rounded-3xl max-w-lg w-full shadow-2xl border border-gray-100 max-h-[90vh] overflow-y-auto"
+                className="bg-white dark:bg-slate-900 p-8 rounded-3xl max-w-lg w-full shadow-2xl border border-slate-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto"
               >
                 <div className="flex justify-between items-start mb-8">
                   <div className="flex items-center gap-4">
@@ -1527,11 +1527,11 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                       </div>
                     )}
                     <div>
-                      <h3 className="text-2xl font-medium text-gray-800">{viewingUser.firstName} {viewingUser.lastName}</h3>
+                      <h3 className="text-2xl font-medium text-slate-900 dark:text-slate-100">{viewingUser.firstName} {viewingUser.lastName}</h3>
                       <p className="text-blue-600 font-medium text-sm uppercase tracking-widest">{viewingUser.role.replace('_', ' ')} Profile</p>
                     </div>
                   </div>
-                  <button onClick={() => setViewingUser(null)} className="p-2 text-gray-800 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors">
+                  <button onClick={() => setViewingUser(null)} className="p-2 text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-gray-100 rounded-full transition-colors">
                     <X size={24} />
                   </button>
                 </div>
@@ -1539,47 +1539,47 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                 <div className="space-y-6">
                   <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-1">
-                      <p className="text-[10px] font-medium uppercase tracking-widest text-gray-800">Email Address</p>
-                      <p className="text-gray-800 font-medium break-all">{viewingUser.email}</p>
+                      <p className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100">Email Address</p>
+                      <p className="text-slate-900 dark:text-slate-100 font-medium break-all">{viewingUser.email}</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[10px] font-medium uppercase tracking-widest text-gray-800">Phone Number</p>
-                      <p className="text-gray-800 font-medium">{viewingUser.phone || 'Not provided'}</p>
+                      <p className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100">Phone Number</p>
+                      <p className="text-slate-900 dark:text-slate-100 font-medium">{viewingUser.phone || 'Not provided'}</p>
                     </div>
                   </div>
 
                   {viewingUser.role === 'student' && (
                     <div className="grid grid-cols-2 gap-6">
                       <div className="space-y-1">
-                        <p className="text-[10px] font-medium uppercase tracking-widest text-gray-800">Student ID</p>
-                        <p className="text-gray-800 font-medium">{viewingUser.studentId || 'Not provided'}</p>
+                        <p className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100">Student ID</p>
+                        <p className="text-slate-900 dark:text-slate-100 font-medium">{viewingUser.studentId || 'Not provided'}</p>
                       </div>
                       <div className="space-y-1">
-                        <p className="text-[10px] font-medium uppercase tracking-widest text-gray-800">Class</p>
-                        <p className="text-gray-800 font-medium">{classes.find(c => c.id === viewingUser.classId)?.name || 'Not assigned'}</p>
+                        <p className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100">Class</p>
+                        <p className="text-slate-900 dark:text-slate-100 font-medium">{classes.find(c => c.id === viewingUser.classId)?.name || 'Not assigned'}</p>
                       </div>
                     </div>
                   )}
 
                   {viewingUser.role === 'parent' && (
                     <div className="space-y-3">
-                      <p className="text-[10px] font-medium uppercase tracking-widest text-gray-800">Linked Children</p>
+                      <p className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100">Linked Children</p>
                       <div className="space-y-2">
                         {(viewingUser.parentStudentIds || (viewingUser.parentStudentId ? [viewingUser.parentStudentId] : [])).map(sid => {
                           const student = users.find(u => u.studentId === sid);
                           return (
-                            <div key={sid} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
+                            <div key={sid} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-800">
                               <div className="flex items-center gap-3">
                                 {student?.photoUrl ? (
                                   <img src={student.photoUrl} alt="Profile" className="w-8 h-8 rounded-lg object-cover border border-gray-200" referrerPolicy="no-referrer" />
                                 ) : (
-                                  <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-blue-600 font-medium text-xs border border-gray-200">
+                                  <div className="w-8 h-8 rounded-lg bg-white dark:bg-slate-900 flex items-center justify-center text-blue-600 font-medium text-xs border border-gray-200">
                                     {student?.firstName?.charAt(0) || '?'}
                                   </div>
                                 )}
                                 <div>
-                                  <p className="text-sm font-medium text-gray-800">{student ? `${student.firstName} ${student.lastName}` : 'Unknown Student'}</p>
-                                  <p className="text-[10px] text-gray-800 font-medium">{sid}</p>
+                                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{student ? `${student.firstName} ${student.lastName}` : 'Unknown Student'}</p>
+                                  <p className="text-[10px] text-slate-900 dark:text-slate-100 font-medium">{sid}</p>
                                 </div>
                               </div>
                               {student && (
@@ -1591,13 +1591,13 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                           );
                         })}
                         {!(viewingUser.parentStudentIds?.length || viewingUser.parentStudentId) && (
-                          <p className="text-sm text-gray-800 italic">No children linked to this parent account.</p>
+                          <p className="text-sm text-slate-900 dark:text-slate-100 italic">No children linked to this parent account.</p>
                         )}
                       </div>
                     </div>
                   )}
 
-                  <div className="pt-6 border-t border-gray-100 flex gap-3">
+                  <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex gap-3">
                     <button
                       onClick={() => {
                         setEditingUser(viewingUser);
@@ -1611,7 +1611,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                     </button>
                     <button
                       onClick={() => setViewingUser(null)}
-                      className="flex-1 py-3 bg-gray-50 text-gray-800 rounded-xl font-medium hover:bg-gray-100 transition-all border border-gray-200"
+                      className="flex-1 py-3 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-xl font-medium hover:bg-gray-100 transition-all border border-gray-200"
                     >
                       Close
                     </button>
@@ -1630,22 +1630,22 @@ export const SchoolManagement = ({ school, onBack, currentUserRole = 'super_admi
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-white/40"
+                className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-white/40"
               >
                 <div className="p-4">
                   <div className="flex items-center gap-4 mb-6 text-red-600">
                     <div className="p-3 bg-red-50 rounded-2xl border border-red-100 shadow-sm">
                       <AlertTriangle size={20} />
                     </div>
-                    <h2 className="text-lg font-medium text-gray-800">Delete User</h2>
+                    <h2 className="text-lg font-medium text-slate-900 dark:text-slate-100">Delete User</h2>
                   </div>
-                  <p className="text-gray-800 font-medium mb-8">
+                  <p className="text-slate-900 dark:text-slate-100 font-medium mb-8">
                     Are you sure you want to remove this user? This action cannot be undone and will permanently delete their data from the system.
                   </p>
                   <div className="flex gap-4">
                     <button
                       onClick={() => setUserToDelete(null)}
-                      className="flex-1 py-4 rounded-2xl border border-gray-200/50 font-medium text-gray-800 hover:bg-gray-50 hover:text-gray-800 transition-all text-sm shadow-sm"
+                      className="flex-1 py-4 rounded-2xl border border-gray-200/50 font-medium text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-100 transition-all text-sm shadow-sm"
                     >
                       Cancel
                     </button>

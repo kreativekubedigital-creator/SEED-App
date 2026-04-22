@@ -90,10 +90,10 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
 
   const OfflinePaymentInfo = ({ invoice }: { invoice: Invoice }) => {
     return (
-      <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 text-center">
+      <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-800 text-center">
         <Construction size={20} className="mx-auto mb-1 text-orange-400" />
-        <p className="text-xs font-medium text-gray-800">Online Payment Pending</p>
-        <p className="text-[10px] text-gray-800 mt-1">
+        <p className="text-xs font-medium text-slate-900 dark:text-slate-100">Online Payment Pending</p>
+        <p className="text-[10px] text-slate-900 dark:text-slate-100 mt-1">
           Please contact the school bursary to make manual payments for ₦{(invoice.amount - invoice.amountPaid).toLocaleString()}.
         </p>
       </div>
@@ -108,22 +108,22 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
-          <h4 className="font-medium text-gray-800">Pending Invoices</h4>
+          <h4 className="font-medium text-slate-900 dark:text-slate-100">Pending Invoices</h4>
           {invoices.filter(i => i.status !== 'paid').map(inv => (
-            <div key={inv.id} className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+            <div key={inv.id} className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <p className="font-medium text-gray-800">Term {inv.termId} Fees</p>
-                  <p className="text-xs text-gray-800">Due: {new Date(inv.dueDate).toLocaleDateString()}</p>
+                  <p className="font-medium text-slate-900 dark:text-slate-100">Term {inv.termId} Fees</p>
+                  <p className="text-xs text-slate-900 dark:text-slate-100">Due: {new Date(inv.dueDate).toLocaleDateString()}</p>
                 </div>
                 <div className="text-right">
                   <p className="font-medium text-blue-600 text-lg">₦{(inv.amount - inv.amountPaid).toLocaleString()}</p>
-                  <p className="text-xs text-gray-800">Total: ₦{inv.amount.toLocaleString()}</p>
+                  <p className="text-xs text-slate-900 dark:text-slate-100">Total: ₦{inv.amount.toLocaleString()}</p>
                 </div>
               </div>
               <div className="space-y-2 mb-4">
                 {inv.items.map((item, idx) => (
-                  <div key={idx} className="flex justify-between text-sm text-gray-800">
+                  <div key={idx} className="flex justify-between text-sm text-slate-900 dark:text-slate-100">
                     <span>{item.name}</span>
                     <span>₦{item.amount.toLocaleString()}</span>
                   </div>
@@ -133,7 +133,7 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
             </div>
           ))}
           {invoices.filter(i => i.status !== 'paid').length === 0 && (
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 text-center text-gray-800">
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 text-center text-slate-900 dark:text-slate-100">
               <CheckCircle size={32} className="mx-auto mb-2 text-green-500" />
               <p>No pending invoices. You're all caught up!</p>
             </div>
@@ -141,24 +141,24 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
         </div>
 
         <div className="space-y-4">
-          <h4 className="font-medium text-gray-800">Payment History</h4>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <h4 className="font-medium text-slate-900 dark:text-slate-100">Payment History</h4>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
             {payments.length === 0 ? (
-              <div className="p-6 text-center text-gray-800">No payment history found.</div>
+              <div className="p-6 text-center text-slate-900 dark:text-slate-100">No payment history found.</div>
             ) : (
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {payments.map(pay => (
-                  <div key={pay.id} className="p-4 flex justify-between items-center hover:bg-gray-50">
+                  <div key={pay.id} className="p-4 flex justify-between items-center hover:bg-slate-50 dark:bg-slate-800">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600">
                         <CheckCircle size={20} />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-800">₦{pay.amount.toLocaleString()}</p>
-                        <p className="text-xs text-gray-800">{new Date(pay.date).toLocaleDateString()} • {pay.method}</p>
+                        <p className="font-medium text-slate-900 dark:text-slate-100">₦{pay.amount.toLocaleString()}</p>
+                        <p className="text-xs text-slate-900 dark:text-slate-100">{new Date(pay.date).toLocaleDateString()} • {pay.method}</p>
                       </div>
                     </div>
-                    <span className="text-xs font-mono text-gray-800 bg-gray-50 px-2 py-1 rounded">
+                    <span className="text-xs font-mono text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded">
                       {pay.reference.substring(0, 8)}...
                     </span>
                   </div>

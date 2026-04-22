@@ -129,11 +129,11 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
   return (
     <div className={containerClass}>
       <div className="print:hidden space-y-5">
-        <div className="bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-sm border border-white/50">
+        <div className="bg-white dark:bg-slate-900/80 backdrop-blur-md p-4 rounded-2xl shadow-sm border border-white/50">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <h2 className="text-xl font-medium text-gray-800 tracking-tight">{user.firstName} {user.lastName}</h2>
-              <p className="text-gray-800 font-medium text-xs uppercase tracking-widest mt-1">
+              <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100 tracking-tight">{user.firstName} {user.lastName}</h2>
+              <p className="text-slate-900 dark:text-slate-100 font-medium text-xs uppercase tracking-widest mt-1">
                 Class: {getClassName(user.classId || '')} • Reg No: {user.registrationNumber || 'N/A'}
               </p>
             </div>
@@ -149,14 +149,14 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
               <select
                 value={selectedSession}
                 onChange={e => setSelectedSession(e.target.value)}
-                className="px-4 py-2.5 rounded-2xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm text-gray-800 shadow-sm cursor-pointer"
+                className="px-4 py-2.5 rounded-2xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm text-slate-900 dark:text-slate-100 shadow-sm cursor-pointer"
               >
                 {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
             </div>
           </div>
 
-          <div className="flex gap-2 mt-8 p-1.5 bg-white/50 rounded-2xl w-fit">
+          <div className="flex gap-2 mt-8 p-1.5 bg-white dark:bg-slate-900/50 rounded-2xl w-fit">
             {['1st Term', '2nd Term', '3rd Term'].map((termName, index) => {
               const term = terms.find(t => t.name === termName);
               const colors = ['bg-orange-100', 'bg-blue-100', 'bg-purple-100'];
@@ -171,8 +171,8 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                   disabled={!term}
                   className={`px-6 py-2.5 rounded-xl text-sm font-medium transition-all ${
                     selectedTerm === term?.id 
-                      ? `${colorClass} text-gray-800 shadow-sm` 
-                      : 'text-gray-800 hover:text-gray-800 disabled:opacity-30'
+                      ? `${colorClass} text-slate-900 dark:text-slate-100 shadow-sm` 
+                      : 'text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 disabled:opacity-30'
                   }`}
                 >
                   {termName}
@@ -184,9 +184,9 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2 space-y-5">
-            <div className="bg-white/80 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm overflow-hidden">
               <div className="p-4 border-b border-white/50">
-                <h3 className="font-medium text-lg text-gray-800">Subject Performance</h3>
+                <h3 className="font-medium text-lg text-slate-900 dark:text-slate-100">Subject Performance</h3>
               </div>
               <AnimatePresence mode="wait">
                 {loading ? (
@@ -194,7 +194,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="p-20 flex flex-col items-center justify-center text-gray-800"
+                    className="p-20 flex flex-col items-center justify-center text-slate-900 dark:text-slate-100"
                   >
                     <Loader2 className="animate-spin mb-4" size={40} />
                     <p className="font-medium">Fetching results...</p>
@@ -208,7 +208,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                     {/* Desktop Table */}
                     <div className="hidden md:block overflow-x-auto">
                       <table className="w-full text-left">
-                        <thead className="bg-gray-50/50 text-[10px] uppercase tracking-widest text-gray-800 font-medium">
+                        <thead className="bg-slate-50 dark:bg-slate-800/50 text-[10px] uppercase tracking-widest text-slate-900 dark:text-slate-100 font-medium">
                           <tr>
                             <th className="px-6 py-5">Subject</th>
                             {caConfig.cas.map((ca, idx) => (
@@ -223,18 +223,18 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                         </thead>
                         <tbody className="divide-y divide-gray-50">
                           {results.map(result => (
-                            <tr key={result.id} className="hover:bg-gray-50/50 transition-colors group">
+                            <tr key={result.id} className="hover:bg-slate-50 dark:bg-slate-800/50 transition-colors group">
                               <td className="px-6 py-5">
-                                <div className="font-medium text-gray-800 group-hover:text-blue-600 transition-colors">{getSubjectName(result.subjectId)}</div>
+                                <div className="font-medium text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors">{getSubjectName(result.subjectId)}</div>
                               </td>
                               {caConfig.cas.map((ca, idx) => {
                                 const val = result.cas?.[ca.name] !== undefined ? result.cas[ca.name] : (idx === 0 ? result.ca1 : idx === 1 ? result.ca2 : idx === 2 ? result.ca3 : null);
                                 return (
-                                  <td key={idx} className="px-4 py-5 text-center font-medium text-gray-800">{val !== null && val !== undefined ? val : '-'}</td>
+                                  <td key={idx} className="px-4 py-5 text-center font-medium text-slate-900 dark:text-slate-100">{val !== null && val !== undefined ? val : '-'}</td>
                                 );
                               })}
-                              <td className="px-4 py-5 text-center font-medium text-gray-800">{result.caTotal || 0}</td>
-                              <td className="px-4 py-5 text-center font-medium text-gray-800">{result.exam !== null && result.exam !== undefined ? result.exam : '-'}</td>
+                              <td className="px-4 py-5 text-center font-medium text-slate-900 dark:text-slate-100">{result.caTotal || 0}</td>
+                              <td className="px-4 py-5 text-center font-medium text-slate-900 dark:text-slate-100">{result.exam !== null && result.exam !== undefined ? result.exam : '-'}</td>
                               <td className="px-4 py-5 text-center font-medium text-blue-600 bg-blue-50/20">{result.finalScore || 0}</td>
                               <td className="px-4 py-5 text-center">
                                 <span className={`inline-flex items-center justify-center w-10 h-10 rounded-xl font-medium text-sm ${
@@ -247,13 +247,13 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                                 </span>
                               </td>
                               <td className="px-6 py-5">
-                                <span className="text-[10px] font-medium text-gray-800 uppercase tracking-wider">{result.remark || '-'}</span>
+                                <span className="text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider">{result.remark || '-'}</span>
                               </td>
                             </tr>
                           ))}
                           {results.length === 0 && (
                             <tr>
-                              <td colSpan={caConfig.cas.length + 5} className="px-6 py-20 text-center text-gray-800 font-medium">
+                              <td colSpan={caConfig.cas.length + 5} className="px-6 py-20 text-center text-slate-900 dark:text-slate-100 font-medium">
                                 No results found for this term.
                               </td>
                             </tr>
@@ -263,11 +263,11 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                     </div>
 
                     {/* Mobile Cards */}
-                    <div className="md:hidden flex flex-col gap-4 p-4 bg-gray-50/30">
+                    <div className="md:hidden flex flex-col gap-4 p-4 bg-slate-50 dark:bg-slate-800/30">
                       {results.map(result => (
-                        <div key={result.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex flex-col gap-4">
+                        <div key={result.id} className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-4 flex flex-col gap-4">
                           <div className="flex items-center justify-between">
-                            <div className="font-medium text-sm text-gray-800">{getSubjectName(result.subjectId)}</div>
+                            <div className="font-medium text-sm text-slate-900 dark:text-slate-100">{getSubjectName(result.subjectId)}</div>
                             <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-medium text-sm ${
                               result.grade === 'A' ? 'bg-emerald-50 text-emerald-600' :
                               result.grade === 'B' ? 'bg-blue-50 text-blue-600' :
@@ -283,8 +283,8 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                               const val = result.cas?.[ca.name] !== undefined ? result.cas[ca.name] : (idx === 0 ? result.ca1 : idx === 1 ? result.ca2 : idx === 2 ? result.ca3 : null);
                               return (
                                 <div key={idx} className="flex flex-col items-center justify-center">
-                                  <span className="text-[10px] text-gray-800 mb-1">{ca.name}</span>
-                                  <span className="font-medium text-gray-800">{val !== null && val !== undefined ? val : '-'}</span>
+                                  <span className="text-[10px] text-slate-900 dark:text-slate-100 mb-1">{ca.name}</span>
+                                  <span className="font-medium text-slate-900 dark:text-slate-100">{val !== null && val !== undefined ? val : '-'}</span>
                                 </div>
                               );
                             })}
@@ -292,12 +292,12 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                           
                           <div className="grid grid-cols-3 gap-2 pt-3 border-t border-gray-50">
                             <div className="flex flex-col items-center justify-center">
-                              <span className="text-[10px] text-gray-800 mb-1">CA Total</span>
-                              <span className="font-medium text-gray-800">{result.caTotal || 0}</span>
+                              <span className="text-[10px] text-slate-900 dark:text-slate-100 mb-1">CA Total</span>
+                              <span className="font-medium text-slate-900 dark:text-slate-100">{result.caTotal || 0}</span>
                             </div>
                             <div className="flex flex-col items-center justify-center">
-                              <span className="text-[10px] text-gray-800 mb-1">Exam</span>
-                              <span className="font-medium text-gray-800">{result.exam !== null && result.exam !== undefined ? result.exam : '-'}</span>
+                              <span className="text-[10px] text-slate-900 dark:text-slate-100 mb-1">Exam</span>
+                              <span className="font-medium text-slate-900 dark:text-slate-100">{result.exam !== null && result.exam !== undefined ? result.exam : '-'}</span>
                             </div>
                             <div className="flex flex-col items-center justify-center">
                               <span className="text-[10px] text-blue-400/80 mb-1">Final</span>
@@ -306,13 +306,13 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                           </div>
                           
                           <div className="flex justify-between items-center pt-3 border-t border-gray-50">
-                            <span className="text-xs text-gray-800">Remark</span>
-                            <span className="text-[10px] font-medium text-gray-800 uppercase tracking-wider">{result.remark || '-'}</span>
+                            <span className="text-xs text-slate-900 dark:text-slate-100">Remark</span>
+                            <span className="text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider">{result.remark || '-'}</span>
                           </div>
                         </div>
                       ))}
                       {results.length === 0 && (
-                        <div className="py-8 text-center text-gray-800 text-sm">No results found for this term.</div>
+                        <div className="py-8 text-center text-slate-900 dark:text-slate-100 text-sm">No results found for this term.</div>
                       )}
                     </div>
                   </motion.div>
@@ -322,15 +322,15 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
           </div>
 
           <div className="space-y-5">
-            <div className="bg-white/80 backdrop-blur-md p-4 rounded-2xl border border-white/50 shadow-sm">
-              <h3 className="font-medium text-lg text-gray-800 mb-6">Summary</h3>
+            <div className="bg-white dark:bg-slate-900/80 backdrop-blur-md p-4 rounded-2xl border border-white/50 shadow-sm">
+              <h3 className="font-medium text-lg text-slate-900 dark:text-slate-100 mb-6">Summary</h3>
               <div className="space-y-5">
                 <div className="flex justify-between items-center p-4 rounded-2xl bg-blue-100 border border-white/50">
                   <div>
                     <p className="text-[10px] font-medium text-gray-700 uppercase tracking-widest">Average Score</p>
-                    <p className="text-xl font-medium text-gray-800">{stats.average.toFixed(1)}%</p>
+                    <p className="text-xl font-medium text-slate-900 dark:text-slate-100">{stats.average.toFixed(1)}%</p>
                   </div>
-                  <div className="w-10 h-10 rounded-xl bg-white/40 flex items-center justify-center text-gray-800 shadow-sm">
+                  <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900/40 flex items-center justify-center text-slate-900 dark:text-slate-100 shadow-sm">
                     <TrendingUp size={20} />
                   </div>
                 </div>
@@ -338,47 +338,47 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 rounded-2xl bg-orange-100 border border-white/50">
                     <p className="text-[10px] font-medium text-gray-700 uppercase tracking-widest">Total Score</p>
-                    <p className="text-xl font-medium text-gray-800">{stats.total}</p>
+                    <p className="text-xl font-medium text-slate-900 dark:text-slate-100">{stats.total}</p>
                   </div>
                   <div className="p-4 rounded-2xl bg-purple-100 border border-white/50">
                     <p className="text-[10px] font-medium text-gray-700 uppercase tracking-widest">Overall Grade</p>
-                    <p className="text-xl font-medium text-gray-800">{getOverallGrade(stats.average)}</p>
+                    <p className="text-xl font-medium text-slate-900 dark:text-slate-100">{getOverallGrade(stats.average)}</p>
                   </div>
                 </div>
 
                 <div className="space-y-3">
                   <div className="flex items-center gap-4 p-4 rounded-2xl bg-green-100 border border-white/50">
-                    <div className="w-10 h-10 rounded-xl bg-white/40 flex items-center justify-center text-gray-800">
+                    <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900/40 flex items-center justify-center text-slate-900 dark:text-slate-100">
                       <Star size={20} />
                     </div>
                     <div>
                       <p className="text-[10px] font-medium text-gray-700 uppercase tracking-widest">Best Subject</p>
-                      <p className="font-medium text-gray-800">{stats.best ? getSubjectName(stats.best.subjectId) : 'N/A'}</p>
+                      <p className="font-medium text-slate-900 dark:text-slate-100">{stats.best ? getSubjectName(stats.best.subjectId) : 'N/A'}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-4 p-4 rounded-2xl bg-pink-100 border border-white/50">
-                    <div className="w-10 h-10 rounded-xl bg-white/40 flex items-center justify-center text-gray-800">
+                    <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900/40 flex items-center justify-center text-slate-900 dark:text-slate-100">
                       <Target size={20} />
                     </div>
                     <div>
                       <p className="text-[10px] font-medium text-gray-700 uppercase tracking-widest">Needs Focus</p>
-                      <p className="font-medium text-gray-800">{stats.weakest ? getSubjectName(stats.weakest.subjectId) : 'N/A'}</p>
+                      <p className="font-medium text-slate-900 dark:text-slate-100">{stats.weakest ? getSubjectName(stats.weakest.subjectId) : 'N/A'}</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-yellow-100 p-4 rounded-2xl text-gray-800 shadow-xl shadow-yellow-200/50 relative overflow-hidden">
+            <div className="bg-yellow-100 p-4 rounded-2xl text-slate-900 dark:text-slate-100 shadow-xl shadow-yellow-200/50 relative overflow-hidden">
               <div className="relative z-10">
                 <Award className="mb-4 opacity-50" size={40} />
                 <h4 className="text-xl font-medium mb-2">Academic Excellence</h4>
-                <p className="text-gray-800 text-sm leading-relaxed">
+                <p className="text-slate-900 dark:text-slate-100 text-sm leading-relaxed">
                   Keep up the great work! Your performance in {stats.best ? getSubjectName(stats.best.subjectId) : 'your subjects'} is outstanding.
                 </p>
               </div>
-              <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-white/60 rounded-full blur-2xl" />
+              <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-white dark:bg-slate-900/60 rounded-full blur-2xl" />
             </div>
           </div>
         </div>
@@ -397,10 +397,10 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
+              className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
             >
-              <div className="flex items-center justify-between p-6 border-b border-gray-100">
-                <h3 className="text-xl font-medium text-gray-800">Student Report Card Preview</h3>
+              <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
+                <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100">Student Report Card Preview</h3>
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => window.print()}
@@ -411,7 +411,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                   </button>
                   <button
                     onClick={() => setShowReportCard(false)}
-                    className="p-2 text-gray-800 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-colors"
+                    className="p-2 text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-gray-100 rounded-xl transition-colors"
                   >
                     <X size={24} />
                   </button>

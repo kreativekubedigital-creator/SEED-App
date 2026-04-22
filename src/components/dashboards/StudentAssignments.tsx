@@ -112,8 +112,8 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-2">
-        <h3 className="text-2xl font-medium text-gray-800 tracking-tight">My Assignments</h3>
-        <p className="text-gray-800 font-medium">Track your homework, submit answers, and view your grades.</p>
+        <h3 className="text-2xl font-medium text-slate-900 dark:text-slate-100 tracking-tight">My Assignments</h3>
+        <p className="text-slate-900 dark:text-slate-100 font-medium">Track your homework, submit answers, and view your grades.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -135,7 +135,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
               className={`group relative ${colorClass} rounded-3xl border border-white/40 transition-all duration-300 flex flex-col overflow-hidden shadow-sm`}
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
               {/* Status Ribbon/Badge */}
               <div className="absolute top-4 right-4 z-10">
                 <div className={`px-3 py-1.5 rounded-full text-[10px] font-medium uppercase tracking-wider border ${
@@ -143,7 +143,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                   isSubmitted ? 'bg-blue-50 text-blue-700 border-blue-200' :
                   isOverdue ? 'bg-red-50 text-red-700 border-red-200' :
                   isInProgress ? 'bg-indigo-50 text-indigo-700 border-indigo-200' :
-                  'bg-white/80 text-gray-800 border-white/50'
+                  'bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 border-white/50'
                 }`}>
                   {isGraded ? `Graded: ${submission?.score}/${submission?.totalScore}` : 
                    isSubmitted ? 'Submitted' : 
@@ -155,30 +155,30 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
 
               <div className={`p-6 flex-1 flex flex-col gap-4 relative z-10`}>
                 <div className="flex items-center gap-3">
-                  <div className={`p-3 rounded-2xl bg-white/60 text-gray-800 shadow-sm`}>
+                  <div className={`p-3 rounded-2xl bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 shadow-sm`}>
                     <FileText size={24} />
                   </div>
                   <div>
                     <span className="text-[10px] font-medium uppercase tracking-widest text-gray-700 block mb-0.5">
                       {getSubjectName(assignment.subjectId)}
                     </span>
-                    <h4 className="font-medium text-gray-800 text-lg leading-tight">
+                    <h4 className="font-medium text-slate-900 dark:text-slate-100 text-lg leading-tight">
                       {assignment.title}
                     </h4>
                   </div>
                 </div>
 
-                <p className="text-sm text-gray-800 font-medium line-clamp-2 min-h-[2.5rem]">
+                <p className="text-sm text-slate-900 dark:text-slate-100 font-medium line-clamp-2 min-h-[2.5rem]">
                   {assignment.description}
                 </p>
 
                 <div className="flex flex-wrap items-center gap-4 mt-auto pt-4 border-t border-white/20">
-                  <div className={`flex items-center gap-2 text-xs font-medium text-gray-800`}>
+                  <div className={`flex items-center gap-2 text-xs font-medium text-slate-900 dark:text-slate-100`}>
                     <Calendar size={14} />
                     Due: {new Date(assignment.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                   </div>
                   {!submission && !isOverdue && (
-                    <div className="flex items-center gap-2 text-xs font-medium text-gray-800">
+                    <div className="flex items-center gap-2 text-xs font-medium text-slate-900 dark:text-slate-100">
                       <Clock size={14} />
                       {Math.ceil((new Date(assignment.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days left
                     </div>
@@ -190,7 +190,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                 {submission ? (
                   <button
                     onClick={() => setSelectedAssignment(assignment)}
-                    className="w-full py-3 rounded-2xl bg-white/40 text-gray-800 border border-white/50 text-sm font-medium hover:bg-white/60 transition-all flex items-center justify-center gap-2 shadow-sm"
+                    className="w-full py-3 rounded-2xl bg-white dark:bg-slate-900/40 text-slate-900 dark:text-slate-100 border border-white/50 text-sm font-medium hover:bg-white dark:bg-slate-900/60 transition-all flex items-center justify-center gap-2 shadow-sm"
                   >
                     View Submission <ChevronRight size={18} />
                   </button>
@@ -200,8 +200,8 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                     disabled={isOverdue}
                     className={`w-full py-3 rounded-2xl text-sm font-medium transition-all flex items-center justify-center gap-2 shadow-sm ${
                       isOverdue 
-                        ? 'bg-white/50 text-gray-600 cursor-not-allowed border border-white/30' 
-                        : 'bg-white text-gray-800 hover:bg-gray-50'
+                        ? 'bg-white dark:bg-slate-900/50 text-gray-600 cursor-not-allowed border border-white/30' 
+                        : 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800'
                     }`}
                   >
                     {isOverdue ? 'Assignment Closed' : 'Answer Now'} <ChevronRight size={18} />
@@ -212,8 +212,8 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
           );
         })}
         {assignments.length === 0 && (
-          <div className="col-span-full py-12 text-center bg-white/80 backdrop-blur-md rounded-2xl border border-white/40 border-dashed">
-            <p className="text-gray-800 font-medium">No assignments found for your class.</p>
+          <div className="col-span-full py-12 text-center bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/40 border-dashed">
+            <p className="text-slate-900 dark:text-slate-100 font-medium">No assignments found for your class.</p>
           </div>
         )}
       </div>
@@ -226,14 +226,14 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="bg-white rounded-3xl p-6 w-full max-w-3xl shadow-2xl max-h-[90vh] overflow-y-auto"
+              className="bg-white dark:bg-slate-900 rounded-3xl p-6 w-full max-w-3xl shadow-2xl max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
                 <div>
-                  <h3 className="text-2xl font-medium text-gray-800">
+                  <h3 className="text-2xl font-medium text-slate-900 dark:text-slate-100">
                     {isEditing ? 'Edit Submission' : selectedAssignment.title}
                   </h3>
-                  <p className="text-gray-800 font-medium">{getSubjectName(selectedAssignment.subjectId)}</p>
+                  <p className="text-slate-900 dark:text-slate-100 font-medium">{getSubjectName(selectedAssignment.subjectId)}</p>
                 </div>
                 <button 
                   onClick={() => {
@@ -256,14 +256,14 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
               {getSubmission(selectedAssignment.id) && !isEditing ? (
                 /* View Mode */
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                  <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
                         <CheckCircle2 size={20} />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-800">Assignment Submitted</p>
-                        <p className="text-xs text-gray-800 font-medium">{new Date(getSubmission(selectedAssignment.id)!.submittedAt).toLocaleString()}</p>
+                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Assignment Submitted</p>
+                        <p className="text-xs text-slate-900 dark:text-slate-100 font-medium">{new Date(getSubmission(selectedAssignment.id)!.submittedAt).toLocaleString()}</p>
                       </div>
                     </div>
                     {getSubmission(selectedAssignment.id)?.status === 'submitted' && (
@@ -272,7 +272,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                         whileTap={{ scale: 0.95 }}
                         transition={{ type: "spring", stiffness: 400, damping: 17 }}
                         onClick={() => startEditing(selectedAssignment)}
-                        className="px-4 py-2 rounded-xl bg-white border border-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-50 transition-all shadow-sm"
+                        className="px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-gray-200 text-sm font-medium text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 transition-all shadow-sm"
                       >
                         Edit Answers
                       </motion.button>
@@ -280,28 +280,28 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                   </div>
 
                   <div className="space-y-4">
-                    <h4 className="text-lg font-medium text-gray-800">Your Answers</h4>
+                    <h4 className="text-lg font-medium text-slate-900 dark:text-slate-100">Your Answers</h4>
                     {(selectedAssignment.questions || []).length > 0 ? (
                       (selectedAssignment.questions || []).map((q, idx) => {
                         const sub = getSubmission(selectedAssignment.id);
                         const answer = sub?.answers.find(a => a.questionId === q.id)?.answer || 'No answer';
                         return (
-                          <div key={q.id} className="p-5 rounded-2xl bg-white border border-gray-100 shadow-sm space-y-3">
+                          <div key={q.id} className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm space-y-3">
                             <div className="flex justify-between items-start">
-                              <p className="font-medium text-gray-800 text-sm flex gap-2">
+                              <p className="font-medium text-slate-900 dark:text-slate-100 text-sm flex gap-2">
                                 <span className="text-blue-600">Q{idx + 1}.</span> {q.text}
                               </p>
                             </div>
-                            <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 text-sm text-gray-800 font-medium italic">
+                            <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-800 text-sm text-slate-900 dark:text-slate-100 font-medium italic">
                               "{answer}"
                             </div>
                           </div>
                         );
                       })
                     ) : (
-                      <div className="p-5 rounded-2xl bg-white border border-gray-100 shadow-sm space-y-3">
-                        <p className="font-medium text-gray-800 text-sm">General Response</p>
-                        <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 text-sm text-gray-800 font-medium italic">
+                      <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm space-y-3">
+                        <p className="font-medium text-slate-900 dark:text-slate-100 text-sm">General Response</p>
+                        <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-800 text-sm text-slate-900 dark:text-slate-100 font-medium italic">
                           "{getSubmission(selectedAssignment.id)?.answers.find(a => a.questionId === 'general')?.answer || 'No answer'}"
                         </div>
                       </div>
@@ -312,10 +312,10 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                     <motion.div 
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="pt-6 border-t border-gray-100 space-y-4"
+                      className="pt-6 border-t border-slate-100 dark:border-slate-800 space-y-4"
                     >
                       <div className="flex items-center gap-4 p-6 rounded-3xl bg-emerald-50 border border-emerald-100">
-                        <div className="p-4 bg-white text-emerald-600 rounded-2xl shadow-sm">
+                        <div className="p-4 bg-white dark:bg-slate-900 text-emerald-600 rounded-2xl shadow-sm">
                           <Award size={32} />
                         </div>
                         <div>
@@ -326,13 +326,13 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                         </div>
                       </div>
                       {getSubmission(selectedAssignment.id)?.feedback && (
-                        <div className="p-5 rounded-2xl bg-white border border-gray-100 shadow-sm flex gap-4">
+                        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm flex gap-4">
                           <div className="p-2 bg-blue-50 text-blue-600 rounded-lg h-fit">
                             <MessageSquare size={20} />
                           </div>
                           <div>
-                            <h5 className="text-xs font-medium text-gray-800 uppercase tracking-widest mb-1">Teacher's Feedback</h5>
-                            <p className="text-sm text-gray-800 font-medium leading-relaxed">"{getSubmission(selectedAssignment.id)?.feedback}"</p>
+                            <h5 className="text-xs font-medium text-slate-900 dark:text-slate-100 uppercase tracking-widest mb-1">Teacher's Feedback</h5>
+                            <p className="text-sm text-slate-900 dark:text-slate-100 font-medium leading-relaxed">"{getSubmission(selectedAssignment.id)?.feedback}"</p>
                           </div>
                         </div>
                       )}
@@ -350,7 +350,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                           style={{ width: `${(Object.keys(answers).length / (selectedAssignment.questions || []).length) * 100}%` }}
                         ></div>
                       </div>
-                      <span className="text-xs font-medium text-gray-800">
+                      <span className="text-xs font-medium text-slate-900 dark:text-slate-100">
                         {Object.keys(answers).length} of {(selectedAssignment.questions || []).length} answered
                       </span>
                     </div>
@@ -359,8 +359,8 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                   <div className="space-y-8">
                     {(selectedAssignment.questions || []).length > 0 ? (
                       (selectedAssignment.questions || []).map((q, idx) => (
-                        <div key={q.id} className="space-y-4 p-6 rounded-3xl bg-gray-50/50 border border-gray-100 transition-all hover:bg-white hover:shadow-md group/q">
-                          <label className="block font-medium text-gray-800 text-lg group-hover/q:text-blue-600 transition-colors">
+                        <div key={q.id} className="space-y-4 p-6 rounded-3xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 transition-all hover:bg-white dark:bg-slate-900 hover:shadow-md group/q">
+                          <label className="block font-medium text-slate-900 dark:text-slate-100 text-lg group-hover/q:text-blue-600 transition-colors">
                             <span className="text-blue-600 mr-2">Question {idx + 1}:</span> {q.text}
                           </label>
                           
@@ -377,7 +377,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                                   className={`p-4 rounded-2xl border text-left transition-all font-medium text-sm ${
                                     answers[q.id] === opt 
                                       ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-200 scale-[1.02]' 
-                                      : 'bg-white border-gray-200 text-gray-800 hover:border-blue-300 hover:bg-blue-50/30'
+                                      : 'bg-white dark:bg-slate-900 border-gray-200 text-slate-900 dark:text-slate-100 hover:border-blue-300 hover:bg-blue-50/30'
                                   }`}
                                 >
                                   {opt}
@@ -390,10 +390,10 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                                 required
                                 value={answers[q.id] || ''}
                                 onChange={e => setAnswers({ ...answers, [q.id]: e.target.value })}
-                                className="w-full px-5 py-4 rounded-2xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all min-h-[150px] bg-white text-gray-800 font-medium placeholder:text-gray-800"
+                                className="w-full px-5 py-4 rounded-2xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all min-h-[150px] bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-medium placeholder:text-slate-900 dark:text-slate-100"
                                 placeholder="Type your detailed answer here..."
                               />
-                              <div className="absolute bottom-4 right-4 text-[10px] font-medium text-gray-800 uppercase tracking-widest pointer-events-none">
+                              <div className="absolute bottom-4 right-4 text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-widest pointer-events-none">
                                 {answers[q.id]?.length || 0} characters
                               </div>
                             </div>
@@ -401,8 +401,8 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                         </div>
                       ))
                     ) : (
-                      <div className="space-y-4 p-6 rounded-3xl bg-gray-50/50 border border-gray-100 transition-all hover:bg-white hover:shadow-md group/q">
-                        <label className="block font-medium text-gray-800 text-lg group-hover/q:text-blue-600 transition-colors">
+                      <div className="space-y-4 p-6 rounded-3xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 transition-all hover:bg-white dark:bg-slate-900 hover:shadow-md group/q">
+                        <label className="block font-medium text-slate-900 dark:text-slate-100 text-lg group-hover/q:text-blue-600 transition-colors">
                           Your Answer
                         </label>
                         <div className="relative">
@@ -410,10 +410,10 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                             required
                             value={answers['general'] || ''}
                             onChange={e => setAnswers({ ...answers, ['general']: e.target.value })}
-                            className="w-full px-5 py-4 rounded-2xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all min-h-[250px] bg-white text-gray-800 font-medium placeholder:text-gray-800"
+                            className="w-full px-5 py-4 rounded-2xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all min-h-[250px] bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-medium placeholder:text-slate-900 dark:text-slate-100"
                             placeholder="Type your response to the assignment instructions here..."
                           />
-                          <div className="absolute bottom-4 right-4 text-[10px] font-medium text-gray-800 uppercase tracking-widest pointer-events-none">
+                          <div className="absolute bottom-4 right-4 text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-widest pointer-events-none">
                             {answers['general']?.length || 0} characters
                           </div>
                         </div>
@@ -421,7 +421,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                     )}
                   </div>
 
-                  <div className="flex flex-col sm:flex-row justify-end gap-3 pt-8 border-t border-gray-100">
+                  <div className="flex flex-col sm:flex-row justify-end gap-3 pt-8 border-t border-slate-100 dark:border-slate-800">
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -432,7 +432,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                         setIsEditing(false);
                         setAnswers({});
                       }}
-                      className="px-8 py-4 rounded-2xl font-medium text-gray-800 hover:bg-gray-100 transition-all"
+                      className="px-8 py-4 rounded-2xl font-medium text-slate-900 dark:text-slate-100 hover:bg-gray-100 transition-all"
                     >
                       {isEditing ? 'Cancel Edit' : 'Save for Later'}
                     </motion.button>

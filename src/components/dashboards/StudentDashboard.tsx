@@ -128,7 +128,7 @@ export const StudentDashboard = ({ user }: { user: UserProfile }) => {
   return (
     <div className={containerClass}>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="flex flex-wrap bg-white/80 backdrop-blur-md p-1 rounded-xl border border-gray-200/50 bg-gray-50/50">
+        <div className="flex flex-wrap bg-white dark:bg-slate-900/80 backdrop-blur-md p-1 rounded-xl border border-gray-200/50 bg-slate-50 dark:bg-slate-800/50">
           {(['overview', 'lessons', 'assignments', 'quizzes', 'results', 'games', 'ai_study_buddy'] as const).map((tab, index) => {
             const colors = [
               'bg-orange-100', 'bg-blue-100', 'bg-purple-100', 
@@ -140,7 +140,7 @@ export const StudentDashboard = ({ user }: { user: UserProfile }) => {
                 key={tab}
                 onClick={() => setActiveTab(tab as any)}
                 className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize transition-all duration-300 ${
-                  activeTab === tab ? `${colorClass} text-gray-800 shadow-md` : 'text-gray-800 hover:text-gray-800 hover:bg-gray-50'
+                  activeTab === tab ? `${colorClass} text-slate-900 dark:text-slate-100 shadow-md` : 'text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800'
                 }`}
               >
                 {tab.replace(/_/g, ' ')}
@@ -154,74 +154,74 @@ export const StudentDashboard = ({ user }: { user: UserProfile }) => {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} className="bg-orange-100 p-4 rounded-2xl shadow-sm border border-white/50 transition-all duration-300 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
               <div className="flex items-center gap-4 mb-4 relative z-10">
-                <div className="p-2.5 bg-white/60 rounded-2xl text-gray-800 shadow-sm"><FileText size={20} strokeWidth={2.5} /></div>
-                <span className="text-gray-800 font-medium text-sm uppercase tracking-wider">Active Assignments</span>
+                <div className="p-2.5 bg-white dark:bg-slate-900/60 rounded-2xl text-slate-900 dark:text-slate-100 shadow-sm"><FileText size={20} strokeWidth={2.5} /></div>
+                <span className="text-slate-900 dark:text-slate-100 font-medium text-sm uppercase tracking-wider">Active Assignments</span>
               </div>
-              <p className="text-xl font-medium text-gray-800 relative z-10">{assignments.length}</p>
+              <p className="text-xl font-medium text-slate-900 dark:text-slate-100 relative z-10">{assignments.length}</p>
             </motion.div>
             <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} className="bg-blue-100 p-4 rounded-2xl shadow-sm border border-white/50 cursor-pointer transition-all duration-300 relative overflow-hidden group" onClick={() => setActiveTab('quizzes')}>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
               <div className="flex items-center gap-4 mb-4 relative z-10">
-                <div className="p-2.5 bg-white/60 rounded-2xl text-gray-800 shadow-sm"><CheckSquare size={20} strokeWidth={2.5} /></div>
-                <span className="text-gray-800 font-medium text-sm uppercase tracking-wider">Quizzes</span>
+                <div className="p-2.5 bg-white dark:bg-slate-900/60 rounded-2xl text-slate-900 dark:text-slate-100 shadow-sm"><CheckSquare size={20} strokeWidth={2.5} /></div>
+                <span className="text-slate-900 dark:text-slate-100 font-medium text-sm uppercase tracking-wider">Quizzes</span>
               </div>
-              <p className="text-xl font-medium text-gray-800 relative z-10">View</p>
+              <p className="text-xl font-medium text-slate-900 dark:text-slate-100 relative z-10">View</p>
             </motion.div>
             <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} className="bg-purple-100 p-4 rounded-2xl shadow-sm border border-white/50 transition-all duration-300 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
               <div className="flex items-center gap-4 mb-4 relative z-10">
-                <div className="p-2.5 bg-white/60 rounded-2xl text-gray-800 shadow-sm"><Flame size={20} strokeWidth={2.5} /></div>
-                <span className="text-gray-800 font-medium text-sm uppercase tracking-wider">Daily Streak</span>
+                <div className="p-2.5 bg-white dark:bg-slate-900/60 rounded-2xl text-slate-900 dark:text-slate-100 shadow-sm"><Flame size={20} strokeWidth={2.5} /></div>
+                <span className="text-slate-900 dark:text-slate-100 font-medium text-sm uppercase tracking-wider">Daily Streak</span>
               </div>
-              <p className="text-xl font-medium text-gray-800 relative z-10">{user.streakCount || 0} Days 🔥</p>
+              <p className="text-xl font-medium text-slate-900 dark:text-slate-100 relative z-10">{user.streakCount || 0} Days 🔥</p>
             </motion.div>
             <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} className="bg-pink-100 p-4 rounded-2xl shadow-sm border border-white/50 transition-all duration-300 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
               <div className="flex items-center gap-4 mb-4 relative z-10">
-                <div className="p-2.5 bg-white/60 rounded-2xl text-gray-800 shadow-sm"><Trophy size={20} strokeWidth={2.5} /></div>
-                <span className="text-gray-800 font-medium text-sm uppercase tracking-wider">Level {user.level || 1}</span>
+                <div className="p-2.5 bg-white dark:bg-slate-900/60 rounded-2xl text-slate-900 dark:text-slate-100 shadow-sm"><Trophy size={20} strokeWidth={2.5} /></div>
+                <span className="text-slate-900 dark:text-slate-100 font-medium text-sm uppercase tracking-wider">Level {user.level || 1}</span>
               </div>
               <div className="relative z-10">
                 <div className="flex justify-between items-end mb-1">
-                  <p className="text-xl font-medium text-gray-800">{user.xp || 0} XP</p>
+                  <p className="text-xl font-medium text-slate-900 dark:text-slate-100">{user.xp || 0} XP</p>
                   <p className="text-[10px] font-medium text-gray-700 uppercase tracking-wider">Next: {getXPForLevel((user.level || 1) + 1)} XP</p>
                 </div>
-                <div className="h-1.5 w-full bg-white/60 rounded-full overflow-hidden">
+                <div className="h-1.5 w-full bg-white dark:bg-slate-900/60 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-white transition-all duration-500" 
+                    className="h-full bg-white dark:bg-slate-900 transition-all duration-500" 
                     style={{ width: `${Math.min(100, ((user.xp || 0) - getXPForLevel(user.level || 1)) / (getXPForLevel((user.level || 1) + 1) - getXPForLevel(user.level || 1)) * 100)}%` }}
                   ></div>
                 </div>
               </div>
             </motion.div>
             <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} className="bg-red-100 p-4 rounded-2xl shadow-sm border border-white/50 transition-all duration-300 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
               <div className="flex items-center gap-4 mb-4 relative z-10">
-                <div className="p-2.5 bg-white/60 rounded-2xl text-gray-800 shadow-sm"><Star size={20} strokeWidth={2.5} /></div>
-                <span className="text-gray-800 font-medium text-sm uppercase tracking-wider">Coins</span>
+                <div className="p-2.5 bg-white dark:bg-slate-900/60 rounded-2xl text-slate-900 dark:text-slate-100 shadow-sm"><Star size={20} strokeWidth={2.5} /></div>
+                <span className="text-slate-900 dark:text-slate-100 font-medium text-sm uppercase tracking-wider">Coins</span>
               </div>
-              <p className="text-xl font-medium text-gray-800 relative z-10">{user.coins || 0} 🪙</p>
+              <p className="text-xl font-medium text-slate-900 dark:text-slate-100 relative z-10">{user.coins || 0} 🪙</p>
             </motion.div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="bg-green-100 p-4 rounded-[24px] shadow-sm border border-white/50">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="font-medium text-xl text-gray-800 flex items-center gap-3">
-                  <div className="p-2.5 bg-white/60 rounded-xl"><BookOpen size={20} className="text-gray-800" /></div>
+                <h3 className="font-medium text-xl text-slate-900 dark:text-slate-100 flex items-center gap-3">
+                  <div className="p-2.5 bg-white dark:bg-slate-900/60 rounded-xl"><BookOpen size={20} className="text-slate-900 dark:text-slate-100" /></div>
                   Lessons Hub
                 </h3>
-                <button onClick={() => setActiveTab('lessons')} className="text-sm text-gray-800 font-medium hover:text-gray-700 transition-colors">View All</button>
+                <button onClick={() => setActiveTab('lessons')} className="text-sm text-slate-900 dark:text-slate-100 font-medium hover:text-gray-700 transition-colors">View All</button>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <motion.button whileHover={{ scale: 1.02, y: -2 }} whileTap={{ scale: 0.98 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} onClick={() => setActiveTab('lessons')} className="p-4 rounded-[24px] bg-white/40 border border-white/30 hover:bg-white/60 transition-all text-left flex flex-col gap-1">
-                  <span className="font-medium text-gray-800 block truncate">English Language</span>
+                <motion.button whileHover={{ scale: 1.02, y: -2 }} whileTap={{ scale: 0.98 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} onClick={() => setActiveTab('lessons')} className="p-4 rounded-[24px] bg-white dark:bg-slate-900/40 border border-white/30 hover:bg-white dark:bg-slate-900/60 transition-all text-left flex flex-col gap-1">
+                  <span className="font-medium text-slate-900 dark:text-slate-100 block truncate">English Language</span>
                   <span className="text-sm text-gray-700 font-medium">{classLevel ? `${classLevel} Lessons` : 'P1 - P6 Lessons'}</span>
                 </motion.button>
-                <motion.button whileHover={{ scale: 1.02, y: -2 }} whileTap={{ scale: 0.98 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} onClick={() => setActiveTab('lessons')} className="p-4 rounded-[24px] bg-white/40 border border-white/30 hover:bg-white/60 transition-all text-left flex flex-col gap-1">
-                  <span className="font-medium text-gray-800 block truncate">Mathematics</span>
+                <motion.button whileHover={{ scale: 1.02, y: -2 }} whileTap={{ scale: 0.98 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} onClick={() => setActiveTab('lessons')} className="p-4 rounded-[24px] bg-white dark:bg-slate-900/40 border border-white/30 hover:bg-white dark:bg-slate-900/60 transition-all text-left flex flex-col gap-1">
+                  <span className="font-medium text-slate-900 dark:text-slate-100 block truncate">Mathematics</span>
                   <span className="text-sm text-gray-700 font-medium">{classLevel ? `${classLevel} Lessons` : 'P1 - P6 Lessons'}</span>
                 </motion.button>
               </div>
@@ -229,11 +229,11 @@ export const StudentDashboard = ({ user }: { user: UserProfile }) => {
 
             <div className="bg-yellow-100 p-4 rounded-[24px] shadow-sm border border-white/50">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="font-medium text-xl text-gray-800 flex items-center gap-3">
-                  <div className="p-2.5 bg-white/50 rounded-xl"><FileText size={20} className="text-gray-800" /></div>
+                <h3 className="font-medium text-xl text-slate-900 dark:text-slate-100 flex items-center gap-3">
+                  <div className="p-2.5 bg-white dark:bg-slate-900/50 rounded-xl"><FileText size={20} className="text-slate-900 dark:text-slate-100" /></div>
                   Recent Assignments
                 </h3>
-                <button onClick={() => setActiveTab('assignments')} className="text-sm text-gray-800 font-medium hover:text-gray-800 transition-colors">View All</button>
+                <button onClick={() => setActiveTab('assignments')} className="text-sm text-slate-900 dark:text-slate-100 font-medium hover:text-slate-900 dark:text-slate-100 transition-colors">View All</button>
               </div>
               <div className="space-y-3">
                 {assignments.slice(0, 3).map(a => {
@@ -245,21 +245,21 @@ export const StudentDashboard = ({ user }: { user: UserProfile }) => {
                       transition={{ type: "spring", stiffness: 400, damping: 17 }}
                       key={a.id} 
                       onClick={() => setActiveTab('assignments')}
-                      className={`flex gap-4 items-center p-4 rounded-[24px] bg-white/50 border transition-all cursor-pointer ${
-                        isOverdue ? 'border-red-200 hover:bg-white/70' : 'border-white/50 hover:bg-white/70'
+                      className={`flex gap-4 items-center p-4 rounded-[24px] bg-white dark:bg-slate-900/50 border transition-all cursor-pointer ${
+                        isOverdue ? 'border-red-200 hover:bg-white dark:bg-slate-900/70' : 'border-white/50 hover:bg-white dark:bg-slate-900/70'
                       }`}
                     >
                       <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${
-                        isOverdue ? 'bg-red-100 text-red-600' : 'bg-white/80 text-gray-800'
+                        isOverdue ? 'bg-red-100 text-red-600' : 'bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100'
                       }`}>
                         <FileText size={20} />
                       </div>
                       <div className="flex-1 overflow-hidden">
-                        <p className="font-medium text-gray-800 text-sm truncate">{a.title}</p>
-                        <p className="text-xs text-gray-800 font-medium">{getSubjectName(a.subjectId)}</p>
+                        <p className="font-medium text-slate-900 dark:text-slate-100 text-sm truncate">{a.title}</p>
+                        <p className="text-xs text-slate-900 dark:text-slate-100 font-medium">{getSubjectName(a.subjectId)}</p>
                       </div>
                       <div className={`text-[10px] font-medium uppercase tracking-wider whitespace-nowrap px-3 py-1.5 rounded-full border ${
-                        isOverdue ? 'bg-red-100 text-red-700 border-red-200' : 'bg-white/80 text-gray-800 border-white'
+                        isOverdue ? 'bg-red-100 text-red-700 border-red-200' : 'bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 border-white'
                       }`}>
                         {isOverdue ? 'Overdue' : `Due: ${new Date(a.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`}
                       </div>
@@ -268,11 +268,11 @@ export const StudentDashboard = ({ user }: { user: UserProfile }) => {
                 })}
                 {assignments.length === 0 && (
                   <div className="flex flex-col items-center justify-center py-8 text-center">
-                    <div className="w-16 h-16 bg-white/50 rounded-3xl flex items-center justify-center text-gray-800 mb-3">
+                    <div className="w-16 h-16 bg-white dark:bg-slate-900/50 rounded-3xl flex items-center justify-center text-slate-900 dark:text-slate-100 mb-3">
                       <CheckCircle2 size={20} />
                     </div>
-                    <p className="text-gray-800 font-medium">All caught up!</p>
-                    <p className="text-gray-800 text-sm mt-1">No recent assignments.</p>
+                    <p className="text-slate-900 dark:text-slate-100 font-medium">All caught up!</p>
+                    <p className="text-slate-900 dark:text-slate-100 text-sm mt-1">No recent assignments.</p>
                   </div>
                 )}
               </div>
@@ -280,8 +280,8 @@ export const StudentDashboard = ({ user }: { user: UserProfile }) => {
 
             <div className="bg-orange-100 p-4 rounded-[24px] shadow-sm border border-white/50 lg:col-span-2">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="font-medium text-xl text-gray-800 flex items-center gap-3">
-                  <div className="p-2.5 bg-white/60 rounded-xl"><TrendingUp size={20} className="text-gray-800" /></div>
+                <h3 className="font-medium text-xl text-slate-900 dark:text-slate-100 flex items-center gap-3">
+                  <div className="p-2.5 bg-white dark:bg-slate-900/60 rounded-xl"><TrendingUp size={20} className="text-slate-900 dark:text-slate-100" /></div>
                   Active Challenges
                 </h3>
               </div>
@@ -290,20 +290,20 @@ export const StudentDashboard = ({ user }: { user: UserProfile }) => {
                   const progress = challengeProgress[challenge.id] || 0;
                   const percentage = Math.min(100, (progress / challenge.targetCount) * 100);
                   return (
-                    <motion.div whileHover={{ scale: 1.01, x: 4 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} key={challenge.id} className="p-4 rounded-2xl bg-white/40 border border-white/30 flex items-center justify-between gap-4 cursor-pointer">
+                    <motion.div whileHover={{ scale: 1.01, x: 4 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} key={challenge.id} className="p-4 rounded-2xl bg-white dark:bg-slate-900/40 border border-white/30 flex items-center justify-between gap-4 cursor-pointer">
                       <div className="flex-1">
-                        <h4 className="font-medium text-gray-800 text-sm">{challenge.title}</h4>
+                        <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm">{challenge.title}</h4>
                         <p className="text-[10px] text-gray-700 mt-0.5">{challenge.description}</p>
                         <div className="flex items-center gap-2 mt-2">
                           <div className="h-1.5 flex-1 bg-black/10 rounded-full overflow-hidden">
-                            <div className="h-full bg-white transition-all duration-1000" style={{ width: `${percentage}%` }}></div>
+                            <div className="h-full bg-white dark:bg-slate-900 transition-all duration-1000" style={{ width: `${percentage}%` }}></div>
                           </div>
-                          <span className="text-[10px] font-medium text-gray-800">{Math.round(percentage)}%</span>
+                          <span className="text-[10px] font-medium text-slate-900 dark:text-slate-100">{Math.round(percentage)}%</span>
                         </div>
                       </div>
                       <div className="text-right shrink-0">
-                        <div className="text-[10px] font-medium text-gray-800">+{challenge.xpReward} XP</div>
-                        <div className="text-[10px] font-medium text-gray-800">+{challenge.coinReward} 🪙</div>
+                        <div className="text-[10px] font-medium text-slate-900 dark:text-slate-100">+{challenge.xpReward} XP</div>
+                        <div className="text-[10px] font-medium text-slate-900 dark:text-slate-100">+{challenge.coinReward} 🪙</div>
                       </div>
                     </motion.div>
                   );
@@ -318,22 +318,22 @@ export const StudentDashboard = ({ user }: { user: UserProfile }) => {
 
             <div className="bg-blue-100 p-4 rounded-[24px] shadow-sm border border-white/50 lg:col-span-2">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="font-medium text-xl text-gray-800 flex items-center gap-3">
-                  <div className="p-2.5 bg-white/60 rounded-xl"><Bell size={20} className="text-gray-800" /></div>
+                <h3 className="font-medium text-xl text-slate-900 dark:text-slate-100 flex items-center gap-3">
+                  <div className="p-2.5 bg-white dark:bg-slate-900/60 rounded-xl"><Bell size={20} className="text-slate-900 dark:text-slate-100" /></div>
                   Recent Notices
                 </h3>
-                <Link to="/announcements" className="text-sm text-gray-800 font-medium hover:text-gray-700 transition-colors">View All</Link>
+                <Link to="/announcements" className="text-sm text-slate-900 dark:text-slate-100 font-medium hover:text-gray-700 transition-colors">View All</Link>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {announcements.map(a => (
-                  <motion.div whileHover={{ scale: 1.02, y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} key={a.id} className="p-4 rounded-[24px] bg-white/40 border border-white/30 hover:bg-white/60 transition-all cursor-pointer">
+                  <motion.div whileHover={{ scale: 1.02, y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} key={a.id} className="p-4 rounded-[24px] bg-white dark:bg-slate-900/40 border border-white/30 hover:bg-white dark:bg-slate-900/60 transition-all cursor-pointer">
                     <div className="flex justify-between items-start mb-2">
-                      <span className="text-[10px] uppercase tracking-wider font-medium text-blue-900 bg-white/50 px-2 py-1 rounded-md">
+                      <span className="text-[10px] uppercase tracking-wider font-medium text-blue-900 bg-white dark:bg-slate-900/50 px-2 py-1 rounded-md">
                         {a.isSchoolWide ? 'School-wide' : 'Class Notice'}
                       </span>
                       <span className="text-[10px] font-medium text-gray-700">{new Date(a.createdAt).toLocaleDateString()}</span>
                     </div>
-                    <p className="font-medium text-gray-800 text-sm mb-1">{a.title}</p>
+                    <p className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">{a.title}</p>
                     <p className="text-xs text-gray-700 line-clamp-2">{a.content}</p>
                   </motion.div>
                 ))}
@@ -347,18 +347,18 @@ export const StudentDashboard = ({ user }: { user: UserProfile }) => {
           </div>
 
           <motion.div whileHover={{ scale: 1.01, y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} className="bg-purple-100 hover:bg-purple-200 p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4 shadow-lg relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
-            <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full blur-2xl -ml-10 -mb-10"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white dark:bg-slate-900/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+            <div className="absolute bottom-0 left-0 w-40 h-40 bg-white dark:bg-slate-900/10 rounded-full blur-2xl -ml-10 -mb-10"></div>
             <div className="flex items-center gap-4 relative z-10">
-              <div className="w-16 h-16 bg-white/40 backdrop-blur-md rounded-2xl flex items-center justify-center text-gray-800 shadow-sm shrink-0">
+              <div className="w-16 h-16 bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-2xl flex items-center justify-center text-slate-900 dark:text-slate-100 shadow-sm shrink-0">
                 <Gamepad2 size={20} />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-gray-800 mb-2">Brain Games</h3>
+                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-2">Brain Games</h3>
                 <p className="text-purple-800 font-medium">Take a break and sharpen your mind with educational puzzles.</p>
               </div>
             </div>
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} onClick={() => setActiveTab('games')} className="bg-white text-purple-600 px-5 py-2.5 rounded-lg font-medium hover:bg-purple-50 transition-all shadow-md whitespace-nowrap relative z-10">
+            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} onClick={() => setActiveTab('games')} className="bg-white dark:bg-slate-900 text-purple-600 px-5 py-2.5 rounded-lg font-medium hover:bg-purple-50 transition-all shadow-md whitespace-nowrap relative z-10">
               Play Now
             </motion.button>
           </motion.div>

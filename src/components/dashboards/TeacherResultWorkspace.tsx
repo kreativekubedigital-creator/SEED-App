@@ -361,7 +361,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
       case 'under_review': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
       case 'approved': return 'bg-green-100 text-green-700 border-green-200';
       case 'rejected': return 'bg-red-100 text-red-700 border-red-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      default: return 'bg-gray-100 text-slate-900 dark:text-slate-100 border-gray-200';
     }
   };
 
@@ -373,13 +373,13 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
       {/* Header & Status */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-lg font-medium text-gray-800">Result Entry Workspace</h2>
-          <p className="text-gray-800 font-medium">Manage and submit student academic records</p>
+          <h2 className="text-lg font-medium text-slate-900 dark:text-slate-100">Result Entry Workspace</h2>
+          <p className="text-slate-900 dark:text-slate-100 font-medium">Manage and submit student academic records</p>
         </div>
         
         {isContextSelected && (
           <div className={`px-3.5 py-1.5 rounded-full border font-medium text-sm uppercase tracking-wider flex items-center gap-2 ${getStatusColor(overallStatus)}`}>
-            <div className={`w-2 h-2 rounded-full ${overallStatus === 'approved' ? 'bg-green-500' : overallStatus === 'rejected' ? 'bg-red-500' : overallStatus === 'submitted' ? 'bg-blue-500' : overallStatus === 'under_review' ? 'bg-yellow-500' : 'bg-gray-500'}`} />
+            <div className={`w-2 h-2 rounded-full ${overallStatus === 'approved' ? 'bg-green-500' : overallStatus === 'rejected' ? 'bg-red-500' : overallStatus === 'submitted' ? 'bg-blue-500' : overallStatus === 'under_review' ? 'bg-yellow-500' : 'bg-slate-50 dark:bg-slate-8000'}`} />
             {overallStatus.replace('_', ' ')}
           </div>
         )}
@@ -402,49 +402,49 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
       </AnimatePresence>
 
       {/* Context Selection */}
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+      <div className="bg-white dark:bg-slate-900 dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Academic Session</label>
+            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Academic Session</label>
             <select
               value={selectedSession}
               onChange={(e) => setSelectedSession(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-gray-200/50 bg-gray-50/50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800"
+              className="w-full px-3 py-2 rounded-xl border border-gray-200/50 bg-slate-50 dark:bg-slate-800/50 focus:bg-white dark:bg-slate-900 dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100"
             >
               <option value="">Select Session</option>
               {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Term</label>
+            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Term</label>
             <select
               value={selectedTerm}
               onChange={(e) => setSelectedTerm(e.target.value)}
               disabled={!selectedSession}
-              className="w-full px-3 py-2 rounded-xl border border-gray-200/50 bg-gray-50/50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 disabled:opacity-50"
+              className="w-full px-3 py-2 rounded-xl border border-gray-200/50 bg-slate-50 dark:bg-slate-800/50 focus:bg-white dark:bg-slate-900 dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 disabled:opacity-50"
             >
               <option value="">Select Term</option>
               {terms.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Class</label>
+            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Class</label>
             <select
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-gray-200/50 bg-gray-50/50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800"
+              className="w-full px-3 py-2 rounded-xl border border-gray-200/50 bg-slate-50 dark:bg-slate-800/50 focus:bg-white dark:bg-slate-900 dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100"
             >
               <option value="">Select Class</option>
               {availableClasses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-[10px] font-medium uppercase tracking-widest text-gray-800 ml-1">Subject</label>
+            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Subject</label>
             <select
               value={selectedSubject}
               onChange={(e) => setSelectedSubject(e.target.value)}
               disabled={!selectedClass}
-              className="w-full px-3 py-2 rounded-xl border border-gray-200/50 bg-gray-50/50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 disabled:opacity-50"
+              className="w-full px-3 py-2 rounded-xl border border-gray-200/50 bg-slate-50 dark:bg-slate-800/50 focus:bg-white dark:bg-slate-900 dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 disabled:opacity-50"
             >
               <option value="">Select Subject</option>
               {availableSubjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -467,35 +467,35 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
 
       {/* Main Workspace */}
       {!isContextSelected ? (
-        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 text-center">
+        <div className="bg-white dark:bg-slate-900 dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 text-center">
           <div className="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center text-blue-500 mx-auto mb-4 shadow-sm border border-blue-100/50">
             <Search size={20} />
           </div>
-          <h3 className="text-xl font-medium text-gray-800 mb-2">Select Context to Begin</h3>
-          <p className="text-gray-800 font-medium max-w-md mx-auto">Please select the academic session, term, class, and subject to load the student roster and enter results.</p>
+          <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 mb-2">Select Context to Begin</h3>
+          <p className="text-slate-900 dark:text-slate-100 font-medium max-w-md mx-auto">Please select the academic session, term, class, and subject to load the student roster and enter results.</p>
         </div>
       ) : loading ? (
-        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center">
+        <div className="bg-white dark:bg-slate-900 dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center">
           <Loader2 className="w-10 h-10 text-blue-500 animate-spin mb-4" />
-          <p className="text-gray-800 font-medium">Loading student records...</p>
+          <p className="text-slate-900 dark:text-slate-100 font-medium">Loading student records...</p>
         </div>
       ) : students.length === 0 ? (
-        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 text-center">
-          <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center text-gray-800 mx-auto mb-4 shadow-sm border border-gray-100/50">
+        <div className="bg-white dark:bg-slate-900 dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 text-center">
+          <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-3xl flex items-center justify-center text-slate-900 dark:text-slate-100 mx-auto mb-4 shadow-sm border border-slate-100 dark:border-slate-800/50">
             <AlertCircle size={20} />
           </div>
-          <h3 className="text-xl font-medium text-gray-800 mb-2">No Students Found</h3>
-          <p className="text-gray-800 font-medium">There are no students registered in this class.</p>
+          <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 mb-2">No Students Found</h3>
+          <p className="text-slate-900 dark:text-slate-100 font-medium">There are no students registered in this class.</p>
         </div>
       ) : (
         <div className="space-y-5">
           {/* Action Bar */}
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white dark:bg-slate-900 dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
             <div className="relative">
               <button 
                 onClick={() => setShowBulkOptions(!showBulkOptions)}
                 disabled={isLocked}
-                className="px-3 py-1.5 rounded-lg font-medium text-sm bg-gray-50 text-gray-800 hover:bg-gray-100 transition-colors border border-gray-200/50 flex items-center gap-2 disabled:opacity-50"
+                className="px-3 py-1.5 rounded-lg font-medium text-sm bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-gray-100 transition-colors border border-gray-200/50 flex items-center gap-2 disabled:opacity-50"
               >
                 <Copy size={16} /> Bulk Actions
               </button>
@@ -506,9 +506,9 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full left-0 mt-2 p-4 bg-white rounded-2xl shadow-xl border border-gray-100 z-10 w-72"
+                    className="absolute top-full left-0 mt-2 p-4 bg-white dark:bg-slate-900 dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 z-10 w-72"
                   >
-                    <h4 className="font-medium text-gray-800 text-sm mb-3">Apply Bulk Score</h4>
+                    <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-3">Apply Bulk Score</h4>
                     <div className="space-y-3">
                       {caConfig.cas.map((ca, idx) => (
                         <div key={idx} className="flex gap-2">
@@ -518,7 +518,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                             value={bulkCa1}
                             onChange={(e) => setBulkCa1(e.target.value)}
                             placeholder={`${ca.name} (0-${ca.maxScore})`}
-                            className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text text-sm"
+                            className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text text-sm"
                           />
                           <button 
                             onClick={() => applyBulkCa(idx, ca.maxScore)}
@@ -538,7 +538,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
               <button
                 onClick={() => saveResults('draft')}
                 disabled={saving || isLocked}
-                className="flex-1 sm:flex-none px-3.5 py-1.5 rounded-full font-medium text-gray-800 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-800 shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="flex-1 sm:flex-none px-3.5 py-1.5 rounded-full font-medium text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-800 hover:bg-gray-100 border border-gray-200 text-slate-900 dark:text-slate-100 shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
                 Save Draft
@@ -555,17 +555,17 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
           </div>
 
           {/* Results Table */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-white dark:bg-slate-900 dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left border-collapse">
-                <thead className="bg-gray-50/80 border-b border-gray-100 text-[10px] uppercase tracking-widest text-gray-800 font-medium">
+                <thead className="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-100 dark:border-slate-800 text-[10px] uppercase tracking-widest text-slate-900 dark:text-slate-100 font-medium">
                   <tr>
                     <th className="px-6 py-4 whitespace-nowrap">Student Name</th>
                     {caConfig.cas.map((ca, idx) => (
-                      <th key={idx} className="px-4 py-4 text-center w-24">{ca.name}<br/><span className="text-[9px] text-gray-800">({ca.maxScore})</span></th>
+                      <th key={idx} className="px-4 py-4 text-center w-24">{ca.name}<br/><span className="text-[9px] text-slate-900 dark:text-slate-100">({ca.maxScore})</span></th>
                     ))}
-                    <th className="px-4 py-4 text-center w-24 bg-gray-50/50">CA Total<br/><span className="text-[9px] text-gray-800">({totalCaMax})</span></th>
-                    <th className="px-4 py-4 text-center w-24">Exam<br/><span className="text-[9px] text-gray-800">({caConfig.maxExamScore})</span></th>
+                    <th className="px-4 py-4 text-center w-24 bg-slate-50 dark:bg-slate-800/50">CA Total<br/><span className="text-[9px] text-slate-900 dark:text-slate-100">({totalCaMax})</span></th>
+                    <th className="px-4 py-4 text-center w-24">Exam<br/><span className="text-[9px] text-slate-900 dark:text-slate-100">({caConfig.maxExamScore})</span></th>
                     <th className="px-4 py-4 text-center w-24 bg-blue-50/30 text-blue-700">Final<br/><span className="text-[9px] text-blue-400/80">({totalCaMax + caConfig.maxExamScore})</span></th>
                     <th className="px-6 py-4 text-center w-24">Grade</th>
                   </tr>
@@ -578,7 +578,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                     return (
                       <tr 
                         key={student.uid} 
-                        className={`transition-colors ${isRowActive ? 'bg-blue-50/30' : 'hover:bg-gray-50/50'}`}
+                        className={`transition-colors ${isRowActive ? 'bg-blue-50/30' : 'hover:bg-slate-50 dark:bg-slate-800/50'}`}
                         onFocus={() => setActiveRow(student.uid)}
                         onBlur={() => setActiveRow(null)}
                       >
@@ -592,8 +592,8 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                               </div>
                             )}
                             <div>
-                              <p className="font-medium text-gray-800 text-sm">{student.firstName} {student.lastName}</p>
-                              <p className="text-[10px] text-gray-800 font-medium uppercase tracking-wider">{student.registrationNumber || 'N/A'}</p>
+                              <p className="font-medium text-slate-900 dark:text-slate-100 text-sm">{student.firstName} {student.lastName}</p>
+                              <p className="text-[10px] text-slate-900 dark:text-slate-100 font-medium uppercase tracking-wider">{student.registrationNumber || 'N/A'}</p>
                             </div>
                           </div>
                         </td>
@@ -608,13 +608,13 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                                 value={val === null ? '' : val}
                                 onChange={(e) => handleScoreChange(student.uid, `ca_${idx}`, e.target.value)}
                                 disabled={isLocked}
-                                className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-gray-800 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
+                                className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
                               />
                             </td>
                           );
                         })}
                         <td className="px-4 py-3 bg-gray-100/80 text-center border-x border-gray-50">
-                          <span className="font-medium text-gray-800">{score.caTotal || 0}</span>
+                          <span className="font-medium text-slate-900 dark:text-slate-100">{score.caTotal || 0}</span>
                         </td>
                         <td className="px-4 py-3">
                           <input
@@ -624,7 +624,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                             value={score.exam === null ? '' : score.exam}
                             onChange={(e) => handleScoreChange(student.uid, 'exam', e.target.value)}
                             disabled={isLocked}
-                            className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-gray-800 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
+                            className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
                           />
                         </td>
                         <td className="px-4 py-3 bg-blue-50/50 text-center border-x border-blue-50/50">
@@ -638,7 +638,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                             score.grade === 'D' ? 'bg-yellow-100 text-yellow-700' :
                             score.grade === 'E' ? 'bg-orange-100 text-orange-700' :
                             score.grade === 'F' ? 'bg-red-100 text-red-700' :
-                            'bg-gray-100 text-gray-800'
+                            'bg-gray-100 text-slate-900 dark:text-slate-100'
                           }`}>
                             {score.grade || '-'}
                           </span>
@@ -651,11 +651,11 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
             </div>
 
             {/* Mobile Cards */}
-            <div className="md:hidden flex flex-col gap-4 p-4 bg-gray-50/30">
+            <div className="md:hidden flex flex-col gap-4 p-4 bg-slate-50 dark:bg-slate-800/30">
               {students.map((student) => {
                 const score = scores[student.uid] || {};
                 return (
-                  <div key={student.uid} className={`bg-white rounded-2xl shadow-sm border ${activeRow === student.uid ? 'border-blue-300 bg-blue-50/20 ring-4 ring-blue-500/5' : 'border-gray-200'} p-4 flex flex-col gap-4 transition-all duration-200`} onFocus={() => setActiveRow(student.uid)} onBlur={() => setActiveRow(null)}>
+                  <div key={student.uid} className={`bg-white dark:bg-slate-900 dark:bg-slate-900 rounded-2xl shadow-sm border ${activeRow === student.uid ? 'border-blue-300 bg-blue-50/20 ring-4 ring-blue-500/5' : 'border-gray-200'} p-4 flex flex-col gap-4 transition-all duration-200`} onFocus={() => setActiveRow(student.uid)} onBlur={() => setActiveRow(null)}>
                     <div className="flex items-center gap-3">
                       {student.photoUrl ? (
                         <img src={student.photoUrl} alt={student.firstName} className="w-10 h-10 rounded-full object-cover border border-gray-200" referrerPolicy="no-referrer" />
@@ -665,8 +665,8 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                         </div>
                       )}
                       <div>
-                        <p className="font-medium text-sm text-gray-800">{student.firstName} {student.lastName}</p>
-                        <p className="text-xs text-gray-800">{student.registrationNumber || 'N/A'}</p>
+                        <p className="font-medium text-sm text-slate-900 dark:text-slate-100">{student.firstName} {student.lastName}</p>
+                        <p className="text-xs text-slate-900 dark:text-slate-100">{student.registrationNumber || 'N/A'}</p>
                       </div>
                     </div>
                     
@@ -675,7 +675,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                         const val = score.cas?.[ca.name] !== undefined ? score.cas[ca.name] : (idx === 0 ? score.ca1 : idx === 1 ? score.ca2 : idx === 2 ? score.ca3 : 0);
                         return (
                           <div key={idx} className="flex flex-col">
-                            <span className="text-[10px] text-gray-800 text-center mb-1">{ca.name} ({ca.maxScore})</span>
+                            <span className="text-[10px] text-slate-900 dark:text-slate-100 text-center mb-1">{ca.name} ({ca.maxScore})</span>
                             <input
                               type="number"
                               min="0" max={ca.maxScore}
@@ -683,7 +683,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                               value={val === 0 && !score.id && !score.cas?.[ca.name] ? '' : val}
                               onChange={(e) => handleScoreChange(student.uid, `ca_${idx}`, e.target.value)}
                               disabled={isLocked}
-                              className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-gray-800 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
+                              className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
                             />
                           </div>
                         );
@@ -692,11 +692,11 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                     
                     <div className="grid grid-cols-3 gap-2 pt-3 border-t border-gray-50">
                       <div className="flex flex-col items-center justify-center bg-gray-100/80 rounded-xl p-2">
-                        <span className="text-[10px] text-gray-800 mb-1 font-medium">CA Total</span>
-                        <span className="font-medium text-gray-800">{score.caTotal || 0}</span>
+                        <span className="text-[10px] text-slate-900 dark:text-slate-100 mb-1 font-medium">CA Total</span>
+                        <span className="font-medium text-slate-900 dark:text-slate-100">{score.caTotal || 0}</span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[10px] text-gray-800 text-center mb-1">Exam ({caConfig.maxExamScore})</span>
+                        <span className="text-[10px] text-slate-900 dark:text-slate-100 text-center mb-1">Exam ({caConfig.maxExamScore})</span>
                         <input
                           type="number"
                           min="0" max={caConfig.maxExamScore}
@@ -704,7 +704,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                           value={score.exam === 0 && !score.id ? '' : score.exam}
                           onChange={(e) => handleScoreChange(student.uid, 'exam', e.target.value)}
                           disabled={isLocked}
-                          className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-gray-800 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
+                          className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
                         />
                       </div>
                       <div className="flex flex-col items-center justify-center bg-blue-50/80 rounded-xl p-2 border border-blue-100/50">
@@ -714,7 +714,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                     </div>
                     
                     <div className="flex justify-between items-center pt-3 border-t border-gray-50">
-                      <span className="text-xs text-gray-800">Grade</span>
+                      <span className="text-xs text-slate-900 dark:text-slate-100">Grade</span>
                       <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-medium text-sm ${
                         score.grade === 'A' ? 'bg-green-100 text-green-700' :
                         score.grade === 'B' ? 'bg-emerald-100 text-emerald-700' :
@@ -722,7 +722,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                         score.grade === 'D' ? 'bg-yellow-100 text-yellow-700' :
                         score.grade === 'E' ? 'bg-orange-100 text-orange-700' :
                         score.grade === 'F' ? 'bg-red-100 text-red-700' :
-                        'bg-gray-100 text-gray-800'
+                        'bg-gray-100 text-slate-900 dark:text-slate-100'
                       }`}>
                         {score.grade || '-'}
                       </span>
@@ -737,3 +737,4 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
     </div>
   );
 };
+

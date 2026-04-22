@@ -113,7 +113,7 @@ export const ParentDashboard = ({ user }: { user: UserProfile }) => {
     return () => unsubAnnouncements();
   }, [user.schoolId, activeStudent]);
 
-  if (loading) return <div className="p-4 text-center text-gray-800">Loading student data...</div>;
+  if (loading) return <div className="p-4 text-center text-slate-900 dark:text-slate-100">Loading student data...</div>;
 
   return (
     <div className="space-y-5">
@@ -126,7 +126,7 @@ export const ParentDashboard = ({ user }: { user: UserProfile }) => {
               className={`px-6 py-3 rounded-2xl font-medium text-sm transition-all whitespace-nowrap shrink-0 ${
                 activeStudentId === student.uid 
                   ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/30' 
-                  : 'bg-white text-gray-800 hover:bg-white border border-white/40 shadow-sm hover:shadow-md'
+                  : 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:bg-white dark:bg-slate-900 border border-white/40 shadow-sm hover:shadow-md'
               }`}
             >
               {student.firstName} {student.lastName}
@@ -136,7 +136,7 @@ export const ParentDashboard = ({ user }: { user: UserProfile }) => {
       )}
 
       {activeStudent ? (
-        <div className="bg-white p-4 rounded-2xl border border-white/40 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-white/40 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
           <div className="relative z-10 flex items-center gap-4">
             {activeStudent.photoUrl ? (
@@ -147,7 +147,7 @@ export const ParentDashboard = ({ user }: { user: UserProfile }) => {
               </div>
             )}
             <div>
-              <h3 className="text-xl font-medium text-gray-800 mb-1">{activeStudent.firstName} {activeStudent.lastName}</h3>
+              <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 mb-1">{activeStudent.firstName} {activeStudent.lastName}</h3>
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <span className="text-sm font-medium text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-100/50">ID: {activeStudent.studentId || 'N/A'}</span>
                 {activeStudent.classId && (
@@ -167,23 +167,23 @@ export const ParentDashboard = ({ user }: { user: UserProfile }) => {
           </div>
         </div>
       ) : (
-        <div className="bg-white p-4 rounded-2xl border border-white/40 shadow-sm text-center">
-          <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-800 border border-gray-100">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-white/40 shadow-sm text-center">
+          <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-900 dark:text-slate-100 border border-slate-100 dark:border-slate-800">
             <User size={40} />
           </div>
-          <p className="text-gray-800 font-medium text-lg">No student linked to this account.</p>
-          <p className="text-gray-800 font-medium mt-2">Please contact the school administrator to link your child's account.</p>
+          <p className="text-slate-900 dark:text-slate-100 font-medium text-lg">No student linked to this account.</p>
+          <p className="text-slate-900 dark:text-slate-100 font-medium mt-2">Please contact the school administrator to link your child's account.</p>
         </div>
       )}
 
       {activeStudent && !viewingReportCard && (
-        <div className="flex flex-wrap bg-white/40 backdrop-blur-md p-1 rounded-xl border border-gray-200/50 bg-gray-50/50 w-fit">
+        <div className="flex flex-wrap bg-white dark:bg-slate-900/40 backdrop-blur-md p-1 rounded-xl border border-gray-200/50 bg-slate-50 dark:bg-slate-800/50 w-fit">
           {(['overview', 'timetable', 'finance'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize transition-all duration-300 ${
-                activeTab === tab ? 'bg-blue-50 text-blue-700 shadow-sm border border-blue-100/50' : 'text-gray-800 hover:text-gray-800 hover:bg-gray-100'
+                activeTab === tab ? 'bg-blue-50 text-blue-700 shadow-sm border border-blue-100/50' : 'text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-gray-100'
               }`}
             >
               {tab}
@@ -219,34 +219,34 @@ export const ParentDashboard = ({ user }: { user: UserProfile }) => {
       ) : (
         <>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-white p-4 rounded-2xl border border-white/40 shadow-sm">
-          <h3 className="font-medium text-xl text-gray-800 mb-6 flex items-center gap-3">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-white/40 shadow-sm">
+          <h3 className="font-medium text-xl text-slate-900 dark:text-slate-100 mb-6 flex items-center gap-3">
             <div className="p-2.5 bg-blue-50 rounded-full border border-blue-100/50 shadow-sm"><TrendingUp size={20} className="text-blue-600" /></div>
             Recent Scores
           </h3>
           {results.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center bg-gray-50/50 rounded-2xl border border-gray-100/50">
-              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-gray-800 mb-4 shadow-sm border border-gray-100">
+            <div className="flex flex-col items-center justify-center py-12 text-center bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800/50">
+              <div className="w-16 h-16 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center text-slate-900 dark:text-slate-100 mb-4 shadow-sm border border-slate-100 dark:border-slate-800">
                 <TrendingUp size={20} />
               </div>
-              <p className="text-gray-800 font-medium">No recent scores available.</p>
-              <p className="text-gray-800 font-medium text-sm mt-1">Scores will appear here once quizzes are completed.</p>
+              <p className="text-slate-900 dark:text-slate-100 font-medium">No recent scores available.</p>
+              <p className="text-slate-900 dark:text-slate-100 font-medium text-sm mt-1">Scores will appear here once quizzes are completed.</p>
             </div>
           ) : (
             <div className="space-y-6">
               {results.map((res, i) => (
-                <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all group">
+                <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-blue-200 hover:shadow-md transition-all group">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-medium border border-blue-100/50 group-hover:scale-110 transition-transform">
                       {getSubjectName(res.subjectId).substring(0, 2).toUpperCase()}
                     </div>
                     <div>
-                      <p className="font-medium text-gray-800 text-lg">{getSubjectName(res.subjectId)}</p>
-                      <p className="text-sm text-gray-800 font-medium mt-0.5">{res.date ? new Date(res.date).toLocaleDateString() : 'Recent'}</p>
+                      <p className="font-medium text-slate-900 dark:text-slate-100 text-lg">{getSubjectName(res.subjectId)}</p>
+                      <p className="text-sm text-slate-900 dark:text-slate-100 font-medium mt-0.5">{res.date ? new Date(res.date).toLocaleDateString() : 'Recent'}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-medium text-2xl text-blue-600">{res.score}<span className="text-lg text-gray-800 font-medium">/{res.total}</span></p>
+                    <p className="font-medium text-2xl text-blue-600">{res.score}<span className="text-lg text-slate-900 dark:text-slate-100 font-medium">/{res.total}</span></p>
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] uppercase font-medium mt-1 tracking-wider border ${
                       res.score / res.total >= 0.5 
                         ? 'bg-emerald-50 text-emerald-700 border-emerald-200/50' 
@@ -261,23 +261,23 @@ export const ParentDashboard = ({ user }: { user: UserProfile }) => {
           )}
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-white/40 shadow-sm">
-          <h3 className="font-medium text-xl text-gray-800 mb-6 flex items-center gap-3">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-white/40 shadow-sm">
+          <h3 className="font-medium text-xl text-slate-900 dark:text-slate-100 mb-6 flex items-center gap-3">
             <div className="p-2.5 bg-amber-50 rounded-full border border-amber-100/50 shadow-sm"><Bell size={20} className="text-amber-600" /></div>
             School Notices
           </h3>
           <div className="space-y-6">
             {announcements.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center bg-gray-50/50 rounded-2xl border border-gray-100/50">
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-gray-800 mb-4 shadow-sm border border-gray-100">
+              <div className="flex flex-col items-center justify-center py-12 text-center bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800/50">
+                <div className="w-16 h-16 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center text-slate-900 dark:text-slate-100 mb-4 shadow-sm border border-slate-100 dark:border-slate-800">
                   <Bell size={20} />
                 </div>
-                <p className="text-gray-800 font-medium">No recent notices.</p>
-                <p className="text-gray-800 font-medium text-sm mt-1">You're all caught up!</p>
+                <p className="text-slate-900 dark:text-slate-100 font-medium">No recent notices.</p>
+                <p className="text-slate-900 dark:text-slate-100 font-medium text-sm mt-1">You're all caught up!</p>
               </div>
             ) : (
               announcements.map((note, i) => (
-                <div key={i} className="p-4 rounded-2xl bg-white border border-gray-100 hover:border-amber-200 hover:shadow-md transition-all group">
+                <div key={i} className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-amber-200 hover:shadow-md transition-all group">
                   <div className="flex justify-between items-start mb-3">
                     <span className={`text-[10px] uppercase font-medium px-3 py-1 rounded-full border ${
                       note.isSchoolWide 
@@ -286,10 +286,10 @@ export const ParentDashboard = ({ user }: { user: UserProfile }) => {
                     }`}>
                       {note.isSchoolWide ? 'School-wide' : 'Class Notice'}
                     </span>
-                    <span className="text-xs text-gray-800 font-medium bg-gray-50 px-2.5 py-1 rounded-full border border-gray-100">{new Date(note.createdAt).toLocaleDateString()}</span>
+                    <span className="text-xs text-slate-900 dark:text-slate-100 font-medium bg-slate-50 dark:bg-slate-800 px-2.5 py-1 rounded-full border border-slate-100 dark:border-slate-800">{new Date(note.createdAt).toLocaleDateString()}</span>
                   </div>
-                  <h4 className="font-medium text-gray-800 text-lg mb-2 group-hover:text-amber-700 transition-colors">{note.title}</h4>
-                  <p className="text-sm text-gray-800 font-medium leading-relaxed">{note.content}</p>
+                  <h4 className="font-medium text-slate-900 dark:text-slate-100 text-lg mb-2 group-hover:text-amber-700 transition-colors">{note.title}</h4>
+                  <p className="text-sm text-slate-900 dark:text-slate-100 font-medium leading-relaxed">{note.content}</p>
                 </div>
               ))
             )}
@@ -298,45 +298,45 @@ export const ParentDashboard = ({ user }: { user: UserProfile }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <motion.div whileHover={{ scale: 1.01 }} className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-6 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/40 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+        <motion.div whileHover={{ scale: 1.01 }} className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white dark:bg-slate-900/40 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
           <div className="relative z-10 flex flex-col h-full justify-center">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-purple-600 shadow-sm border border-white">
+              <div className="w-14 h-14 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center text-purple-600 shadow-sm border border-white">
                 <Heart size={28} />
               </div>
               <div>
-                <h3 className="text-xl font-medium text-gray-800">AI Study Buddy Progress</h3>
-                <p className="text-sm text-gray-800 font-medium mt-1">Track {activeStudent?.firstName}'s learning journey</p>
+                <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100">AI Study Buddy Progress</h3>
+                <p className="text-sm text-slate-900 dark:text-slate-100 font-medium mt-1">Track {activeStudent?.firstName}'s learning journey</p>
               </div>
             </div>
             
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-white/60 p-4 rounded-xl border border-white shadow-sm text-center">
-                <p className="text-sm text-gray-800 font-medium mb-1">Current Level</p>
+              <div className="bg-white dark:bg-slate-900/60 p-4 rounded-xl border border-white shadow-sm text-center">
+                <p className="text-sm text-slate-900 dark:text-slate-100 font-medium mb-1">Current Level</p>
                 <p className="text-2xl font-medium text-indigo-700">{activeStudent?.level || 1}</p>
               </div>
-              <div className="bg-white/60 p-4 rounded-xl border border-white shadow-sm text-center">
-                <p className="text-sm text-gray-800 font-medium mb-1">Total XP</p>
+              <div className="bg-white dark:bg-slate-900/60 p-4 rounded-xl border border-white shadow-sm text-center">
+                <p className="text-sm text-slate-900 dark:text-slate-100 font-medium mb-1">Total XP</p>
                 <p className="text-2xl font-medium text-purple-700">{activeStudent?.xp || 0}</p>
               </div>
             </div>
             
-            <p className="text-gray-800 font-medium text-sm leading-relaxed bg-white/40 p-4 rounded-xl border border-white/50">
+            <p className="text-slate-900 dark:text-slate-100 font-medium text-sm leading-relaxed bg-white dark:bg-slate-900/40 p-4 rounded-xl border border-white/50">
               {activeStudent?.firstName} has been actively using the AI Study Buddy to practice concepts and complete quizzes. Encourage them to keep up the great work!
             </p>
           </div>
         </motion.div>
 
-        <motion.div whileHover={{ scale: 1.01 }} className="bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-6 rounded-2xl border border-gray-100 shadow-sm text-center relative overflow-hidden flex flex-col justify-center">
+        <motion.div whileHover={{ scale: 1.01 }} className="bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm text-center relative overflow-hidden flex flex-col justify-center">
           <div className="absolute bottom-0 left-0 w-40 h-40 bg-blue-200/20 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>
           
           <div className="relative z-10">
-            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-teal-500 shadow-sm mx-auto mb-4 border border-white">
+            <div className="w-16 h-16 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center text-teal-500 shadow-sm mx-auto mb-4 border border-white">
               <FileText size={32} className="drop-shadow-sm" />
             </div>
-            <h3 className="text-xl font-medium text-gray-800 mb-3">Support Your Child's Learning</h3>
-            <p className="text-gray-800 font-medium max-w-sm mx-auto mb-6 text-sm leading-relaxed">Access parent resources, study guides, and tips on how to help your child excel in their academic journey.</p>
+            <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 mb-3">Support Your Child's Learning</h3>
+            <p className="text-slate-900 dark:text-slate-100 font-medium max-w-sm mx-auto mb-6 text-sm leading-relaxed">Access parent resources, study guides, and tips on how to help your child excel in their academic journey.</p>
             <button className="bg-teal-600 text-white hover:bg-teal-700 px-8 py-2.5 rounded-full font-medium hover:scale-105 transition-all flex items-center gap-2 mx-auto shadow-sm">
               View Resources
             </button>

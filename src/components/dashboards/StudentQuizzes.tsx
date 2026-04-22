@@ -148,7 +148,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
   };
 
   if (loading) {
-    return <div className="p-4 text-center text-gray-800">Loading quizzes...</div>;
+    return <div className="p-4 text-center text-slate-900 dark:text-slate-100">Loading quizzes...</div>;
   }
 
   const isFemale = user.gender === 'female';
@@ -159,7 +159,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
   if (activeQuiz) {
     if (score) {
       return (
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white/80 backdrop-blur-sm p-4 rounded-2xl border border-gray-100 shadow-sm text-center max-w-2xl mx-auto relative overflow-hidden">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-slate-900/80 backdrop-blur-sm p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm text-center max-w-2xl mx-auto relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
           <div className="absolute bottom-0 left-0 w-40 h-40 bg-blue-200/10 rounded-full blur-2xl -ml-10 -mb-10"></div>
           
@@ -167,11 +167,11 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
             <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-emerald-200/50">
               <Trophy size={48} />
             </div>
-            <h2 className="text-xl font-medium text-gray-800 mb-3">Quiz Completed!</h2>
-            <p className="text-gray-800 font-medium mb-8 text-lg">You have successfully completed {activeQuiz.title}.</p>
+            <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100 mb-3">Quiz Completed!</h2>
+            <p className="text-slate-900 dark:text-slate-100 font-medium mb-8 text-lg">You have successfully completed {activeQuiz.title}.</p>
             
             <div className="text-6xl font-medium text-blue-600 mb-10 drop-shadow-sm">
-              {score.score} <span className="text-3xl text-gray-800 font-medium">/ {score.total}</span>
+              {score.score} <span className="text-3xl text-slate-900 dark:text-slate-100 font-medium">/ {score.total}</span>
             </div>
             
             <button 
@@ -188,29 +188,29 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
     const question = activeQuiz.questions[currentQuestion];
 
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-4 md:p-4 rounded-2xl border border-gray-100 shadow-sm max-w-3xl mx-auto">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-slate-900 p-4 md:p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm max-w-3xl mx-auto">
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h2 className="text-lg font-medium text-gray-800">{activeQuiz.title}</h2>
-            <p className="text-gray-800 font-medium mt-1">{getSubjectName(activeQuiz.subjectId)}</p>
+            <h2 className="text-lg font-medium text-slate-900 dark:text-slate-100">{activeQuiz.title}</h2>
+            <p className="text-slate-900 dark:text-slate-100 font-medium mt-1">{getSubjectName(activeQuiz.subjectId)}</p>
           </div>
           <div className="flex items-center gap-4">
             {timeLeft !== null && (
               <div className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium border ${
-                timeLeft < 60 ? 'bg-red-50 text-red-600 border-red-200/50 animate-pulse' : 'bg-gray-50 text-gray-800 border-gray-200/50'
+                timeLeft < 60 ? 'bg-red-50 text-red-600 border-red-200/50 animate-pulse' : 'bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border-gray-200/50'
               }`}>
                 <Clock size={16} />
                 {formatTime(timeLeft)}
               </div>
             )}
-            <div className="text-[10px] font-medium uppercase tracking-wider text-gray-800 text-blue-700 bg-blue-50 px-5 py-2.5 rounded-full border border-blue-200/50 shadow-sm">
+            <div className="text-[10px] font-medium uppercase tracking-wider text-slate-900 dark:text-slate-100 text-blue-700 bg-blue-50 px-5 py-2.5 rounded-full border border-blue-200/50 shadow-sm">
               Question {currentQuestion + 1} of {activeQuiz.questions.length}
             </div>
           </div>
         </div>
 
         <div className="mb-10">
-          <h3 className="text-lg font-medium text-gray-800 mb-8 leading-snug">{question.question}</h3>
+          <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-8 leading-snug">{question.question}</h3>
           <div className="space-y-6">
             {question.options.map((option, index) => (
               <motion.button
@@ -222,7 +222,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
                 className={`w-full text-left p-4 rounded-2xl border-2 transition-all flex items-center gap-4 group ${
                   answers[currentQuestion] === index 
                     ? 'border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 shadow-md scale-[1.02]' 
-                    : 'border-gray-100 hover:border-blue-300 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-indigo-50/50 bg-white shadow-sm hover:shadow-md'
+                    : 'border-slate-100 dark:border-slate-800 hover:border-blue-300 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-indigo-50/50 bg-white dark:bg-slate-900 shadow-sm hover:shadow-md'
                 }`}
               >
                 {answers[currentQuestion] === index ? (
@@ -230,20 +230,20 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
                 ) : (
                   <Circle className="text-gray-300 group-hover:text-blue-400 shrink-0 transition-colors" size={20} />
                 )}
-                <span className={`font-medium text-lg ${answers[currentQuestion] === index ? 'text-blue-900' : 'text-gray-800 group-hover:text-gray-800'}`}>{option}</span>
+                <span className={`font-medium text-lg ${answers[currentQuestion] === index ? 'text-blue-900' : 'text-slate-900 dark:text-slate-100 group-hover:text-slate-900 dark:text-slate-100'}`}>{option}</span>
               </motion.button>
             ))}
           </div>
         </div>
 
-        <div className="flex justify-between items-center pt-8 border-t border-gray-100">
+        <div className="flex justify-between items-center pt-8 border-t border-slate-100 dark:border-slate-800">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
             onClick={() => setCurrentQuestion(prev => Math.max(0, prev - 1))}
             disabled={currentQuestion === 0}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-gray-800 hover:bg-gray-100 hover:text-gray-800 disabled:opacity-50 transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-slate-900 dark:text-slate-100 hover:bg-gray-100 hover:text-slate-900 dark:text-slate-100 disabled:opacity-50 transition-all"
           >
             <ArrowLeft size={20} /> Previous
           </motion.button>
@@ -265,7 +265,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
               onClick={() => setCurrentQuestion(prev => Math.min(activeQuiz.questions.length - 1, prev + 1))}
-              className="flex items-center gap-2 bg-gradient-to-r from-gray-800 to-gray-900 text-gray-800 px-8 py-3.5 rounded-xl font-medium hover:shadow-md transition-all shadow-sm"
+              className="flex items-center gap-2 bg-gradient-to-r from-gray-800 to-gray-900 text-slate-900 dark:text-slate-100 px-8 py-3.5 rounded-xl font-medium hover:shadow-md transition-all shadow-sm"
             >
               Next <ArrowRight size={20} />
             </motion.button>
@@ -279,17 +279,17 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
     <div className={containerClass}>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h3 className="text-xl font-medium text-gray-800">Quiz Hub</h3>
-          <p className="text-gray-800 font-medium mt-1">Test your knowledge and earn points!</p>
+          <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100">Quiz Hub</h3>
+          <p className="text-slate-900 dark:text-slate-100 font-medium mt-1">Test your knowledge and earn points!</p>
         </div>
-        <div className="flex bg-white/80 backdrop-blur-md p-1 rounded-xl border border-gray-200/50 bg-gray-50/50">
+        <div className="flex bg-white dark:bg-slate-900/80 backdrop-blur-md p-1 rounded-xl border border-gray-200/50 bg-slate-50 dark:bg-slate-800/50">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
             onClick={() => setQuizType('revision')}
             className={`px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-all ${
-              quizType === 'revision' ? 'bg-purple-100 text-gray-800 shadow-md' : 'text-gray-800 hover:bg-gray-50'
+              quizType === 'revision' ? 'bg-purple-100 text-slate-900 dark:text-slate-100 shadow-md' : 'text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800'
             }`}
           >
             <BookOpen size={18} /> Revision Quizzes
@@ -300,7 +300,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
             onClick={() => setQuizType('class')}
             className={`px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-all ${
-              quizType === 'class' ? 'bg-orange-100 text-gray-800 shadow-md' : 'text-gray-800 hover:bg-gray-50'
+              quizType === 'class' ? 'bg-orange-100 text-slate-900 dark:text-slate-100 shadow-md' : 'text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800'
             }`}
           >
             <BrainCircuit size={18} /> Class Quizzes
@@ -315,12 +315,12 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
           const colorClass = colors[index % colors.length];
           return (
             <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} key={quiz.id} className={`${colorClass} p-4 rounded-2xl border border-white/50 shadow-sm hover:shadow-md transition-all flex flex-col group relative overflow-hidden`}>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
               <div className="flex-1 relative z-10">
-                <span className={`inline-block px-4 py-1.5 text-[10px] font-medium uppercase tracking-widest rounded-full mb-4 border bg-white/60 text-gray-800 border-white/50`}>
+                <span className={`inline-block px-4 py-1.5 text-[10px] font-medium uppercase tracking-widest rounded-full mb-4 border bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 border-white/50`}>
                   {getSubjectName(quiz.subjectId)}
                 </span>
-                <h4 className="font-medium text-xl text-gray-800 mb-2 leading-snug group-hover:text-gray-800 transition-colors">{quiz.title}</h4>
+                <h4 className="font-medium text-xl text-slate-900 dark:text-slate-100 mb-2 leading-snug group-hover:text-slate-900 dark:text-slate-100 transition-colors">{quiz.title}</h4>
                 <p className="text-gray-700 font-medium text-sm mb-6">{quiz.questions.length} Questions</p>
               </div>
               
@@ -328,7 +328,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
                 <div className="pt-5 border-t border-white/30 flex justify-between items-center relative z-10">
                   <div className="flex items-center gap-3">
                     <span className="text-[10px] font-medium text-gray-700 uppercase tracking-widest">Score</span>
-                    <span className={`font-medium text-xl px-4 py-1.5 rounded-xl border bg-white/60 text-gray-800 border-white/50`}>
+                    <span className={`font-medium text-xl px-4 py-1.5 rounded-xl border bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 border-white/50`}>
                       {result.score}/{result.total}
                     </span>
                   </div>
@@ -338,7 +338,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
                       whileTap={{ scale: 0.95 }}
                       transition={{ type: "spring", stiffness: 400, damping: 17 }}
                       onClick={() => handleStartQuiz(quiz)}
-                      className="text-sm font-medium text-gray-800 hover:text-gray-800 bg-white/40 hover:bg-white/60 px-4 py-2 rounded-lg transition-colors border border-white/30"
+                      className="text-sm font-medium text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900/40 hover:bg-white dark:bg-slate-900/60 px-4 py-2 rounded-lg transition-colors border border-white/30"
                     >
                       Retake
                     </motion.button>
@@ -350,7 +350,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   onClick={() => handleStartQuiz(quiz)}
-                  className="w-full py-3.5 bg-white/40 text-gray-800 border border-white/50 rounded-xl font-medium hover:bg-white/60 transition-all shadow-sm hover:shadow-md relative z-10"
+                  className="w-full py-3.5 bg-white dark:bg-slate-900/40 text-slate-900 dark:text-slate-100 border border-white/50 rounded-xl font-medium hover:bg-white dark:bg-slate-900/60 transition-all shadow-sm hover:shadow-md relative z-10"
                 >
                   Start Quiz
                 </motion.button>
@@ -359,12 +359,12 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
           );
         })}
         {displayedQuizzes.length === 0 && (
-          <div className="col-span-full p-16 text-center bg-white/80 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm">
-            <div className="w-20 h-20 bg-white/50 rounded-3xl flex items-center justify-center mx-auto mb-4 text-gray-800 shadow-sm border border-white/50">
+          <div className="col-span-full p-16 text-center bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm">
+            <div className="w-20 h-20 bg-white dark:bg-slate-900/50 rounded-3xl flex items-center justify-center mx-auto mb-4 text-slate-900 dark:text-slate-100 shadow-sm border border-white/50">
               {quizType === 'revision' ? <BookOpen size={40} /> : <BrainCircuit size={40} />}
             </div>
-            <p className="text-gray-800 font-medium text-lg">No {quizType} quizzes available for your class.</p>
-            <p className="text-gray-800 font-medium mt-2">Check back later!</p>
+            <p className="text-slate-900 dark:text-slate-100 font-medium text-lg">No {quizType} quizzes available for your class.</p>
+            <p className="text-slate-900 dark:text-slate-100 font-medium mt-2">Check back later!</p>
           </div>
         )}
       </div>

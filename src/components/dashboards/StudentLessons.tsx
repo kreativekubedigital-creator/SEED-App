@@ -177,20 +177,20 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
   if (selectedLesson) {
     return (
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-2xl border border-white/20 shadow-sm overflow-hidden min-h-[500px] flex flex-col relative">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-white/20 shadow-sm overflow-hidden min-h-[500px] flex flex-col relative">
           {/* Decorative background elements */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-200/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
           <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-500/5 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>
           
           {/* Header */}
-          <div className="p-4 border-b border-gray-100/50 flex justify-between items-center bg-gray-50/30 relative z-10">
+          <div className="p-4 border-b border-slate-100 dark:border-slate-800/50 flex justify-between items-center bg-slate-50 dark:bg-slate-800/30 relative z-10">
             <div>
-              <h3 className="text-lg font-medium text-gray-800">{selectedLesson.title}</h3>
-              <p className="text-sm text-gray-800 font-medium mt-1">{selectedSubject} • {selectedLesson.level}</p>
+              <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">{selectedLesson.title}</h3>
+              <p className="text-sm text-slate-900 dark:text-slate-100 font-medium mt-1">{selectedSubject} • {selectedLesson.level}</p>
             </div>
             <button 
               onClick={() => setSelectedLesson(null)}
-              className="px-5 py-2.5 rounded-full border border-gray-200/50 bg-white/50 hover:bg-white hover:text-gray-800 transition-all text-sm font-medium text-gray-800 shadow-sm hover:shadow-md"
+              className="px-5 py-2.5 rounded-full border border-gray-200/50 bg-white dark:bg-slate-900/50 hover:bg-white dark:bg-slate-900 hover:text-slate-900 dark:text-slate-100 transition-all text-sm font-medium text-slate-900 dark:text-slate-100 shadow-sm hover:shadow-md"
             >
               Exit Lesson
             </button>
@@ -225,8 +225,8 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                     <Play size={48} fill="currentColor" />
                   </div>
                   <div className="space-y-6">
-                    <h4 className="text-xl font-medium text-gray-800">Ready to learn?</h4>
-                    <p className="text-lg text-gray-800 font-medium max-w-md mx-auto leading-relaxed">{selectedLesson.intro}</p>
+                    <h4 className="text-xl font-medium text-slate-900 dark:text-slate-100">Ready to learn?</h4>
+                    <p className="text-lg text-slate-900 dark:text-slate-100 font-medium max-w-md mx-auto leading-relaxed">{selectedLesson.intro}</p>
                   </div>
                   <button 
                     onClick={handleNextStep}
@@ -245,10 +245,10 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                   exit={{ opacity: 0, x: -20 }}
                   className="space-y-6 w-full max-w-2xl"
                 >
-                  <div className="p-4 bg-white/60 backdrop-blur-sm rounded-2xl border border-white/40 shadow-sm relative overflow-hidden">
+                  <div className="p-4 bg-white dark:bg-slate-900/60 backdrop-blur-sm rounded-2xl border border-white/40 shadow-sm relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-500"></div>
                     <h4 className="text-sm uppercase tracking-widest text-blue-600 font-medium mb-6">The Lesson</h4>
-                    <p className="text-2xl md:text-xl font-medium leading-relaxed text-gray-800">{selectedLesson.content}</p>
+                    <p className="text-2xl md:text-xl font-medium leading-relaxed text-slate-900 dark:text-slate-100">{selectedLesson.content}</p>
                   </div>
                   <button 
                     onClick={handleNextStep}
@@ -271,9 +271,9 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                     <div className="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-emerald-50 to-teal-50 backdrop-blur-sm text-emerald-700 rounded-full text-sm font-medium border border-emerald-200/50 shadow-sm">
                       <Gamepad2 size={16} /> Practice Time
                     </div>
-                    <h4 className="text-lg font-medium text-gray-800">{selectedLesson.practice?.instruction}</h4>
+                    <h4 className="text-lg font-medium text-slate-900 dark:text-slate-100">{selectedLesson.practice?.instruction}</h4>
                   </div>
-                  <div className="p-12 bg-white/80 backdrop-blur-sm border-2 border-dashed border-blue-200/50 rounded-2xl text-4xl font-mono font-medium text-blue-600 shadow-sm">
+                  <div className="p-12 bg-white dark:bg-slate-900/80 backdrop-blur-sm border-2 border-dashed border-blue-200/50 rounded-2xl text-4xl font-mono font-medium text-blue-600 shadow-sm">
                     {selectedLesson.practice?.task}
                   </div>
                   <button 
@@ -296,12 +296,12 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-orange-50 to-amber-50 backdrop-blur-sm text-orange-600 rounded-full text-[10px] font-medium uppercase tracking-widest border border-orange-200/50 shadow-sm">Question {quizIndex + 1} / {sessionQuestions.length}</span>
-                      <div className="flex items-center gap-2 text-sm font-medium text-gray-800">
+                      <div className="flex items-center gap-2 text-sm font-medium text-slate-900 dark:text-slate-100">
                         <CheckCircle2 size={16} className="text-emerald-500" />
                         <span>Score: {score}</span>
                       </div>
                     </div>
-                    <h4 className="text-lg font-medium text-gray-800 leading-snug">{sessionQuestions[quizIndex]?.question}</h4>
+                    <h4 className="text-lg font-medium text-slate-900 dark:text-slate-100 leading-snug">{sessionQuestions[quizIndex]?.question}</h4>
                   </div>
                   <div className="grid gap-4">
                     {sessionQuestions[quizIndex]?.options.map((option, idx) => {
@@ -317,19 +317,19 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                             showFeedback 
                               ? idx === sessionQuestions[quizIndex].correctOption
                                 ? 'border-emerald-500 bg-emerald-50/50'
-                                : 'border-gray-100 bg-gray-50/30 opacity-60'
-                              : 'border-white/40 hover:border-blue-400/50 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-indigo-50/50 bg-white/80 hover:shadow-md'
+                                : 'border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30 opacity-60'
+                              : 'border-white/40 hover:border-blue-400/50 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-indigo-50/50 bg-white dark:bg-slate-900/80 hover:shadow-md'
                           }`}
                         >
                           <span className={`font-medium text-lg ${
-                            showFeedback && idx === sessionQuestions[quizIndex].correctOption ? 'text-emerald-700' : 'text-gray-800'
+                            showFeedback && idx === sessionQuestions[quizIndex].correctOption ? 'text-emerald-700' : 'text-slate-900 dark:text-slate-100'
                           }`}>{option}</span>
                           <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center font-medium transition-colors shadow-sm ${
                             showFeedback 
                               ? idx === sessionQuestions[quizIndex].correctOption
-                                ? 'border-emerald-500 bg-emerald-500 text-gray-800'
-                                : 'border-gray-200 bg-gray-100 text-gray-800'
-                              : 'border-gray-200/50 bg-white group-hover:border-blue-400 group-hover:bg-blue-50 group-hover:text-blue-600 text-gray-800'
+                                ? 'border-emerald-500 bg-emerald-500 text-slate-900 dark:text-slate-100'
+                                : 'border-gray-200 bg-gray-100 text-slate-900 dark:text-slate-100'
+                              : 'border-gray-200/50 bg-white dark:bg-slate-900 group-hover:border-blue-400 group-hover:bg-blue-50 group-hover:text-blue-600 text-slate-900 dark:text-slate-100'
                           }`}>
                             {showFeedback && idx === sessionQuestions[quizIndex].correctOption ? <CheckCircle2 size={20} /> : idx + 1}
                           </div>
@@ -387,8 +387,8 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                     </div>
                   </div>
                   <div className="space-y-3">
-                    <h4 className="text-xl font-medium text-gray-800">Amazing Job!</h4>
-                    <p className="text-lg text-gray-800 font-medium">You scored {score} / {sessionQuestions.length}</p>
+                    <h4 className="text-xl font-medium text-slate-900 dark:text-slate-100">Amazing Job!</h4>
+                    <p className="text-lg text-slate-900 dark:text-slate-100 font-medium">You scored {score} / {sessionQuestions.length}</p>
                     
                     <div className="flex flex-col gap-3 max-w-xs mx-auto mt-6">
                       <div className="flex justify-between items-center p-3 bg-blue-50 rounded-xl border border-blue-100">
@@ -417,7 +417,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                   <div className="flex flex-col gap-3 mt-8">
                     <button 
                       onClick={() => startLesson(selectedLesson!)}
-                      className="bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 px-10 py-2.5 rounded-full font-medium transition-all flex items-center justify-center gap-2 mx-auto"
+                      className="bg-white dark:bg-slate-900 text-blue-600 border border-blue-200 hover:bg-blue-50 px-10 py-2.5 rounded-full font-medium transition-all flex items-center justify-center gap-2 mx-auto"
                     >
                       <RefreshCcw size={18} /> Play Again
                     </button>
@@ -441,12 +441,12 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
     <div className={containerClass}>
       <div className="flex justify-between items-end">
         <div>
-          <h2 className="text-xl font-medium text-gray-800">Revision Hub</h2>
-          <p className="text-gray-800 font-medium mt-1">Master your subjects with interactive lessons.</p>
+          <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">Revision Hub</h2>
+          <p className="text-slate-900 dark:text-slate-100 font-medium mt-1">Master your subjects with interactive lessons.</p>
         </div>
-        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/40 shadow-sm">
+        <div className="flex items-center gap-2 bg-white dark:bg-slate-900/80 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/40 shadow-sm">
           <Award className="text-yellow-500" size={20} />
-          <span className="font-medium text-gray-800">{points} Points</span>
+          <span className="font-medium text-slate-900 dark:text-slate-100">{points} Points</span>
         </div>
       </div>
 
@@ -457,19 +457,19 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('English')}
-            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200 text-gray-800 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(59,130,246,0.2)]"
+            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200 text-slate-900 dark:text-slate-100 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(59,130,246,0.2)]"
           >
             <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <BookOpen size={200} />
             </div>
             <div className="relative z-10">
-              <div className="w-16 h-16 bg-white/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+              <div className="w-16 h-16 bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
                 <BookOpen size={20} />
               </div>
               <h3 className="text-xl font-medium mb-3">English Language</h3>
               <p className="text-blue-900 font-medium max-w-[200px] leading-relaxed">Phonics, Grammar, and Creative Writing.</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 font-medium bg-white/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white/40 transition-colors">
+            <div className="relative z-10 flex items-center gap-2 font-medium bg-white dark:bg-slate-900/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white dark:bg-slate-900/40 transition-colors">
               Explore Lessons <ChevronRight size={20} />
             </div>
           </motion.button>
@@ -479,19 +479,19 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Math')}
-            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-100 to-purple-200 text-gray-800 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(99,102,241,0.2)]"
+            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-100 to-purple-200 text-slate-900 dark:text-slate-100 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(99,102,241,0.2)]"
           >
             <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <Brain size={200} />
             </div>
             <div className="relative z-10">
-              <div className="w-16 h-16 bg-white/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+              <div className="w-16 h-16 bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
                 <Brain size={20} />
               </div>
               <h3 className="text-xl font-medium mb-3">Mathematics</h3>
               <p className="text-indigo-50 font-medium max-w-[200px] leading-relaxed">Numbers, Shapes, and Problem Solving.</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 font-medium bg-white/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white/40 transition-colors">
+            <div className="relative z-10 flex items-center gap-2 font-medium bg-white dark:bg-slate-900/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white dark:bg-slate-900/40 transition-colors">
               Explore Lessons <ChevronRight size={20} />
             </div>
           </motion.button>
@@ -501,19 +501,19 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Science')}
-            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-100 to-teal-200 text-gray-800 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(16,185,129,0.2)]"
+            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-100 to-teal-200 text-slate-900 dark:text-slate-100 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(16,185,129,0.2)]"
           >
             <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <Microscope size={200} />
             </div>
             <div className="relative z-10">
-              <div className="w-16 h-16 bg-white/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+              <div className="w-16 h-16 bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
                 <Microscope size={20} />
               </div>
               <h3 className="text-xl font-medium mb-3">Science & Tech</h3>
               <p className="text-emerald-50 font-medium max-w-[200px] leading-relaxed">Nature, Energy, and the Human Body.</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 font-medium bg-white/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white/40 transition-colors">
+            <div className="relative z-10 flex items-center gap-2 font-medium bg-white dark:bg-slate-900/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white dark:bg-slate-900/40 transition-colors">
               Explore Lessons <ChevronRight size={20} />
             </div>
           </motion.button>
@@ -523,19 +523,19 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Social Studies')}
-            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-100 to-red-200 text-gray-800 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(249,115,22,0.2)]"
+            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-100 to-red-200 text-slate-900 dark:text-slate-100 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(249,115,22,0.2)]"
           >
             <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <Globe size={200} />
             </div>
             <div className="relative z-10">
-              <div className="w-16 h-16 bg-white/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+              <div className="w-16 h-16 bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
                 <Globe size={20} />
               </div>
               <h3 className="text-xl font-medium mb-3">Social Studies</h3>
               <p className="text-orange-900 font-medium max-w-[200px] leading-relaxed">Family, Community, and Culture.</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 font-medium bg-white/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white/40 transition-colors">
+            <div className="relative z-10 flex items-center gap-2 font-medium bg-white dark:bg-slate-900/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white dark:bg-slate-900/40 transition-colors">
               Explore Lessons <ChevronRight size={20} />
             </div>
           </motion.button>
@@ -545,19 +545,19 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('ICT')}
-            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-100 to-blue-200 text-gray-800 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(6,182,212,0.2)]"
+            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-100 to-blue-200 text-slate-900 dark:text-slate-100 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(6,182,212,0.2)]"
           >
             <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <Monitor size={200} />
             </div>
             <div className="relative z-10">
-              <div className="w-16 h-16 bg-white/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+              <div className="w-16 h-16 bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
                 <Monitor size={20} />
               </div>
               <h3 className="text-xl font-medium mb-3">ICT</h3>
               <p className="text-cyan-50 font-medium max-w-[200px] leading-relaxed">Computers, Internet, and Coding.</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 font-medium bg-white/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white/40 transition-colors">
+            <div className="relative z-10 flex items-center gap-2 font-medium bg-white dark:bg-slate-900/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white dark:bg-slate-900/40 transition-colors">
               Explore Lessons <ChevronRight size={20} />
             </div>
           </motion.button>
@@ -567,19 +567,19 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Civic Education')}
-            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-rose-100 to-pink-200 text-gray-800 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(244,63,94,0.2)]"
+            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-rose-100 to-pink-200 text-slate-900 dark:text-slate-100 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(244,63,94,0.2)]"
           >
             <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <ShieldCheck size={200} />
             </div>
             <div className="relative z-10">
-              <div className="w-16 h-16 bg-white/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+              <div className="w-16 h-16 bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
                 <ShieldCheck size={20} />
               </div>
               <h3 className="text-xl font-medium mb-3">Civic Education</h3>
               <p className="text-rose-50 font-medium max-w-[200px] leading-relaxed">Rights, Duties, and Democracy.</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 font-medium bg-white/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white/40 transition-colors">
+            <div className="relative z-10 flex items-center gap-2 font-medium bg-white dark:bg-slate-900/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white dark:bg-slate-900/40 transition-colors">
               Explore Lessons <ChevronRight size={20} />
             </div>
           </motion.button>
@@ -592,21 +592,21 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
               whileTap={{ scale: 0.9 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
               onClick={() => setSelectedSubject(null)}
-              className="p-2.5 rounded-full bg-white border border-white/40 hover:bg-white hover:shadow-md transition-all text-gray-800 shadow-sm"
+              className="p-2.5 rounded-full bg-white dark:bg-slate-900 border border-white/40 hover:bg-white dark:bg-slate-900 hover:shadow-md transition-all text-slate-900 dark:text-slate-100 shadow-sm"
             >
               <ChevronRight size={20} className="rotate-180" />
             </motion.button>
-            <h3 className="text-xl font-medium text-gray-800">{selectedSubject} Lessons</h3>
+            <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100">{selectedSubject} Lessons</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {lessons.length === 0 ? (
-              <div className="col-span-full py-16 text-center bg-white/80 backdrop-blur-md rounded-2xl border border-white/40 shadow-sm">
-                <div className="w-20 h-20 bg-white/50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-800 shadow-sm border border-white">
+              <div className="col-span-full py-16 text-center bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/40 shadow-sm">
+                <div className="w-20 h-20 bg-white dark:bg-slate-900/50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-900 dark:text-slate-100 shadow-sm border border-white">
                   <BookOpen size={40} />
                 </div>
-                <p className="text-gray-800 font-medium text-lg">No lessons available for your current class level ({classLevel}).</p>
-                <p className="text-gray-800 font-medium mt-2">Check back later for new content!</p>
+                <p className="text-slate-900 dark:text-slate-100 font-medium text-lg">No lessons available for your current class level ({classLevel}).</p>
+                <p className="text-slate-900 dark:text-slate-100 font-medium mt-2">Check back later for new content!</p>
               </div>
             ) : (
               lessons.map((lesson, idx) => {
@@ -621,21 +621,21 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                     whileHover={{ y: -5, scale: 1.02 }}
                     className={`${colorClass} p-4 rounded-2xl border border-white/40 shadow-sm hover:shadow-md transition-all group flex flex-col relative overflow-hidden`}
                   >
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
                     <div className="flex justify-between items-start mb-6 relative z-10">
-                      <span className="text-[10px] font-medium text-gray-800 bg-white/60 px-3 py-1 rounded-full uppercase tracking-widest border border-white/50 shadow-sm">{lesson.level}</span>
-                      <div className="p-2.5 bg-white/60 text-gray-800 rounded-full opacity-0 group-hover:opacity-100 transition-opacity scale-90 group-hover:scale-100 border border-white/50 shadow-sm">
+                      <span className="text-[10px] font-medium text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900/60 px-3 py-1 rounded-full uppercase tracking-widest border border-white/50 shadow-sm">{lesson.level}</span>
+                      <div className="p-2.5 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity scale-90 group-hover:scale-100 border border-white/50 shadow-sm">
                         <Play size={16} fill="currentColor" />
                       </div>
                     </div>
-                    <h4 className="text-xl font-medium mb-3 text-gray-800 leading-snug relative z-10">{lesson.title}</h4>
+                    <h4 className="text-xl font-medium mb-3 text-slate-900 dark:text-slate-100 leading-snug relative z-10">{lesson.title}</h4>
                     <p className="text-sm text-gray-700 font-medium mb-8 line-clamp-2 flex-grow relative z-10">{lesson.content}</p>
                     <motion.button 
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       transition={{ type: "spring", stiffness: 400, damping: 17 }}
                       onClick={() => startLesson(lesson)}
-                      className="w-full py-3.5 rounded-full bg-white/40 border border-white/50 font-medium text-gray-800 hover:bg-white/60 transition-all shadow-sm hover:shadow-md relative z-10"
+                      className="w-full py-3.5 rounded-full bg-white dark:bg-slate-900/40 border border-white/50 font-medium text-slate-900 dark:text-slate-100 hover:bg-white dark:bg-slate-900/60 transition-all shadow-sm hover:shadow-md relative z-10"
                     >
                       Start Lesson
                     </motion.button>

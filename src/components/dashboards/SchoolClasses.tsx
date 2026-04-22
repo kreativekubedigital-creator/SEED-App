@@ -218,17 +218,17 @@ export const SchoolClasses = ({ school }: { school: School }) => {
   return (
     <div className="space-y-5">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h3 className="text-lg font-medium text-gray-800">Classes & Subjects</h3>
-        <div className="flex items-center gap-2 bg-white p-1.5 rounded-full border border-white/40 shadow-sm">
+        <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Classes & Subjects</h3>
+        <div className="flex items-center gap-2 bg-white dark:bg-slate-900 p-1.5 rounded-full border border-white/40 shadow-sm">
           <button
             onClick={() => setActiveLevel('primary')}
-            className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${activeLevel === 'primary' ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/30' : 'text-gray-800 hover:text-gray-800 hover:bg-gray-50'}`}
+            className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${activeLevel === 'primary' ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/30' : 'text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800'}`}
           >
             Primary
           </button>
           <button
             onClick={() => setActiveLevel('secondary')}
-            className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${activeLevel === 'secondary' ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/30' : 'text-gray-800 hover:text-gray-800 hover:bg-gray-50'}`}
+            className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${activeLevel === 'secondary' ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/30' : 'text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800'}`}
           >
             Secondary
           </button>
@@ -247,16 +247,16 @@ export const SchoolClasses = ({ school }: { school: School }) => {
           const isExpanded = expandedClass === c.id;
 
           return (
-            <div key={c.id} className="bg-white rounded-2xl border border-white/40 shadow-sm overflow-hidden transition-all hover:shadow-md group">
-              <div className="p-4 flex justify-between items-center bg-white/50 relative overflow-hidden">
+            <div key={c.id} className="bg-white dark:bg-slate-900 rounded-2xl border border-white/40 shadow-sm overflow-hidden transition-all hover:shadow-md group">
+              <div className="p-4 flex justify-between items-center bg-white dark:bg-slate-900/50 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-orange-400 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div className="flex items-center gap-4 cursor-pointer flex-1 relative z-10" onClick={() => setExpandedClass(isExpanded ? null : c.id)}>
                   <div className="w-10 h-10 bg-gradient-to-br from-orange-50 to-red-50 text-orange-500 rounded-2xl flex items-center justify-center shrink-0 shadow-sm border border-orange-100/50 group-hover:scale-110 transition-transform">
                     <BookOpen size={20} />
                   </div>
                   <div>
-                    <p className="font-medium text-xl text-gray-800 group-hover:text-orange-600 transition-colors">{c.name}</p>
-                    <p className="text-sm text-gray-800 font-medium mt-1 bg-gray-50 px-2.5 py-0.5 rounded-full inline-block border border-gray-100">{classSubjects.length} Subjects</p>
+                    <p className="font-medium text-xl text-slate-900 dark:text-slate-100 group-hover:text-orange-600 transition-colors">{c.name}</p>
+                    <p className="text-sm text-slate-900 dark:text-slate-100 font-medium mt-1 bg-slate-50 dark:bg-slate-800 px-2.5 py-0.5 rounded-full inline-block border border-slate-100 dark:border-slate-800">{classSubjects.length} Subjects</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 relative z-10">
@@ -267,10 +267,10 @@ export const SchoolClasses = ({ school }: { school: School }) => {
                   }} className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 p-2.5 rounded-xl transition-colors font-medium text-sm">
                     Edit
                   </button>
-                  <button onClick={() => setClassToDelete(c.id)} className="text-gray-800 hover:text-red-500 hover:bg-red-50 p-2.5 rounded-xl transition-colors">
+                  <button onClick={() => setClassToDelete(c.id)} className="text-slate-900 dark:text-slate-100 hover:text-red-500 hover:bg-red-50 p-2.5 rounded-xl transition-colors">
                     <Trash2 size={20} />
                   </button>
-                  <button onClick={() => setExpandedClass(isExpanded ? null : c.id)} className={`text-gray-800 hover:text-gray-800 hover:bg-gray-50 p-2.5 rounded-xl transition-colors ${isExpanded ? 'bg-gray-50 text-gray-800' : ''}`}>
+                  <button onClick={() => setExpandedClass(isExpanded ? null : c.id)} className={`text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 p-2.5 rounded-xl transition-colors ${isExpanded ? 'bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100' : ''}`}>
                     {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                   </button>
                 </div>
@@ -282,11 +282,11 @@ export const SchoolClasses = ({ school }: { school: School }) => {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    className="border-t border-gray-100/50 bg-gray-50/50"
+                    className="border-t border-slate-100 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-800/50"
                   >
                     <div className="p-4 space-y-5">
                       <div className="flex justify-between items-center mb-6">
-                        <h4 className="font-medium text-sm text-gray-800 uppercase tracking-widest">Subjects</h4>
+                        <h4 className="font-medium text-sm text-slate-900 dark:text-slate-100 uppercase tracking-widest">Subjects</h4>
                         <button
                           onClick={() => setShowAddSubject(c.id)}
                           className="text-blue-600 text-sm font-medium hover:text-blue-700 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full hover:bg-blue-50 transition-colors border border-blue-100/50"
@@ -296,18 +296,18 @@ export const SchoolClasses = ({ school }: { school: School }) => {
                       </div>
 
                       {classSubjects.length === 0 ? (
-                        <p className="text-sm text-gray-800 font-medium text-center py-8 bg-white/50 rounded-2xl border border-dashed border-gray-200">No subjects added yet.</p>
+                        <p className="text-sm text-slate-900 dark:text-slate-100 font-medium text-center py-8 bg-white dark:bg-slate-900/50 rounded-2xl border border-dashed border-gray-200">No subjects added yet.</p>
                       ) : (
                         <div className="space-y-3">
                           {classSubjects.map(s => {
                             const teacher = teachers.find(t => t.uid === s.teacherId);
                             return (
-                              <div key={s.id} className="flex justify-between items-center p-4 rounded-2xl bg-white border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all group/subject">
+                              <div key={s.id} className="flex justify-between items-center p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-blue-200 hover:shadow-md transition-all group/subject">
                                 <div>
-                                  <p className="font-medium text-gray-800 text-lg group-hover/subject:text-blue-600 transition-colors">{s.name}</p>
-                                  <p className="text-sm text-gray-800 font-medium mt-1 flex items-center gap-2">
+                                  <p className="font-medium text-slate-900 dark:text-slate-100 text-lg group-hover/subject:text-blue-600 transition-colors">{s.name}</p>
+                                  <p className="text-sm text-slate-900 dark:text-slate-100 font-medium mt-1 flex items-center gap-2">
                                     Teacher: 
-                                    <span className="text-gray-800 bg-gray-50 px-2 py-0.5 rounded-md border border-gray-100">
+                                    <span className="text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-100 dark:border-slate-800">
                                       {teacher ? `${teacher.firstName} ${teacher.lastName}` : 'Unassigned'}
                                     </span>
                                   </p>
@@ -340,12 +340,12 @@ export const SchoolClasses = ({ school }: { school: School }) => {
           );
         })}
         {classes.length === 0 && (
-          <div className="col-span-full text-center py-16 text-gray-800 bg-white rounded-2xl border border-white/40 shadow-sm font-medium flex flex-col items-center justify-center">
-             <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-800 mb-4 border border-gray-100">
+          <div className="col-span-full text-center py-16 text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900 rounded-2xl border border-white/40 shadow-sm font-medium flex flex-col items-center justify-center">
+             <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-900 dark:text-slate-100 mb-4 border border-slate-100 dark:border-slate-800">
               <BookOpen size={20} />
             </div>
-            <p className="text-gray-800 font-medium text-lg">No classes found.</p>
-            <p className="text-gray-800 font-medium mt-1">Add one to get started.</p>
+            <p className="text-slate-900 dark:text-slate-100 font-medium text-lg">No classes found.</p>
+            <p className="text-slate-900 dark:text-slate-100 font-medium mt-1">Add one to get started.</p>
           </div>
         )}
       </div>
@@ -358,12 +358,12 @@ export const SchoolClasses = ({ school }: { school: School }) => {
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="bg-white/90 backdrop-blur-xl rounded-2xl p-4 w-full max-w-md shadow-2xl border border-white/40 relative overflow-hidden"
+              className="bg-white dark:bg-slate-900/90 backdrop-blur-xl rounded-2xl p-4 w-full max-w-md shadow-2xl border border-white/40 relative overflow-hidden"
             >
               
               <div className="flex justify-between items-center mb-8 relative z-10">
-                <h3 className="text-lg font-medium text-gray-800">Add New Class</h3>
-                <button onClick={() => setShowAddClass(false)} className="p-2 text-gray-800 hover:text-gray-800 hover:bg-gray-100/50 rounded-full transition-colors">
+                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Add New Class</h3>
+                <button onClick={() => setShowAddClass(false)} className="p-2 text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-gray-100/50 rounded-full transition-colors">
                   <X size={20} />
                 </button>
               </div>
@@ -376,13 +376,13 @@ export const SchoolClasses = ({ school }: { school: School }) => {
 
               <form onSubmit={handleAddClass} className="space-y-5 relative z-10">
                 <div>
-                  <label className="block text-sm font-medium text-gray-800 mb-2">Class Name</label>
+                  <label className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">Class Name</label>
                   <input
                     type="text"
                     required
                     value={newClassName}
                     onChange={(e) => setNewClassName(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                     placeholder="e.g. Grade 1A"
                   />
                 </div>
@@ -407,12 +407,12 @@ export const SchoolClasses = ({ school }: { school: School }) => {
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="bg-white/90 backdrop-blur-xl rounded-2xl p-4 w-full max-w-md shadow-2xl border border-white/40 relative overflow-hidden"
+              className="bg-white dark:bg-slate-900/90 backdrop-blur-xl rounded-2xl p-4 w-full max-w-md shadow-2xl border border-white/40 relative overflow-hidden"
             >
               
               <div className="flex justify-between items-center mb-8 relative z-10">
-                <h3 className="text-lg font-medium text-gray-800">Edit Class</h3>
-                <button onClick={() => setClassToEdit(null)} className="p-2 text-gray-800 hover:text-gray-800 hover:bg-gray-100/50 rounded-full transition-colors">
+                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Edit Class</h3>
+                <button onClick={() => setClassToEdit(null)} className="p-2 text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-gray-100/50 rounded-full transition-colors">
                   <X size={20} />
                 </button>
               </div>
@@ -425,22 +425,22 @@ export const SchoolClasses = ({ school }: { school: School }) => {
 
               <form onSubmit={handleEditClass} className="space-y-5 relative z-10">
                 <div>
-                  <label className="block text-sm font-medium text-gray-800 mb-2">Class Name</label>
+                  <label className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">Class Name</label>
                   <input
                     type="text"
                     required
                     value={editClassName}
                     onChange={(e) => setEditClassName(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                     placeholder="e.g. Grade 1A"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-800 mb-2">Level</label>
+                  <label className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">Level</label>
                   <select
                     value={editClassLevel}
                     onChange={(e) => setEditClassLevel(e.target.value as 'primary' | 'secondary')}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                   >
                     <option value="primary">Primary</option>
                     <option value="secondary">Secondary</option>
@@ -467,16 +467,16 @@ export const SchoolClasses = ({ school }: { school: School }) => {
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="bg-white/90 backdrop-blur-xl rounded-2xl p-4 w-full max-w-md shadow-2xl border border-white/40 max-h-[90vh] overflow-y-auto relative"
+              className="bg-white dark:bg-slate-900/90 backdrop-blur-xl rounded-2xl p-4 w-full max-w-md shadow-2xl border border-white/40 max-h-[90vh] overflow-y-auto relative"
             >
               
               <div className="flex justify-between items-center mb-8 relative z-10">
-                <h3 className="text-lg font-medium text-gray-800">Add Subject</h3>
+                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Add Subject</h3>
                 <button onClick={() => {
                   setShowAddSubject(null);
                   setSelectedPredefinedSubjects([]);
                   setNewSubjectName('');
-                }} className="p-2 text-gray-800 hover:text-gray-800 hover:bg-gray-100/50 rounded-full transition-colors">
+                }} className="p-2 text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-gray-100/50 rounded-full transition-colors">
                   <X size={20} />
                 </button>
               </div>
@@ -489,10 +489,10 @@ export const SchoolClasses = ({ school }: { school: School }) => {
 
               <form onSubmit={handleAddSubject} className="space-y-5 relative z-10">
                 <div>
-                  <label className="block text-sm font-medium text-gray-800 mb-3">Preloaded Subjects</label>
-                  <div className="space-y-2 max-h-48 overflow-y-auto p-4 border border-gray-200/50 rounded-2xl bg-white/50 custom-scrollbar">
+                  <label className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-3">Preloaded Subjects</label>
+                  <div className="space-y-2 max-h-48 overflow-y-auto p-4 border border-gray-200/50 rounded-2xl bg-white dark:bg-slate-900/50 custom-scrollbar">
                     {([...(classes.find(c => c.id === showAddSubject)?.level === 'secondary' ? SECONDARY_SUBJECTS : PRIMARY_SUBJECTS)].sort((a, b) => a.localeCompare(b))).map(subject => (
-                      <label key={subject} className="flex items-center gap-3 cursor-pointer p-3 hover:bg-white rounded-xl transition-colors border border-transparent hover:border-gray-100 hover:shadow-sm">
+                      <label key={subject} className="flex items-center gap-3 cursor-pointer p-3 hover:bg-white dark:bg-slate-900 rounded-xl transition-colors border border-transparent hover:border-slate-100 dark:border-slate-800 hover:shadow-sm">
                         <input
                           type="checkbox"
                           checked={selectedPredefinedSubjects.includes(subject)}
@@ -505,28 +505,28 @@ export const SchoolClasses = ({ school }: { school: School }) => {
                           }}
                           className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 transition-all"
                         />
-                        <span className="text-sm font-medium text-gray-800">{subject}</span>
+                        <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{subject}</span>
                       </label>
                     ))}
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-800 mb-2">Custom Subject Name (Optional)</label>
+                  <label className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">Custom Subject Name (Optional)</label>
                   <input
                     type="text"
                     value={newSubjectName}
                     onChange={(e) => setNewSubjectName(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                     placeholder="e.g. Mathematics"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-800 mb-2">Assign Teacher (Optional)</label>
+                  <label className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">Assign Teacher (Optional)</label>
                   <select
                     value={newSubjectTeacher}
                     onChange={(e) => setNewSubjectTeacher(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                   >
                     <option value="">Select a teacher...</option>
                     {teachers.map(t => (
@@ -555,11 +555,11 @@ export const SchoolClasses = ({ school }: { school: School }) => {
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="bg-white/90 backdrop-blur-xl rounded-2xl p-4 w-full max-w-md shadow-2xl border border-white/40 relative overflow-hidden"
+              className="bg-white dark:bg-slate-900/90 backdrop-blur-xl rounded-2xl p-4 w-full max-w-md shadow-2xl border border-white/40 relative overflow-hidden"
             >
               <div className="flex justify-between items-center mb-8 relative z-10">
-                <h3 className="text-lg font-medium text-gray-800">Edit Subject</h3>
-                <button onClick={() => setSubjectToEdit(null)} className="p-2 text-gray-800 hover:text-gray-800 hover:bg-gray-100/50 rounded-full transition-colors">
+                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Edit Subject</h3>
+                <button onClick={() => setSubjectToEdit(null)} className="p-2 text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-gray-100/50 rounded-full transition-colors">
                   <X size={20} />
                 </button>
               </div>
@@ -572,22 +572,22 @@ export const SchoolClasses = ({ school }: { school: School }) => {
 
               <form onSubmit={handleEditSubject} className="space-y-5 relative z-10">
                 <div>
-                  <label className="block text-sm font-medium text-gray-800 mb-2">Subject Name</label>
+                  <label className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">Subject Name</label>
                   <input
                     type="text"
                     required
                     value={editSubjectName}
                     onChange={(e) => setEditSubjectName(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                     placeholder="e.g. Mathematics"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-800 mb-2">Assign Teacher</label>
+                  <label className="block text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">Assign Teacher</label>
                   <select
                     value={editSubjectTeacher}
                     onChange={(e) => setEditSubjectTeacher(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 cursor-text"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
                   >
                     <option value="">Unassigned (No Teacher)</option>
                     {teachers.map(t => (
@@ -616,15 +616,15 @@ export const SchoolClasses = ({ school }: { school: School }) => {
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="bg-white/90 backdrop-blur-xl rounded-2xl p-4 w-full max-w-md shadow-2xl border border-white/40 relative overflow-hidden text-center"
+              className="bg-white dark:bg-slate-900/90 backdrop-blur-xl rounded-2xl p-4 w-full max-w-md shadow-2xl border border-white/40 relative overflow-hidden text-center"
             >
               <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-100">
                 <Trash2 size={20} />
               </div>
-              <h3 className="text-lg font-medium mb-2 text-gray-800">Delete Class</h3>
-              <p className="text-gray-800 font-medium mb-8">Are you sure you want to delete this class? This will not delete its subjects.</p>
+              <h3 className="text-lg font-medium mb-2 text-slate-900 dark:text-slate-100">Delete Class</h3>
+              <p className="text-slate-900 dark:text-slate-100 font-medium mb-8">Are you sure you want to delete this class? This will not delete its subjects.</p>
               <div className="flex gap-4">
-                <button onClick={() => setClassToDelete(null)} className="flex-1 py-2.5 rounded-full border border-gray-200/50 font-medium text-gray-800 hover:bg-gray-50 hover:text-gray-800 transition-colors bg-white/50">Cancel</button>
+                <button onClick={() => setClassToDelete(null)} className="flex-1 py-2.5 rounded-full border border-gray-200/50 font-medium text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-100 transition-colors bg-white dark:bg-slate-900/50">Cancel</button>
                 <button onClick={handleDeleteClass} className="flex-1 py-2.5 rounded-full bg-red-500 text-white font-medium hover:bg-red-600 hover:shadow-lg hover:shadow-red-500/30 transition-all">Delete</button>
               </div>
             </motion.div>
@@ -640,15 +640,15 @@ export const SchoolClasses = ({ school }: { school: School }) => {
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="bg-white/90 backdrop-blur-xl rounded-2xl p-4 w-full max-w-md shadow-2xl border border-white/40 relative overflow-hidden text-center"
+              className="bg-white dark:bg-slate-900/90 backdrop-blur-xl rounded-2xl p-4 w-full max-w-md shadow-2xl border border-white/40 relative overflow-hidden text-center"
             >
               <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-100">
                 <Trash2 size={20} />
               </div>
-              <h3 className="text-lg font-medium mb-2 text-gray-800">Delete Subject</h3>
-              <p className="text-gray-800 font-medium mb-8">Are you sure you want to delete this subject?</p>
+              <h3 className="text-lg font-medium mb-2 text-slate-900 dark:text-slate-100">Delete Subject</h3>
+              <p className="text-slate-900 dark:text-slate-100 font-medium mb-8">Are you sure you want to delete this subject?</p>
               <div className="flex gap-4">
-                <button onClick={() => setSubjectToDelete(null)} className="flex-1 py-2.5 rounded-full border border-gray-200/50 font-medium text-gray-800 hover:bg-gray-50 hover:text-gray-800 transition-colors bg-white/50">Cancel</button>
+                <button onClick={() => setSubjectToDelete(null)} className="flex-1 py-2.5 rounded-full border border-gray-200/50 font-medium text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-100 transition-colors bg-white dark:bg-slate-900/50">Cancel</button>
                 <button onClick={handleDeleteSubject} className="flex-1 py-2.5 rounded-full bg-red-500 text-white font-medium hover:bg-red-600 hover:shadow-lg hover:shadow-red-500/30 transition-all">Delete</button>
               </div>
             </motion.div>

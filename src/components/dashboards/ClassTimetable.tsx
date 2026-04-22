@@ -135,22 +135,22 @@ const ClassTimetable: React.FC<ClassTimetableProps> = ({ user, mode, studentClas
 
   const getSubjectName = (subjectId: string) => subjects.find(s => s.id === subjectId)?.name || 'Break / Free';
 
-  if (loading) return <div className="p-8 text-center text-gray-800">Loading timetable...</div>;
+  if (loading) return <div className="p-8 text-center text-slate-900 dark:text-slate-100">Loading timetable...</div>;
 
   return (
     <div className="space-y-6">
-      <div className="bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-white/50 shadow-sm">
+      <div className="bg-white dark:bg-slate-900/80 backdrop-blur-md p-6 rounded-2xl border border-white/50 shadow-sm">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <div>
-            <h2 className="text-xl font-medium text-gray-800">Class Timetable</h2>
-            <p className="text-sm text-gray-800 mt-1">Weekly schedule of classes</p>
+            <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">Class Timetable</h2>
+            <p className="text-sm text-slate-900 dark:text-slate-100 mt-1">Weekly schedule of classes</p>
           </div>
           
           {(mode === 'edit' || (!studentClassId && classes.length > 0)) && (
             <select
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value)}
-              className="px-4 py-2 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+              className="px-4 py-2 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 focus:bg-white dark:bg-slate-900 focus:ring-2 focus:ring-blue-500 outline-none"
             >
               <option value="" disabled>Select a class</option>
               {classes.map(c => (
@@ -167,22 +167,22 @@ const ClassTimetable: React.FC<ClassTimetableProps> = ({ user, mode, studentClas
         )}
 
         {!selectedClass ? (
-          <div className="text-center py-12 bg-white/50 rounded-xl border border-white/50 border-dashed">
-            <p className="text-gray-800 font-medium">Please select a class to view its timetable.</p>
+          <div className="text-center py-12 bg-white dark:bg-slate-900/50 rounded-xl border border-white/50 border-dashed">
+            <p className="text-slate-900 dark:text-slate-100 font-medium">Please select a class to view its timetable.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <div className="min-w-[800px] grid grid-cols-5 gap-4">
               {DAYS.map(day => (
                 <div key={day} className="flex flex-col gap-3">
-                  <div className="bg-white/50 py-2 px-3 rounded-lg border border-white/50 text-center font-medium text-gray-800 shadow-sm">
+                  <div className="bg-white dark:bg-slate-900/50 py-2 px-3 rounded-lg border border-white/50 text-center font-medium text-slate-900 dark:text-slate-100 shadow-sm">
                     {day}
                   </div>
                   
                   <div className="flex flex-col gap-2">
                     {(mode === 'edit' ? editSchedule[day] : (timetable?.schedule?.[day] || [])).map((period, idx) => {
                       const colors = ['bg-orange-50', 'bg-blue-50', 'bg-purple-50', 'bg-pink-50', 'bg-green-50'];
-                      const colorClass = mode === 'view' ? colors[idx % colors.length] : 'bg-white/80';
+                      const colorClass = mode === 'view' ? colors[idx % colors.length] : 'bg-white dark:bg-slate-900/80';
                       return (
                       <div key={period.id} className={`${colorClass} backdrop-blur-sm p-3 rounded-xl border border-white/50 shadow-sm relative group transition-all hover:shadow-md`}>
                         {mode === 'edit' ? (
@@ -192,20 +192,20 @@ const ClassTimetable: React.FC<ClassTimetableProps> = ({ user, mode, studentClas
                                 type="time" 
                                 value={period.startTime}
                                 onChange={(e) => handleUpdatePeriod(day, period.id, 'startTime', e.target.value)}
-                                className="w-full text-xs p-1 border border-gray-200 rounded bg-white/50 focus:bg-white outline-none"
+                                className="w-full text-xs p-1 border border-gray-200 rounded bg-white dark:bg-slate-900/50 focus:bg-white dark:bg-slate-900 outline-none"
                               />
-                              <span className="text-gray-800">-</span>
+                              <span className="text-slate-900 dark:text-slate-100">-</span>
                               <input 
                                 type="time" 
                                 value={period.endTime}
                                 onChange={(e) => handleUpdatePeriod(day, period.id, 'endTime', e.target.value)}
-                                className="w-full text-xs p-1 border border-gray-200 rounded bg-white/50 focus:bg-white outline-none"
+                                className="w-full text-xs p-1 border border-gray-200 rounded bg-white dark:bg-slate-900/50 focus:bg-white dark:bg-slate-900 outline-none"
                               />
                             </div>
                             <select 
                               value={period.subjectId}
                               onChange={(e) => handleUpdatePeriod(day, period.id, 'subjectId', e.target.value)}
-                              className="w-full text-sm p-1 border border-gray-200 rounded bg-white/50 focus:bg-white outline-none"
+                              className="w-full text-sm p-1 border border-gray-200 rounded bg-white dark:bg-slate-900/50 focus:bg-white dark:bg-slate-900 outline-none"
                             >
                               <option value="">Break / Free</option>
                               {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -219,10 +219,10 @@ const ClassTimetable: React.FC<ClassTimetableProps> = ({ user, mode, studentClas
                           </div>
                         ) : (
                           <>
-                            <div className="flex items-center gap-1 text-xs text-gray-800 font-medium mb-1">
+                            <div className="flex items-center gap-1 text-xs text-slate-900 dark:text-slate-100 font-medium mb-1">
                               <Clock size={12} /> {period.startTime} - {period.endTime}
                             </div>
-                            <div className="font-medium text-sm text-gray-800">
+                            <div className="font-medium text-sm text-slate-900 dark:text-slate-100">
                               {getSubjectName(period.subjectId)}
                             </div>
                           </>
@@ -233,14 +233,14 @@ const ClassTimetable: React.FC<ClassTimetableProps> = ({ user, mode, studentClas
                     {mode === 'edit' && (
                       <button 
                         onClick={() => handleAddPeriod(day)}
-                        className="py-2 border-2 border-dashed border-gray-300 rounded-xl text-gray-800 hover:text-blue-600 hover:border-blue-400 hover:bg-blue-50/50 transition-colors flex items-center justify-center bg-white/60"
+                        className="py-2 border-2 border-dashed border-gray-300 rounded-xl text-slate-900 dark:text-slate-100 hover:text-blue-600 hover:border-blue-400 hover:bg-blue-50/50 transition-colors flex items-center justify-center bg-white dark:bg-slate-900/60"
                       >
                         <Plus size={16} />
                       </button>
                     )}
                     
                     {mode === 'view' && (!timetable?.schedule?.[day] || timetable.schedule[day].length === 0) && (
-                      <div className="text-center py-4 text-xs text-gray-800 font-medium italic bg-white/60 rounded-xl border border-white/50 border-dashed">No classes</div>
+                      <div className="text-center py-4 text-xs text-slate-900 dark:text-slate-100 font-medium italic bg-white dark:bg-slate-900/60 rounded-xl border border-white/50 border-dashed">No classes</div>
                     )}
                   </div>
                 </div>
@@ -250,7 +250,7 @@ const ClassTimetable: React.FC<ClassTimetableProps> = ({ user, mode, studentClas
         )}
 
         {mode === 'edit' && selectedClass && (
-          <div className="mt-8 flex justify-end pt-4 border-t border-gray-100">
+          <div className="mt-8 flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
             <button
               onClick={saveTimetable}
               disabled={saving}
