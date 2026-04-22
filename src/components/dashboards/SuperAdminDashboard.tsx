@@ -488,7 +488,6 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
                       Access Full Archives
                     </button>
                   </div>
-                </div>
               </motion.div>
             )}
 
@@ -792,7 +791,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
             )}
           </AnimatePresence>
         </div>
-      </main>
+      </div>
 
       {/* Modals */}
       <AnimatePresence>

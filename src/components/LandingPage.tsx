@@ -407,7 +407,7 @@ export const LandingPage = () => {
                 <div className="absolute inset-0 border border-slate-200 rounded-full" />
                 <div className="absolute inset-12 border border-slate-100 rounded-full" />
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -654,12 +654,13 @@ export const LandingPage = () => {
                 The intelligent nervous system for the next generation of academic excellence.
               </p>
               <div className="flex gap-4">
-              <ul className="space-y-4 text-sm font-medium text-slate-500">
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Documentation</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Guides</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Status</a></li>
-              </ul>
+                <ul className="space-y-4 text-sm font-medium text-slate-500">
+                  <li><a href="#" className="hover:text-blue-600 transition-colors">Help Center</a></li>
+                  <li><a href="#" className="hover:text-blue-600 transition-colors">Documentation</a></li>
+                  <li><a href="#" className="hover:text-blue-600 transition-colors">Guides</a></li>
+                  <li><a href="#" className="hover:text-blue-600 transition-colors">Status</a></li>
+                </ul>
+              </div>
             </div>
           </div>
 
