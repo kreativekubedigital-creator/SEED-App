@@ -1,38 +1,22 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import fs from "fs";
-import { initializeApp, getApps, getApp } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Flexible config loading for different serverless environments (Vercel vs Netlify)
-const getConfig = () => {
-  const localPath = path.join(__dirname, "firebase-applet-config.json");
-  const rootPath = path.join(process.cwd(), "firebase-applet-config.json");
-  
-  if (fs.existsSync(localPath)) return JSON.parse(fs.readFileSync(localPath, "utf-8"));
-  if (fs.existsSync(rootPath)) return JSON.parse(fs.readFileSync(rootPath, "utf-8"));
-  
-  // Fallback to environment variable if file is missing (Security Best Practice)
-  if (process.env.FIREBASE_CONFIG) return JSON.parse(process.env.FIREBASE_CONFIG);
-  
-  throw new Error("Missing firebase-applet-config.json. Please ensure it exists in the root or is provided via FIREBASE_CONFIG env var.");
-};
+const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || '';
 
-const firebaseConfig = getConfig();
+if (!supabaseUrl || !supabaseKey) {
+  console.warn("Supabase configuration missing in server.ts");
+}
 
-// Initialize Firebase Admin with the project ID from the config
-const adminApp = getApps().length === 0 
-  ? initializeApp({
-      projectId: firebaseConfig.projectId,
-    }) 
-  : getApp();
-
-// Connect to the specific database instance
-const adminDb = getFirestore(adminApp, firebaseConfig.firestoreDatabaseId);
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const app = express();
 const PORT: number = Number(process.env.PORT) || 8085;
@@ -51,15 +35,15 @@ const checkSuperAdmin = (req: express.Request, res: express.Response, next: expr
 
 // API routes
 app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", message: "SEED Backend is running" });
+  res.json({ status: "ok", message: "SEED Backend is running with Supabase" });
 });
 
 // Schools CRUD
 app.get("/api/schools", checkSuperAdmin, async (req, res) => {
   try {
-    const snap = await adminDb.collection('schools').get();
-    const schools = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    res.json(schools);
+    const { data, error } = await supabase.from('schools').select('*');
+    if (error) throw error;
+    res.json(data);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch schools" });
   }
@@ -72,8 +56,9 @@ app.post("/api/schools", checkSuperAdmin, async (req, res) => {
       status: req.body.status || 'active',
       createdAt: new Date().toISOString()
     };
-    const docRef = await adminDb.collection('schools').add(schoolData);
-    res.status(201).json({ id: docRef.id, ...schoolData });
+    const { data, error } = await supabase.from('schools').insert(schoolData).select().single();
+    if (error) throw error;
+    res.status(201).json(data);
   } catch (error) {
     console.error("Error creating school:", error);
     res.status(500).json({ 
@@ -85,12 +70,12 @@ app.post("/api/schools", checkSuperAdmin, async (req, res) => {
 
 app.get("/api/schools/:id", checkSuperAdmin, async (req, res) => {
   try {
-    const schoolDoc = await adminDb.collection('schools').doc(req.params.id).get();
-    if (schoolDoc.exists) {
-      res.json({ id: schoolDoc.id, ...schoolDoc.data() });
-    } else {
-      res.status(404).json({ error: "School not found" });
+    const { data, error } = await supabase.from('schools').select('*').eq('id', req.params.id).single();
+    if (error) {
+      if (error.code === 'PGRST116') return res.status(404).json({ error: "School not found" });
+      throw error;
     }
+    res.json(data);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch school" });
   }
@@ -98,7 +83,8 @@ app.get("/api/schools/:id", checkSuperAdmin, async (req, res) => {
 
 app.put("/api/schools/:id", checkSuperAdmin, async (req, res) => {
   try {
-    await adminDb.collection('schools').doc(req.params.id).update(req.body);
+    const { error } = await supabase.from('schools').update(req.body).eq('id', req.params.id);
+    if (error) throw error;
     res.json({ message: "School updated successfully" });
   } catch (error) {
     console.error("Error updating school:", error);
@@ -111,7 +97,8 @@ app.put("/api/schools/:id", checkSuperAdmin, async (req, res) => {
 
 app.delete("/api/schools/:id", checkSuperAdmin, async (req, res) => {
   try {
-    await adminDb.collection('schools').doc(req.params.id).delete();
+    const { error } = await supabase.from('schools').delete().eq('id', req.params.id);
+    if (error) throw error;
     res.json({ message: "School deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: "Failed to delete school" });

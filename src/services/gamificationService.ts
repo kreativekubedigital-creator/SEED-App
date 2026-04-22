@@ -1,5 +1,5 @@
-import { db } from '../firebase';
 import { 
+  db,
   doc, 
   updateDoc, 
   increment, 
@@ -13,7 +13,7 @@ import {
   getDocs,
   limit,
   orderBy
-} from 'firebase/firestore';
+} from '../firebase';
 import { UserProfile } from '../types';
 
 export const XP_REWARDS = {

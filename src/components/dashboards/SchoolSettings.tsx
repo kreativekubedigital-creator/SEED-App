@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { db, doc, updateDoc, handleFirestoreError, OperationType } from '../../firebase';
 import { School } from '../../types';
 import { Settings, Save } from 'lucide-react';
+import { StorageService } from '../../services/storageService';
 
 export const SchoolSettings = ({ school }: { school: School }) => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,23 @@ export const SchoolSettings = ({ school }: { school: School }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setLoading(true);
+    setError('');
+    try {
+      const path = `${school.id}/logo_${Date.now()}`;
+      const url = await StorageService.uploadFile('schools', path, file);
+      setFormData(prev => ({ ...prev, logoUrl: url }));
+    } catch (err: any) {
+      setError('Failed to upload logo. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,16 +97,7 @@ export const SchoolSettings = ({ school }: { school: School }) => {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                      setFormData({ ...formData, logoUrl: reader.result as string });
-                    };
-                    reader.readAsDataURL(file);
-                  }
-                }}
+                onChange={handleLogoUpload}
                 className="flex-1 px-4 py-3 rounded-xl border border-gray-200/50 bg-white dark:bg-slate-900/50 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all file:mr-4 file:py-2.5 file:px-5 file:rounded-full file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
               />
             </div>
@@ -132,7 +141,7 @@ export const SchoolSettings = ({ school }: { school: School }) => {
           className="w-full bg-blue-600 text-white hover:bg-blue-700 py-2.5 rounded-full font-medium  hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none flex items-center justify-center gap-2 relative z-10 mt-8"
         >
           <Save size={20} />
-          {loading ? 'Saving...' : 'Save Changes'}
+          {loading ? 'Processing...' : 'Save Changes'}
         </button>
       </form>
     </div>
