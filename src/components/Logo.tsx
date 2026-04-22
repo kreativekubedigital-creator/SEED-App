@@ -4,7 +4,7 @@ import { cn } from '../lib/utils';
 // Logo paths point to the public folder
 const logoBlack = '/seedd-logo-black.webp';
 const logoWhite = '/seedd-logo-white.webp';
-const logoMark = '/seedd-logomark-black.webp';
+const logoMark = '/seedd-logo-black.webp'; // Using black logo as mark if logomark file is unavailable
 
 interface LogoProps {
   variant?: 'black' | 'white' | 'mark';
