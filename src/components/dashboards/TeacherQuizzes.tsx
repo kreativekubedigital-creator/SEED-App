@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db, collection, getDocs, query, where, addDoc, doc, deleteDoc, onSnapshot, handleFirestoreError, OperationType } from '../../firebase';
 import { UserProfile, Quiz, Subject, Class, Result } from '../../types';
 import { Plus, Trash2, CheckCircle2, Circle, CheckSquare, Eye, X } from 'lucide-react';

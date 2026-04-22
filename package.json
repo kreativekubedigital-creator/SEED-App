@@ -34,6 +34,7 @@
     "react-paystack": "^6.0.0",
     "react-quill-new": "^3.8.3",
     "react-router-dom": "^7.13.2",
+    "serverless-http": "^4.0.0",
     "tailwind-merge": "^3.5.0",
     "three": "^0.183.2"
   },

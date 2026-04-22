@@ -35,7 +35,7 @@ const adminApp = getApps().length === 0
 const adminDb = getFirestore(adminApp, firebaseConfig.firestoreDatabaseId);
 
 const app = express();
-const PORT = Number(process.env.PORT) || 8085;
+const PORT: number = Number(process.env.PORT) || 8085;
 
 app.use(express.json());
 

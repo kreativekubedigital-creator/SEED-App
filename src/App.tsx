@@ -6,7 +6,7 @@ import { Logo } from './components/Logo';
 import { ThemeToggle } from './components/ThemeToggle';
 import { useTheme } from './components/ThemeProvider';
 import { 
-  LogIn, LogOut, LayoutDashboard, User, Users, BookOpen, Bell, Settings, CreditCard, Menu, X, Home, Sparkles, Info, Mail, Clock, CheckCircle2, CheckCircle, Eye, EyeOff, Search, ChevronDown, Check 
+  LogIn, LogOut, LayoutDashboard, User, Users, BookOpen, Bell, Settings, CreditCard, Menu, X, Home, Sparkles, Info, Mail, Clock, CheckCircle2, CheckCircle, Eye, EyeOff, Search, ChevronDown, Check, School as SchoolIcon
 } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import { cn } from './lib/utils';
@@ -51,10 +51,9 @@ const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLI
 Input.displayName = "Input"
 
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, errorInfo: string | null }> {
-  public state = { hasError: false, errorInfo: null };
-  
   constructor(props: { children: React.ReactNode }) {
     super(props);
+    this.state = { hasError: false, errorInfo: null };
   }
 
   static getDerivedStateFromError(error: any) {
@@ -66,10 +65,11 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
   }
 
   render() {
-    if (this.state.hasError) {
+    const { hasError, errorInfo } = this.state;
+    if (hasError) {
       let displayMessage = "Something went wrong.";
       try {
-        const parsed = JSON.parse(this.state.errorInfo || "");
+        const parsed = JSON.parse(errorInfo || "");
         if (parsed.error && parsed.error.includes("permission-denied")) {
           displayMessage = "You don't have permission to view this data. Please ensure you are logged in with the correct account.";
         }
@@ -84,9 +84,9 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
               <LogOut className="rotate-180" /> Oops! Something went wrong
             </h2>
             <div className="bg-red-50/50 p-4 rounded-xl border border-red-100 mb-6 font-mono text-sm overflow-auto max-h-60">
-              <p className="text-red-700 font-bold mb-2">{this.state.errorInfo}</p>
+              <p className="text-red-700 font-bold mb-2">{errorInfo}</p>
             </div>
-            <p className="text-gray-800 mb-6">The application encountered an unexpected error. This often happens due to missing data or a connection issue.</p>
+            <p className="text-gray-800 mb-6">{displayMessage} The application encountered an unexpected error. This often happens due to missing data or a connection issue.</p>
             <Button onClick={() => window.location.href = '/'} className="bg-red-600 hover:bg-red-700 w-full">
               Try Restarting
             </Button>
@@ -177,15 +177,15 @@ const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => 
 
   return (
     <motion.div 
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4 transition-all duration-500 pointer-events-none"
-      style={{ 
-        paddingTop: isScrolled ? '1rem' : '1.5rem'
+      className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4 pointer-events-none"
+      initial={false}
+      animate={{ 
+        paddingTop: isScrolled ? '0.75rem' : '1.5rem'
       }}
+      transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
     >
       <nav className={cn(
-        "backdrop-blur-xl shadow-2xl rounded-full px-6 py-2 flex items-center justify-between w-full max-w-5xl border transition-all duration-300 pointer-events-auto",
+        "backdrop-blur-xl shadow-2xl rounded-full px-6 py-2 flex items-center justify-between w-full max-w-5xl border transition-colors duration-300 pointer-events-auto",
         isLandingPage 
           ? (isScrolled ? "bg-slate-900/80 border-white/10 text-white" : "bg-transparent border-transparent text-white") 
           : (isScrolled ? "bg-white/90 dark:bg-slate-930/90 border-gray-100 dark:border-white/5" : "bg-white/80 dark:bg-slate-900/80 border-gray-100 dark:border-white/10")
@@ -318,41 +318,7 @@ const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => 
           </motion.div>
         )}
       </AnimatePresence>
-                  >
-                    <LayoutDashboard size={20} className="text-gray-800" />
-                    Dashboard
-                  </Link>
-                  <Link
-                    to="/profile"
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 text-sm font-medium"
-                  >
-                    <User size={20} className="text-gray-800" />
-                    Profile
-                  </Link>
-                </>
-              )}
-              {user ? (
-                <button
-                  onClick={() => { onLogout(); setIsOpen(false); }}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-50 text-base font-medium text-red-600"
-                >
-                  <LogOut size={20} /> Logout
-                </button>
-              ) : (
-                <Link
-                  to="/login"
-                  onClick={() => setIsOpen(false)}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl bg-[#1A1A1A] text-white text-base font-medium justify-center"
-                >
-                  Login
-                </Link>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+    </motion.div>
   );
 };
 
@@ -686,6 +652,7 @@ const LoginPage = ({ onLogin }: { onLogin: (user: UserProfile) => void }) => {
                                 type="button"
                                 onClick={() => {
                                   // Protocol adaptation: If we are on the main domain, redirect to the school's subdomain
+                                  const hostname = window.location.hostname;
                                   if (school.slug && (hostname === 'seedify.name.ng' || hostname === 'www.seedify.name.ng')) {
                                     window.location.href = `${window.location.protocol}//${school.slug}.seedify.name.ng/login`;
                                     return;

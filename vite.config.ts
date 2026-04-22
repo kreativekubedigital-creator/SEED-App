@@ -5,10 +5,6 @@ import {defineConfig, loadEnv} from 'vite';
 
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
-  console.log("VITE CONFIG ENV API KEY:", env.API_KEY);
-  console.log("VITE CONFIG ENV GEMINI API KEY:", env.GEMINI_API_KEY);
-  console.log("VITE CONFIG PROCESS API KEY:", process.env.API_KEY);
-  console.log("VITE CONFIG PROCESS GEMINI API KEY:", process.env.GEMINI_API_KEY ? "SET" : "UNSET");
   
   return {
     plugins: [react(), tailwindcss()],
@@ -22,9 +18,10 @@ export default defineConfig(({mode}) => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    build: {
+      chunkSizeWarningLimit: 3000,
+    },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
     },
   };

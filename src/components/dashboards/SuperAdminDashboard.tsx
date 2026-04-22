@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { UserProfile, School } from '../../types';
 import { DEFAULT_PLANS } from '../../constants';
 import { 

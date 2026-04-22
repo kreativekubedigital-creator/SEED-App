@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { School, UserProfile, UserRole, Class, Subject } from '../../types';
 import Papa from 'papaparse';
 import { 

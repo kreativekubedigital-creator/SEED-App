@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { db, doc, updateDoc, handleFirestoreError, OperationType } from '../../firebase';
 import { School } from '../../types';
 import { Settings, Save } from 'lucide-react';

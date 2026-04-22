@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db, collection, getDocs, query, where, addDoc, updateDoc, setDoc, doc, onSnapshot, serverTimestamp, OperationType, handleFirestoreError } from '../../firebase';
 import { UserProfile, Class, Subject, Result, Session, Term, GradeScale } from '../../types';
 import { Save, Search, ChevronRight, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
@@ -202,7 +202,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
     // Calculate CA Total
     let caTotal = 0;
     if (caConfig && updated.cas && Object.keys(updated.cas).length > 0) {
-      caTotal = Object.values(updated.cas).reduce((sum: number, val: any) => sum + (val || 0), 0);
+      caTotal = Object.values(updated.cas).reduce((sum: number, val: any) => sum + (Number(val) || 0), 0);
     } else {
       caTotal = (Number(updated.ca1) || 0) + (Number(updated.ca2) || 0) + (Number(updated.ca3) || 0);
     }

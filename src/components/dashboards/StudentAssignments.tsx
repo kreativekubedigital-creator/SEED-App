@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db, collection, query, where, addDoc, doc, updateDoc, onSnapshot, OperationType, handleFirestoreError } from '../../firebase';
 import { UserProfile, Subject, Assignment, AssignmentSubmission } from '../../types';
 import { FileText, Calendar, Clock, CheckCircle2, ChevronRight, X, Send, Award, MessageSquare } from 'lucide-react';

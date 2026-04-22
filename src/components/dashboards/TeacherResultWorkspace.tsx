@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { db, collection, query, where, addDoc, updateDoc, doc, onSnapshot, OperationType, handleFirestoreError, writeBatch } from '../../firebase';
 import { UserProfile, Class, Subject, Result, Session, Term, GradeScale } from '../../types';
 import { Save, Search, ChevronRight, AlertCircle, CheckCircle2, Loader2, Send, RotateCcw, MessageSquare, Copy } from 'lucide-react';
@@ -202,7 +202,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
     // Calculate CA Total
     let caTotal = 0;
     if (caConfig && updated.cas && Object.keys(updated.cas).length > 0) {
-      caTotal = Object.values(updated.cas).reduce((sum: number, val: any) => sum + (val || 0), 0);
+      caTotal = Object.values(updated.cas).reduce((sum: number, val: any) => sum + (Number(val) || 0), 0);
     } else {
       caTotal = (Number(updated.ca1) || 0) + (Number(updated.ca2) || 0) + (Number(updated.ca3) || 0);
     }
@@ -244,7 +244,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
         
         let caTotal = 0;
         if (updated.cas) {
-          caTotal = Object.values(updated.cas).reduce((sum: number, v: any) => sum + (v || 0), 0);
+          caTotal = Object.values(updated.cas).reduce((sum: number, v: any) => sum + (Number(v) || 0), 0);
         }
         
         const finalScore = caTotal + (Number(updated.exam) || 0);
