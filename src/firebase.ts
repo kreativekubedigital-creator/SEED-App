@@ -199,7 +199,8 @@ export async function logAuditAction(
       action,
       details,
       targetId: targetId || 'none',
-      targetType: targetType || 'none'
+      targetType: targetType || 'none',
+      createdAt: new Date().toISOString()
     });
   } catch (error) {
     console.error("Failed to write audit log:", error);

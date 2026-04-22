@@ -1133,25 +1133,9 @@ const DashboardRouter = ({ user, onLogout }: { user: UserProfile, onLogout: () =
 
   if (user.role === 'super_admin') {
     return (
-      <div className="pt-24 lg:pt-32 px-4 min-h-screen bg-transparent container mx-auto mb-20">
-        <div className="max-w-7xl mx-auto mb-10 flex items-center justify-between bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-4 md:p-5 rounded-[2rem] border border-slate-200/50 dark:border-slate-800/50 shadow-2xl shadow-slate-200/20 dark:shadow-none">
-          <div className="flex items-center gap-4">
-            <div className="p-2.5 bg-blue-600/10 dark:bg-blue-600/20 rounded-2xl">
-              <Shield size={24} className="text-blue-600 dark:text-blue-400" />
-            </div>
-            <div className="min-w-0">
-              <h1 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white truncate">Platform Admin</h1>
-              <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">SEEDD Infrastructure</p>
-            </div>
-          </div>
-          <button onClick={onLogout} className="flex items-center gap-2 text-xs md:text-sm font-bold text-red-500 hover:text-red-600 px-4 py-2.5 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/10 transition-all shadow-sm border border-red-500/10">
-            <LogOut size={16} /> <span className="hidden xs:inline">Logout</span>
-          </button>
-        </div>
-        <Routes>
-          <Route index element={<SuperAdminDashboard user={user} />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route index element={<SuperAdminDashboard user={user} onLogout={onLogout} />} />
+      </Routes>
     );
   }
 

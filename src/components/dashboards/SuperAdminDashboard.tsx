@@ -1,35 +1,70 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { UserProfile, School } from '../../types';
 import { DEFAULT_PLANS } from '../../constants';
-import { 
-  Plus, 
-  Shield, 
-  CreditCard, 
-  Users, 
-  School as SchoolIcon, 
-  Trash2, 
-  CheckCircle, 
-  Settings, 
-  Search, 
-  MoreVertical,
-  ExternalLink,
-  ArrowRight,
-  LayoutDashboard,
-  X,
-  Activity,
-  History,
-  Database,
-  Globe,
-  DollarSign,
-  Menu
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, OperationType, handleFirestoreError, query, where, onSnapshot, secondaryAuth, createUserWithEmailAndPassword, setDoc, logAuditAction } from '../../firebase';
+import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, OperationType, handleFirestoreError, query, where, onSnapshot, secondaryAuth, createUserWithEmailAndPassword, setDoc, logAuditAction, limit, orderBy } from '../../firebase';
+import { LogOut, Plus, Shield, CreditCard, Users, School as SchoolIcon, Trash2, CheckCircle, Settings, Search, MoreVertical, ExternalLink, ArrowRight, LayoutDashboard, X, Activity, History, Database, Globe, DollarSign, Menu } from 'lucide-react';
 import { SchoolManagement } from './SchoolManagement';
-import { sortByName } from '../../lib/utils';
+import { sortByName, cn } from '../../lib/utils';
 
-export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
+const LineChart = ({ data }: { data: number[] }) => {
+  const max = Math.max(...data);
+  const points = data.map((d, i) => `${(i / (data.length - 1)) * 100},${100 - (d / max) * 100}`).join(' ');
+  
+  return (
+    <div className="relative w-full h-48 mt-8">
+      <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <motion.path
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 2, ease: "easeInOut" }}
+          d={`M 0,100 L ${points} L 100,100 Z`}
+          fill="url(#chartGradient)"
+        />
+        <motion.polyline
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 2, ease: "easeInOut" }}
+          fill="none"
+          stroke="#3b82f6"
+          strokeWidth="1"
+          points={points}
+        />
+      </svg>
+      <div className="absolute inset-0 flex justify-between items-end text-[10px] text-slate-600 font-bold px-1">
+        {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'].map(m => <span key={m}>{m}</span>)}
+      </div>
+    </div>
+  );
+};
+
+const SystemMeter = ({ label, value, color }: { label: string, value: number, color: string }) => (
+  <div className="space-y-3">
+    <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+      <span className="text-slate-500">{label}</span>
+      <span className="text-white">{value}%</span>
+    </div>
+    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+      <motion.div
+        initial={{ width: 0 }}
+        animate={{ width: `${value}%` }}
+        transition={{ duration: 1, ease: "easeOut" }}
+        className={cn("h-full rounded-full shadow-[0_0_10px]", color)}
+      />
+    </div>
+  </div>
+);
+
+export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onLogout: () => void }) => {
   const [schools, setSchools] = useState<School[]>([]);
+  const [auditLogs, setAuditLogs] = useState<any[]>([]);
+  const [totalUsers, setTotalUsers] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showAddSchool, setShowAddSchool] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState(1);
@@ -45,9 +80,11 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'schools' | 'financials' | 'logs' | 'system'>('overview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const tableRef = useRef<HTMLDivElement>(null);
+  const schoolToDelete = schools.find(s => s.id === showDeleteConfirm);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'schools'), (snapshot) => {
+    // School listener
+    const unsubSchools = onSnapshot(collection(db, 'schools'), (snapshot) => {
       const schoolsData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -56,15 +93,28 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
       setLoading(false);
     }, (error) => {
       console.error("Failed to fetch schools:", error);
-      try {
-        handleFirestoreError(error, OperationType.LIST, 'schools');
-      } catch (err: any) {
-        setError(`Failed to load schools: ${err.message}`);
-      }
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    // Users count listener
+    const unsubUsers = onSnapshot(collection(db, 'users'), (snapshot) => {
+      setTotalUsers(snapshot.size || 0);
+    });
+
+    // Audit logs listener
+    const unsubLogs = onSnapshot(query(collection(db, 'audit_logs'), orderBy('createdAt', 'desc'), limit(10)), (snapshot) => {
+      const logsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setAuditLogs(logsData);
+    });
+
+    return () => {
+      unsubSchools();
+      unsubUsers();
+      unsubLogs();
+    };
   }, []);
 
   const handleAddSchool = async (e: React.FormEvent) => {
@@ -184,15 +234,17 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
     setTimeout(() => setSuccess(null), 3000);
   };
 
-  const handleDeleteSchool = async (id: string) => {
+  const handleDeleteSchool = async () => {
+    if (!showDeleteConfirm) return;
+    const id = showDeleteConfirm;
     try {
       setError(null);
-      const schoolToDelete = schools.find(s => s.id === id);
+      const schoolToPurge = schools.find(s => s.id === id);
       await deleteDoc(doc(db, 'schools', id));
-      if (schoolToDelete) {
-        await logAuditAction('DELETE_SCHOOL', `Deleted school: ${schoolToDelete.name}`, id, 'school');
+      if (schoolToPurge) {
+        await logAuditAction('DELETE_SCHOOL', `Terminated infrastructure for: ${schoolToPurge.name}`, id, 'school');
       }
-      setSuccess("School deleted successfully");
+      setSuccess("Entity infrastructure purged successfully");
     } catch (error) {
       console.error("Failed to delete school:", error);
       try {
@@ -224,8 +276,6 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
     }
   }
 
-    </div>
-  );
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
@@ -236,38 +286,26 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
   ] as const;
 
   return (
-    <div className="flex h-screen bg-[#050505] overflow-hidden">
+    <div className="flex h-screen bg-[#050505] overflow-hidden relative selection:bg-blue-500/30 selection:text-blue-200">
       {/* Sidebar */}
-      <motion.aside
+      <motion.div 
         initial={false}
         animate={{ width: isSidebarOpen ? 280 : 80 }}
-        className="hidden md:flex flex-col border-r border-white/5 bg-[#0a0a0a] relative z-20"
+        className="bg-[#0a0a0a] border-r border-white/5 flex flex-col relative z-30"
       >
-        <div className="p-6 mb-8 flex items-center justify-between">
-          <AnimatePresence mode="wait">
-            {isSidebarOpen && (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                className="flex items-center gap-3"
-              >
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <Shield size={18} className="text-white" />
-                </div>
-                <span className="font-bold text-white tracking-tight uppercase text-sm">System Command</span>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <button 
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 hover:bg-white/5 rounded-lg text-slate-400 transition-colors"
-          >
-            <Menu size={20} />
-          </button>
+        <div className="p-6 flex items-center gap-4 border-b border-white/5">
+          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
+            <Shield size={24} className="text-white" />
+          </div>
+          {isSidebarOpen && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <h2 className="text-sm font-black text-white tracking-widest uppercase">SEEDD</h2>
+              <p className="text-[10px] text-slate-500 font-bold tracking-[0.2em]">CORE SYSTEM</p>
+            </motion.div>
+          )}
         </div>
 
-        <nav className="flex-1 px-3 space-y-2">
+        <nav className="flex-1 px-3 py-6 space-y-2">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -286,50 +324,55 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
               {isSidebarOpen && (
                 <span className="font-medium text-sm">{tab.label}</span>
               )}
-              {activeTab === tab.id && isSidebarOpen && (
-                <motion.div 
-                  layoutId="activeTabIndicator"
-                  className="ml-auto w-1.5 h-1.5 rounded-full bg-white" 
-                />
-              )}
             </button>
           ))}
         </nav>
 
         <div className="p-4 border-t border-white/5">
-          <div className={cn(
-            "flex items-center gap-3 p-3 rounded-xl bg-white/5",
-            !isSidebarOpen && "justify-center"
-          )}>
-            <div className="w-8 h-8 rounded-full bg-blue-600/20 flex items-center justify-center text-blue-400 font-bold text-xs uppercase">
-              {user.firstName?.charAt(0) || 'A'}
-            </div>
-            {isSidebarOpen && (
-              <div className="min-w-0">
-                <p className="text-xs font-bold text-white truncate">{user.firstName} {user.lastName}</p>
-                <p className="text-[10px] text-slate-500 font-medium truncate uppercase tracking-tighter">Root Administrator</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </motion.aside>
-
-      {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto bg-[#050505] relative custom-scrollbar">
-        {/* Top Navbar for Mobile */}
-        <div className="md:hidden flex items-center justify-between p-4 bg-[#0a0a0a] border-b border-white/5 sticky top-0 z-30">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <Shield size={18} className="text-white" />
-            </div>
-            <span className="font-bold text-white text-xs uppercase tracking-tighter">System Command</span>
-          </div>
-          <button className="p-2 text-white">
-            <Menu size={24} />
+          <button 
+            onClick={onLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-all font-bold text-xs uppercase tracking-widest"
+          >
+            <LogOut size={18} />
+            {isSidebarOpen && <span>Terminate Session</span>}
           </button>
         </div>
+      </motion.div>
 
-        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Header */}
+        <header className="h-20 bg-[#0a0a0a]/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-8 z-20">
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="p-2 rounded-lg hover:bg-white/5 text-slate-400 transition-colors"
+            >
+              <Menu size={20} />
+            </button>
+            <div className="h-4 w-px bg-white/5 mx-2" />
+            <h1 className="text-xs font-black text-slate-500 uppercase tracking-[0.3em]">
+              {activeTab === 'overview' ? 'System Overview' : 
+               activeTab === 'schools' ? 'Institutional Network' : 
+               activeTab === 'financials' ? 'Economic Core' : 
+               activeTab === 'logs' ? 'Audit Intelligence' : 'Security Kernel'}
+            </h1>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <div className="hidden md:flex flex-col items-end">
+              <span className="text-xs font-bold text-white">{user.firstName} {user.lastName}</span>
+              <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest">Root Level Access</span>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 p-0.5">
+              <div className="w-full h-full rounded-[10px] bg-[#0a0a0a] flex items-center justify-center font-bold text-white text-xs">
+                {user.firstName?.charAt(0)}
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div className="flex-1 overflow-y-auto p-8 lg:p-12 scroll-smooth">
           <AnimatePresence mode="wait">
             {activeTab === 'overview' && (
               <motion.div
@@ -349,9 +392,9 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {[
                     { label: 'Total Schools', value: schools.length, icon: SchoolIcon, trend: '+12%', color: 'blue' },
-                    { label: 'Active Users', value: '42.5k', icon: Users, trend: '+5.2%', color: 'emerald' },
+                    { label: 'Platform Users', value: totalUsers.toLocaleString(), icon: Users, trend: '+5.2%', color: 'emerald' },
                     { label: 'System Uptime', value: '99.99%', icon: Activity, trend: 'Stable', color: 'blue' },
-                    { label: 'Revenue (MTD)', value: '₦8.4M', icon: DollarSign, trend: '+18.3%', color: 'amber' },
+                    { label: 'Revenue (MTD)', value: `₦${((schools.length * 25000) / 1000000).toFixed(1)}M`, icon: DollarSign, trend: '+18.3%', color: 'amber' },
                   ].map((stat, i) => (
                     <motion.div
                       key={stat.label}
@@ -382,58 +425,66 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
                   ))}
                 </div>
 
-                {/* Analytics Mock Cards */}
+                {/* Analytics Intelligence */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div className="bg-white/5 border border-white/10 rounded-3xl p-8 relative overflow-hidden group">
-                    <div className="flex justify-between items-center mb-8 relative z-10">
+                    <div className="flex justify-between items-center mb-4 relative z-10">
                       <div>
-                        <h3 className="text-xl font-bold text-white">Enrollment Growth</h3>
-                        <p className="text-slate-400 text-sm">Platform-wide student acquisition</p>
+                        <h3 className="text-xl font-bold text-white tracking-tight">Growth Velocity</h3>
+                        <p className="text-slate-500 text-sm font-medium">Monthly platform acquisition rate</p>
                       </div>
-                      <select className="bg-white/5 border border-white/10 rounded-xl text-xs font-bold text-white px-3 py-2 outline-none">
-                        <option>Last 6 Months</option>
-                        <option>Last Year</option>
-                      </select>
+                      <div className="text-right">
+                        <p className="text-2xl font-black text-blue-500">+{Math.round(schools.length * 1.5)}%</p>
+                        <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Aggregate</p>
+                      </div>
                     </div>
-                    {/* Placeholder for SVG Chart */}
-                    <div className="h-48 flex items-end justify-between gap-2 relative z-10">
-                      {[40, 65, 45, 90, 75, 100].map((height, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ height: 0 }}
-                          animate={{ height: `${height}%` }}
-                          transition={{ delay: 0.5 + i * 0.1, duration: 1 }}
-                          className="flex-1 bg-gradient-to-t from-blue-600/20 to-blue-500 rounded-t-xl relative group/bar"
-                        >
-                          <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-black text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover/bar:opacity-100 transition-opacity">
-                            {height}k
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
+                    
+                    <LineChart data={[20, 35, 25, 45, 40, 60]} />
                   </div>
 
                   <div className="bg-white/5 border border-white/10 rounded-3xl p-8 group">
-                    <h3 className="text-xl font-bold text-white mb-8">System Activity</h3>
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className="text-xl font-bold text-white tracking-tight">Kernel Health</h3>
+                      <Activity size={20} className="text-emerald-500 animate-pulse" />
+                    </div>
+                    <div className="space-y-8">
+                      <SystemMeter label="CPU Infrastructure" value={24} color="bg-blue-500 shadow-blue-500/40" />
+                      <SystemMeter label="Database I/O" value={42} color="bg-emerald-500 shadow-emerald-500/40" />
+                      <SystemMeter label="Neural Engine" value={18} color="bg-purple-500 shadow-purple-500/40" />
+                      <SystemMeter label="Storage Capacity" value={65} color="bg-amber-500 shadow-amber-500/40" />
+                    </div>
+                  </div>
+                </div>
+
+                  <div className="bg-white/5 border border-white/10 rounded-3xl p-8 group">
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className="text-xl font-bold text-white">Audit Intelligence</h3>
+                      <History size={20} className="text-blue-500" />
+                    </div>
                     <div className="space-y-6">
-                      {[
-                        { action: 'New School Onboarded', time: '2 mins ago', detail: 'St. Andrews College', icon: Plus },
-                        { action: 'Subscription Updated', time: '45 mins ago', detail: 'Lighthouse Academy moved to Pro', icon: CreditCard },
-                        { action: 'Backup Successful', time: '2 hours ago', detail: 'Region: Lagos-West', icon: Database },
-                      ].map((item, i) => (
-                        <div key={i} className="flex gap-4">
+                      {auditLogs.length > 0 ? auditLogs.map((log, i) => (
+                        <div key={log.id} className="flex gap-4">
                           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-slate-400 border border-white/5 group-hover:border-blue-500/30 transition-colors">
-                            <item.icon size={18} />
+                            <Activity size={18} />
                           </div>
-                          <div>
-                            <p className="text-sm font-bold text-white">{item.action}</p>
-                            <p className="text-xs text-slate-500 font-medium">{item.detail} • {item.time}</p>
+                          <div className="min-w-0">
+                            <p className="text-sm font-bold text-white truncate">{log.action}</p>
+                            <p className="text-xs text-slate-500 font-medium truncate">
+                              {log.details} • {log.createdAt ? new Date(log.createdAt).toLocaleTimeString() : 'Recent'}
+                            </p>
                           </div>
                         </div>
-                      ))}
+                      )) : (
+                        <div className="text-center py-8 text-slate-600 font-medium">
+                          No recent system activity detected.
+                        </div>
+                      )}
                     </div>
-                    <button className="w-full mt-8 py-4 bg-white/5 hover:bg-white/10 rounded-2xl text-xs font-bold text-blue-400 uppercase tracking-widest transition-all">
-                      View Audit Log
+                    <button 
+                      onClick={() => setActiveTab('logs')}
+                      className="w-full mt-8 py-4 bg-white/5 hover:bg-white/10 rounded-2xl text-xs font-bold text-blue-400 uppercase tracking-widest transition-all"
+                    >
+                      Access Full Archives
                     </button>
                   </div>
                 </div>
@@ -588,41 +639,47 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
                   <p className="text-slate-400 mt-1 font-medium">Subscription revenue and market distribution.</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="md:col-span-2 bg-white/5 border border-white/10 rounded-3xl p-8">
-                    <h3 className="text-xl font-bold text-white mb-8">Monthly Recurring Revenue (MRR)</h3>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-3xl p-8 relative overflow-hidden">
+                    <div className="flex justify-between items-center mb-8">
+                      <h3 className="text-xl font-bold text-white tracking-tight uppercase tracking-widest text-xs text-slate-500">Revenue Trajectory (MTD)</h3>
+                      <div className="text-right">
+                        <p className="text-2xl font-black text-white">₦{((schools.length * 25000) / 1000).toFixed(0)}k</p>
+                        <p className="text-[10px] font-bold text-emerald-500 uppercase">Est. Recurring</p>
+                      </div>
+                    </div>
                     <div className="h-64 flex items-end gap-3">
                       {[30, 45, 35, 60, 80, 70, 95].map((h, i) => (
-                        <div key={i} className="flex-1 flex flex-col items-center gap-4">
+                        <div key={i} className="flex-1 flex flex-col items-center gap-4 group">
                           <motion.div 
                             initial={{ height: 0 }}
                             animate={{ height: `${h}%` }}
-                            className="w-full bg-gradient-to-t from-emerald-600/20 to-emerald-500 rounded-t-xl"
+                            className="w-full bg-gradient-to-t from-blue-600/20 to-blue-500 rounded-t-xl group-hover:from-blue-500 group-hover:to-blue-400 transition-all shadow-[0_0_20px_rgba(59,130,246,0.1)]"
                           />
-                          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter">Month {i+1}</span>
+                          <span className="text-[9px] text-slate-600 font-black uppercase tracking-tighter">Wk {i+1}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                   <div className="bg-white/5 border border-white/10 rounded-3xl p-8">
-                    <h3 className="text-xl font-bold text-white mb-8">Plan Distribution</h3>
-                    <div className="space-y-6">
+                    <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-8">Plan Distribution</h3>
+                    <div className="space-y-8">
                       {[
-                        { label: 'Free Tier', count: schools.filter(s => s.planId === 'free').length, color: 'bg-slate-500' },
-                        { label: 'Starter', count: schools.filter(s => s.planId === 'starter').length, color: 'bg-blue-500' },
-                        { label: 'Professional', count: schools.filter(s => s.planId === 'pro').length, color: 'bg-emerald-500' },
-                        { label: 'Enterprise', count: schools.filter(s => s.planId === 'enterprise').length, color: 'bg-amber-500' },
+                        { label: 'Free Tier', count: schools.filter(s => s.planId === 'free' || !s.planId).length, color: 'bg-slate-500 shadow-slate-500/20' },
+                        { label: 'Starter', count: schools.filter(s => s.planId === 'starter').length, color: 'bg-blue-500 shadow-blue-500/20' },
+                        { label: 'Professional', count: schools.filter(s => s.planId === 'pro').length, color: 'bg-emerald-500 shadow-emerald-500/20' },
+                        { label: 'Enterprise', count: schools.filter(s => s.planId === 'enterprise').length, color: 'bg-amber-500 shadow-amber-500/20' },
                       ].map((plan, i) => (
-                        <div key={i} className="space-y-2">
-                          <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-slate-400">
-                            <span>{plan.label}</span>
-                            <span>{Math.round((plan.count / (schools.length || 1)) * 100)}%</span>
+                        <div key={i} className="space-y-3">
+                          <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+                            <span className="text-slate-400">{plan.label}</span>
+                            <span className="text-white">{plan.count} Units ({Math.round((plan.count / (schools.length || 1)) * 100)}%)</span>
                           </div>
-                          <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                          <div className="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5">
                             <motion.div 
                               initial={{ width: 0 }}
                               animate={{ width: `${(plan.count / (schools.length || 1)) * 100}%` }}
-                              className={cn("h-full", plan.color)}
+                              className={cn("h-full rounded-full shadow-[0_0_10px]", plan.color)}
                             />
                           </div>
                         </div>
@@ -688,35 +745,39 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
                 </div>
 
                 <div className="bg-white/5 border border-white/10 rounded-3xl overflow-hidden">
-                  <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
-                    <h3 className="text-xl font-bold text-white">Security Events</h3>
-                    <button className="text-xs font-bold text-blue-400 uppercase tracking-widest hover:text-blue-300 transition-colors">Export CSV</button>
+                  <div className="p-8 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
+                    <div>
+                      <h3 className="text-xl font-bold text-white tracking-tight">Security Intel Feed</h3>
+                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1">Live from Kernel Audit</p>
+                    </div>
+                    <button className="px-6 py-2.5 bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-blue-600/20 transition-all">Export Archive</button>
                   </div>
                   <div className="divide-y divide-white/5">
-                    {[
-                      { user: 'Admin (Root)', event: 'School Suspended', target: 'Green Valley Academy', time: '10 mins ago', status: 'warning' },
-                      { user: 'System', event: 'Database Backup', target: 'Daily Automated', time: '1 hour ago', status: 'success' },
-                      { user: 'Admin (Root)', event: 'New School Created', target: 'Lighthouse Primary', time: '3 hours ago', status: 'success' },
-                      { user: 'System', event: 'Security Patch Applied', target: 'v2.4.1', time: '5 hours ago', status: 'info' },
-                      { user: 'Admin (Root)', event: 'Plan Downgrade', target: 'St. Marys High', time: 'Yesterday', status: 'error' },
-                    ].map((log, i) => (
-                      <div key={i} className="p-4 px-8 flex items-center justify-between hover:bg-white/[0.01] transition-all">
-                        <div className="flex items-center gap-4">
+                    {auditLogs.length > 0 ? auditLogs.map((log, i) => (
+                      <div key={log.id} className="p-6 px-8 flex items-center justify-between hover:bg-white/[0.01] transition-all group">
+                        <div className="flex items-center gap-6">
                           <div className={cn(
-                            "w-2 h-2 rounded-full shadow-[0_0_8px]",
-                            log.status === 'warning' ? "bg-amber-500 shadow-amber-500/50" :
-                            log.status === 'success' ? "bg-emerald-500 shadow-emerald-500/50" :
-                            log.status === 'error' ? "bg-red-500 shadow-red-500/50" :
-                            "bg-blue-500 shadow-blue-500/50"
+                            "w-2.5 h-2.5 rounded-full shadow-[0_0_12px]",
+                            log.action?.includes('DELETE') ? "bg-red-500 shadow-red-500/50" :
+                            log.action?.includes('UPDATE') ? "bg-amber-500 shadow-amber-500/50" :
+                            "bg-emerald-500 shadow-emerald-500/50"
                           )} />
                           <div>
-                            <p className="text-sm font-bold text-white">{log.event}</p>
-                            <p className="text-xs text-slate-500 font-medium">By {log.user} on {log.target}</p>
+                            <p className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">{log.action}</p>
+                            <p className="text-xs text-slate-500 font-medium mt-0.5">{log.details}</p>
                           </div>
                         </div>
-                        <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{log.time}</span>
+                        <div className="text-right">
+                          <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest block">{log.createdAt ? new Date(log.createdAt).toLocaleDateString() : 'Today'}</span>
+                          <span className="text-[10px] font-bold text-slate-700 block">{log.createdAt ? new Date(log.createdAt).toLocaleTimeString() : 'Recent'}</span>
+                        </div>
                       </div>
-                    ))}
+                    )) : (
+                      <div className="p-20 text-center">
+                        <History size={48} className="text-slate-800 mx-auto mb-4" />
+                        <p className="text-slate-600 font-bold text-sm uppercase tracking-widest">No Security Events Recorded</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -728,16 +789,19 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
       {/* Modals */}
       <AnimatePresence>
         {showAddSchool && (
-          <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-[100] overflow-y-auto">
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-[100] overflow-y-auto">
             <motion.div
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="bg-white dark:bg-slate-900 p-4 md:p-4 rounded-2xl max-w-xl w-full shadow-2xl border border-slate-100 dark:border-slate-800 my-4 max-h-[90vh] overflow-y-auto"
+              className="bg-[#0a0a0a] border border-white/10 p-8 rounded-[2.5rem] max-w-xl w-full shadow-2xl my-4 max-h-[90vh] overflow-y-auto custom-scrollbar"
             >
-              <div className="mb-8">
-                <h3 className="text-2xl md:text-xl font-medium text-slate-900 dark:text-slate-100">{editingSchool ? 'Edit School' : 'Onboard New School'}</h3>
-                <p className="text-slate-900 dark:text-slate-100 mt-2 font-medium">Enter the details to create a new school ecosystem.</p>
+              <div className="mb-10 text-center">
+                <div className="w-16 h-16 bg-blue-600/10 border border-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <SchoolIcon className="text-blue-500" size={32} />
+                </div>
+                <h3 className="text-2xl font-black text-white uppercase tracking-tight">{editingSchool ? 'Update Infrastructure' : 'Register New Institution'}</h3>
+                <p className="text-slate-500 mt-2 font-bold text-xs uppercase tracking-widest">SEEDD Provisioning Engine</p>
               </div>
 
               {error && <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm border border-red-100 font-medium">{error}</div>}
@@ -745,10 +809,13 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
               <form onSubmit={handleAddSchool} className="space-y-5">
                 {editingSchool || onboardingStep === 1 ? (
                   <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                    <h4 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-4">{editingSchool ? 'School Details' : 'Step 1: School Details'}</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 text-slate-900 dark:text-slate-100 ml-1">School Name</label>
+                    <h4 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-500 text-[10px] flex items-center justify-center font-black">1</div>
+                      {editingSchool ? 'Entity Configuration' : 'Institutional Identity'}
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Entity Name</label>
                         <input
                           required
                           type="text"
@@ -761,60 +828,60 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
                               : newSchool.slug;
                             setNewSchool({ ...newSchool, name: val, slug: newSlug });
                           }}
-                          className="w-full p-4 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
+                          className="w-full p-5 rounded-2xl border border-white/10 bg-white/5 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
                           placeholder="e.g. Green Valley Academy"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 text-slate-900 dark:text-slate-100 ml-1">Admin Email</label>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Terminal Email</label>
                         <input
                           required
                           type="email"
                           value={newSchool.email}
                           onChange={e => setNewSchool({ ...newSchool, email: e.target.value })}
-                          className="w-full p-4 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
+                          className="w-full p-5 rounded-2xl border border-white/10 bg-white/5 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
                           placeholder="admin@school.com"
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-2 mb-6">
-                      <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Subdomain Slug</label>
-                      <div className="flex">
+                    <div className="space-y-3 mb-6">
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">System Path (Slug)</label>
+                      <div className="flex group">
                         <input
                           required
                           type="text"
                           value={newSchool.slug}
                           onChange={e => setNewSchool({ ...newSchool, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })}
-                          className="w-full p-4 rounded-l-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
+                          className="w-full p-5 rounded-l-2xl border-y border-l border-white/10 bg-white/5 text-white placeholder:text-slate-600 focus:border-blue-500 outline-none transition-all font-bold text-sm"
                           placeholder="e.g. green-valley"
                         />
-                        <div className="p-4 bg-gray-100 border-t border-b border-r border-gray-200 rounded-r-xl text-gray-500 font-medium whitespace-nowrap flex items-center">
+                        <div className="p-5 bg-white/10 border border-white/10 rounded-r-2xl text-slate-400 font-bold text-sm whitespace-nowrap flex items-center">
                           .{window.location.hostname.replace('www.', '').split('.').slice(-2).join('.')}
                         </div>
                       </div>
                     </div>
 
-                    <div className="space-y-2 mb-6">
-                      <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 text-slate-900 dark:text-slate-100 ml-1">Physical Address</label>
+                    <div className="space-y-3 mb-6">
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Physical Coordinate</label>
                       <input
                         required
                         type="text"
                         value={newSchool.address}
                         onChange={e => setNewSchool({ ...newSchool, address: e.target.value })}
-                        className="w-full p-4 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
+                        className="w-full p-5 rounded-2xl border border-white/10 bg-white/5 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
                         placeholder="123 Education Way, Lagos"
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 text-slate-900 dark:text-slate-100 ml-1">Phone Number</label>
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Comm Channel (Phone)</label>
                       <input
                         required
                         type="tel"
                         value={newSchool.phone}
                         onChange={e => setNewSchool({ ...newSchool, phone: e.target.value })}
-                        className="w-full p-4 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
+                        className="w-full p-5 rounded-2xl border border-white/10 bg-white/5 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
                         placeholder="+234..."
                       />
                     </div>
@@ -846,22 +913,38 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
                   </motion.div>
                 ) : onboardingStep === 2 ? (
                   <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                    <h4 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-4">Step 2: Subscription Plan</h4>
-                    <div className="space-y-6">
+                    <h4 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-500 text-[10px] flex items-center justify-center font-black">2</div>
+                      Resource Allocation
+                    </h4>
+                    <div className="space-y-4">
                       {DEFAULT_PLANS.map(plan => (
-                        <label key={plan.id} className={`flex items-start gap-4 p-4 rounded-2xl border cursor-pointer transition-all ${newSchool.planId === plan.id ? 'border-blue-500 bg-blue-50/50' : 'border-gray-200 hover:bg-slate-50 dark:bg-slate-800'}`}>
+                        <label key={plan.id} className={cn(
+                          "flex items-start gap-4 p-5 rounded-2xl border cursor-pointer transition-all",
+                          newSchool.planId === plan.id 
+                            ? "border-blue-500 bg-blue-500/10 shadow-[0_0_20px_rgba(59,130,246,0.15)]" 
+                            : "border-white/10 bg-white/5 hover:border-white/20"
+                        )}>
+                          <div className={cn(
+                            "mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all",
+                            newSchool.planId === plan.id ? "border-blue-500" : "border-slate-700"
+                          )}>
+                            {newSchool.planId === plan.id && <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />}
+                          </div>
                           <input
                             type="radio"
                             name="plan"
+                            className="hidden"
                             value={plan.id}
                             checked={newSchool.planId === plan.id}
                             onChange={(e) => setNewSchool({ ...newSchool, planId: e.target.value })}
-                            className="mt-1.5"
                           />
-                          <div>
-                            <p className="font-medium text-slate-900 dark:text-slate-100">{plan.name}</p>
-                            <p className="text-sm text-slate-900 dark:text-slate-100 font-medium mt-1">₦{plan.price.toLocaleString()} / term</p>
-                            <p className="text-xs text-slate-900 dark:text-slate-100 font-medium mt-2">Up to {plan.studentLimit} students</p>
+                          <div className="flex-1">
+                            <div className="flex justify-between items-center mb-1">
+                              <p className="font-bold text-white">{plan.name}</p>
+                              <p className="text-xs font-black text-blue-500">₦{plan.price.toLocaleString()} / term</p>
+                            </div>
+                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Support up to {plan.studentLimit} Active Units (Students)</p>
                           </div>
                         </label>
                       ))}
@@ -869,52 +952,55 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
                   </motion.div>
                 ) : (
                   <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                    <h4 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-4">Step 3: Initial Admin Setup</h4>
-                    <p className="text-sm text-slate-900 dark:text-slate-100 font-medium mb-6">Create the first administrative user for {newSchool.name}. They will use this to log in.</p>
+                    <h4 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-500 text-[10px] flex items-center justify-center font-black">3</div>
+                      Superuser Provisioning
+                    </h4>
+                    <p className="text-sm text-slate-500 font-bold mb-8">Deploy initial administrative credentials for {newSchool.name}.</p>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 text-slate-900 dark:text-slate-100 ml-1">First Name</label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">First Designation</label>
                         <input
                           required
                           type="text"
                           value={adminDetails.firstName}
                           onChange={e => setAdminDetails({ ...adminDetails, firstName: e.target.value })}
-                          className="w-full p-4 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
+                          className="w-full p-5 rounded-2xl border border-white/10 bg-white/5 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 text-slate-900 dark:text-slate-100 ml-1">Last Name</label>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Last Designation</label>
                         <input
                           required
                           type="text"
                           value={adminDetails.lastName}
                           onChange={e => setAdminDetails({ ...adminDetails, lastName: e.target.value })}
-                          className="w-full p-4 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
+                          className="w-full p-5 rounded-2xl border border-white/10 bg-white/5 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 text-slate-900 dark:text-slate-100 ml-1">Temporary Password</label>
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Access Token (Password)</label>
                       <input
                         required
                         type="password"
                         value={adminDetails.password}
                         onChange={e => setAdminDetails({ ...adminDetails, password: e.target.value })}
-                        className="w-full p-4 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
-                        placeholder="At least 6 characters"
+                        className="w-full p-5 rounded-2xl border border-white/10 bg-white/5 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
+                        placeholder="Security override required"
                       />
                     </div>
                   </motion.div>
                 )}
 
-                <div className="flex gap-4 pt-6">
+                <div className="flex gap-4 pt-8">
                   {onboardingStep > 1 && !editingSchool ? (
                     <button
                       type="button"
                       onClick={() => setOnboardingStep(onboardingStep - 1)}
-                      className="flex-1 p-4 rounded-xl border border-gray-200 font-medium text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 transition-all"
+                      className="flex-1 p-5 rounded-[1.5rem] border border-white/10 font-bold text-slate-400 hover:bg-white/5 transition-all text-sm uppercase tracking-widest"
                     >
                       Back
                     </button>
@@ -922,16 +1008,16 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
                     <button
                       type="button"
                       onClick={() => { setShowAddSchool(false); setEditingSchool(null); setOnboardingStep(1); }}
-                      className="flex-1 p-4 rounded-xl border border-gray-200 font-medium text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 transition-all"
+                      className="flex-1 p-5 rounded-[1.5rem] border border-white/10 font-bold text-slate-400 hover:bg-white/5 transition-all text-sm uppercase tracking-widest"
                     >
                       Cancel
                     </button>
                   )}
                   <button
                     type="submit"
-                    className="flex-1 p-4 rounded-xl bg-blue-600 text-white font-medium shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:scale-[1.02] transition-all active:scale-[0.98]"
+                    className="flex-1 p-5 rounded-[1.5rem] bg-blue-600 text-white font-black shadow-[0_0_30px_rgba(37,99,235,0.3)] hover:bg-blue-700 hover:scale-[1.02] transition-all active:scale-[0.98] text-sm uppercase tracking-[0.1em]"
                   >
-                    {editingSchool ? 'Save Changes' : onboardingStep < 3 ? 'Next Step' : 'Complete Onboarding'}
+                    {editingSchool ? 'Commit Changes' : onboardingStep < 3 ? 'Next Phase' : 'Initialize Entity'}
                   </button>
                 </div>
               </form>
@@ -940,32 +1026,31 @@ export const SuperAdminDashboard = ({ user }: { user: UserProfile }) => {
         )}
 
         {showDeleteConfirm && (
-          <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-[100]">
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-[100]">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-slate-900 p-4 md:p-4 rounded-2xl max-w-md w-full shadow-2xl border border-slate-100 dark:border-slate-800"
+              className="bg-[#0a0a0a] border border-red-500/20 p-10 rounded-[2.5rem] max-w-md w-full shadow-2xl text-center"
             >
-              <div className="w-20 h-20 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-                <Trash2 size={40} />
+              <div className="w-20 h-20 bg-red-500/10 border border-red-500/20 rounded-3xl flex items-center justify-center mx-auto mb-8">
+                <Trash2 className="text-red-500" size={40} />
               </div>
-              <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 text-center mb-4">Delete School?</h3>
-              <p className="text-slate-900 dark:text-slate-100 font-medium text-center mb-10 leading-relaxed">
-                This action is <span className="text-red-600 font-medium">permanent</span>. All students, teachers, and data associated with this school will be removed from the system.
+              <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-4">Decommission Entity?</h3>
+              <p className="text-slate-500 font-bold text-sm mb-10 leading-relaxed">
+                You are about to terminate all infrastructure for <span className="text-white font-black">"{schoolToDelete?.name}"</span>. This action is final and will purge all associated data.
               </p>
               <div className="flex gap-4">
                 <button
-                  onClick={() => setShowDeleteConfirm(null)}
-                  className="flex-1 p-4 rounded-xl border border-gray-200 font-medium text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 transition-all"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="flex-1 p-5 rounded-2xl border border-white/10 font-bold text-slate-400 hover:bg-white/5 transition-all text-xs uppercase tracking-widest"
                 >
-                  Cancel
+                  Abort
                 </button>
                 <button
-                  onClick={() => handleDeleteSchool(showDeleteConfirm)}
-                  className="flex-1 p-4 rounded-xl bg-red-600 text-white font-medium shadow-lg shadow-red-600/20 hover:bg-red-700 hover:scale-[1.02] transition-all active:scale-[0.98]"
+                  onClick={handleDeleteSchool}
+                  className="flex-1 p-5 rounded-2xl bg-red-600 text-white font-black shadow-[0_0_30px_rgba(220,38,38,0.3)] hover:bg-red-700 transition-all text-xs uppercase tracking-widest"
                 >
-                  Delete
+                  Purge Data
                 </button>
               </div>
             </motion.div>

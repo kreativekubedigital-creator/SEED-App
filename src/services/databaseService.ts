@@ -1,5 +1,4 @@
-import { supabase } from '../lib/supabase';
-import { PostgrestError } from '@supabase/supabase-js';
+import { supabase } from './lib/supabase';
 
 export class DatabaseService {
   /**
@@ -7,32 +6,19 @@ export class DatabaseService {
    * e.g. "schools/123/classes" -> table "classes", filter { school_id: "123" }
    */
   private static parsePath(path: string): { table: string; filters: Record<string, any> } {
-    const parts = path.split('/');
+    const parts = path.split('/').filter(Boolean);
+    // In Firestore paths, collections are at even indices (0, 2, 4...)
+    // We want the last collection name as the Supabase table name.
+    const tableIndex = (parts.length - 1) % 2 === 0 ? parts.length - 1 : parts.length - 2;
+    const table = parts[tableIndex];
     
-    // Top-level collections
-    if (parts.length === 1) {
-      return { table: parts[0], filters: {} };
+    // For specific nested paths we know about, we can extract filters
+    const filters: Record<string, any> = {};
+    if (parts.length >= 3 && parts[0] === 'schools') {
+      filters.school_id = parts[1];
     }
 
-    // Nested collections: schools/{id}/classes
-    if (parts.length === 3 && parts[0] === 'schools' && parts[2] === 'classes') {
-      return { table: 'classes', filters: { school_id: parts[1] } };
-    }
-    
-    if (parts.length === 3 && parts[0] === 'schools' && parts[2] === 'subjects') {
-      return { table: 'subjects', filters: { school_id: parts[1] } };
-    }
-
-    // Default mapping for other known nested structures
-    const lastPart = parts[parts.length - 1];
-    const parentId = parts[parts.length - 2];
-    const parentType = parts[parts.length - 3];
-
-    if (parentType === 'schools') {
-      return { table: lastPart, filters: { school_id: parentId } };
-    }
-
-    return { table: lastPart, filters: {} };
+    return { table, filters };
   }
 
   /**
@@ -40,9 +26,12 @@ export class DatabaseService {
    * Special handling: removes 'uid' for the users table as 'id' is used instead.
    */
   private static toSnakeCase(obj: any, table?: string): any {
+    if (typeof obj === 'string') {
+      if (table === 'users' && obj === 'uid') return 'id';
+      return obj.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+    }
     if (Array.isArray(obj)) return obj.map(v => this.toSnakeCase(v, table));
     if (obj !== null && typeof obj === 'object' && obj.constructor === Object) {
-      // Create a shallow copy to avoid mutating original
       const source = { ...obj };
       
       // For users table, if we have uid, move it to id if id is missing, then delete uid
@@ -52,7 +41,7 @@ export class DatabaseService {
       }
 
       return Object.keys(source).reduce((acc, key) => {
-        const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+        const snakeKey = this.toSnakeCase(key, table);
         acc[snakeKey] = this.toSnakeCase(source[key], table);
         return acc;
       }, {} as any);
@@ -65,19 +54,23 @@ export class DatabaseService {
    * Special handling: maps 'id' to 'uid' for the users table to maintain Firebase compatibility.
    */
   private static toCamelCase(obj: any, table?: string): any {
+    if (typeof obj === 'string') {
+      if (table === 'users' && obj === 'id') return 'uid';
+      return obj.replace(/([-_][a-z])/g, group =>
+        group.toUpperCase().replace('-', '').replace('_', '')
+      );
+    }
     if (Array.isArray(obj)) return obj.map(v => this.toCamelCase(v, table));
     if (obj !== null && typeof obj === 'object' && obj.constructor === Object) {
       const result = Object.keys(obj).reduce((acc, key) => {
-        const camelKey = key.replace(/([-_][a-z])/g, group =>
-          group.toUpperCase().replace('-', '').replace('_', '')
-        );
+        const camelKey = this.toCamelCase(key, table);
         acc[camelKey] = this.toCamelCase(obj[key], table);
         return acc;
       }, {} as any);
 
-      // Map id to uid for users table to satisfy UserProfile type
-      if (table === 'users' && result.id && !result.uid) {
-        result.uid = result.id;
+      // Explicitly map id to uid for users table if not already present
+      if (table === 'users' && obj.id && !result.uid) {
+        result.uid = obj.id;
       }
 
       return result;
@@ -96,7 +89,7 @@ export class DatabaseService {
 
     // Apply additional conditions (mapping keys to snake_case)
     Object.entries(conditions).forEach(([key, value]) => {
-      const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      const snakeKey = this.toSnakeCase(key, table);
       query = query.eq(snakeKey, value);
     });
 
