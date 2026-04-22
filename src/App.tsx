@@ -6,7 +6,7 @@ import { Logo } from './components/Logo';
 import { ThemeToggle } from './components/ThemeToggle';
 import { useTheme } from './components/ThemeProvider';
 import { 
-  LogIn, LogOut, LayoutDashboard, User, Users, BookOpen, Bell, Settings, CreditCard, Menu, X, Home, Sparkles, Info, Mail, Clock, CheckCircle2, CheckCircle, Eye, EyeOff, Search, ChevronDown, Check, Shield, School as SchoolIcon
+  LogIn, LogOut, LayoutDashboard, User, Users, BookOpen, Bell, Settings, CreditCard, Menu, X, Home, Sparkles, Info, Mail, Clock, CheckCircle2, CheckCircle, Eye, EyeOff, Search, ChevronDown, Check, Shield, School as SchoolIcon, Lock
 } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import { cn } from './lib/utils';
@@ -220,7 +220,7 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
               </button>
             ) : (
               <>
-                <Link to="/login?role=super_admin" className="text-sm font-semibold text-slate-700 hover:text-blue-600 transition-colors">
+                <Link to="/super-admin" className="text-sm font-semibold text-slate-700 hover:text-blue-600 transition-colors">
                   System Login
                 </Link>
                 <a href="#onboard" className="bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20 active:scale-95">
@@ -323,7 +323,9 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
 
   useEffect(() => {
     const roleParam = searchParams.get('role');
-    if (roleParam === 'super_admin' && step === 'school') {
+    const isSuperAdminPath = window.location.pathname === '/super-admin';
+    
+    if ((roleParam === 'super_admin' || isSuperAdminPath) && step === 'school') {
       setSelectedRole('super_admin');
       setStep('credentials');
     }
@@ -1080,6 +1082,7 @@ export default function App() {
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<PageWrapper><LandingPage /></PageWrapper>} />
               <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <PageWrapper><LoginPage onLogin={setUser} tenantSchool={tenantSchool} subdomainNotFound={subdomainNotFound} logoVariant={logoVariant} /></PageWrapper>} />
+              <Route path="/super-admin" element={user ? <Navigate to="/dashboard" /> : <PageWrapper><LoginPage onLogin={setUser} tenantSchool={tenantSchool} subdomainNotFound={subdomainNotFound} logoVariant={logoVariant} /></PageWrapper>} />
               <Route path="/dashboard/*" element={user?.schoolId || user?.role === 'super_admin' ? <PageWrapper><DashboardRouter user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/onboarding" />} />
               <Route path="/announcements" element={user ? <PageWrapper><AnnouncementsPage user={user} /></PageWrapper> : <Navigate to="/login" />} />
               <Route path="/onboarding" element={user ? <PageWrapper><OnboardingPage user={user} onComplete={setUser} /></PageWrapper> : <Navigate to="/login" />} />
