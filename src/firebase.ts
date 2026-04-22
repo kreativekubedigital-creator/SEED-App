@@ -52,8 +52,8 @@ export const updatePassword = async (_user: any, password: string) => {
 };
 
 // Firestore-like shim for Database operations
-export const collection = (_db: any, path: string) => path;
-export const doc = (_db: any, path: string, id?: string) => id ? `${path}/${id}` : path;
+export const collection = (_db: any, ...paths: string[]) => paths.join('/');
+export const doc = (_db: any, ...paths: string[]) => paths.join('/');
 
 export const getDoc = async (path: string) => {
   const parts = path.split('/');
@@ -67,13 +67,26 @@ export const getDoc = async (path: string) => {
   };
 };
 
-export const getDocs = async (path: string) => {
-  const data = await DatabaseService.getItems(path);
+export const getDocs = async (queryOrPath: any) => {
+  const path = typeof queryOrPath === 'string' ? queryOrPath : queryOrPath.path;
+  const constraints = typeof queryOrPath === 'string' ? [] : queryOrPath.constraints;
+  
+  const conditions: Record<string, any> = {};
+  constraints.forEach((c: any) => {
+    if (c.op === '==') {
+      const field = c.field === 'schoolId' ? 'school_id' : c.field;
+      conditions[field] = c.value;
+    }
+  });
+
+  const data = await DatabaseService.getItems(path, conditions);
   return {
     docs: data.map((item: any) => ({
       id: item.id,
       data: () => item
-    }))
+    })),
+    size: data.length,
+    empty: data.length === 0
   };
 };
 
@@ -108,15 +121,14 @@ export const query = (path: string, ...constraints: any[]) => {
 
 export const where = (field: string, op: string, value: any) => ({ field, op, value });
 
-export const onSnapshot = (queryObj: any, callback: any) => {
+export const onSnapshot = (queryObj: any, callback: any, errorCallback?: (error: any) => void) => {
   const path = typeof queryObj === 'string' ? queryObj : queryObj.path;
   const constraints = typeof queryObj === 'string' ? [] : queryObj.constraints;
   
   const conditions: Record<string, any> = {};
   constraints.forEach((c: any) => {
-    // Convert field names if necessary (e.g., schoolId to school_id)
-    const field = c.field === 'schoolId' ? 'school_id' : c.field;
     if (c.op === '==') {
+      const field = c.field === 'schoolId' ? 'school_id' : c.field;
       conditions[field] = c.value;
     }
   });
@@ -126,10 +138,14 @@ export const onSnapshot = (queryObj: any, callback: any) => {
       docs: data.map((item: any) => ({
         id: item.id,
         data: () => item
-      }))
+      })),
+      size: data.length,
+      empty: data.length === 0
     });
   }, conditions);
 
+  // In a real implementation, we would handle errors from the subscription
+  
   return () => {
     supabase.removeChannel(subscription);
   };
@@ -175,11 +191,11 @@ export const signInWithRedirect = async () => { throw new Error("Redirect login 
 export const getRedirectResult = async () => null;
 export const serverTimestamp = () => new Date().toISOString();
 export const increment = (n: number) => n; // This is a simplification
-export const writeBatch = () => ({
-  set: () => {},
-  update: () => {},
-  delete: () => {},
-  commit: async () => {}
+export const writeBatch = (_db?: any) => ({
+  set: (docRef: any, data: any, options?: any) => { console.log('Batch set', docRef, data, options); },
+  update: (docRef: any, data: any) => { console.log('Batch update', docRef, data); },
+  delete: (docRef: any) => { console.log('Batch delete', docRef); },
+  commit: async () => { console.log('Batch commit'); }
 });
 export const limit = (n: number) => ({ type: 'limit', value: n });
 export const orderBy = (field: string, direction: string = 'asc') => ({ type: 'orderBy', field, direction });

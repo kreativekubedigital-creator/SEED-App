@@ -24,5 +24,19 @@
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test-*.ts",
+    "test-*.js",
+    "check_*.cjs",
+    "copy_logos.cjs",
+    "fix_*.cjs",
+    "refine_colors.cjs",
+    "update_*.cjs",
+    "update_*.js",
+    "restore.cjs",
+    "list_sizes.cjs"
+  ]
 }

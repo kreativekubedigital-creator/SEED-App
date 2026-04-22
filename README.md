@@ -11,11 +11,9 @@ SEED is a modern, mobile-first SaaS platform designed to bridge the engagement g
 - **Finance & Fee Management**: Automated invoice generation and tracking for school fees.
 - **Mobile-First & Lightweight**: Optimized for performance and usability on low-bandwidth networks.
 
-## Technology Stack
-
 - **Frontend**: React 19, Vite, Tailwind CSS 4, Framer Motion
 - **Backend**: Node.js (Express) serverless functions via Vercel
-- **Database**: Firebase Firestore & Firebase Auth
+- **Database & Auth**: Supabase (PostgreSQL, Auth, Storage)
 - **AI**: @google/genai (Gemini)
 
 ## Getting Started
