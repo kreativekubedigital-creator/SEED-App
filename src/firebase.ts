@@ -173,7 +173,6 @@ export const googleProvider = {};
 export const signInWithPopup = async () => { throw new Error("Popup login not implemented yet in shim. Use email login."); };
 export const signInWithRedirect = async () => { throw new Error("Redirect login not implemented yet in shim. Use email login."); };
 export const getRedirectResult = async () => null;
-export const secondaryAuth = auth;
 export const serverTimestamp = () => new Date().toISOString();
 export const increment = (n: number) => n; // This is a simplification
 export const writeBatch = () => ({
