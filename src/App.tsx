@@ -262,8 +262,7 @@ const Navbar = ({ user, onLogout, tenantSchool }: { user: UserProfile | null, on
               Login
             </Link>
           )}
-            <ThemeToggle />
-          </div>
+          <ThemeToggle />
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -276,67 +275,67 @@ const Navbar = ({ user, onLogout, tenantSchool }: { user: UserProfile | null, on
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
-      </nav>
 
-      {/* Mobile Nav Dropdown */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="absolute top-24 left-4 right-4 md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-black/5 dark:border-white/10 overflow-hidden p-6 z-[60]"
-          >
-            <div className="space-y-3">
-              {navItems.map(item => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800/50 text-sm font-semibold transition-all group"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <item.icon size={20} className="text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <span className="text-gray-800 dark:text-gray-100">{item.name}</span>
-                </Link>
-              ))}
-              {user ? (
-                <>
+        {/* Mobile Nav Dropdown */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              className="absolute top-24 left-4 right-4 md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-black/5 dark:border-white/10 overflow-hidden p-6 z-[60]"
+            >
+              <div className="space-y-3">
+                {navItems.map(item => (
                   <Link
-                    to="/dashboard"
+                    key={item.name}
+                    to={item.path}
                     onClick={() => setIsOpen(false)}
                     className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800/50 text-sm font-semibold transition-all group"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <LayoutDashboard size={20} className="text-emerald-600 dark:text-emerald-400" />
+                    <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <item.icon size={20} className="text-blue-600 dark:text-blue-400" />
                     </div>
-                    <span className="text-gray-800 dark:text-gray-100">Dashboard</span>
+                    <span className="text-gray-800 dark:text-gray-100">{item.name}</span>
                   </Link>
-                  <button 
-                    onClick={() => { onLogout(); setIsOpen(false); }}
-                    className="w-full flex items-center gap-4 p-4 rounded-2xl hover:bg-red-50 dark:hover:bg-red-900/20 text-sm font-semibold transition-all group"
+                ))}
+                {user ? (
+                  <>
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800/50 text-sm font-semibold transition-all group"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <LayoutDashboard size={20} className="text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                      <span className="text-gray-800 dark:text-gray-100">Dashboard</span>
+                    </Link>
+                    <button 
+                      onClick={() => { onLogout(); setIsOpen(false); }}
+                      className="w-full flex items-center gap-4 p-4 rounded-2xl hover:bg-red-50 dark:hover:bg-red-900/20 text-sm font-semibold transition-all group"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <LogOut size={20} className="text-red-600 dark:text-red-400" />
+                      </div>
+                      <span className="text-red-600 dark:text-red-400">Logout</span>
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    to="/login"
+                    onClick={() => setIsOpen(false)}
+                    className="w-full h-14 mt-4 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold shadow-lg shadow-blue-500/25 active:scale-95 transition-transform"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <LogOut size={20} className="text-red-600 dark:text-red-400" />
-                    </div>
-                    <span className="text-red-600 dark:text-red-400">Logout</span>
-                  </button>
-                </>
-              ) : (
-                <Link
-                  to="/login"
-                  onClick={() => setIsOpen(false)}
-                  className="w-full h-14 mt-4 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold shadow-lg shadow-blue-500/25 active:scale-95 transition-transform"
-                >
-                  Get Started
-                </Link>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+                    Get Started
+                  </Link>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.nav>
+    </div>
   );
 };
 
