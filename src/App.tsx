@@ -335,7 +335,7 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
 };
 
 
-const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound }: { onLogin: (user: UserProfile) => void, tenantSchool: School | null, subdomainNotFound: boolean }) => {
+const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { onLogin: (user: UserProfile) => void, tenantSchool: School | null, subdomainNotFound: boolean, logoVariant: 'white' | 'black' }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const step = (searchParams.get('step') as 'school' | 'role' | 'credentials') || 'school';
   const isSignUp = searchParams.get('signup') === 'true';
@@ -530,7 +530,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound }: { onLogin: (use
             </>
           ) : (
             <>
-              <Logo variant={theme === 'dark' ? 'white' : 'black'} size="lg" className="mx-auto mb-4 h-12 md:h-16" />
+              <Logo variant={logoVariant} size="lg" className="mx-auto mb-4 h-12 md:h-16" />
               <h2 className="text-2xl md:text-3xl font-medium text-slate-900 dark:text-white leading-tight">SEEDD {isSignUp ? 'Setup' : 'Login'}</h2>
             </>
           )}
@@ -997,7 +997,7 @@ export default function App() {
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<PageWrapper><LandingPage /></PageWrapper>} />
-              <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <PageWrapper><LoginPage onLogin={setUser} tenantSchool={tenantSchool} subdomainNotFound={subdomainNotFound} /></PageWrapper>} />
+              <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <PageWrapper><LoginPage onLogin={setUser} tenantSchool={tenantSchool} subdomainNotFound={subdomainNotFound} logoVariant={logoVariant} /></PageWrapper>} />
               <Route path="/dashboard/*" element={user?.schoolId || user?.role === 'super_admin' ? <PageWrapper><DashboardRouter user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/onboarding" />} />
               <Route path="/announcements" element={user ? <PageWrapper><AnnouncementsPage user={user} /></PageWrapper> : <Navigate to="/login" />} />
               <Route path="/onboarding" element={user ? <PageWrapper><OnboardingPage user={user} onComplete={setUser} /></PageWrapper> : <Navigate to="/login" />} />
