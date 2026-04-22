@@ -154,9 +154,11 @@ const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => 
 
   useEffect(() => {
     return scrollY.on('change', (latest) => {
-      setIsScrolled(latest > 20);
+      // Use a small buffer to prevent rapid toggling
+      if (latest > 30 && !isScrolled) setIsScrolled(true);
+      if (latest <= 10 && isScrolled) setIsScrolled(false);
     });
-  }, [scrollY]);
+  }, [scrollY, isScrolled]);
 
   const navItems = [
     { name: 'Home', path: '/', icon: Home },
@@ -172,30 +174,36 @@ const Navbar = ({ user, onLogout }: { user: UserProfile | null, onLogout: () => 
   const { theme } = useTheme();
   const isLandingPage = location.pathname === '/';
   
-  // Decide logo variant based on landing page (always dark) or current theme
+  // Decide logo variant
   const logoVariant = isLandingPage ? 'white' : (theme === 'dark' ? 'white' : 'black');
 
   return (
-    <motion.div 
-      className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4 pointer-events-none"
-      initial={false}
-      animate={{ 
-        paddingTop: isScrolled ? '0.75rem' : '1.5rem'
-      }}
-      transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-    >
-      <nav className={cn(
-        "backdrop-blur-xl shadow-2xl rounded-full px-6 py-2 flex items-center justify-between w-full max-w-5xl border transition-colors duration-300 pointer-events-auto",
-        isLandingPage 
-          ? (isScrolled ? "bg-slate-900/80 border-white/10 text-white" : "bg-transparent border-transparent text-white") 
-          : (isScrolled ? "bg-white/90 dark:bg-slate-930/90 border-gray-100 dark:border-white/5" : "bg-white/80 dark:bg-slate-900/80 border-gray-100 dark:border-white/10")
-      )}>
+    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4 pointer-events-none">
+      <motion.nav 
+        initial={false}
+        animate={{ 
+          backgroundColor: isLandingPage 
+            ? (isScrolled ? "rgba(15, 23, 42, 0.8)" : "rgba(15, 23, 42, 0)") 
+            : (isScrolled ? (theme === 'dark' ? "rgba(30, 41, 59, 0.9)" : "rgba(255, 255, 255, 0.9)") : (theme === 'dark' ? "rgba(15, 23, 42, 0.8)" : "rgba(255, 255, 255, 0.8)")),
+          borderColor: isLandingPage
+            ? (isScrolled ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0)")
+            : (theme === 'dark' ? "rgba(255, 255, 255, 0.05)" : "rgba(243, 244, 246, 1)"),
+          y: isScrolled ? 0 : 4,
+          boxShadow: isScrolled ? "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" : "none"
+        }}
+        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+        className={cn(
+          "backdrop-blur-xl rounded-full px-6 py-2.5 flex items-center justify-between w-full max-w-5xl border pointer-events-auto",
+          isLandingPage ? "text-white" : "text-gray-800 dark:text-gray-100"
+        )}
+      >
         <Link to="/" className={cn(
-          "flex items-center gap-2 pr-6 border-r",
+          "flex items-center gap-2 pr-6 border-r transition-colors",
           isLandingPage ? "border-white/10" : "border-gray-100 dark:border-gray-800"
         )}>
-          <Logo variant={logoVariant} size="sm" className="h-8 md:h-10" />
+          <Logo variant={logoVariant} size="sm" className="h-8 md:h-9" />
         </Link>
+
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-2 pl-4">

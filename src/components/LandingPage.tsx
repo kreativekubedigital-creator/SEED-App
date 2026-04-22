@@ -145,33 +145,32 @@ export const LandingPage = () => {
 
       <main className="relative z-10">
         {/* --- HERO SECTION --- */}
-        <section className="relative pt-48 pb-32 px-6 overflow-hidden">
+        <section className="relative pt-48 pb-32 px-6 overflow-hidden min-h-[90vh] flex items-center">
           <div className="max-w-7xl mx-auto text-center relative z-10">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
+              className="mb-8"
+            >
+              <Logo variant="mark" className="h-32 md:h-48 lg:h-64 mx-auto drop-shadow-[0_0_30px_rgba(59,130,246,0.3)]" />
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 mb-12"
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="inline-flex items-center gap-3 px-8 py-3 rounded-full bg-blue-500/10 border border-blue-500/20 mb-12 backdrop-blur-md"
             >
-              <Sparkles className="w-4 h-4 text-blue-400" />
-              <span className="text-xs font-bold text-blue-300 tracking-widest uppercase">The Future of School Intelligence</span>
+              <Sparkles className="w-5 h-5 text-blue-400" />
+              <span className="text-sm font-bold text-blue-300 tracking-[0.3em] uppercase">The Future of School Intelligence</span>
             </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-6xl md:text-8xl lg:text-9xl font-medium tracking-tight mb-10 leading-[0.9] text-white"
-            >
-              Evolve Your <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-indigo-500">Academic Core</span>
-            </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-lg md:text-2xl text-slate-400 max-w-4xl mx-auto mb-16 leading-relaxed"
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="text-lg md:text-2xl text-slate-400 max-w-4xl mx-auto mb-16 leading-relaxed font-light"
             >
               SEEDD is the premier multi-tenant infrastructure designed to digitize, 
               manage, and scale modern educational institutions. Built for growth, 
