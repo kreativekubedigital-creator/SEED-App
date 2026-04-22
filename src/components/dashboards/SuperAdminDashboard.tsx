@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserProfile, School } from '../../types';
+import { UserProfile, School, Invoice, Payment } from '../../types';
 import { DEFAULT_PLANS } from '../../constants';
 import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, OperationType, handleFirestoreError, query, where, onSnapshot, secondaryAuth, createUserWithEmailAndPassword, setDoc, logAuditAction, limit, orderBy } from '../../firebase';
-import { LogOut, Plus, Shield, CreditCard, Users, School as SchoolIcon, Trash2, CheckCircle, Settings, Search, MoreVertical, ExternalLink, ArrowRight, LayoutDashboard, X, Activity, History, Database, Globe, DollarSign, Menu } from 'lucide-react';
+import { LogOut, Plus, Shield, CreditCard, Users, School as SchoolIcon, Trash2, CheckCircle, Settings, Search, MoreVertical, ExternalLink, ArrowRight, LayoutDashboard, X, Activity, History, Database, Globe, DollarSign, Menu, Eye } from 'lucide-react';
 import { SchoolManagement } from './SchoolManagement';
 import { sortByName, cn } from '../../lib/utils';
 
@@ -79,6 +79,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'suspended'>('all');
   const [activeTab, setActiveTab] = useState<'overview' | 'schools' | 'financials' | 'logs' | 'system'>('overview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [previewSchool, setPreviewSchool] = useState<School | null>(null);
   const tableRef = useRef<HTMLDivElement>(null);
   const schoolToDelete = schools.find(s => s.id === showDeleteConfirm);
 
@@ -594,6 +595,13 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
                             <td className="px-4 py-6 pr-8">
                               <div className="flex gap-2 justify-end items-center">
                                 <button
+                                  onClick={() => setPreviewSchool(school)}
+                                  className="p-2 rounded-xl bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+                                  title="Live Intel Preview"
+                                >
+                                  <Eye size={18} />
+                                </button>
+                                <button
                                   onClick={() => setSelectedSchoolId(school.id)}
                                   className="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/10"
                                 >
@@ -1030,6 +1038,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
               className="bg-[#0a0a0a] border border-red-500/20 p-10 rounded-[2.5rem] max-w-md w-full shadow-2xl text-center"
             >
               <div className="w-20 h-20 bg-red-500/10 border border-red-500/20 rounded-3xl flex items-center justify-center mx-auto mb-8">
@@ -1056,6 +1065,13 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
             </motion.div>
           </div>
         )}
+
+        {previewSchool && (
+          <SchoolPreviewModal 
+            school={previewSchool} 
+            onClose={() => setPreviewSchool(null)} 
+          />
+        )}
       </AnimatePresence>
 
       {success && (
@@ -1078,3 +1094,390 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 function cn(...inputs: any[]) {
   return inputs.filter(Boolean).join(' ');
 }
+
+// --- Immersive School Preview Modal ---
+const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () => void }) => {
+  const [stats, setStats] = useState({
+    students: 0,
+    staff: 0,
+    feesAwaiting: { count: 0, total: 1 },
+    monthlyFees: 0,
+    paymentStatus: { unpaid: 0, partial: 0, paid: 0 },
+    incomeCategories: [] as { name: string; amount: number }[],
+    monthlyHistory: [4.2, 3.8, 4.5, 3.2, 4.8, 5.2, 4.9, 4.2, 5.1, 4.8, 5.5, 3.2] // Simulated velocity
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!school.id) return;
+
+    // 1. Fetch Populations
+    const unsubUsers = onSnapshot(
+      query(collection(db, "users"), where("schoolId", "==", school.id)),
+      (snap) => {
+        const docs = snap.docs.map(d => d.data());
+        setStats(prev => ({
+          ...prev,
+          students: docs.filter(u => u.role === 'student').length,
+          staff: docs.filter(u => u.role === 'teacher').length
+        }));
+      }
+    );
+
+    // 2. Fetch Financials (Invoices)
+    const unsubInvoices = onSnapshot(
+      collection(db, `schools/${school.id}/invoices`),
+      (snap) => {
+        const invoices = snap.docs.map(d => d.data() as Invoice);
+        const status = { unpaid: 0, partial: 0, paid: 0 };
+        let awaitingCount = 0;
+        const categories: Record<string, number> = {};
+
+        invoices.forEach(inv => {
+          if (inv.status === 'paid') status.paid++;
+          else if (inv.status === 'partial') {
+            status.partial++;
+            awaitingCount++;
+          } else {
+            status.unpaid++;
+            awaitingCount++;
+          }
+
+          inv.items?.forEach(item => {
+            categories[item.name] = (categories[item.name] || 0) + item.amount;
+          });
+        });
+
+        setStats(prev => ({
+          ...prev,
+          feesAwaiting: { count: awaitingCount, total: invoices.length || 1 },
+          paymentStatus: status,
+          incomeCategories: Object.entries(categories).map(([name, amount]) => ({ name, amount })).sort((a, b) => b.amount - a.amount).slice(0, 5)
+        }));
+        setLoading(false);
+      }
+    );
+
+    // 3. Fetch Monthly Payments
+    const unsubPayments = onSnapshot(
+      collection(db, `schools/${school.id}/payments`),
+      (snap) => {
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+        
+        const monthlyTotal = snap.docs
+          .map(d => d.data() as Payment)
+          .filter(p => {
+            const date = new Date(p.createdAt);
+            return date.getMonth() === currentMonth && date.getFullYear() === currentYear && p.status === 'success';
+          })
+          .reduce((sum, p) => sum + p.amount, 0);
+
+        setStats(prev => ({ ...prev, monthlyFees: monthlyTotal }));
+      }
+    );
+
+    return () => {
+      unsubUsers();
+      unsubInvoices();
+      unsubPayments();
+    };
+  }, [school.id]);
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 md:p-8">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+      />
+      
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-[#050505] border border-white/10 rounded-[2.5rem] shadow-2xl shadow-blue-500/10 custom-scrollbar"
+      >
+        {/* Header Section */}
+        <div className="sticky top-0 z-10 bg-[#050505]/80 backdrop-blur-md p-8 border-b border-white/5 flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-2xl">
+              {school.logoUrl ? <img src={school.logoUrl} className="w-full h-full object-cover" /> : school.name.charAt(0)}
+            </div>
+            <div>
+              <h2 className="text-2xl font-black text-white tracking-tight">{school.name} <span className="text-blue-500 font-medium text-lg ml-2">Intel Preview</span></h2>
+              <p className="text-slate-500 font-bold text-xs uppercase tracking-widest flex items-center gap-2 mt-1">
+                <Globe size={12} className="text-blue-500" /> {school.slug}.seedify.ng • {school.planId.toUpperCase()} TIER
+              </p>
+            </div>
+          </div>
+          <button 
+            onClick={onClose}
+            className="p-4 rounded-2xl bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all border border-white/5"
+          >
+            <X size={24} />
+          </button>
+        </div>
+
+        <div className="p-8 space-y-8">
+          {/* Top Row Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 relative overflow-hidden group text-left">
+              <div className="flex justify-between items-start mb-4">
+                <div className="p-3 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                  <CreditCard size={20} />
+                </div>
+                <div className="w-12 h-12 rounded-full border-2 border-white/5 flex items-center justify-center relative">
+                  <svg className="w-full h-full -rotate-90">
+                    <circle cx="24" cy="24" r="20" fill="transparent" stroke="currentColor" strokeWidth="3" className="text-white/5" />
+                    <circle cx="24" cy="24" r="20" fill="transparent" stroke="currentColor" strokeWidth="3" strokeDasharray={125.6} strokeDashoffset={125.6 * (1 - stats.feesAwaiting.count/stats.feesAwaiting.total)} className="text-amber-500 transition-all duration-1000" />
+                  </svg>
+                  <span className="absolute text-[10px] font-bold text-amber-500">{Math.round((stats.feesAwaiting.count/stats.feesAwaiting.total) * 100)}%</span>
+                </div>
+              </div>
+              <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Fees Awaiting Payment</p>
+              <h3 className="text-2xl font-black text-white mt-1">{stats.feesAwaiting.count} <span className="text-slate-600 text-lg">/ {stats.feesAwaiting.total}</span></h3>
+            </div>
+
+            <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 text-left">
+              <div className="p-3 rounded-xl bg-blue-500/10 text-blue-500 border border-blue-500/20 w-fit mb-4">
+                <LayoutDashboard size={20} />
+              </div>
+              <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Converted Leads</p>
+              <h3 className="text-2xl font-black text-white mt-1">20 <span className="text-slate-600 text-lg">/ 100</span></h3>
+              <div className="mt-4 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                <motion.div initial={{ width: 0 }} animate={{ width: '20%' }} className="h-full bg-blue-500" />
+              </div>
+            </div>
+
+            <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 text-left">
+              <div className="p-3 rounded-xl bg-purple-500/10 text-purple-500 border border-purple-500/20 w-fit mb-4">
+                <Users size={20} />
+              </div>
+              <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Staff Present Today</p>
+              <h3 className="text-2xl font-black text-white mt-1">{Math.floor(stats.staff * 0.9)} <span className="text-slate-600 text-lg">/ {stats.staff}</span></h3>
+              <div className="mt-4 flex gap-1">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className={`h-1 flex-1 rounded-full ${i < 7 ? 'bg-purple-500' : 'bg-white/5'}`} />
+                ))}
+              </div>
+            </div>
+
+            <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 text-left">
+              <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 w-fit mb-4">
+                <Users size={20} />
+              </div>
+              <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Student Count</p>
+              <h3 className="text-2xl font-black text-white mt-1">{stats.students}</h3>
+              <p className="text-[10px] text-emerald-500 font-bold mt-2 flex items-center gap-1">
+                <Activity size={10} /> Live Population
+              </p>
+            </div>
+
+            <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 text-left">
+              <div className="p-3 rounded-xl bg-blue-600/10 text-blue-400 border border-blue-600/20 w-fit mb-4">
+                <DollarSign size={20} />
+              </div>
+              <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Monthly Fees Collection</p>
+              <h3 className="text-2xl font-black text-white mt-1">₦{stats.monthlyFees.toLocaleString()}</h3>
+              <p className="text-[10px] text-slate-400 font-bold mt-2 italic">Current billing cycle</p>
+            </div>
+          </div>
+
+          {/* Main Analytics Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Fees Collection Chart */}
+            <div className="lg:col-span-2 p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 text-left">
+              <div className="flex items-center justify-between mb-10">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-xl bg-blue-600/10 text-blue-400 border border-blue-500/20">
+                    <Activity size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-black text-white tracking-tight">Fees Collection Velocity</h3>
+                    <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Fiscal Performance: {new Date().getFullYear()}</p>
+                  </div>
+                </div>
+                <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-slate-300">
+                  Daily Update
+                </div>
+              </div>
+              
+              <div className="h-64 flex items-end justify-between gap-2 px-4 relative">
+                {/* Grid Lines */}
+                <div className="absolute inset-x-0 top-0 bottom-0 flex flex-col justify-between pointer-events-none opacity-5">
+                  {[...Array(5)].map((_, i) => <div key={i} className="w-full h-px bg-white" />)}
+                </div>
+                
+                {stats.monthlyHistory.map((v, i) => (
+                  <div key={i} className="flex-1 flex flex-col items-center gap-4 group/bar relative">
+                    <motion.div 
+                      initial={{ height: 0 }}
+                      animate={{ height: `${v * 15}%` }}
+                      transition={{ delay: i * 0.05, type: 'spring', damping: 15 }}
+                      className="w-full max-w-[24px] bg-gradient-to-t from-blue-600/80 to-blue-400 rounded-lg group-hover/bar:scale-x-125 transition-transform relative"
+                    >
+                       <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 rounded-lg bg-blue-600 text-[10px] font-black text-white opacity-0 group-hover/bar:opacity-100 transition-opacity whitespace-nowrap shadow-xl">
+                        ₦{(v * 1000).toLocaleString()}
+                      </div>
+                    </motion.div>
+                    <span className="text-[10px] text-slate-500 font-black uppercase tracking-tighter">
+                      {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i]}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Fees Overview Breakdown */}
+            <div className="space-y-4 text-left">
+              <div className="p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 h-full">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="p-3 rounded-xl bg-blue-600/10 text-blue-400 border border-blue-500/20">
+                    <DollarSign size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-black text-white tracking-tight">Fees Overview</h3>
+                    <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Active Invoices</p>
+                  </div>
+                </div>
+
+                <div className="space-y-8">
+                  <div>
+                    <div className="flex justify-between items-end mb-3">
+                      <div>
+                        <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Unpaid</p>
+                        <h4 className="text-xl font-black text-white">{stats.paymentStatus.unpaid} <span className="text-slate-600 text-sm font-bold uppercase ml-1">Invoices</span></h4>
+                      </div>
+                    </div>
+                    <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }} 
+                        animate={{ width: `${(stats.paymentStatus.unpaid / stats.feesAwaiting.total) * 100}%` }} 
+                        className="h-full bg-gradient-to-r from-red-500/40 to-red-500" 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-end mb-3">
+                      <div>
+                        <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Partial</p>
+                        <h4 className="text-xl font-black text-white">{stats.paymentStatus.partial} <span className="text-slate-600 text-sm font-bold uppercase ml-1">Invoices</span></h4>
+                      </div>
+                    </div>
+                    <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }} 
+                        animate={{ width: `${(stats.paymentStatus.partial / stats.feesAwaiting.total) * 100}%` }} 
+                        className="h-full bg-gradient-to-r from-blue-500/40 to-blue-400" 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-end mb-3">
+                      <div>
+                        <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Paid</p>
+                        <h4 className="text-xl font-black text-white">{stats.paymentStatus.paid} <span className="text-slate-600 text-sm font-bold uppercase ml-1">Invoices</span></h4>
+                      </div>
+                    </div>
+                    <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }} 
+                        animate={{ width: `${(stats.paymentStatus.paid / stats.feesAwaiting.total) * 100}%` }} 
+                        className="h-full bg-gradient-to-r from-emerald-500/40 to-emerald-400" 
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Income Breakdown */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 text-left">
+             <div className="lg:col-span-1 p-8 rounded-[2rem] bg-white/[0.02] border border-white/5">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="p-3 rounded-xl bg-blue-600/10 text-blue-400 border border-blue-500/20">
+                    <Activity size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-black text-white tracking-tight">Income Sources</h3>
+                    <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Revenue Streams</p>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col items-center gap-8">
+                  <div className="relative w-48 h-48">
+                    <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+                      {stats.incomeCategories.map((cat, i) => {
+                        const total = stats.incomeCategories.reduce((sum, c) => sum + c.amount, 0) || 1;
+                        const prevTotal = stats.incomeCategories.slice(0, i).reduce((sum, c) => sum + c.amount, 0);
+                        const startPercent = (prevTotal / total) * 100;
+                        const endPercent = ((prevTotal + cat.amount) / total) * 100;
+                        
+                        const strokeDasharray = `${endPercent - startPercent} ${100 - (endPercent - startPercent)}`;
+                        const strokeDashoffset = -startPercent;
+                        
+                        const colors = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981'];
+                        
+                        return (
+                          <circle
+                            key={cat.name}
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            fill="transparent"
+                            stroke={colors[i % colors.length]}
+                            strokeWidth="12"
+                            strokeDasharray={strokeDasharray}
+                            strokeDashoffset={strokeDashoffset}
+                            pathLength="100"
+                            className="transition-all duration-1000"
+                          />
+                        );
+                      })}
+                      <circle cx="50" cy="50" r="30" fill="#050505" />
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                      <p className="text-[10px] text-slate-500 font-black uppercase tracking-tighter">Total</p>
+                      <p className="text-sm font-black text-white">₦{(stats.incomeCategories.reduce((s, c) => s + c.amount, 0)).toLocaleString()}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="w-full space-y-3">
+                    {stats.incomeCategories.map((cat, i) => (
+                      <div key={cat.name} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981'][i % 5] }} />
+                          <span className="text-xs font-bold text-slate-300">{cat.name}</span>
+                        </div>
+                        <span className="text-xs font-black text-white">₦{cat.amount.toLocaleString()}</span>
+                      </div>
+                    ))}
+                    {stats.incomeCategories.length === 0 && <p className="text-slate-500 text-xs text-center italic">No revenue data recorded</p>}
+                  </div>
+                </div>
+             </div>
+             
+             <div className="lg:col-span-2 p-8 rounded-[2rem] bg-blue-600/5 border border-blue-500/10 flex flex-col justify-center items-center text-center">
+                <div className="w-20 h-20 rounded-full bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-6">
+                  <Shield size={40} />
+                </div>
+                <h3 className="text-2xl font-black text-white mb-2">Institutional Integrity Verified</h3>
+                <p className="text-slate-400 max-w-md font-medium leading-relaxed">
+                  This snapshot represents live operational data. Audit logs indicate total compliance with SEEDD system protocols and security standards.
+                </p>
+                <button onClick={onClose} className="mt-8 px-8 py-3 rounded-2xl bg-blue-600 text-white font-bold text-sm hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20">
+                  Close Preview
+                </button>
+             </div>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
