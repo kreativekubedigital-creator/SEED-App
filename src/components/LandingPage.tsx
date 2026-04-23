@@ -224,18 +224,115 @@ export const LandingPage = () => {
       </section>
 
       {/* --- TRUSTED BY --- */}
-      <section className="py-24 bg-black/40 border-y border-white/5 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6">
-          <p className="text-center text-[10px] font-black text-white/40 uppercase tracking-[0.5em] mb-16">Empowering Excellence Across Regions</p>
-          <div className="flex flex-wrap justify-center items-center gap-x-24 gap-y-12 opacity-40">
-            {['Greenfield Academy', 'Crestview College', 'NobleGate Schools', 'FutureGate College'].map((school, i) => (
-              <div key={i} className="flex items-center gap-4 grayscale hover:grayscale-0 transition-all cursor-default group">
-                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
-                  <SchoolIcon size={20} className="text-white/60 group-hover:text-blue-400" />
+      <section className="relative -mt-24 z-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white/80 backdrop-blur-2xl rounded-[2.5rem] border border-white/20 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] p-12 lg:p-16">
+            <p className="text-center text-[10px] font-black text-blue-600 uppercase tracking-[0.4em] mb-12">
+              Trusted by Forward-Thinking Institutions
+            </p>
+            <div className="flex flex-wrap justify-center items-center gap-x-16 gap-y-10">
+              {[
+                { name: 'Greenfield Academy', icon: SchoolIcon },
+                { name: 'Crestview College', icon: Building2 },
+                { name: 'NobleGate Schools', icon: GraduationCap },
+                { name: 'FutureGate College', icon: BookOpen },
+                { name: 'Royal Oak Academy', icon: Users },
+                { name: 'BrightPath School', icon: Sparkles },
+              ].map((school, i) => (
+                <div key={i} className="flex items-center gap-4 group">
+                  <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:border-blue-200 group-hover:bg-blue-50 transition-all duration-300">
+                    <school.icon size={22} className="text-slate-400 group-hover:text-blue-500" />
+                  </div>
+                  <span className="font-space font-bold text-slate-600 group-hover:text-slate-900 text-sm tracking-tight leading-tight w-24">
+                    {school.name}
+                  </span>
                 </div>
-                <span className="font-space font-black text-white/60 group-hover:text-white uppercase text-xs tracking-widest">{school}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- CHALLENGE VS SOLUTION --- */}
+      <section className="py-40 lg:py-60 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-12 gap-20 items-center">
+            
+            {/* Left: The Challenge */}
+            <div className="lg:col-span-4 space-y-10">
+              <div className="space-y-4">
+                <p className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em]">The Challenge</p>
+                <h2 className="text-5xl lg:text-6xl font-space font-black text-slate-900 leading-[1.1] tracking-tight">
+                  Education systems <br /> are fragmented.
+                </h2>
               </div>
-            ))}
+              <div className="space-y-6 text-lg text-slate-500 font-medium leading-relaxed">
+                <p>
+                  Schools rely on disconnected tools, manual processes, and outdated systems that slow down operations and limit growth.
+                </p>
+                <p>
+                  Data is scattered. Decisions are delayed. Opportunities are missed.
+                </p>
+              </div>
+              <div className="flex items-center gap-6 pt-4">
+                <div className="w-1.5 h-12 bg-blue-600 rounded-full" />
+                <span className="text-2xl font-space font-black text-blue-600 tracking-tight">SEEDD changes that.</span>
+              </div>
+            </div>
+
+            {/* Middle: The Diagram */}
+            <div className="lg:col-span-4 flex justify-center relative py-20 lg:py-0">
+              <div className="relative w-80 h-80 flex items-center justify-center">
+                {/* Orbital Rings */}
+                <div className="absolute inset-0 border border-slate-100 rounded-full" />
+                <div className="absolute inset-8 border border-slate-50 rounded-full" />
+                
+                {/* Central Core */}
+                <div className="w-32 h-32 rounded-full bg-[#020617] shadow-[0_20px_50px_rgba(2,6,23,0.3)] flex items-center justify-center relative z-10 border-4 border-white">
+                  <LayoutGrid size={40} className="text-white" />
+                </div>
+
+                {/* Orbiting Icons */}
+                {[
+                  { icon: FileText, top: '0%', left: '50%', delay: 0 },
+                  { icon: Database, top: '20%', left: '85%', delay: 0.2 },
+                  { icon: Users, top: '70%', left: '85%', delay: 0.4 },
+                  { icon: ShieldCheck, top: '90%', left: '50%', delay: 0.6 },
+                  { icon: BarChart3, top: '70%', left: '15%', delay: 0.8 },
+                  { icon: GraduationCap, top: '20%', left: '15%', delay: 1 },
+                ].map((node, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ scale: 0, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: node.delay, duration: 0.5 }}
+                    className="absolute w-14 h-14 rounded-full bg-white shadow-lg border border-slate-100 flex items-center justify-center -translate-x-1/2 -translate-y-1/2 z-20"
+                    style={{ top: node.top, left: node.left }}
+                  >
+                    <node.icon size={22} className="text-blue-600" />
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: The Solution */}
+            <div className="lg:col-span-4 space-y-10">
+              <div className="space-y-4">
+                <p className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em]">The Solution</p>
+                <h2 className="text-5xl lg:text-6xl font-space font-black text-slate-900 leading-[1.1] tracking-tight">
+                  One ecosystem. <br /> Full control. <br /> Total clarity.
+                </h2>
+              </div>
+              <div className="space-y-6 text-lg text-slate-500 font-medium leading-relaxed">
+                <p>
+                  SEEDD brings every part of your institution into a <span className="text-slate-900 font-bold">single, intelligent platform</span>—connecting people, processes, and data in real time.
+                </p>
+                <p>
+                  From administration to academics, everything works together seamlessly—so your institution runs with precision, speed, and confidence.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
