@@ -30,21 +30,21 @@ const FloatingIcon = ({ delay }: { delay: number }) => {
     <motion.div
       initial={{ opacity: 0, scale: 0 }}
       animate={{ 
-        opacity: [0.1, 0.35, 0.1],
+        opacity: [0.4, 0.8, 0.4],
         left: `${coords.x}%`,
         top: `${coords.y}%`,
         scale: coords.scale,
         rotate: coords.rotate,
       }}
       transition={{ 
-        duration: 8 + Math.random() * 8,
-        ease: "easeInOut",
+        duration: 5 + Math.random() * 5,
+        ease: "linear",
         repeat: Infinity,
         delay
       }}
-      className="absolute pointer-events-none text-blue-500/30 blur-[1px]"
+      className="absolute pointer-events-none text-blue-400"
     >
-      <Icon size={64} />
+      <Icon size={80} />
     </motion.div>
   );
 };
@@ -171,14 +171,14 @@ export const HeroBackground: React.FC = () => {
   }, []);
 
   return (
-    <div className="absolute inset-0 -z-10 bg-[#020617] overflow-hidden">
+    <div className="absolute inset-0 z-0 bg-[#020617] overflow-hidden">
       <div 
         ref={containerRef} 
-        className="absolute inset-0 opacity-60" 
+        className="absolute inset-0 z-10" 
       />
       
       {/* Floating School Icons Layer */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none z-20">
         {[...Array(18)].map((_, i) => (
           <FloatingIcon key={i} delay={i * 1.5} />
         ))}
