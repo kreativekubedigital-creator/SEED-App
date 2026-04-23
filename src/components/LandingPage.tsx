@@ -225,30 +225,45 @@ export const LandingPage = () => {
       </section>
 
       {/* --- TRUSTED BY --- */}
-      <section className="relative -mt-24 z-20 px-6">
+      <section className="relative -mt-4 z-20 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-white/80 backdrop-blur-2xl rounded-[2.5rem] border border-white/20 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] p-12 lg:p-16">
-            <p className="text-center text-[10px] font-black text-blue-600 uppercase tracking-[0.4em] mb-12">
+          <div className="bg-white/80 backdrop-blur-2xl rounded-[2.5rem] border border-white/20 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] p-6 lg:p-8 overflow-hidden">
+            <p className="text-center text-[10px] font-black text-blue-600 uppercase tracking-[0.4em] mb-8">
               Trusted by Forward-Thinking Institutions
             </p>
-            <div className="flex flex-wrap justify-center items-center gap-x-16 gap-y-10">
-              {[
-                { name: 'Greenfield Academy', icon: SchoolIcon },
-                { name: 'Crestview College', icon: Building2 },
-                { name: 'NobleGate Schools', icon: GraduationCap },
-                { name: 'FutureGate College', icon: BookOpen },
-                { name: 'Royal Oak Academy', icon: Users },
-                { name: 'BrightPath School', icon: Sparkles },
-              ].map((school, i) => (
-                <div key={i} className="flex items-center gap-4 group">
-                  <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:border-blue-200 group-hover:bg-blue-50 transition-all duration-300">
-                    <school.icon size={22} className="text-slate-400 group-hover:text-blue-500" />
-                  </div>
-                  <span className="font-space font-bold text-slate-600 group-hover:text-slate-900 text-sm tracking-tight leading-tight w-24">
-                    {school.name}
-                  </span>
-                </div>
-              ))}
+            
+            <div className="relative flex overflow-hidden">
+              <motion.div 
+                animate={{ x: [0, -1000] }}
+                transition={{ 
+                  duration: 30,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+                className="flex items-center gap-16 whitespace-nowrap"
+              >
+                {[...Array(2)].map((_, idx) => (
+                  <React.Fragment key={idx}>
+                    {[
+                      { name: 'Greenfield Academy', icon: SchoolIcon },
+                      { name: 'Crestview College', icon: Building2 },
+                      { name: 'NobleGate Schools', icon: GraduationCap },
+                      { name: 'FutureGate College', icon: BookOpen },
+                      { name: 'Royal Oak Academy', icon: Users },
+                      { name: 'BrightPath School', icon: Sparkles },
+                    ].map((school, i) => (
+                      <div key={`${idx}-${i}`} className="flex items-center gap-4 group">
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:border-blue-200 group-hover:bg-blue-50 transition-all duration-300">
+                          <school.icon size={20} className="text-slate-400 group-hover:text-blue-500" />
+                        </div>
+                        <span className="font-space font-bold text-slate-600 group-hover:text-slate-900 text-sm tracking-tight">
+                          {school.name}
+                        </span>
+                      </div>
+                    ))}
+                  </React.Fragment>
+                ))}
+              </motion.div>
             </div>
           </div>
         </div>
