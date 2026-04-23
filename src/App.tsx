@@ -311,7 +311,285 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
 };
 
 
+
+const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { onLogin: (user: UserProfile) => void, tenantSchool: School | null, subdomainNotFound: boolean, logoVariant: 'white' | 'black' }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const step = (searchParams.get('step') as 'role' | 'credentials') || 'role';
+  
+  const setStep = (newStep: string) => {
+    setSearchParams(prev => {
+      prev.set('step', newStep);
+      return prev;
+    });
+  };
+
+  const [selectedRole, setSelectedRole] = useState<UserRole | ''>('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const handleEmailAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password || !selectedRole || !tenantSchool) return;
+
+    setLoading(true);
+    setError(null);
+    try {
+      const trimmedEmail = email.trim();
+      const result = await signInWithEmailAndPassword(auth, trimmedEmail, password);
+      const user = result.user;
+      
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      
+      if (userDoc.exists()) {
+        const userData = userDoc.data() as UserProfile;
+        if (userData.schoolId === tenantSchool.id && userData.role === selectedRole) {
+          onLogin(userData);
+          navigate('/dashboard');
+        } else {
+          setError("Invalid credentials for this school or role.");
+          await signOut(auth);
+        }
+      } else {
+        setError("User profile not found. Please contact your school administrator.");
+        await signOut(auth);
+      }
+    } catch (err: any) {
+      console.error("Auth failed:", err);
+      setError(err.code === 'auth/invalid-credential' 
+        ? "Invalid email or password." 
+        : (err.message || "Authentication failed."));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const roles: { id: UserRole; label: string }[] = [
+    { id: 'school_admin', label: 'School Admin' },
+    { id: 'teacher', label: 'Teacher' },
+    { id: 'student', label: 'Student' },
+    { id: 'parent', label: 'Parent' },
+  ];
+
+  if (!tenantSchool) return null;
+
+  return (
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col md:flex-row overflow-hidden font-inter">
+      {/* Left Column: Form Area */}
+      <div className="flex-1 flex flex-col justify-center items-center p-6 md:p-12 lg:p-24 relative order-2 md:order-1">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-lg bg-white rounded-[3rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.08)] border border-slate-100 p-10 md:p-14 relative overflow-hidden"
+        >
+          <AnimatePresence mode="wait">
+            {step === 'role' ? (
+              <motion.div
+                key="role-selection"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="flex flex-col items-center"
+              >
+                <h2 className="text-xl font-bold text-slate-900 mb-10 font-space tracking-tight">Select your role</h2>
+                
+                <div className="grid grid-cols-2 gap-4 w-full mb-10">
+                  {roles.map((role) => (
+                    <motion.button
+                      key={role.id}
+                      whileHover={{ scale: 1.02, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setSelectedRole(role.id)}
+                      className={cn(
+                        "h-16 flex items-center justify-center px-4 rounded-full border-2 transition-all font-bold text-sm",
+                        selectedRole === role.id 
+                          ? "bg-[#1754CF] border-[#1754CF] text-white shadow-lg shadow-blue-500/20" 
+                          : "border-[#1754CF] text-[#1754CF] hover:bg-blue-50/50"
+                      )}
+                    >
+                      {role.label}
+                    </motion.button>
+                  ))}
+                </div>
+
+                <div className="flex gap-4 w-full">
+                  <button
+                    onClick={() => navigate('/')}
+                    className="flex-1 h-14 rounded-2xl border-2 border-[#1754CF] text-[#1754CF] font-bold hover:bg-blue-50 transition-all active:scale-95 flex items-center justify-center"
+                  >
+                    Back
+                  </button>
+                  <button
+                    disabled={!selectedRole}
+                    onClick={() => setStep('credentials')}
+                    className="flex-1 h-14 rounded-2xl bg-[#1754CF] text-white font-bold hover:bg-blue-700 transition-all active:scale-95 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-blue-600/20"
+                  >
+                    Next
+                  </button>
+                </div>
+
+                <p className="mt-10 text-xs text-slate-400 font-medium text-center leading-relaxed">
+                  By signing in, you agree to our <br />
+                  <span className="text-slate-600 underline cursor-pointer hover:text-[#1754CF]">Terms of Service</span> & <span className="text-slate-600 underline cursor-pointer hover:text-[#1754CF]">Privacy Policy</span>.
+                </p>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="credentials-form"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="w-full"
+              >
+                <div className="mb-8 text-center">
+                  <h2 className="text-xl font-bold text-slate-900 mb-3 font-space tracking-tight">Welcome Back</h2>
+                  <p className="text-slate-500 font-medium text-sm">
+                    Accessing as <span className="text-[#1754CF] font-bold uppercase tracking-wider">{selectedRole.replace('_', ' ')}</span>
+                  </p>
+                </div>
+
+                {error && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-2xl text-xs font-bold text-center"
+                  >
+                    {error}
+                  </motion.div>
+                )}
+
+                <form onSubmit={handleEmailAuth} className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="relative group">
+                      <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#1754CF] transition-colors" size={18} />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Email Address"
+                        className="w-full h-14 pl-14 pr-5 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-[#1754CF] focus:bg-white transition-all font-medium"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="relative group">
+                      <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#1754CF] transition-colors" size={18} />
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Password"
+                        className="w-full h-14 pl-14 pr-14 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-[#1754CF] focus:bg-white transition-all font-medium"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 pt-4">
+                    <button
+                      type="button"
+                      onClick={() => setStep('role')}
+                      className="h-14 px-8 rounded-2xl border-2 border-slate-100 font-bold text-slate-500 hover:bg-slate-50 transition-all active:scale-95"
+                    >
+                      Back
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="flex-1 h-14 bg-[#1754CF] hover:bg-blue-700 text-white rounded-2xl font-bold shadow-xl shadow-blue-600/20 active:scale-95 disabled:opacity-50 flex items-center justify-center"
+                    >
+                      {loading ? "Authenticating..." : "Sign In"}
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+
+      {/* Right Column: Brand Side */}
+      <div className="w-full md:w-1/2 bg-[#0F172A] flex flex-col items-center justify-center p-12 relative text-center order-1 md:order-2 overflow-hidden">
+        {/* Luminous Glow Effects */}
+        <div className="absolute inset-0 pointer-events-none">
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.5, 0.3],
+              x: [0, 50, 0],
+              y: [0, -30, 0]
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-[-10%] right-[-10%] w-[70%] h-[70%] bg-[#1754CF] rounded-full blur-[120px]" 
+          />
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.1, 1],
+              opacity: [0.2, 0.4, 0.2],
+              x: [0, -40, 0],
+              y: [0, 40, 0]
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="absolute bottom-[-15%] left-[-10%] w-[60%] h-[60%] bg-blue-500 rounded-full blur-[100px]" 
+          />
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] mix-blend-overlay" />
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative z-10 flex flex-col items-center"
+        >
+          {tenantSchool.logoUrl ? (
+            <div className="w-32 h-32 bg-white rounded-[2.5rem] flex items-center justify-center p-6 shadow-[0_20px_50px_rgba(0,0,0,0.3)] mb-10 border border-white/10">
+              <img src={tenantSchool.logoUrl} alt={tenantSchool.name} className="max-w-full max-h-full object-contain" />
+            </div>
+          ) : (
+            <div className="w-32 h-32 bg-white/5 backdrop-blur-xl rounded-[2.5rem] flex items-center justify-center border border-white/10 mb-10 shadow-2xl">
+              <SchoolIcon size={64} className="text-white" strokeWidth={1} />
+            </div>
+          )}
+
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 font-space leading-tight tracking-tight">
+            {tenantSchool.name}
+          </h1>
+          
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-px w-12 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+            <span className="text-[11px] font-black text-white/60 uppercase tracking-[0.4em]">Powered by SEEDD</span>
+            <div className="h-px w-12 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+          </div>
+        </motion.div>
+
+        {/* Decorative elements */}
+        <div className="absolute bottom-10 right-10 text-white/10 font-space font-black text-9xl pointer-events-none select-none">
+          SEEDD
+        </div>
+      </div>
+    </div>
+  );
+};
+
+  );
+};
+
 const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { onLogin: (user: UserProfile) => void, tenantSchool: School | null, subdomainNotFound: boolean, logoVariant:'white'|'black'}) => {
+  if (tenantSchool && !subdomainNotFound) {
+    return <SchoolLoginPage onLogin={ onLogin } tenantSchool={ tenantSchool } subdomainNotFound={ subdomainNotFound } logoVariant={ logoVariant } />;
+  }
  const [searchParams, setSearchParams] = useSearchParams();
  const step = (searchParams.get('step') as'school'|'role'|'credentials') ||'school';
  const isSignUp = searchParams.get('signup')  === 'true';
@@ -597,8 +875,10 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
  );
  }
 
+  if (tenantSchool && !subdomainNotFound) return <SchoolLoginPage tenantSchool={tenantSchool} />;
+
  return (
- <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 pt-32 transition-colors duration-500">
+ <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 pt-32 transition-colors duration-500 font-inter">
  <motion.div
  initial={{ opacity: 0, scale: 0.95 }}
  animate={{ opacity: 1, scale: 1 }}
