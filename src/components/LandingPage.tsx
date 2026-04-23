@@ -305,8 +305,8 @@ export const LandingPage = () => {
                 <div className="absolute inset-8 border border-slate-50 rounded-full" />
                 
                 {/* Central Core */}
-                <div className="w-32 h-32 rounded-full bg-[#020617] shadow-[0_20px_50px_rgba(2,6,23,0.3)] flex items-center justify-center relative z-10 border-4 border-white">
-                  <LayoutGrid size={40} className="text-white" />
+                <div className="w-32 h-32 rounded-full bg-[#020617] shadow-[0_20px_50px_rgba(2,6,23,0.3)] flex items-center justify-center relative z-10 border-4 border-white overflow-hidden">
+                  <img src="/seed-logo-nav.webp" alt="SEEDD Logo" className="w-16 h-16 object-contain brightness-0 invert" />
                 </div>
 
                 {/* Orbiting Icons */}
