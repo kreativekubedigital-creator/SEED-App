@@ -89,7 +89,7 @@ export const LandingPage = () => {
         {/* Top Glow Edge */}
         <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
 
-        <div className="max-w-7xl mx-auto w-full relative z-10 flex-grow flex flex-col justify-end gap-16 pb-12">
+        <div className="max-w-7xl mx-auto w-full relative z-10 flex-grow flex flex-col justify-end gap-6 pb-12">
             {/* Left: CTAs */}
             <div className="space-y-10">
               <motion.div
