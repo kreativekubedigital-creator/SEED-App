@@ -31,6 +31,7 @@ export interface School {
   id: string;
   name: string;
   slug?: string;
+  description?: string;
   address: string;
   email: string;
   phone: string;

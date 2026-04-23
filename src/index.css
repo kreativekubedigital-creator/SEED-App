@@ -1,9 +1,10 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
-@custom-variant dark (&:is(.dark *));
+
 
 @theme {
-  --font-sans: "Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-space: "Space Grotesk", sans-serif;
   --animate-wave: wave 2.5s infinite;
   --animate-float: float 6s ease-in-out infinite;
   
@@ -33,31 +34,16 @@
 html, body {
   font-family: var(--font-sans);
   font-size: 16px;
-  background-color: #F8F9FB;
-  color: #111827;
+  background-color: #FFFFFF;
+  color: #0F172A;
   overflow-x: hidden;
   width: 100%;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
 }
 
-.dark body {
-  background-color: #020617; /* Slate-950 */
-  color: #F8FAFC; /* Slate-50 */
-}
-
-/* Global Form Element Resets for Dark Mode */
-.dark input, 
-.dark select, 
-.dark textarea {
-  background-color: #0f172a !important; /* slate-900 */
-  color: #f8fafc !important; /* slate-50 */
-  border-color: #334155 !important; /* slate-700 */
-}
-
-.dark input::placeholder, 
-.dark textarea::placeholder {
-  color: #94a3b8 !important; /* slate-400 */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-space);
 }
 
 /* Scrollbar Styling */
@@ -71,16 +57,12 @@ html, body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #E2E8F0;
   border-radius: 10px;
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  background: #334155;
-}
-
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #CBD5E1;
 }
 
 /* React Quill Custom Styles */
@@ -101,26 +83,13 @@ html, body {
   min-height: 150px;
 }
 
-.dark .ql-toolbar {
-  background: #1e293b !important;
-  border-color: #334155 !important;
+/* Typography Utilities */
+.font-space {
+  font-family: var(--font-space);
 }
 
-.dark .ql-container {
-  border-color: #334155 !important;
-  color: #f8fafc !important;
-}
-
-.dark .ql-snow .ql-stroke {
-  stroke: #f8fafc !important;
-}
-
-.dark .ql-snow .ql-fill {
-  fill: #f8fafc !important;
-}
-
-.dark .ql-snow .ql-picker {
-  color: #f8fafc !important;
+.font-inter {
+  font-family: var(--font-sans);
 }
 
 /* Mobile Responsive Utilities */
