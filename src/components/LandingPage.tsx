@@ -83,15 +83,14 @@ export const LandingPage = () => {
   return (
     <div className="relative bg-[#020617] min-h-screen text-white selection:bg-blue-500/30 selection:text-white overflow-x-hidden font-inter">
       
-      {/* --- HERO SECTION --- */}
-      <section className="relative min-h-screen flex flex-col pt-32 lg:pt-40 px-6 overflow-hidden">
+      <section className="relative h-screen flex flex-col pt-24 lg:pt-32 px-6 overflow-hidden">
         <HeroBackground />
         
         {/* Top Glow Edge */}
         <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
 
         <div className="max-w-7xl mx-auto w-full relative z-10 flex-grow flex flex-col justify-center">
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
+          <div className="grid lg:grid-cols-2 gap-8 items-center mb-12">
             {/* Left: CTAs */}
             <div className="space-y-10">
               <motion.div
@@ -102,16 +101,16 @@ export const LandingPage = () => {
               >
                 <Button 
                   onClick={() => setIsSearchVisible(!isSearchVisible)}
-                  className="h-20 px-12 bg-blue-600 hover:bg-blue-500 text-white rounded-[2rem] font-black text-lg shadow-[0_20px_50px_-10px_rgba(37,99,235,0.5)] flex items-center gap-4 transition-all active:scale-95 group"
+                  className="h-12 px-6 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-[0_10px_30px_-5px_rgba(37,99,235,0.5)] flex items-center gap-2 transition-all active:scale-95 group"
                 >
                   Find your School
-                  <ArrowRight size={24} className="group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </Button>
                 
                 <Link to="/#onboarding">
                   <Button 
                     variant="outline"
-                    className="h-20 px-12 bg-white/5 backdrop-blur-2xl border-white/10 text-white hover:bg-white/10 rounded-[2rem] font-black text-lg transition-all active:scale-95"
+                    className="h-12 px-6 bg-white/5 backdrop-blur-2xl border-white/10 text-white hover:bg-white/10 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95"
                   >
                     Request A Demo
                   </Button>
@@ -133,7 +132,7 @@ export const LandingPage = () => {
                       autoFocus
                       type="text"
                       placeholder="Type school name..."
-                      className="w-full h-16 pl-14 pr-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-2xl text-white placeholder:text-white/30 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all font-bold"
+                      className="w-full h-12 pl-12 pr-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-2xl text-white placeholder:text-white/30 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all font-bold text-xs"
                       value={searchQuery}
                       onChange={(e) => {
                         setSearchQuery(e.target.value);
@@ -191,12 +190,12 @@ export const LandingPage = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="lg:pl-12 space-y-6"
+              className="lg:pl-12 space-y-4"
             >
-              <h3 className="text-2xl font-space font-bold text-white leading-tight">
+              <h3 className="text-lg font-space font-black text-white leading-tight uppercase tracking-widest">
                 Power the intelligence behind <br /> modern education.
               </h3>
-              <p className="text-lg text-white/60 max-w-lg leading-relaxed font-medium">
+              <p className="text-xs text-white/50 max-w-sm leading-relaxed font-medium">
                 SEEDD connects institutions, centralizes data, and transforms everyday operations into a seamless, insight-driven system. 
                 From administration to academics, everything works in sync—giving you clarity, control, and the ability to scale without friction.
               </p>
@@ -204,17 +203,17 @@ export const LandingPage = () => {
           </div>
 
           {/* Bottom: Massive Typography */}
-          <div className="mt-auto pb-12">
+          <div className="pb-8">
             <motion.div
-              initial={{ opacity: 0, y: 60 }}
+              initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-              className="relative"
+              className="relative flex flex-col items-start"
             >
-              <h1 className="text-[12vw] lg:text-[15vw] font-space font-black tracking-tighter text-white leading-[0.75] opacity-90 drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]">
+              <h1 className="text-[8vw] lg:text-[10vw] font-space font-black tracking-tighter text-white leading-[0.7] opacity-90 drop-shadow-[0_0_50px_rgba(255,255,255,0.05)]">
                 SEEDD
               </h1>
-              <h1 className="text-[12vw] lg:text-[15vw] font-space font-black tracking-tighter bg-gradient-to-b from-blue-400 via-blue-600 to-blue-900 bg-clip-text text-transparent leading-[0.75] drop-shadow-[0_0_80px_rgba(37,99,235,0.3)]">
+              <h1 className="text-[6vw] lg:text-[7.5vw] font-space font-black tracking-tighter bg-gradient-to-b from-blue-400 via-blue-600 to-blue-900 bg-clip-text text-transparent leading-[0.7] drop-shadow-[0_0_80px_rgba(37,99,235,0.2)]">
                 ECO-SYSTEM
               </h1>
             </motion.div>
