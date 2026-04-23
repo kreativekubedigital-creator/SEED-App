@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SEEDD - Eco-System</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#e0e3e5",
+                        "inverse-on-surface": "#2d3133",
+                        "tertiary-fixed": "#dae2ff",
+                        "on-secondary-fixed-variant": "#004883",
+                        "outline": "#8c90a1",
+                        "surface-variant": "#323537",
+                        "surface-container-lowest": "#0b0f10",
+                        "surface-container-high": "#272a2c",
+                        "on-tertiary": "#182e60",
+                        "primary": "#b3c5ff",
+                        "tertiary": "#b2c5ff",
+                        "error-container": "#93000a",
+                        "secondary-container": "#045da7",
+                        "tertiary-fixed-dim": "#b2c5ff",
+                        "on-primary-fixed": "#001849",
+                        "error": "#ffb4ab",
+                        "inverse-surface": "#e0e3e5",
+                        "surface-dim": "#101415",
+                        "on-primary": "#002b75",
+                        "inverse-primary": "#0054d6",
+                        "tertiary-container": "#5d70a7",
+                        "on-primary-fixed-variant": "#003fa4",
+                        "on-background": "#e0e3e5",
+                        "on-tertiary-fixed-variant": "#314578",
+                        "on-secondary-container": "#bdd6ff",
+                        "on-secondary": "#00315d",
+                        "surface-bright": "#363a3b",
+                        "surface": "#101415",
+                        "on-error": "#690005",
+                        "background": "#101415",
+                        "on-tertiary-fixed": "#001848",
+                        "on-surface-variant": "#c2c6d8",
+                        "surface-container": "#1d2022",
+                        "surface-container-highest": "#323537",
+                        "secondary-fixed-dim": "#a4c9ff",
+                        "secondary": "#a4c9ff",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "surface-tint": "#b3c5ff",
+                        "on-tertiary-container": "#f8f7ff",
+                        "on-primary-container": "#f8f7ff",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#dae1ff",
+                        "on-secondary-fixed": "#001c39",
+                        "surface-container-low": "#191c1e",
+                        "secondary-fixed": "#d4e3ff",
+                        "primary-container": "#0066ff",
+                        "outline-variant": "#424656"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding": "64px",
+                        "section-gap": "120px",
+                        "gutter": "24px",
+                        "base": "8px",
+                        "margin": "auto"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "headline-xl": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "body-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-xl": ["120px", { "lineHeight": "110px", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+                        "headline-lg": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .hero-glow {
+            background: radial-gradient(circle at 50% 50%, rgba(0, 102, 255, 0.15) 0%, rgba(16, 20, 21, 0) 70%);
+        }
+        .text-gradient {
+            background: linear-gradient(90deg, #b3c5ff 0%, #0066ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col relative overflow-x-hidden">
+<!-- Ambient Background Texture -->
+<div class="absolute inset-0 z-0 pointer-events-none opacity-40 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&amp;w=2070&amp;auto=format&amp;fit=crop')] bg-cover bg-center mix-blend-overlay" data-alt="abstract dark blue background with digital data particle glowing trails and neon cyber structural lines"></div>
+<div class="absolute inset-0 z-0 pointer-events-none hero-glow"></div>
+<!-- TopNavBar -->
+<header class="w-full z-50 bg-slate-950/40 backdrop-blur-xl border-b border-white/10 sticky top-0">
+<div class="flex justify-between items-center w-full px-16 py-6 max-w-[1440px] mx-auto font-manrope antialiased tracking-tight">
+<!-- Brand -->
+<div class="text-2xl font-black tracking-tighter text-white uppercase">SEEDD</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-slate-400 font-medium hover:text-white transition-colors duration-300 hover:bg-white/5 px-3 py-2 rounded-md" href="#">Solutions</a>
+<a class="text-white font-semibold border-b-2 border-blue-500 pb-1 px-3 py-2 scale-95 opacity-80" href="#">Ecosystem</a>
+<a class="text-slate-400 font-medium hover:text-white transition-colors duration-300 hover:bg-white/5 px-3 py-2 rounded-md" href="#">Intelligence</a>
+<a class="text-slate-400 font-medium hover:text-white transition-colors duration-300 hover:bg-white/5 px-3 py-2 rounded-md" href="#">Impact</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<button class="text-slate-400 font-medium hover:text-white transition-colors duration-300 px-4 py-2 font-label-md text-label-md">System Login</button>
+<button class="bg-primary-container text-on-primary-container font-label-md text-label-md px-6 py-2.5 rounded-full hover:bg-inverse-primary transition-colors flex items-center gap-2">
+                    Onboard School
+                    <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow flex flex-col justify-end pb-32 z-10 relative">
+<div class="w-full px-16 max-w-[1440px] mx-auto pt-32 md:pt-48 lg:pt-64">
+<!-- Hero Typography Block -->
+<div class="max-w-4xl">
+<h1 class="font-headline-xl text-headline-xl text-white mb-2 leading-none flex flex-col uppercase">
+<span>SEEDD</span>
+<span class="text-gradient">ECO-SYSTEM</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mt-8 mb-12">
+                    SEEDD Eco-System connects educational institutions, centralizing intelligence and data flow for seamless administration and visionary leadership.
+                </p>
+<!-- Hero CTA Buttons -->
+<div class="flex flex-wrap gap-4">
+<button class="bg-primary-container text-on-primary-container font-label-md text-label-md px-8 py-4 rounded-full hover:bg-inverse-primary transition-colors flex items-center gap-2 text-lg">
+                        Onboard School
+                        <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<button class="bg-transparent border border-white/20 text-white font-label-md text-label-md px-8 py-4 rounded-full hover:bg-white/5 hover:border-white/40 transition-colors backdrop-blur-sm text-lg">
+                        System Login
+                    </button>
+</div>
+</div>
+</div>
+</main>
+</body></html>
