@@ -225,7 +225,7 @@ export const LandingPage = () => {
       </section>
 
       {/* --- TRUSTED BY --- */}
-      <section className="relative z-20 px-6 py-20 bg-white border-b border-slate-100">
+      <section className="relative z-20 px-6 py-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="bg-slate-50 rounded-[2.5rem] border border-slate-100 p-6 lg:p-10 overflow-hidden relative">
             <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-transparent to-slate-50 z-10 pointer-events-none" />
@@ -271,7 +271,7 @@ export const LandingPage = () => {
       </section>
 
       {/* --- CHALLENGE VS SOLUTION --- */}
-      <section className="py-40 lg:py-60 bg-white overflow-hidden">
+      <section className="py-20 lg:py-32 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-12 gap-20 items-center">
             
