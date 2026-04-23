@@ -25,6 +25,7 @@ export interface UserProfile {
   streakCount?: number;
   lastActivityDate?: string;
   purchasedItems?: string[];
+  forcePasswordChange?: boolean;
 }
 
 export interface School {

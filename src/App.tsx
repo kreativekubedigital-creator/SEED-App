@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from'react';
 import { Routes, Route, Navigate, Link, useNavigate, useLocation, useSearchParams } from'react-router-dom';
-import { auth, db, onAuthStateChanged, doc, getDoc, signInWithPopup, signInWithRedirect, getRedirectResult, googleProvider, signOut, setDoc, updateDoc, collection, getDocs, query, where, onSnapshot, signInWithEmailAndPassword, handleFirestoreError, OperationType, createUserWithEmailAndPassword, sendPasswordResetEmail } from'./firebase';
+import { auth, db, onAuthStateChanged, doc, getDoc, signInWithPopup, signInWithRedirect, getRedirectResult, googleProvider, signOut, setDoc, updateDoc, collection, getDocs, query, where, onSnapshot, signInWithEmailAndPassword, handleFirestoreError, OperationType, createUserWithEmailAndPassword, sendPasswordResetEmail, logAuditAction } from'./firebase';
 import { UserProfile, UserRole, School, Announcement } from'./types';
 import { Logo } from'./components/Logo';
 import { useTheme } from'./components/ThemeProvider';
 import { 
- LogIn, LogOut, LayoutDashboard, User, Users, BookOpen, Bell, Settings, CreditCard, Menu, X, Home, Sparkles, Info, Mail, Clock, CheckCircle2, CheckCircle, Eye, EyeOff, Search, ChevronDown, Check, Shield, School as SchoolIcon, Lock
+ LogIn, LogOut, LayoutDashboard, User, Users, BookOpen, Bell, Settings, CreditCard, Menu, X, Home, Sparkles, Info, Mail, Clock, CheckCircle2, CheckCircle, Eye, EyeOff, Search, ChevronDown, Check, Shield, School as SchoolIcon, Lock, AlertTriangle, AlertTriangle
 } from'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform } from'motion/react';
 import { cn } from'./lib/utils';
@@ -19,6 +19,8 @@ import { StudentDashboard } from'./components/dashboards/StudentDashboard';
 import { ParentDashboard } from'./components/dashboards/ParentDashboard';
 import { UserProfile as UserProfileComponent } from'./components/UserProfile';
 import { LandingPage } from'./components/LandingPage';
+import { PasswordChangeModal } from './components/PasswordChangeModal';
+const SUPER_ADMIN_EMAILS = ['kreativekubesolutions@gmail.com', 'seedd.ng@gmail.com', 'abahjohnakor@gmail.com'];
 
 // --- Components ---
 
@@ -143,6 +145,119 @@ const ScrollToTop = () => {
 };
 
 
+import { UserProfile as UserProfileComponent } from'./components/dashboards/UserProfile';
+// ... existing imports ...
+import { updatePassword, updateDoc as updateDocFirestore } from './firebase';
+
+const PasswordChangeModal = ({ user, onComplete }: { user: UserProfile, onComplete: () => void }) => {
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    if (newPassword.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    try {
+      await updatePassword(auth.currentUser, newPassword);
+      await updateDocFirestore(doc(db, 'users', user.uid), {
+        forcePasswordChange: false
+      });
+      await logAuditAction('password_change', 'User completed forced password change', user.uid, 'user');
+      onComplete();
+    } catch (err: any) {
+      setError(err.message || "Failed to update password");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0F172A]/80 backdrop-blur-sm p-4">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-white rounded-[2.5rem] shadow-2xl max-w-md w-full p-10 border border-blue-100 overflow-hidden relative"
+      >
+        <div className="absolute top-0 right-0 p-8 opacity-10">
+          <Shield size={120} className="text-blue-600" />
+        </div>
+
+        <div className="text-center mb-8 relative z-10">
+          <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Lock className="text-blue-600" size={32} />
+          </div>
+          <h2 className="text-3xl font-bold text-slate-900 mb-2">Security Update</h2>
+          <p className="text-slate-500 font-medium">Please set a new password for your account to continue.</p>
+        </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-2xl text-xs font-bold text-center">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">New Password</label>
+            <div className="relative group">
+              <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={18} />
+              <input
+                type={showPassword ? "text" : "password"}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full h-14 pl-14 pr-14 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all font-medium"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Confirm New Password</label>
+            <div className="relative group">
+              <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={18} />
+              <input
+                type={showPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full h-14 pl-14 pr-14 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all font-medium"
+                required
+              />
+            </div>
+          </div>
+
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold shadow-xl shadow-blue-600/20 active:scale-95 disabled:opacity-50 mt-4 transition-all"
+          >
+            {loading ? "Updating Security..." : "Update Password & Continue"}
+          </Button>
+        </form>
+      </motion.div>
+    </div>
+  );
+};
 
 const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfile | null, onLogout: () => void, tenantSchool?: School | null, logoVariant:'white'|'black'}) => {
  const [isOpen, setIsOpen] = useState(false);
@@ -305,14 +420,7 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
  </motion.div>
  )}
  </AnimatePresence>
- </motion.nav>
- </div>
- );
-};
-
-
-
-const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { onLogin: (user: UserProfile) => void, tenantSchool: School | null, subdomainNotFound: boolean, logoVariant: 'white' | 'black' }) => {
+ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { onLogin: (user: UserProfile) => void, tenantSchool: School | null, subdomainNotFound: boolean, logoVariant: 'white' | 'black' }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const step = (searchParams.get('step') as 'role' | 'credentials') || 'role';
   
@@ -329,6 +437,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPasswordChange, setShowPasswordChange] = useState<UserProfile | null>(null);
   const navigate = useNavigate();
 
   const handleEmailAuth = async (e: React.FormEvent) => {
@@ -338,7 +447,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
     setLoading(true);
     setError(null);
     try {
-      const trimmedEmail = email.trim();
+      const trimmedEmail = email.trim().toLowerCase();
       const result = await signInWithEmailAndPassword(auth, trimmedEmail, password);
       const user = result.user;
       
@@ -346,246 +455,286 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
       
       if (userDoc.exists()) {
         const userData = userDoc.data() as UserProfile;
-        if (userData.schoolId === tenantSchool.id && userData.role === selectedRole) {
+        
+        // Super Admins can log in anywhere
+        const isSuperAdmin = userData.role === 'super_admin' || SUPER_ADMIN_EMAILS.includes(trimmedEmail);
+        const isCorrectSchool = userData.schoolId === tenantSchool.id;
+        const isCorrectRole = userData.role === selectedRole;
+
+        // Platform Admins (Super Admins) bypass school/role checks
+        if (isSuperAdmin || (isCorrectSchool && isCorrectRole)) {
+          // Check for forced password change
+          if (userData.forcePasswordChange) {
+            setShowPasswordChange(userData);
+            setLoading(false);
+            return;
+          }
+
+          // Log login activity
+          await logAuditAction(
+            'login',
+            `User logged in to school: ${tenantSchool.name}${isSuperAdmin ? ' (Platform Admin)' : ''}`,
+            user.uid,
+            'user'
+          );
           onLogin(userData);
           navigate('/dashboard');
         } else {
-          setError("Invalid credentials for this school or role.");
+          setError(`Access denied. Your account is not authorized for this school or role.`);
           await signOut(auth);
         }
       } else {
-        setError("User profile not found. Please contact your school administrator.");
+        setError("User profile not found. Please contact support.");
         await signOut(auth);
       }
     } catch (err: any) {
       console.error("Auth failed:", err);
-      setError(err.code === 'auth/invalid-credential' 
-        ? "Invalid email or password." 
-        : (err.message || "Authentication failed."));
+      let message = "Authentication failed.";
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+        message = "Invalid email or password.";
+      } else if (err.message) {
+        message = err.message;
+      }
+      setError(message);
     } finally {
       setLoading(false);
     }
   };
 
-  const roles: { id: UserRole; label: string }[] = [
-    { id: 'school_admin', label: 'School Admin' },
-    { id: 'teacher', label: 'Teacher' },
-    { id: 'student', label: 'Student' },
-    { id: 'parent', label: 'Parent' },
+  const roles: { id: UserRole; label: string; icon: any }[] = [
+    { id: 'school_admin', label: 'School Admin', icon: Shield },
+    { id: 'teacher', label: 'Teacher', icon: BookOpen },
+    { id: 'student', label: 'Student', icon: User },
+    { id: 'parent', label: 'Parent', icon: Users },
   ];
 
   if (!tenantSchool) return null;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col md:flex-row overflow-hidden font-inter">
-      {/* Left Column: Form Area */}
-      <div className="flex-1 flex flex-col justify-center items-center p-6 md:p-12 lg:p-24 relative order-2 md:order-1">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-lg bg-white rounded-[3rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.08)] border border-slate-100 p-10 md:p-14 relative overflow-hidden"
-        >
-          <AnimatePresence mode="wait">
-            {step === 'role' ? (
-              <motion.div
-                key="role-selection"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="flex flex-col items-center"
-              >
-                <h2 className="text-xl font-bold text-slate-900 mb-10 font-space tracking-tight">Select your role</h2>
-                
-                <div className="grid grid-cols-2 gap-4 w-full mb-10">
-                  {roles.map((role) => (
-                    <motion.button
-                      key={role.id}
-                      whileHover={{ scale: 1.02, y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => setSelectedRole(role.id)}
-                      className={cn(
-                        "h-16 flex items-center justify-center px-4 rounded-full border-2 transition-all font-bold text-sm",
-                        selectedRole === role.id 
-                          ? "bg-[#1754CF] border-[#1754CF] text-white shadow-lg shadow-blue-500/20" 
-                          : "border-[#1754CF] text-[#1754CF] hover:bg-blue-50/50"
-                      )}
-                    >
-                      {role.label}
-                    </motion.button>
-                  ))}
-                </div>
-
-                <div className="flex gap-4 w-full">
-                  <button
-                    onClick={() => navigate('/')}
-                    className="flex-1 h-14 rounded-2xl border-2 border-[#1754CF] text-[#1754CF] font-bold hover:bg-blue-50 transition-all active:scale-95 flex items-center justify-center"
-                  >
-                    Back
-                  </button>
-                  <button
-                    disabled={!selectedRole}
-                    onClick={() => setStep('credentials')}
-                    className="flex-1 h-14 rounded-2xl bg-[#1754CF] text-white font-bold hover:bg-blue-700 transition-all active:scale-95 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-blue-600/20"
-                  >
-                    Next
-                  </button>
-                </div>
-
-                <p className="mt-10 text-xs text-slate-400 font-medium text-center leading-relaxed">
-                  By signing in, you agree to our <br />
-                  <span className="text-slate-600 underline cursor-pointer hover:text-[#1754CF]">Terms of Service</span> & <span className="text-slate-600 underline cursor-pointer hover:text-[#1754CF]">Privacy Policy</span>.
-                </p>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="credentials-form"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="w-full"
-              >
-                <div className="mb-8 text-center">
-                  <h2 className="text-xl font-bold text-slate-900 mb-3 font-space tracking-tight">Welcome Back</h2>
-                  <p className="text-slate-500 font-medium text-sm">
-                    Accessing as <span className="text-[#1754CF] font-bold uppercase tracking-wider">{selectedRole.replace('_', ' ')}</span>
-                  </p>
-                </div>
-
-                {error && (
-                  <motion.div 
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-2xl text-xs font-bold text-center"
-                  >
-                    {error}
-                  </motion.div>
-                )}
-
-                <form onSubmit={handleEmailAuth} className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="relative group">
-                      <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#1754CF] transition-colors" size={18} />
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email Address"
-                        className="w-full h-14 pl-14 pr-5 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-[#1754CF] focus:bg-white transition-all font-medium"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="relative group">
-                      <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#1754CF] transition-colors" size={18} />
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Password"
-                        className="w-full h-14 pl-14 pr-14 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-[#1754CF] focus:bg-white transition-all font-medium"
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                      >
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-3 pt-4">
-                    <button
-                      type="button"
-                      onClick={() => setStep('role')}
-                      className="h-14 px-8 rounded-2xl border-2 border-slate-100 font-bold text-slate-500 hover:bg-slate-50 transition-all active:scale-95"
-                    >
-                      Back
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="flex-1 h-14 bg-[#1754CF] hover:bg-blue-700 text-white rounded-2xl font-bold shadow-xl shadow-blue-600/20 active:scale-95 disabled:opacity-50 flex items-center justify-center"
-                    >
-                      {loading ? "Authenticating..." : "Sign In"}
-                    </button>
-                  </div>
-                </form>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+    <div className="min-h-screen bg-[#050811] flex flex-col items-center justify-center p-6 relative overflow-hidden font-inter selection:bg-blue-500/30">
+      {/* Background Luminous Effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.15, 0.25, 0.15],
+            x: [-50, 50, -50],
+            y: [-50, 50, -50]
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-20%] left-[-10%] w-[80%] h-[80%] bg-[#1E40AF] rounded-full blur-[160px]" 
+        />
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.3, 1],
+            opacity: [0.1, 0.2, 0.1],
+            x: [50, -50, 50],
+            y: [50, -50, 50]
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute bottom-[-20%] right-[-10%] w-[90%] h-[90%] bg-[#3B82F6] rounded-full blur-[180px]" 
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.05)_0%,transparent_70%)]" />
+        <div className="absolute inset-0 bg-[#050811]/40 backdrop-blur-[2px]" />
       </div>
 
-      {/* Right Column: Brand Side */}
-      <div className="w-full md:w-1/2 bg-[#0F172A] flex flex-col items-center justify-center p-12 relative text-center order-1 md:order-2 overflow-hidden">
-        {/* Luminous Glow Effects */}
-        <div className="absolute inset-0 pointer-events-none">
-          <motion.div 
-            animate={{ 
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3],
-              x: [0, 50, 0],
-              y: [0, -30, 0]
-            }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-[-10%] right-[-10%] w-[70%] h-[70%] bg-[#1754CF] rounded-full blur-[120px]" 
+      <AnimatePresence>
+        {showPasswordChange && (
+          <PasswordChangeModal 
+            user={showPasswordChange} 
+            onComplete={() => {
+              onLogin(showPasswordChange);
+              navigate('/dashboard');
+            }} 
           />
-          <motion.div 
-            animate={{ 
-              scale: [1, 1.1, 1],
-              opacity: [0.2, 0.4, 0.2],
-              x: [0, -40, 0],
-              y: [0, 40, 0]
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            className="absolute bottom-[-15%] left-[-10%] w-[60%] h-[60%] bg-blue-500 rounded-full blur-[100px]" 
-          />
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] mix-blend-overlay" />
-        </div>
+        )}
+      </AnimatePresence>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10 flex flex-col items-center"
-        >
-          {tenantSchool.logoUrl ? (
-            <div className="w-32 h-32 bg-white rounded-[2.5rem] flex items-center justify-center p-6 shadow-[0_20px_50px_rgba(0,0,0,0.3)] mb-10 border border-white/10">
-              <img src={tenantSchool.logoUrl} alt={tenantSchool.name} className="max-w-full max-h-full object-contain" />
-            </div>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-lg bg-white/5 backdrop-blur-3xl rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-10 md:p-14 relative z-10 overflow-hidden"
+      >
+        {/* Top Glow Edge */}
+        <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+        
+        <AnimatePresence mode="wait">
+          {step === 'role' ? (
+            <motion.div
+              key="role-selection"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              className="flex flex-col items-center"
+            >
+              <div className="mb-10 text-center w-full">
+                <motion.div 
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="mb-8 relative inline-block"
+                >
+                  <div className="absolute inset-0 bg-blue-600/20 blur-2xl rounded-full" />
+                  {tenantSchool.logoUrl ? (
+                    <img src={tenantSchool.logoUrl} alt={tenantSchool.name} className="h-24 w-auto relative z-10 object-contain drop-shadow-2xl" />
+                  ) : (
+                    <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl flex items-center justify-center text-white relative z-10 shadow-2xl">
+                      <SchoolIcon size={40} strokeWidth={1.5} />
+                    </div>
+                  )}
+                </motion.div>
+                <h2 className="text-3xl font-bold text-white mb-3 font-space tracking-tight">Select your role</h2>
+                <p className="text-slate-400 text-sm font-medium">To continue to <span className="text-blue-400 font-bold">{tenantSchool.name}</span></p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 w-full mb-10">
+                {roles.map((role) => (
+                  <motion.button
+                    key={role.id}
+                    whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setSelectedRole(role.id)}
+                    className={cn(
+                      "group h-24 flex flex-col items-center justify-center gap-2 px-4 rounded-3xl border transition-all duration-300",
+                      selectedRole === role.id 
+                        ? "bg-blue-600 border-blue-500 text-white shadow-[0_0_30px_-5px_rgba(37,99,235,0.5)]" 
+                        : "border-white/10 bg-white/5 text-slate-400 hover:border-white/20"
+                    )}
+                  >
+                    <role.icon size={24} className={cn("transition-colors", selectedRole === role.id ? "text-white" : "text-slate-500 group-hover:text-blue-400")} strokeWidth={1.5} />
+                    <span className="font-bold text-xs uppercase tracking-widest">{role.label}</span>
+                  </motion.button>
+                ))}
+              </div>
+
+              <div className="flex gap-4 w-full">
+                <button
+                  onClick={() => navigate('/')}
+                  className="flex-1 h-16 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all active:scale-95 flex items-center justify-center"
+                >
+                  Home
+                </button>
+                <button
+                  disabled={!selectedRole}
+                  onClick={() => setStep('credentials')}
+                  className="flex-1 h-16 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-500 transition-all active:scale-95 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed shadow-xl shadow-blue-600/20"
+                >
+                  Continue
+                </button>
+              </div>
+
+              <p className="mt-10 text-[10px] text-slate-600 font-black text-center leading-relaxed uppercase tracking-[0.4em]">
+                Secure Portal <span className="text-white/20 mx-2">|</span> SEEDD
+              </p>
+            </motion.div>
           ) : (
-            <div className="w-32 h-32 bg-white/5 backdrop-blur-xl rounded-[2.5rem] flex items-center justify-center border border-white/10 mb-10 shadow-2xl">
-              <SchoolIcon size={64} className="text-white" strokeWidth={1} />
-            </div>
+            <motion.div
+              key="credentials-form"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="w-full"
+            >
+              <div className="mb-12 text-center">
+                <motion.button 
+                  onClick={() => setStep('role')}
+                  whileHover={{ x: -4 }}
+                  className="mb-8 text-blue-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2 mx-auto hover:text-blue-300 transition-colors"
+                >
+                  <ArrowLeft size={14} /> Change Role
+                </motion.button>
+                
+                 {tenantSchool.logoUrl ? (
+                  <img src={tenantSchool.logoUrl} alt={tenantSchool.name} className="h-16 w-auto mb-6 mx-auto object-contain" />
+                ) : (
+                  <div className="w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center text-blue-400 mx-auto mb-6 border border-blue-500/20">
+                    <SchoolIcon size={32} strokeWidth={1.5} />
+                  </div>
+                )}
+                <h2 className="text-3xl font-bold text-white mb-2 font-space tracking-tight">Welcome Back</h2>
+                <p className="text-slate-400 font-medium text-sm">
+                  Accessing as <span className="text-blue-400 font-bold uppercase tracking-wider">{selectedRole.replace('_', ' ')}</span>
+                </p>
+              </div>
+
+              {error && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-8 p-5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-2xl text-xs font-bold text-center flex items-center justify-center gap-3"
+                >
+                  <AlertTriangle size={16} />
+                  {error}
+                </motion.div>
+              )}
+
+              <form onSubmit={handleEmailAuth} className="space-y-5">
+                <div className="space-y-2">
+                  <div className="relative group">
+                    <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={20} strokeWidth={1.5} />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      className="w-full h-16 pl-16 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="relative group">
+                    <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={20} strokeWidth={1.5} />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Enter your password"
+                      className="w-full h-16 pl-16 pr-16 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full h-16 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center transition-all mt-8 text-lg"
+                >
+                  {loading ? (
+                    <div className="flex items-center gap-3">
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Verifying...</span>
+                    </div>
+                  ) : "Sign In Account"}
+                </button>
+              </form>
+            </motion.div>
           )}
+        </AnimatePresence>
+      </motion.div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 font-space leading-tight tracking-tight">
-            {tenantSchool.name}
-          </h1>
-          
-          <div className="flex flex-col items-center gap-4">
-            <div className="h-px w-12 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-            <span className="text-[11px] font-black text-white/60 uppercase tracking-[0.4em]">Powered by SEEDD</span>
-            <div className="h-px w-12 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-          </div>
-        </motion.div>
-
-        {/* Decorative elements */}
-        <div className="absolute bottom-10 right-10 text-white/10 font-space font-black text-9xl pointer-events-none select-none">
-          SEEDD
-        </div>
+      {/* Decorative Brand Text */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-4 opacity-30 pointer-events-none">
+        <div className="h-px w-12 bg-gradient-to-r from-transparent to-white" />
+        <span className="text-[10px] font-black text-white uppercase tracking-[0.8em]">SEEDD ECOSYSTEM</span>
+        <div className="h-px w-12 bg-gradient-to-l from-transparent to-white" />
+      </div>
+    </div>
+);
+};
       </div>
     </div>
   );
 };
-
-  );
-};
-
 const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { onLogin: (user: UserProfile) => void, tenantSchool: School | null, subdomainNotFound: boolean, logoVariant:'white'|'black'}) => {
   if (tenantSchool && !subdomainNotFound) {
     return <SchoolLoginPage onLogin={ onLogin } tenantSchool={ tenantSchool } subdomainNotFound={ subdomainNotFound } logoVariant={ logoVariant } />;
@@ -659,7 +808,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
  const trimmedEmail = email.trim();
  if (isSignUp) {
  // Only allow super admin sign up for the specific email
- if (trimmedEmail !=='kreativekubesolutions@gmail.com'&& trimmedEmail !=='abahjohnakor@gmail.com') {
+ if (!SUPER_ADMIN_EMAILS.includes(trimmedEmail.toLowerCase())) {
  throw new Error("Only the platform owner can use the one-time setup.");
  }
  const result = await createUserWithEmailAndPassword(auth, trimmedEmail, password);
@@ -688,7 +837,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
  const userData = userDoc.data() as UserProfile;
  
  // Verify school and role match
- const isSuperAdminMatch = userData.role  === 'super_admin'&& selectedRole  === 'super_admin';
+ const isSuperAdminMatch = (userData.role  === 'super_admin' || SUPER_ADMIN_EMAILS.includes(trimmedEmail.toLowerCase())) && selectedRole  === 'super_admin';
  const isSchoolRoleMatch = userData.schoolId === selectedSchool && userData.role === selectedRole;
 
  if (isSuperAdminMatch || isSchoolRoleMatch) {
@@ -738,7 +887,8 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
  onLogin(userDoc.data() as UserProfile);
  navigate('/dashboard');
  } else {
- if (user.email  === 'kreativekubesolutions@gmail.com'|| user.email  === 'abahjohnakor@gmail.com') {
+ const superAdminWhitelist = ['kreativekubesolutions@gmail.com', 'seedd.ng@gmail.com', 'abahjohnakor@gmail.com'];
+          if (superAdminWhitelist.includes(user.email || '')) {
  const superAdminProfile: UserProfile = {
  uid: user.uid,
  email: user.email ||'',
@@ -875,7 +1025,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
  );
  }
 
-  if (tenantSchool && !subdomainNotFound) return <SchoolLoginPage tenantSchool={tenantSchool} />;
+
 
  return (
  <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 pt-32 transition-colors duration-500 font-inter">
@@ -1265,7 +1415,7 @@ export default function App() {
  if (userDoc.exists()) {
  let userData = userDoc.data() as UserProfile;
  // Ensure platform owner always has super_admin role
- if ((firebaseUser.email  === 'kreativekubesolutions@gmail.com'|| firebaseUser.email  === 'abahjohnakor@gmail.com') && userData.role !=='super_admin') {
+ if ((firebaseUser.email === 'kreativekubesolutions@gmail.com' || firebaseUser.email === 'seedd.ng@gmail.com' || firebaseUser.email === 'abahjohnakor@gmail.com') && userData.role !=='super_admin') {
  userData.role ='super_admin';
  await updateDoc(doc(db,'users', firebaseUser.uid), { role:'super_admin'});
  }
@@ -1273,7 +1423,7 @@ export default function App() {
  } else {
  // User exists in Auth but not in Firestore (incomplete onboarding)
  // Check if this is the platform owner
- if (firebaseUser.email  === 'kreativekubesolutions@gmail.com'|| firebaseUser.email  === 'abahjohnakor@gmail.com') {
+ if (firebaseUser.email === 'kreativekubesolutions@gmail.com' || firebaseUser.email === 'seedd.ng@gmail.com' || firebaseUser.email === 'abahjohnakor@gmail.com') {
  const nameParts = (firebaseUser.displayName ||'Platform Owner').split('');
  const superAdminProfile: UserProfile = {
  uid: firebaseUser.uid,
@@ -1370,11 +1520,17 @@ export default function App() {
 
  const isDashboardView = location.pathname.startsWith('/dashboard');
 
- return (
- <ErrorBoundary>
- <div className="min-h-screen flex flex-col font-sans text-[#1A1A1A] bg-gradient-to-br from-blue-50 via-indigo-50/50 to-purple-50">
- <ScrollToTop />
- {!isDashboardView && !tenantSchool && <Navbar user={ user } onLogout={ handleLogout } tenantSchool={ tenantSchool } logoVariant={ logoVariant } />}
+  return (
+  <ErrorBoundary>
+  <div className="min-h-screen flex flex-col font-sans text-[#1A1A1A] bg-gradient-to-br from-blue-50 via-indigo-50/50 to-purple-50">
+  <ScrollToTop />
+  {user?.forcePasswordChange && (
+    <PasswordChangeModal 
+      user={user} 
+      onSuccess={() => {}} 
+    />
+  )}
+  {!isDashboardView && !tenantSchool && <Navbar user={ user } onLogout={ handleLogout } tenantSchool={ tenantSchool } logoVariant={ logoVariant } />}
  <main className={ cn("flex-grow", isDashboardView &&"pt-0 overflow-hidden")}>
  <AnimatePresence mode="wait">
  <Routes location={ location } key={ location.pathname }>

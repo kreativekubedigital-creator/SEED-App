@@ -173,7 +173,8 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  lastName: adminDetails.lastName,
  role:'school_admin',
  schoolId: schoolDocRef.id,
- createdAt: new Date().toISOString()
+ createdAt: new Date().toISOString(),
+        forcePasswordChange: true
  };
  
  await setDoc(doc(db,'users', newUid), adminUserData);
@@ -1046,7 +1047,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  </p>
  <div className="flex gap-4">
  <button
- onClick={() => setShowDeleteConfirm(false)}
+                onClick={() => setShowDeleteConfirm(null)}
  className="flex-1 p-5 rounded-2xl border border-slate-200 font-bold text-slate-600 hover:bg-slate-50 transition-all text-xs uppercase tracking-widest"
  >
  Abort
@@ -1087,9 +1088,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  );
 };
 
-function cn(...inputs: any[]) {
- return inputs.filter(Boolean).join('');
-}
+
 
 // --- Immersive School Preview Modal ---
 const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () => void }) => {

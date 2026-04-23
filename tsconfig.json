@@ -26,6 +26,7 @@
     "noEmit": true
   },
   "exclude": [
+    "seed-*.ts",
     "node_modules",
     "dist",
     "test-*.ts",

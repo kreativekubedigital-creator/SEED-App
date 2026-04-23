@@ -138,7 +138,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  for (const row of results.data as any[]) {
  try {
  const email = row.email?.trim();
- const password = row.password?.trim() ||'password123'; // Default password
+ const password = row.password?.trim() || '1234567'; // Default password
  const firstName = row.firstName?.trim();
  const lastName = row.lastName?.trim();
  const role = row.role?.trim().toLowerCase() as UserRole;
@@ -161,6 +161,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  role,
  schoolId: school.id,
  createdAt: new Date().toISOString(),
+  forcePasswordChange: true,
  ...(row.middleName && { middleName: row.middleName.trim() }),
  ...(row.registrationNumber && { registrationNumber: row.registrationNumber.trim() }),
  ...(row.classId && { classId: row.classId.trim() }),
@@ -255,6 +256,10 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  try {
  setError(null);
  const { password, _rawParentStudentIds, ...userDataWithoutPassword } = newUser;
+ 
+ // Use default password if not provided
+ const finalPassword = password || '1234567';
+ 
  const userData = {
  ...userDataWithoutPassword,
  schoolId: school.id,
@@ -262,22 +267,28 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  };
 
  if (editingUser) {
- await updateDoc(doc(db,'users', editingUser.uid), userData);
+ await updateDoc(doc(db, 'users', editingUser.uid), userData);
  setSuccess("User updated successfully");
  } else {
- if (!password || password.length < 6) {
- setError("Password must be at least 6 characters long.");
+ const trimmedEmail = userData.email?.trim();
+ if (!trimmedEmail) {
+ setError("Email is required.");
  return;
  }
- const trimmedEmail = userData.email.trim();
+
  // Create user in Firebase Auth using secondary app to avoid logging out current admin
- const userCredential = await createUserWithEmailAndPassword(secondaryAuth, trimmedEmail, password, { data: { email_confirm: true } });
+ const userCredential = await createUserWithEmailAndPassword(secondaryAuth, trimmedEmail, finalPassword, { data: { email_confirm: true } });
  const newUid = userCredential.user.uid;
  
- const finalUserData = { ...userData, email: trimmedEmail, uid: newUid };
- await setDoc(doc(db,'users', newUid), finalUserData);
+ const finalUserData = { 
+ ...userData, 
+ email: trimmedEmail, 
+ uid: newUid,
+ forcePasswordChange: true // Always force password change for new users
+ };
+ await setDoc(doc(db, 'users', newUid), finalUserData);
  await secondaryAuth.signOut(); // Clean up secondary auth session
- setSuccess("User added to school system");
+ setSuccess(`User added successfully. Temporary password: ${finalPassword}`);
  }
  setShowAddUser(false);
  setEditingUser(null);

@@ -26,27 +26,23 @@ export class DatabaseService {
    * Special handling: removes 'uid' for the users table as 'id' is used instead.
    */
   private static toSnakeCase(obj: any, table?: string): any {
-    if (typeof obj === 'string') {
-      if (table === 'users' && obj === 'uid') return 'id';
-      return obj.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
-    }
+    if (obj === null || typeof obj !== 'object') return obj;
     if (Array.isArray(obj)) return obj.map(v => this.toSnakeCase(v, table));
-    if (obj !== null && typeof obj === 'object' && obj.constructor === Object) {
-      const source = { ...obj };
-      
-      // For users table, if we have uid, move it to id if id is missing, then delete uid
-      if (table === 'users' && source.uid) {
-        if (!source.id) source.id = source.uid;
-        delete source.uid;
-      }
-
-      return Object.keys(source).reduce((acc, key) => {
-        const snakeKey = this.toSnakeCase(key, table);
-        acc[snakeKey] = this.toSnakeCase(source[key], table);
-        return acc;
-      }, {} as any);
+    
+    const source = { ...obj };
+    // For users table, if we have uid, move it to id if id is missing, then delete uid
+    if (table === 'users' && source.uid) {
+      if (!source.id) source.id = source.uid;
+      delete source.uid;
     }
-    return obj;
+
+    const result: any = {};
+    for (const key of Object.keys(source)) {
+      const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      const finalKey = (table === 'users' && snakeKey === 'uid') ? 'id' : snakeKey;
+      result[finalKey] = this.toSnakeCase(source[key], table);
+    }
+    return result;
   }
 
   /**
@@ -54,28 +50,24 @@ export class DatabaseService {
    * Special handling: maps 'id' to 'uid' for the users table to maintain Firebase compatibility.
    */
   private static toCamelCase(obj: any, table?: string): any {
-    if (typeof obj === 'string') {
-      if (table === 'users' && obj === 'id') return 'uid';
-      return obj.replace(/([-_][a-z])/g, group =>
+    if (obj === null || typeof obj !== 'object') return obj;
+    if (Array.isArray(obj)) return obj.map(v => this.toCamelCase(v, table));
+
+    const result: any = {};
+    for (const key of Object.keys(obj)) {
+      const camelKey = key.replace(/([-_][a-z])/g, group =>
         group.toUpperCase().replace('-', '').replace('_', '')
       );
+      const finalKey = (table === 'users' && camelKey === 'id') ? 'uid' : camelKey;
+      result[finalKey] = this.toCamelCase(obj[key], table);
     }
-    if (Array.isArray(obj)) return obj.map(v => this.toCamelCase(v, table));
-    if (obj !== null && typeof obj === 'object' && obj.constructor === Object) {
-      const result = Object.keys(obj).reduce((acc, key) => {
-        const camelKey = this.toCamelCase(key, table);
-        acc[camelKey] = this.toCamelCase(obj[key], table);
-        return acc;
-      }, {} as any);
 
-      // Explicitly map id to uid for users table if not already present
-      if (table === 'users' && obj.id && !result.uid) {
-        result.uid = obj.id;
-      }
-
-      return result;
+    // Explicitly map id to uid for users table if not already present
+    if (table === 'users' && obj.id && !result.uid) {
+      result.uid = obj.id;
     }
-    return obj;
+
+    return result;
   }
 
   static async getItems<T>(path: string, conditions: Record<string, any> = {}): Promise<T[]> {
