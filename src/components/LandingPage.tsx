@@ -225,9 +225,10 @@ export const LandingPage = () => {
       </section>
 
       {/* --- TRUSTED BY --- */}
-      <section className="relative z-20 px-6 pt-12">
+      <section className="relative z-20 px-6 py-20 bg-white border-b border-slate-100">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-white/80 backdrop-blur-2xl rounded-[2.5rem] border border-white/20 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] p-6 lg:p-8 overflow-hidden">
+          <div className="bg-slate-50 rounded-[2.5rem] border border-slate-100 p-6 lg:p-10 overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-transparent to-slate-50 z-10 pointer-events-none" />
             <p className="text-center text-[10px] font-black text-blue-600 uppercase tracking-[0.4em] mb-8">
               Trusted by Forward-Thinking Institutions
             </p>
