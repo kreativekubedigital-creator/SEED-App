@@ -224,7 +224,8 @@ export const LandingPage = () => {
         <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-[#020617] to-transparent pointer-events-none" />
       </section>
 
-      {/* --- TRUSTED BY --- */}
+
+      {/* --- CTA SECTION --- */}
       <section className="relative z-20 px-6 py-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="bg-slate-50 rounded-[2.5rem] border border-slate-100 p-6 lg:p-10 overflow-hidden relative">
@@ -358,40 +359,71 @@ export const LandingPage = () => {
         </div>
       </section>
 
-      {/* --- FEATURES GRID --- */}
-      <section id="features" className="py-40 lg:py-60 px-6 bg-[#020617]">
-        <div className="max-w-7xl mx-auto">
-          <div className="max-w-3xl mb-32">
-            <div className="text-blue-500 font-black text-[10px] uppercase tracking-[0.5em] mb-8">Capabilities</div>
-            <h2 className="text-5xl lg:text-8xl font-space font-black tracking-tight text-white leading-tight">
-              A Platform Built for <br /> Modern Institutions.
+      {/* --- POWERFUL FEATURES --- */}
+      <section className="py-32 lg:py-48 bg-[#020617] relative overflow-hidden">
+        {/* Background glow decorators */}
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px]" />
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center space-y-4 mb-24">
+            <p className="text-blue-500 font-black text-[10px] uppercase tracking-[0.4em]">Powerful Features</p>
+            <h2 className="text-4xl lg:text-6xl font-space font-black text-white tracking-tight leading-[1.1]">
+              Everything you need. <br className="hidden lg:block" /> Built for education.
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {/* Custom Feature Card for Dark Theme */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { icon: Database, title: "Unified Vault", desc: "A secure data architecture uniting students, staff, and financials into one core ledger.", delay: 0.1 },
-              { icon: Zap, title: "Autonomous Flows", desc: "Intelligent automation that eliminates routine administrative overhead instantly.", delay: 0.2 },
-              { icon: BarChart3, title: "Predictive Intel", desc: "Live performance dashboards that forecast academic outcomes and institutional growth.", delay: 0.3 },
-              { icon: Globe, title: "Global Multi-Tenancy", desc: "Manage an entire network of schools from a single, centralized command center.", delay: 0.4 },
-              { icon: Sparkles, title: "Identity First", desc: "Each institution receives a fully branded portal with custom domains and aesthetics.", delay: 0.5 },
-              { icon: Lock, title: "Zero-Trust Security", desc: "Military-grade encryption and strict data isolation protocols built into every layer.", delay: 0.6 },
+              {
+                title: "Unified Data Infrastructure",
+                desc: "All your institutional data—students, staff, academics, finance—in one secure, centralized system.",
+                icon: FileText
+              },
+              {
+                title: "Automated Operations",
+                desc: "Reduce manual work with smart workflows that handle routine processes efficiently and accurately.",
+                icon: Users
+              },
+              {
+                title: "Real-Time Intelligence",
+                desc: "Access powerful dashboards and insights that help you make faster, data-driven decisions.",
+                icon: BarChart3
+              },
+              {
+                title: "Multi-Tenant Architecture",
+                desc: "Scale effortlessly across multiple schools or campuses—each with its own secure, customizable environment.",
+                icon: Database
+              },
+              {
+                title: "Custom-Branded Portals",
+                desc: "Give every institution its own identity with personalized dashboards and subdomain access.",
+                icon: Globe
+              },
+              {
+                title: "Enterprise-Grade Security",
+                desc: "Built with modern infrastructure to ensure your data is protected, isolated, and always available.",
+                icon: ShieldCheck
+              }
             ].map((feature, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: feature.delay, duration: 0.8 }}
-                className="p-10 lg:p-12 rounded-[3rem] bg-white/5 border border-white/10 hover:border-blue-500/40 hover:bg-white/[0.08] transition-all duration-500 group relative overflow-hidden"
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -8, backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+                className="group p-10 rounded-[2.5rem] bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-500"
               >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-3xl rounded-full" />
-                <div className="w-20 h-20 rounded-2xl bg-blue-600/10 flex items-center justify-center mb-10 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 border border-blue-500/20">
-                  <feature.icon size={36} className="text-blue-400" />
+                <div className="flex flex-col gap-8">
+                  <div className="w-16 h-16 rounded-2xl bg-blue-600/20 flex items-center justify-center border border-blue-500/20 group-hover:scale-110 group-hover:bg-blue-600/30 transition-all duration-500">
+                    <feature.icon className="text-blue-400 group-hover:text-blue-300" size={32} />
+                  </div>
+                  <div className="space-y-4">
+                    <h3 className="text-2xl font-space font-black text-white tracking-tight">{feature.title}</h3>
+                    <p className="text-base text-slate-400 leading-relaxed font-medium">{feature.desc}</p>
+                  </div>
                 </div>
-                <h3 className="text-3xl font-black text-white mb-6 tracking-tight">{feature.title}</h3>
-                <p className="text-white/50 text-lg leading-relaxed font-medium">{feature.desc}</p>
               </motion.div>
             ))}
           </div>
