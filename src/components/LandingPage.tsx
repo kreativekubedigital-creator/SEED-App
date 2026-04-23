@@ -307,10 +307,9 @@ export const LandingPage = () => {
                 {/* Central Core */}
                 <div className="w-32 h-32 rounded-full bg-[#020617] shadow-[0_20px_50px_rgba(2,6,23,0.3)] flex items-center justify-center relative z-10 border-4 border-white overflow-hidden">
                   <img 
-                    src="seed-logo-nav.webp" 
+                    src="/seedd-logo-white.webp" 
                     alt="SEEDD" 
-                    className="w-16 h-16 object-contain brightness-0 invert" 
-                    referrerPolicy="no-referrer"
+                    className="w-16 h-16 object-contain" 
                   />
                 </div>
 
