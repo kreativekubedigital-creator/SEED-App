@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
-import { School } from '../types';
+import { HeroBackground } from './HeroBackground';
 
 const Button = ({ children, className, variant = 'primary', ...props }: any) => {
   const variants: any = {
@@ -58,6 +58,7 @@ export const LandingPage = () => {
   const [schools, setSchools] = useState<School[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -97,62 +98,55 @@ export const LandingPage = () => {
     <div className="relative bg-white min-h-screen text-slate-900 selection:bg-blue-100 selection:text-blue-900 overflow-x-hidden font-inter">
       
       {/* --- HERO SECTION --- */}
-      <section className="relative pt-32 pb-20 lg:pt-56 lg:pb-40 px-6">
-        {/* Background Design */}
-        <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
-          <div className="absolute top-[-10%] right-[-5%] w-[60%] h-[60%] bg-blue-50/50 blur-[120px] rounded-full" />
-          <div className="absolute bottom-[-5%] left-[-5%] w-[40%] h-[40%] bg-indigo-50/30 blur-[100px] rounded-full" />
-          <div className="absolute inset-0 opacity-[0.015] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
-        </div>
+      <section className="relative min-h-screen flex flex-col pt-32 lg:pt-40 px-6 overflow-hidden">
+        <HeroBackground />
+        
+        {/* Top Glow Edge */}
+        <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
 
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-24 items-center">
-            {/* Content */}
-            <div className="space-y-12">
+        <div className="max-w-7xl mx-auto w-full relative z-10 flex-grow flex flex-col justify-center">
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
+            {/* Left: CTAs */}
+            <div className="space-y-8">
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100/50 text-blue-600 text-xs font-bold tracking-wide uppercase shadow-sm"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex flex-wrap gap-4"
               >
-                <Sparkles size={14} className="animate-pulse" />
-                <span>Modern School OS</span>
+                <Button 
+                  onClick={() => setIsSearchVisible(!isSearchVisible)}
+                  className="h-16 px-10 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold shadow-[0_20px_40px_-10px_rgba(37,99,235,0.4)] flex items-center gap-3 transition-all active:scale-95"
+                >
+                  Find your School
+                  <ArrowRight size={20} />
+                </Button>
+                
+                <Link to="/#onboarding">
+                  <Button 
+                    variant="outline"
+                    className="h-16 px-10 bg-white/5 backdrop-blur-xl border-white/20 text-white hover:bg-white/10 rounded-2xl font-bold transition-all active:scale-95"
+                  >
+                    Request A Demo
+                  </Button>
+                </Link>
               </motion.div>
 
-              <div className="space-y-8">
-                <motion.h1
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="text-6xl lg:text-8xl font-space font-bold tracking-tight text-slate-950 leading-[0.95]"
-                >
-                  Orchestrate <br />
-                  <span className="text-blue-600">Academic Flow</span>
-                </motion.h1>
-
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.1 }}
-                  className="text-xl text-slate-600 max-w-xl leading-relaxed font-medium"
-                >
-                  The unified ecosystem powering the next generation of education. 
-                  Automate complex operations and deliver real-time predictive insights.
-                </motion.p>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="flex flex-col sm:flex-row gap-4"
-              >
-                <div className="relative flex-1" ref={dropdownRef}>
-                  <div className="relative group">
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={20} />
+              {/* Revealed Search Input */}
+              <AnimatePresence>
+                {isSearchVisible && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0, y: -10 }}
+                    animate={{ opacity: 1, height: 'auto', y: 0 }}
+                    exit={{ opacity: 0, height: 0, y: -10 }}
+                    className="relative max-w-md"
+                    ref={dropdownRef}
+                  >
+                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40" size={20} />
                     <input 
+                      autoFocus
                       type="text"
-                      placeholder="Find your school..."
-                      className="w-full h-16 pl-14 pr-6 rounded-2xl border border-slate-200 bg-white shadow-sm focus:outline-none focus:ring-8 focus:ring-blue-500/5 focus:border-blue-500 transition-all text-slate-900 placeholder:text-slate-400 font-bold"
+                      placeholder="Type school name..."
+                      className="w-full h-16 pl-14 pr-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-2xl text-white placeholder:text-white/30 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all font-bold"
                       value={searchQuery}
                       onChange={(e) => {
                         setSearchQuery(e.target.value);
@@ -160,137 +154,88 @@ export const LandingPage = () => {
                       }}
                       onFocus={() => setIsDropdownOpen(true)}
                     />
-                  </div>
 
-                  <AnimatePresence>
-                    {isDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.98 }}
-                        className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-50 max-h-[300px] overflow-y-auto"
-                      >
-                        {filteredSchools.length > 0 ? (
-                          filteredSchools.map(school => (
-                            <button
-                              key={school.id}
-                              onClick={() => handleSchoolSelect(school)}
-                              className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-50 transition-colors text-left border-b border-slate-50 last:border-0 group"
-                            >
-                              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                                {school.logoUrl ? (
-                                  <img src={school.logoUrl} alt="" className="w-6 h-6 object-contain" />
-                                ) : (
-                                  <SchoolIcon size={20} className="text-blue-600" />
-                                )}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="font-bold text-slate-900 truncate">{school.name}</div>
-                                <div className="text-xs text-slate-500">{school.slug}.seedify.ng</div>
-                              </div>
-                              <ArrowUpRight className="text-slate-300 group-hover:text-blue-600 transition-colors" size={18} />
-                            </button>
-                          ))
-                        ) : (
-                          <div className="px-6 py-10 text-center">
-                            <p className="font-bold text-slate-900">No schools found</p>
-                            <p className="text-sm text-slate-500 mt-1">Check spelling or contact support</p>
-                          </div>
-                        )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-                <Link to="/#onboarding" className="sm:w-auto">
-                  <Button className="h-16 px-10 w-full gap-2 font-space">
-                    <Plus size={20} />
-                    Onboard Now
-                  </Button>
-                </Link>
-              </motion.div>
-              
-              <div className="flex items-center gap-8 pt-4">
-                <div className="flex -space-x-3">
-                  {[1,2,3,4].map(i => (
-                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate-100 overflow-hidden">
-                      <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="" />
-                    </div>
-                  ))}
-                </div>
-                <div className="text-sm font-medium text-slate-600">
-                  <span className="text-slate-900 font-bold">120+</span> institutions registered <br /> across the region
-                </div>
-              </div>
+                    {/* Search Results Dropdown */}
+                    <AnimatePresence>
+                      {isDropdownOpen && searchQuery && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                          className="absolute top-full left-0 right-0 mt-3 bg-slate-900/90 backdrop-blur-3xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 max-h-[300px] overflow-y-auto"
+                        >
+                          {filteredSchools.length > 0 ? (
+                            filteredSchools.map(school => (
+                              <button
+                                key={school.id}
+                                onClick={() => handleSchoolSelect(school)}
+                                className="w-full flex items-center gap-4 px-5 py-4 hover:bg-white/5 transition-colors text-left border-b border-white/5 last:border-0 group"
+                              >
+                                <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center group-hover:bg-blue-500/40 transition-colors">
+                                  {school.logoUrl ? (
+                                    <img src={school.logoUrl} alt="" className="w-6 h-6 object-contain" />
+                                  ) : (
+                                    <SchoolIcon size={20} className="text-blue-400" />
+                                  )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-bold text-white truncate">{school.name}</div>
+                                  <div className="text-xs text-white/40">{school.slug}.seedify.ng</div>
+                                </div>
+                                <ArrowUpRight className="text-white/20 group-hover:text-blue-400 transition-colors" size={18} />
+                              </button>
+                            ))
+                          ) : (
+                            <div className="px-6 py-10 text-center">
+                              <p className="font-bold text-white">No schools found</p>
+                              <p className="text-sm text-white/40 mt-1">Check spelling or contact support</p>
+                            </div>
+                          )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            {/* Visual Column */}
+            {/* Right: Description */}
             <motion.div
-              initial={{ opacity: 0, x: 40 }}
+              initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, delay: 0.3 }}
-              className="relative hidden lg:block"
+              transition={{ delay: 0.2 }}
+              className="lg:pl-12 space-y-6"
             >
-              <div className="relative bg-white rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] border border-slate-100 overflow-hidden">
-                <div className="h-1.5 w-full bg-blue-600" />
-                
-                <div className="p-10 space-y-10">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-                        <Logo variant="white" size="sm" />
-                      </div>
-                      <div>
-                        <h3 className="font-space font-bold text-slate-900">System Intelligence</h3>
-                        <p className="text-slate-500 text-xs font-medium">Real-time status: Active</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                      <div className="w-2 h-2 rounded-full bg-blue-500" />
-                    </div>
-                  </div>
+              <h3 className="text-2xl font-space font-bold text-white leading-tight">
+                Power the intelligence behind <br /> modern education.
+              </h3>
+              <p className="text-lg text-white/60 max-w-lg leading-relaxed font-medium">
+                SEEDD connects institutions, centralizes data, and transforms everyday operations into a seamless, insight-driven system. 
+                From administration to academics, everything works in sync—giving you clarity, control, and the ability to scale without friction.
+              </p>
+            </motion.div>
+          </div>
 
-                  <div className="grid grid-cols-2 gap-6">
-                    {[
-                      { label: 'Active Students', value: '4,892', icon: Users, color: 'text-blue-600' },
-                      { label: 'Revenue (MTD)', value: '₦12.4M', icon: CreditCard, color: 'text-emerald-600' },
-                      { label: 'Cloud Uptime', value: '99.9%', icon: Cloud, color: 'text-blue-500' },
-                      { label: 'System Load', value: '12%', icon: Activity, color: 'text-indigo-600' },
-                    ].map((stat, i) => (
-                      <div key={i} className="p-6 rounded-3xl bg-slate-50 border border-slate-100 space-y-4 group hover:bg-white hover:shadow-xl transition-all duration-300">
-                        <stat.icon size={20} className={stat.color} />
-                        <div>
-                          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{stat.label}</p>
-                          <p className="text-2xl font-space font-bold text-slate-900 mt-1">{stat.value}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="h-32 rounded-3xl bg-slate-950 p-6 flex flex-col justify-between overflow-hidden relative group">
-                    <div className="absolute inset-0 bg-blue-600/10" />
-                    <div className="flex justify-between items-center relative z-10">
-                      <div className="flex items-center gap-2">
-                        <Terminal size={14} className="text-blue-400" />
-                        <span className="text-[10px] font-mono text-blue-400">root@seedd: ~ analytics</span>
-                      </div>
-                      <TrendingUp size={16} className="text-emerald-400" />
-                    </div>
-                    <div className="flex items-end gap-1 h-12 relative z-10">
-                      {[30, 45, 25, 60, 40, 85, 55, 90, 75, 100].map((h, i) => (
-                        <div key={i} className="flex-1 bg-blue-500/40 rounded-sm hover:bg-blue-400 transition-colors" style={{ height: `${h}%` }} />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Decorators */}
-              <div className="absolute -top-6 -right-6 w-32 h-32 bg-blue-100 rounded-full blur-3xl opacity-50" />
-              <div className="absolute -bottom-6 -left-6 w-48 h-48 bg-indigo-100 rounded-full blur-3xl opacity-50" />
+          {/* Bottom: Massive Typography */}
+          <div className="mt-auto pb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
+              className="space-y-0"
+            >
+              <h1 className="text-[12vw] lg:text-[14vw] font-space font-black tracking-tighter text-white leading-[0.8] opacity-90">
+                SEEDD
+              </h1>
+              <h1 className="text-[12vw] lg:text-[14vw] font-space font-black tracking-tighter bg-gradient-to-b from-blue-500 to-blue-800 bg-clip-text text-transparent leading-[0.8]">
+                ECO-SYSTEM
+              </h1>
             </motion.div>
           </div>
         </div>
+
+        {/* Ambient Particles Decorator */}
+        <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-[#020617] to-transparent pointer-events-none" />
       </section>
 
       {/* --- TRUSTED BY --- */}

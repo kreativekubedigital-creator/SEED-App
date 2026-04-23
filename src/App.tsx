@@ -4,8 +4,7 @@ import { auth, db, onAuthStateChanged, doc, getDoc, signInWithPopup, signInWithR
 import { UserProfile, UserRole, School, Announcement } from'./types';
 import { Logo } from'./components/Logo';
 import { useTheme } from'./components/ThemeProvider';
-import { 
- LogIn, LogOut, LayoutDashboard, User, Users, BookOpen, Bell, Settings, CreditCard, Menu, X, Home, Sparkles, Info, Mail, Clock, CheckCircle2, CheckCircle, Eye, EyeOff, Search, ChevronDown, Check, Shield, School as SchoolIcon, Lock, AlertTriangle, AlertTriangle
+import {  LogIn, LogOut, LayoutDashboard, User, Users, BookOpen, Bell, Settings, CreditCard, Menu, X, Home, Sparkles, Info, Mail, Clock, CheckCircle2, CheckCircle, Eye, EyeOff, Search, ChevronDown, Check, Shield, School as SchoolIcon, Lock, AlertTriangle, ArrowLeft
 } from'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform } from'motion/react';
 import { cn } from'./lib/utils';
@@ -145,119 +144,7 @@ const ScrollToTop = () => {
 };
 
 
-import { UserProfile as UserProfileComponent } from'./components/dashboards/UserProfile';
-// ... existing imports ...
-import { updatePassword, updateDoc as updateDocFirestore } from './firebase';
 
-const PasswordChangeModal = ({ user, onComplete }: { user: UserProfile, onComplete: () => void }) => {
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-    if (newPassword.length < 6) {
-      setError("Password must be at least 6 characters");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-    try {
-      await updatePassword(auth.currentUser, newPassword);
-      await updateDocFirestore(doc(db, 'users', user.uid), {
-        forcePasswordChange: false
-      });
-      await logAuditAction('password_change', 'User completed forced password change', user.uid, 'user');
-      onComplete();
-    } catch (err: any) {
-      setError(err.message || "Failed to update password");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0F172A]/80 backdrop-blur-sm p-4">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-[2.5rem] shadow-2xl max-w-md w-full p-10 border border-blue-100 overflow-hidden relative"
-      >
-        <div className="absolute top-0 right-0 p-8 opacity-10">
-          <Shield size={120} className="text-blue-600" />
-        </div>
-
-        <div className="text-center mb-8 relative z-10">
-          <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <Lock className="text-blue-600" size={32} />
-          </div>
-          <h2 className="text-3xl font-bold text-slate-900 mb-2">Security Update</h2>
-          <p className="text-slate-500 font-medium">Please set a new password for your account to continue.</p>
-        </div>
-
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-2xl text-xs font-bold text-center">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">New Password</label>
-            <div className="relative group">
-              <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={18} />
-              <input
-                type={showPassword ? "text" : "password"}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full h-14 pl-14 pr-14 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all font-medium"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Confirm New Password</label>
-            <div className="relative group">
-              <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={18} />
-              <input
-                type={showPassword ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full h-14 pl-14 pr-14 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all font-medium"
-                required
-              />
-            </div>
-          </div>
-
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold shadow-xl shadow-blue-600/20 active:scale-95 disabled:opacity-50 mt-4 transition-all"
-          >
-            {loading ? "Updating Security..." : "Update Password & Continue"}
-          </Button>
-        </form>
-      </motion.div>
-    </div>
-  );
-};
 
 const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfile | null, onLogout: () => void, tenantSchool?: School | null, logoVariant:'white'|'black'}) => {
  const [isOpen, setIsOpen] = useState(false);
@@ -294,8 +181,12 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
       <motion.nav 
         initial={ false }
         animate={{ 
-          backgroundColor: isScrolled ?"rgba(255, 255, 255, 0.9)":"rgba(255, 255, 255, 0.5)",
-          borderColor: isScrolled ?"rgba(226, 232, 240, 0.5)":"rgba(255, 255, 255, 0.1)",
+          backgroundColor: isScrolled 
+            ? "rgba(255, 255, 255, 0.9)" 
+            : (isLandingPage ? "transparent" : "rgba(255, 255, 255, 0.5)"),
+          borderColor: isScrolled 
+            ? "rgba(226, 232, 240, 0.5)" 
+            : (isLandingPage ? "transparent" : "rgba(255, 255, 255, 0.1)"),
           boxShadow: isScrolled ?"0 20px 40px -10px rgba(0, 0, 0, 0.05)":"none",
           width: isScrolled ?"90%":"100%",
           maxWidth:"1280px",
@@ -307,21 +198,21 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className={ cn(
           "backdrop-blur-xl flex items-center justify-between border transition-all duration-300",
-          isScrolled ?"text-slate-900": "text-slate-900"
+          isScrolled ? "text-slate-900" : (isLandingPage ? "text-white" : "text-slate-900")
         )}
       >
  <Link to="/"className="flex items-center gap-2 transition-transform hover:scale-105 active:scale-95">
- <Logo 
- variant="black"
- size="sm"
- className="h-8 md:h-10"
- customLogo={ tenantSchool?.logoUrl } 
- />
+  <Logo 
+  variant={isScrolled ? "black" : (isLandingPage ? "white" : "black")}
+  size="sm"
+  className="h-8 md:h-10"
+  customLogo={ tenantSchool?.logoUrl } 
+  />
  </Link>
 
 
   <div className="hidden md:flex items-center gap-10">
-    { navItems.map(item => (
+    {!isLandingPage && navItems.map(item => (
       <a 
         key={ item.name } 
         href={ item.path } 
@@ -331,7 +222,7 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
       </a>
     ))}
     
-    <div className="flex items-center gap-6 ml-6 border-l border-slate-100 pl-6">
+    <div className={cn("flex items-center gap-6", !isLandingPage && "ml-6 border-l border-slate-100 pl-6")}>
       { user ? (
         <button 
           onClick={ onLogout } 
@@ -341,7 +232,13 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
         </button>
       ) : (
         <>
-          <Link to="/super-admin" className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-950 hover:text-blue-600 transition-colors font-space">
+          <Link 
+            to="/super-admin" 
+            className={cn(
+              "text-[11px] font-bold uppercase tracking-[0.2em] transition-colors font-space",
+              isScrolled ? "text-slate-950 hover:text-blue-600" : (isLandingPage ? "text-white hover:text-blue-400" : "text-slate-950 hover:text-blue-600")
+            )}
+          >
             System Login
           </Link>
           <a href="#onboarding" className="bg-blue-600 text-white px-8 py-3 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95 font-space">
@@ -419,8 +316,13 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
  </div>
  </motion.div>
  )}
- </AnimatePresence>
- const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { onLogin: (user: UserProfile) => void, tenantSchool: School | null, subdomainNotFound: boolean, logoVariant: 'white' | 'black' }) => {
+  </AnimatePresence>
+      </motion.nav>
+    </div>
+  );
+};
+
+const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { onLogin: (user: UserProfile) => void, tenantSchool: School | null, subdomainNotFound: boolean, logoVariant: 'white' | 'black' }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const step = (searchParams.get('step') as 'role' | 'credentials') || 'role';
   
@@ -542,8 +444,8 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
         {showPasswordChange && (
           <PasswordChangeModal 
             user={showPasswordChange} 
-            onComplete={() => {
-              onLogin(showPasswordChange);
+            onSuccess={() => {
+              onLogin({ ...showPasswordChange, forcePasswordChange: false });
               navigate('/dashboard');
             }} 
           />
@@ -730,10 +632,6 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
       </div>
     </div>
 );
-};
-      </div>
-    </div>
-  );
 };
 const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { onLogin: (user: UserProfile) => void, tenantSchool: School | null, subdomainNotFound: boolean, logoVariant:'white'|'black'}) => {
   if (tenantSchool && !subdomainNotFound) {
@@ -1527,7 +1425,7 @@ export default function App() {
   {user?.forcePasswordChange && (
     <PasswordChangeModal 
       user={user} 
-      onSuccess={() => {}} 
+      onSuccess={() => setUser({ ...user, forcePasswordChange: false })} 
     />
   )}
   {!isDashboardView && !tenantSchool && <Navbar user={ user } onLogout={ handleLogout } tenantSchool={ tenantSchool } logoVariant={ logoVariant } />}
