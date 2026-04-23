@@ -22,10 +22,13 @@ export const signInWithEmail = async (email: string, password: string) => {
   return data;
 };
 
-export const signUpWithEmail = async (email: string, password: string) => {
+export const signUpWithEmail = async (email: string, password: string, options?: { data?: any }) => {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      data: options?.data,
+    }
   });
   if (error) throw error;
   if (data.user) (data.user as any).uid = data.user.id;

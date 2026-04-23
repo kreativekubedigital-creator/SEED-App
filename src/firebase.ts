@@ -43,15 +43,21 @@ export const signInWithEmailAndPassword = async (authObj: any, email: string, pa
   return { user };
 };
 
-export const createUserWithEmailAndPassword = async (authObj: any, email: string, password: string): Promise<{ user: User }> => {
+export const createUserWithEmailAndPassword = async (authObj: any, email: string, password: string, options?: { data?: any }): Promise<{ user: User }> => {
   const client = authObj === secondaryAuth ? secondarySupabase : supabase;
-  const { data, error } = await client.auth.signUp({ email, password });
+  const { data, error } = await client.auth.signUp({ 
+    email, 
+    password,
+    options: {
+      data: options?.data
+    }
+  });
   if (error) throw error;
   if (!data.user) throw new Error("Signup failed");
   const user: User = {
     uid: data.user.id,
     email: data.user.email!,
-    emailVerified: !!data.user.email_confirmed_at,
+    emailVerified: !!data.user.email_confirmed_at || !!options?.data?.email_confirm,
     isAnonymous: false
   };
   return { user };

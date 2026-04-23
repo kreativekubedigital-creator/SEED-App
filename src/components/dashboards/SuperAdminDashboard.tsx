@@ -163,7 +163,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  
  // 2. Create Initial Admin User
  const trimmedEmail = newSchool.email.trim();
- const userCredential = await createUserWithEmailAndPassword(secondaryAuth, trimmedEmail, adminDetails.password);
+ const userCredential = await createUserWithEmailAndPassword(secondaryAuth, trimmedEmail, adminDetails.password, { data: { email_confirm: true } });
  const newUid = userCredential.user.uid;
  
  const adminUserData = {

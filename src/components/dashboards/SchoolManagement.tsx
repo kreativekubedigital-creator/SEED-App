@@ -149,7 +149,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  }
 
  // Create user in Firebase Auth
- const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+ const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password, { data: { email_confirm: true } });
  const newUid = userCredential.user.uid;
 
  // Save to Firestore
@@ -271,7 +271,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  }
  const trimmedEmail = userData.email.trim();
  // Create user in Firebase Auth using secondary app to avoid logging out current admin
- const userCredential = await createUserWithEmailAndPassword(secondaryAuth, trimmedEmail, password);
+ const userCredential = await createUserWithEmailAndPassword(secondaryAuth, trimmedEmail, password, { data: { email_confirm: true } });
  const newUid = userCredential.user.uid;
  
  const finalUserData = { ...userData, email: trimmedEmail, uid: newUid };
