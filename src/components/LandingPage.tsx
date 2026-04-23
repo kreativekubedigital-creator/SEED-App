@@ -89,7 +89,7 @@ export const LandingPage = () => {
         {/* Top Glow Edge */}
         <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
 
-        <div className="max-w-7xl mx-auto w-full relative z-10 flex-grow flex flex-col justify-center">
+        <div className="max-w-7xl mx-auto w-full relative z-10 flex-grow flex flex-col justify-between">
             {/* Left: CTAs */}
             <div className="space-y-10">
               <motion.div
@@ -185,7 +185,7 @@ export const LandingPage = () => {
             </div>
 
           {/* Bottom: Massive Typography + Description */}
-          <div className="pb-8">
+          <div className="mt-auto pb-4">
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12">
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
