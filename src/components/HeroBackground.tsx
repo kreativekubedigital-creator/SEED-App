@@ -1,5 +1,53 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
+import { motion, AnimatePresence } from 'framer-motion';
+import { GraduationCap, BookOpen, Pencil, Globe, Calculator, Apple, Lightbulb, Brain } from 'lucide-react';
+
+const icons = [GraduationCap, BookOpen, Pencil, Globe, Calculator, Apple, Lightbulb, Brain];
+
+const FloatingIcon = ({ delay }: { delay: number }) => {
+  const Icon = icons[Math.floor(Math.random() * icons.length)];
+  const [coords, setCoords] = useState({
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    scale: 0.5 + Math.random() * 1,
+    rotate: Math.random() * 360
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCoords({
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        scale: 0.5 + Math.random() * 1,
+        rotate: Math.random() * 360
+      });
+    }, 5000 + Math.random() * 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ 
+        opacity: [0.05, 0.15, 0.05],
+        left: `${coords.x}%`,
+        top: `${coords.y}%`,
+        scale: coords.scale,
+        rotate: coords.rotate,
+      }}
+      transition={{ 
+        duration: 10 + Math.random() * 10,
+        ease: "easeInOut",
+        repeat: Infinity,
+        delay
+      }}
+      className="absolute pointer-events-none text-blue-400/20"
+    >
+      <Icon size={48} />
+    </motion.div>
+  );
+};
 
 export const HeroBackground: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -120,13 +168,26 @@ export const HeroBackground: React.FC = () => {
   }, []);
 
   return (
-    <div 
-      ref={containerRef} 
-      className="absolute inset-0 -z-10 bg-[#020617]" 
-      style={{ 
-        maskImage: 'radial-gradient(circle at center, black 30%, transparent 80%)',
-        WebkitMaskImage: 'radial-gradient(circle at center, black 30%, transparent 80%)'
-      }}
-    />
+    <div className="absolute inset-0 -z-10 bg-[#020617] overflow-hidden">
+      <div 
+        ref={containerRef} 
+        className="absolute inset-0" 
+        style={{ 
+          maskImage: 'radial-gradient(circle at center, black 30%, transparent 80%)',
+          WebkitMaskImage: 'radial-gradient(circle at center, black 30%, transparent 80%)'
+        }}
+      />
+      
+      {/* Floating School Icons Layer */}
+      <div className="absolute inset-0 pointer-events-none opacity-40">
+        {[...Array(12)].map((_, i) => (
+          <FloatingIcon key={i} delay={i * 2} />
+        ))}
+      </div>
+
+      {/* Decorative Glows */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-900/10 rounded-full blur-[120px] pointer-events-none" />
+    </div>
   );
 };
