@@ -185,7 +185,7 @@ export const LandingPage = () => {
             </div>
 
           {/* Bottom: Massive Typography + Description */}
-          <div className="mt-auto pb-4">
+          <div className="pb-4">
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12">
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
