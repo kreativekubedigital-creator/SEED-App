@@ -821,453 +821,462 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
  { id:'parent', label:'Parent'},
  ];
 
- if (selectedRole  === 'super_admin'&& !isSignUp) {
- return (
- <div className="min-h-screen bg-white flex items-center justify-center p-4 selection:bg-blue-500/30 selection:text-blue-200 overflow-hidden relative">
- {/* Abstract background glow */}
- <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"/>
- 
- <motion.div
- initial={{ opacity: 0, y: 20 }}
- animate={{ opacity: 1, y: 0 }}
- className="bg-white border border-blue-900/30 p-8 md:p-12 rounded-[2.5rem] shadow-2xl max-w-md w-full relative z-10"
- >
- <div className="text-center mb-10">
- <div className="w-16 h-16 bg-blue-600/10 border border-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-inner">
- <Shield className="text-blue-500" size={ 32 } />
- </div>
- 
- <h1 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-2">System Command</h1>
- <p className="text-slate-500 font-bold text-sm tracking-wide uppercase">SEEDD Super Admin Portal</p>
- </div>
+  if (selectedRole === 'super_admin' && !isSignUp) {
+    return (
+      <div className="min-h-screen bg-[#050811] flex flex-col items-center justify-center p-6 relative overflow-hidden font-inter selection:bg-blue-500/30">
+        {/* Background Luminous Effects */}
+        <div className="absolute inset-0 pointer-events-none">
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.2, 1],
+              opacity: [0.15, 0.25, 0.15],
+              x: [-50, 50, -50],
+              y: [-50, 50, -50]
+            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-[-20%] left-[-10%] w-[80%] h-[80%] bg-[#1E40AF] rounded-full blur-[160px]" 
+          />
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.3, 1],
+              opacity: [0.1, 0.2, 0.1],
+              x: [50, -50, 50],
+              y: [50, -50, 50]
+            }}
+            transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            className="absolute bottom-[-20%] right-[-10%] w-[90%] h-[90%] bg-[#3B82F6] rounded-full blur-[180px]" 
+          />
+          <div className="absolute inset-0 bg-[#050811]/40 backdrop-blur-[2px]" />
+        </div>
 
- { error && (
- <motion.div 
- initial={{ opacity: 0, height: 0 }}
- animate={{ opacity: 1, height:'auto'}}
- className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-xs font-bold text-center"
- >
- { error }
- </motion.div>
- )}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full max-w-lg bg-white/5 backdrop-blur-3xl rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-10 md:p-14 relative z-10 overflow-hidden"
+        >
+          {/* Top Glow Edge */}
+          <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+          
+          <div className="text-center mb-10">
+            <div className="w-16 h-16 bg-blue-600/20 border border-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-inner">
+              <Shield className="text-blue-400" size={32} />
+            </div>
+            
+            <h1 className="text-3xl font-bold text-white tracking-tight mb-2 font-space">System Command</h1>
+            <p className="text-blue-400 font-bold text-[10px] tracking-[0.4em] uppercase">SEEDD Super Admin Portal</p>
+          </div>
 
- <form onSubmit={ handleEmailAuth } className="space-y-6">
- <div className="space-y-2">
- <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Admin ID</label>
- <div className="relative group">
- <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={ 18 } />
- <input
- type="email"
- value={ email }
- onChange={(e) => setEmail(e.target.value)}
- placeholder="Enter admin identifier..."
- className="w-full h-14 pl-12 pr-4 bg-slate-100/5 border border-slate-100 rounded-2xl text-slate-900 placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-medium"
- required
- />
- </div>
- </div>
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="mb-8 p-5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-2xl text-xs font-bold text-center flex items-center justify-center gap-3"
+            >
+              <AlertTriangle size={16} />
+              {error}
+            </motion.div>
+          )}
 
- <div className="space-y-2">
- <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Auth Token</label>
- <div className="relative group">
- <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors" size={ 18 } />
- <input
- type={ showPassword ?"text":"password"}
- value={ password }
- onChange={(e) => setPassword(e.target.value)}
- placeholder="••••••••••••"
- className="w-full h-14 pl-12 pr-4 bg-slate-100/5 border border-slate-100 rounded-2xl text-slate-900 placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-medium tracking-widest"
- required
- />
- </div>
- </div>
+          <form onSubmit={handleEmailAuth} className="space-y-6">
+            <div className="space-y-2">
+              <div className="relative group">
+                <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={20} strokeWidth={1.5} />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter admin identifier"
+                  className="w-full h-16 pl-16 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium"
+                  required
+                />
+              </div>
+            </div>
 
- <Button
- type="submit"
- disabled={ loading }
- className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-blue-600/20 active:scale-95 disabled:opacity-50"
- >
- { loading ?"Decrypting...":"Access System Core"}
- </Button>
+            <div className="space-y-2">
+              <div className="relative group">
+                <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={20} strokeWidth={1.5} />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Auth Token"
+                  className="w-full h-16 pl-16 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium tracking-widest"
+                  required
+                />
+              </div>
+            </div>
 
- <div className="relative py-4">
- <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
- <div className="relative flex justify-center text-[10px] uppercase font-black tracking-widest"><span className="bg-white px-4 text-slate-600">Secure SSO</span></div>
- </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-16 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center transition-all text-lg mt-8"
+            >
+              {loading ? "Decrypting..." : "Access System Core"}
+            </button>
 
- <button
- type="button"
- onClick={ handleGoogleLogin }
- disabled={ loading }
- className="w-full h-14 bg-slate-50 border border-slate-100 hover:bg-slate-100 text-slate-900 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50"
- >
- <img src="https://www.google.com/favicon.ico"alt=""className="w-5 h-5 grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all"/>
- <span className="text-xs font-bold uppercase tracking-widest">Login with Google</span>
- </button>
- </form>
+            <div className="relative py-8">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
+              <div className="relative flex justify-center text-[10px] uppercase font-black tracking-[0.4em]"><span className="bg-[#050811] px-6 text-slate-500">Secure SSO</span></div>
+            </div>
 
- <div className="mt-12 text-center">
- <button
- onClick={() => {
- setSelectedRole('');
- setStep('school');
- setSearchParams({});
- }}
- className="text-[10px] font-black text-slate-600 hover:text-blue-500 uppercase tracking-[0.2em] transition-colors"
- >
- Return to Public Grid
- </button>
- </div>
- </motion.div>
- </div>
- );
- }
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={loading}
+              className="w-full h-16 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] disabled:opacity-50 group"
+            >
+              <img src="https://www.google.com/favicon.ico" alt="Google" className="w-6 h-6 grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+              <span className="font-bold text-xs uppercase tracking-widest">Sign in with Google</span>
+            </button>
+          </form>
+
+          <div className="mt-12 text-center">
+            <button
+              onClick={() => {
+                setSelectedRole('');
+                setStep('school');
+                setSearchParams({});
+              }}
+              className="text-[10px] font-black text-slate-500 hover:text-blue-400 uppercase tracking-[0.4em] transition-colors"
+            >
+              Return to Public Grid
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
 
 
 
- return (
- <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 pt-32 transition-colors duration-500 font-inter">
+  return (
+    <div className="min-h-screen bg-[#050811] flex flex-col items-center justify-center p-6 relative overflow-hidden font-inter selection:bg-blue-500/30">
  <motion.div
  initial={{ opacity: 0, scale: 0.95 }}
  animate={{ opacity: 1, scale: 1 }}
- className="bg-white p-6 md:p-8 rounded-[2rem] shadow-2xl shadow-blue-500/5 max-w-md w-full border border-black/5"
- >
- <div className="text-center mb-8">
- { tenantSchool ? (
- <div className="space-y-4">
- <div className="w-24 h-24 bg-gray-50 rounded-2xl mx-auto flex items-center justify-center p-4 border border-gray-100">
- <Logo variant="black" size="lg"customLogo={ tenantSchool.logoUrl } />
- </div>
- <div>
- <h1 className="text-2xl font-bold text-gray-900">{ tenantSchool.name }</h1>
- { tenantSchool.description && (
- <p className="text-sm text-gray-500 mt-2 line-clamp-3">
- { tenantSchool.description }
- </p>
- )}
- </div>
- <div className="pt-2">
- <div className="flex items-center justify-center gap-2 opacity-50 grayscale hover:grayscale-0 transition-all">
- <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Powered by</span>
- <Logo variant="black" size="sm"className="h-4"/>
- </div>
- </div>
- </div>
- ) : (
- <>
- <Logo variant={ logoVariant } size="lg"className="mx-auto mb-4 h-12 md:h-16"/>
- <h2 className="text-2xl md:text-3xl font-medium text-slate-900 leading-tight">SEEDD { isSignUp ?'Setup':'Login'}</h2>
- </>
- )}
- {!subdomainNotFound && (
- <p className="text-slate-600 mt-3 text-sm md:text-base">
- { isSignUp ?'One-time Super Admin Setup': 
- step  === 'school'?'Select your school': 
- step  === 'role'?'Select your role': 
-'Enter your credentials'}
- </p>
- )}
- </div>
+      className="w-full max-w-lg bg-white/5 backdrop-blur-3xl rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-10 md:p-14 relative z-10 overflow-hidden"
+      {/* Top Glow Edge */}
+      <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+      
+      <div className="text-center mb-10">
+        {tenantSchool ? (
+          <div className="space-y-6">
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="relative inline-block"
+            >
+              <div className="absolute inset-0 bg-blue-600/20 blur-2xl rounded-full" />
+              {tenantSchool.logoUrl ? (
+                <img src={tenantSchool.logoUrl} alt={tenantSchool.name} className="h-20 w-auto relative z-10 object-contain drop-shadow-2xl mx-auto" />
+              ) : (
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl flex items-center justify-center text-white relative z-10 shadow-2xl mx-auto">
+                  <SchoolIcon size={40} strokeWidth={1.5} />
+                </div>
+              )}
+            </motion.div>
+            <div>
+              <h1 className="text-2xl font-bold text-white font-space tracking-tight">{tenantSchool.name}</h1>
+              <p className="text-blue-400 font-bold text-[10px] tracking-[0.4em] uppercase mt-2">Verified Institution</p>
+            </div>
+          </div>
+        ) : (
+          <>
+            <Logo variant="white" size="lg" className="mx-auto mb-8 h-12 md:h-16 relative z-10" />
+            <h2 className="text-3xl font-bold text-white tracking-tight font-space">{isSignUp ? 'Platform Setup' : 'Login Portal'}</h2>
+            <p className="text-slate-400 text-sm mt-3 font-medium">Access your educational ecosystem</p>
+          </>
+        )}
+      </div>
 
- { error && (
- <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-2xl text-sm border border-red-100 font-medium">
- { error }
- </div>
- )}
+      {error && (
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8 p-5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-2xl text-xs font-bold text-center flex items-center justify-center gap-3"
+        >
+          <AlertTriangle size={16} />
+          {error}
+        </motion.div>
+      )}
 
- { success && (
- <div className="mb-6 p-4 bg-emerald-50 text-emerald-600 rounded-2xl text-sm border border-emerald-100 font-medium">
- { success }
- </div>
- )}
+      {subdomainNotFound ? (
+        <div className="text-center py-8 space-y-6">
+          <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20">
+            <AlertTriangle size={24} />
+          </div>
+          <h3 className="text-xl font-bold text-white font-space">School Not Found</h3>
+          <p className="text-slate-400 text-sm leading-relaxed">
+            We couldn't find a school matching this address. Please check the URL and try again.
+          </p>
+          <div className="pt-4">
+            <button onClick={() => navigate('/')} className="w-full h-14 rounded-2xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-all active:scale-[0.98]">
+              Return Home
+            </button>
+          </div>
+        </div>
+      ) : (
+        <AnimatePresence mode="wait">
+          {step === 'school' && !isSignUp && (
+            <motion.div
+              key="school"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              className="space-y-6"
+            >
+              <div className="space-y-3">
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] ml-1">Identity Provider</p>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setIsSchoolDropdownOpen(!isSchoolDropdownOpen)}
+                    className="w-full h-16 px-6 rounded-2xl border border-white/10 bg-white/5 hover:border-white/20 focus:outline-none focus:ring-4 focus:ring-blue-500/5 transition-all font-medium text-white flex items-center justify-between group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <SchoolIcon size={20} className="text-slate-500 group-hover:text-blue-400 transition-colors" />
+                      <span className={selectedSchool ? "text-white" : "text-slate-500"}>
+                        {selectedSchool ? schools.find(s => s.id === selectedSchool)?.name : "Choose your school"}
+                      </span>
+                    </div>
+                    <ChevronDown size={18} className={cn("text-slate-500 transition-transform", isSchoolDropdownOpen ? "rotate-180" : "")} />
+                  </button>
 
- { subdomainNotFound ? (
- <div className="text-center py-8 space-y-4">
- <div className="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-red-100">
- <SchoolIcon size={ 24 } />
- </div>
- <h3 className="text-xl font-medium text-slate-900">School Not Found</h3>
- <p className="text-slate-600 text-sm">
- We couldn't find a school matching this web address. Please check the URL and try again.
- </p>
- <div className="pt-4">
- <a href="/"className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold text-sm transition-colors cursor-pointer">
- Return Home
- </a>
- </div>
- </div>
- ) : (
- <>
- <AnimatePresence mode="wait">
- { step  === 'school'&& !isSignUp && (
- <motion.div
- key="school"
- initial={{ opacity: 0, x: 20 }}
- animate={{ opacity: 1, x: 0 }}
- exit={{ opacity: 0, x: -20 }}
- className="space-y-4"
- >
- <div className="space-y-2 relative">
- <label className="text-sm font-medium text-gray-800">School</label>
- <div className="relative">
- <button
- type="button"
- onClick={() => setIsSchoolDropdownOpen(!isSchoolDropdownOpen)}
- className="w-full h-10 px-4 rounded-xl border border-gray-200 bg-gray-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-gray-800 flex items-center justify-between"
- >
- <span className={ selectedSchool ?"text-gray-800":"text-gray-800"}>
- { selectedSchool ? schools.find(s => s.id === selectedSchool)?.name :"Choose a school"}
- </span>
- <ChevronDown size={ 16 } className={`text-gray-800 transition-transform ${ isSchoolDropdownOpen ?'rotate-180':''}`} />
- </button>
+                  <AnimatePresence>
+                    {isSchoolDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="absolute z-50 w-full mt-3 bg-[#0A0F1D] rounded-2xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden backdrop-blur-xl"
+                      >
+                        <div className="p-4 border-b border-white/5 sticky top-0 bg-[#0A0F1D]/80 backdrop-blur-md">
+                          <div className="relative group">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={16} />
+                            <input
+                              type="text"
+                              autoFocus
+                              placeholder="Search schools..."
+                              value={schoolSearchQuery}
+                              onChange={(e) => setSchoolSearchQuery(e.target.value)}
+                              className="w-full pl-12 pr-4 h-12 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500 transition-all placeholder:text-slate-600"
+                            />
+                          </div>
+                        </div>
+                        <div className="max-h-64 overflow-y-auto p-2">
+                          {filteredSchools.length === 0 ? (
+                            <div className="p-8 text-center text-sm text-slate-500">No schools found</div>
+                          ) : (
+                            filteredSchools.map(school => (
+                              <button
+                                key={school.id}
+                                type="button"
+                                onClick={() => {
+                                  const hostname = window.location.hostname;
+                                  if (school.slug && (hostname === 'seedify.name.ng' || hostname === 'www.seedify.name.ng')) {
+                                    window.location.href = `${window.location.protocol}//${school.slug}.seedify.name.ng/login`;
+                                    return;
+                                  }
+                                  setSelectedSchool(school.id);
+                                  setIsSchoolDropdownOpen(false);
+                                  setSchoolSearchQuery('');
+                                }}
+                                className={cn(
+                                  "w-full text-left px-4 py-4 rounded-xl text-sm flex items-center justify-between transition-all group",
+                                  selectedSchool === school.id ? "bg-blue-600/20 text-blue-400 border border-blue-500/20" : "text-slate-400 hover:bg-white/5 hover:text-white"
+                                )}
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className={cn("w-2 h-2 rounded-full", selectedSchool === school.id ? "bg-blue-400 animate-pulse" : "bg-slate-700")} />
+                                  <span className="font-bold tracking-tight">{school.name}</span>
+                                </div>
+                                {selectedSchool === school.id && <Check size={16} className="text-blue-400" />}
+                              </button>
+                            ))
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+              <button 
+                onClick={() => setStep('role')}
+                disabled={!selectedSchool}
+                className="w-full h-16 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed transition-all text-lg mt-4"
+              >
+                Continue to Roles
+              </button>
+            </motion.div>
+          )}
 
- <AnimatePresence>
- { isSchoolDropdownOpen && (
- <motion.div
- initial={{ opacity: 0, y: -10 }}
- animate={{ opacity: 1, y: 0 }}
- exit={{ opacity: 0, y: -10 }}
- className="absolute z-50 w-full mt-2 bg-white rounded-xl border border-gray-100 shadow-xl overflow-hidden"
- >
- <div className="p-2 border-b border-gray-100 sticky top-0 bg-white">
- <div className="relative">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-800" size={ 14 } />
- <input
- type="text"
- autoFocus
- placeholder="Search schools..."
- value={ schoolSearchQuery }
- onChange={(e) => setSchoolSearchQuery(e.target.value)}
- className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
- />
- </div>
- </div>
- <div className="max-h-60 overflow-y-auto p-1">
- { filteredSchools.length === 0 ? (
- <div className="p-4 text-center text-sm text-gray-800">
- No schools found
- </div>
- ) : (
- filteredSchools.map(school => (
- <button
- key={ school.id }
- type="button"
- onClick={() => {
- // Protocol adaptation: If we are on the main domain, redirect to the school's subdomain
- const hostname = window.location.hostname;
- if (school.slug && (hostname  === 'seedify.name.ng'|| hostname  === 'www.seedify.name.ng')) {
- window.location.href =`${ window.location.protocol }//${ school.slug }.seedify.name.ng/login`;
- return;
- }
- setSelectedSchool(school.id);
- setIsSchoolDropdownOpen(false);
- setSchoolSearchQuery('');
- }}
- className={`w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center justify-between transition-colors ${
- selectedSchool === school.id 
- ?'bg-blue-50 text-blue-700 font-medium'
- :'text-gray-800 hover:bg-gray-50'
- }`}
- >
- { school.name }
- { selectedSchool === school.id && <Check size={ 14 } className="text-blue-600"/>}
- </button>
- ))
- )}
- </div>
- </motion.div>
- )}
- </AnimatePresence>
- </div>
- </div>
- <Button 
- onClick={() => setStep('role')}
- disabled={!selectedSchool }
- className="w-full"
- >
- Next
- </Button>
- </motion.div>
- )}
+          {step === 'role' && (
+            <motion.div
+              key="role"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-8"
+            >
+              <div className="grid grid-cols-2 gap-4">
+                {roles.map(r => (
+                  <motion.button
+                    key={r.id}
+                    whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setSelectedRole(r.id)}
+                    className={cn(
+                      "h-24 p-4 rounded-3xl border text-xs font-black uppercase tracking-widest transition-all text-center flex flex-col items-center justify-center gap-3",
+                      selectedRole === r.id 
+                        ? "bg-blue-600 border-blue-500 text-white shadow-[0_0_30px_-5px_rgba(37,99,235,0.5)]" 
+                        : "border-white/10 bg-white/5 text-slate-500 hover:border-white/20"
+                    )}
+                  >
+                    <span className="text-sm font-space">{r.label}</span>
+                  </motion.button>
+                ))}
+              </div>
+              <div className="flex gap-4">
+                <button 
+                  onClick={() => setStep('school')}
+                  className="flex-1 h-16 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all active:scale-[0.98]"
+                >
+                  Back
+                </button>
+                <button 
+                  onClick={() => setStep('credentials')}
+                  disabled={!selectedRole}
+                  className="flex-[2] h-16 bg-blue-600 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 hover:bg-blue-500 transition-all active:scale-[0.98] disabled:opacity-30"
+                >
+                  Next Step
+                </button>
+              </div>
+            </motion.div>
+          )}
 
- { step  === 'role'&& (
- <motion.div
- key="role"
- initial={{ opacity: 0, x: 20 }}
- animate={{ opacity: 1, x: 0 }}
- exit={{ opacity: 0, x: -20 }}
- className="space-y-6"
- >
- <div className="grid grid-cols-2 gap-3">
- { roles.map(r => (
- <button
- key={ r.id }
- onClick={() => setSelectedRole(r.id)}
- className={ cn(
-"p-4 rounded-2xl border text-sm font-medium transition-all text-center",
- selectedRole === r.id 
- ?"bg-[#2563EB] text-slate-900 border-[#2563EB] shadow-lg shadow-[#2563EB]/20"
- :"border-black/10 hover:bg-gray-50"
- )}
- >
- { r.label }
- </button>
- ))}
- </div>
- <div className="flex gap-3">
- <button 
- onClick={() => navigate(-1)}
- className="flex-1 h-10 rounded-xl border border-gray-200 font-medium hover:bg-gray-50 transition-all text-sm"
- >
- Back
- </button>
- <Button 
- onClick={() => setStep('credentials')}
- disabled={!selectedRole }
- className="flex-[2]"
- >
- Next
- </Button>
- </div>
- </motion.div>
- )}
+          {(step === 'credentials' || isSignUp) && (
+            <motion.div
+              key="credentials"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-6"
+            >
+              <form onSubmit={handleEmailAuth} className="space-y-5">
+                <div className="relative group">
+                  <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={20} strokeWidth={1.5} />
+                  <input 
+                    type="email"
+                    placeholder="Email Address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full h-16 pl-16 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition-all font-medium"
+                  />
+                </div>
+                
+                <div className="relative group">
+                  <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={20} strokeWidth={1.5} />
+                  <input 
+                    type={showPassword ? "text" : "password"} 
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="w-full h-16 pl-16 pr-16 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition-all font-medium"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
 
- {(step  === 'credentials'|| isSignUp) && (
- <motion.div
- key="credentials"
- initial={{ opacity: 0, x: 20 }}
- animate={{ opacity: 1, x: 0 }}
- exit={{ opacity: 0, x: -20 }}
- >
- <form onSubmit={ handleEmailAuth } className="space-y-4">
- <div className="space-y-2">
- <label className="text-sm font-medium text-gray-800">Email Address</label>
- <Input 
- type="email"
- placeholder="name@school.com"
- value={ email }
- onChange={(e) => setEmail(e.target.value)}
- required
- />
- </div>
- <div className="space-y-2 relative">
- <div className="flex justify-between items-center">
- <label className="text-sm font-medium text-gray-800">Password</label>
- {!isSignUp && (
- <button 
- type="button"
- onClick={ async () => {
- if (!email) {
- setError("Please enter your email address first.");
- return;
- }
- try {
- setLoading(true);
- await sendPasswordResetEmail(auth, email.trim());
- setError(null);
- setSuccess(`Password reset email sent to ${ email }`);
- setTimeout(() => setSuccess(null), 5000);
- } catch (err: any) {
- setError(err.message ||"Failed to send password reset email.");
- } finally {
- setLoading(false);
- }
- }}
- className="text-xs font-medium text-[#2563EB] hover:underline"
- >
- Forgot Password?
- </button>
- )}
- </div>
- <div className="relative">
- <Input 
- type={ showPassword ?"text":"password"} 
- placeholder="••••••••"
- value={ password }
- onChange={(e) => setPassword(e.target.value)}
- required
- className="pr-10"
- />
- <button
- type="button"
- onClick={() => setShowPassword(!showPassword)}
- className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-800 hover:text-gray-800"
- >
- { showPassword ? <EyeOff size={ 18 } /> : <Eye size={ 18 } />}
- </button>
- </div>
- </div>
- <div className="flex gap-3 pt-2">
- <button 
- type="button"
- onClick={() => navigate(-1)}
- className="flex-1 h-10 rounded-xl border border-gray-200 font-medium hover:bg-gray-50 transition-all text-sm"
- >
- Back
- </button>
- <Button 
- type="submit"
- disabled={ loading }
- className="flex-[2]"
- >
- { loading ? (isSignUp ?'Setting up...':'Signing in...') : (isSignUp ?'Create Admin':'Login')}
- </Button>
- </div>
- </form>
- </motion.div>
- )}
- </AnimatePresence>
+                {!isSignUp && (
+                  <div className="flex justify-end px-1">
+                    <button 
+                      type="button"
+                      onClick={async () => {
+                        if (!email) {
+                          setError("Please enter your email address first.");
+                          return;
+                        }
+                        try {
+                          setLoading(true);
+                          await sendPasswordResetEmail(auth, email.trim());
+                          setError(null);
+                          setSuccess(`Password reset email sent to ${email}`);
+                          setTimeout(() => setSuccess(null), 5000);
+                        } catch (err: any) {
+                          setError(err.message || "Failed to send password reset email.");
+                        } finally {
+                          setLoading(false);
+                        }
+                      }}
+                      className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors uppercase tracking-widest"
+                    >
+                      Reset Security Token
+                    </button>
+                  </div>
+                )}
 
- <AnimatePresence mode="wait">
- { step  === 'credentials'&& (
- <motion.div
- initial={{ opacity: 0, y: 20 }}
- animate={{ opacity: 1, y: 0 }}
- exit={{ opacity: 0, y: -20 }}
- >
- <div className="relative my-8">
- <div className="absolute inset-0 flex items-center">
- <div className="w-full border-t border-black/5"></div>
- </div>
- <div className="relative flex justify-center text-xs uppercase">
- <span className="bg-white px-2 text-gray-800">Or continue with</span>
- </div>
- </div>
+                <div className="flex gap-4 pt-4">
+                  <button 
+                    type="button"
+                    onClick={() => setStep('role')}
+                    className="flex-1 h-16 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all active:scale-[0.98]"
+                  >
+                    Back
+                  </button>
+                  <button 
+                    type="submit"
+                    disabled={loading}
+                    className="flex-[2] h-16 bg-blue-600 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 hover:bg-blue-500 transition-all active:scale-[0.98] disabled:opacity-50"
+                  >
+                    {loading ? (isSignUp ? 'Setting up...' : 'Verifying...') : (isSignUp ? 'Initialize' : 'Sign In')}
+                  </button>
+                </div>
+              </form>
 
- <button
- onClick={ handleGoogleLogin }
- disabled={ loading }
- className="w-full h-10 flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-xl font-medium hover:bg-gray-50 transition-all disabled:opacity-50 text-sm"
- >
- <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"alt="Google"className="w-6 h-6"/>
- { loading ?'Signing in...':'Google Account'}
- </button>
- </motion.div>
- )}
- </AnimatePresence>
- </>
- )}
+              <div className="relative py-8">
+                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
+                <div className="relative flex justify-center text-[10px] uppercase font-black tracking-[0.4em]"><span className="bg-[#050811] px-6 text-slate-500">SSO Logic</span></div>
+              </div>
 
- <div className="mt-6 flex flex-col gap-3 text-center">
- {!tenantSchool && (
- <button
- onClick={() => {
- setSelectedRole('super_admin');
- setSelectedSchool('');
- setStepAndSignUp('credentials', false);
- setError(null);
- }}
- className="text-sm font-medium text-[#2563EB] hover:underline"
- >
- Platform Admin Login
- </button>
- )}
- </div>
+              <button
+                onClick={handleGoogleLogin}
+                disabled={loading}
+                className="w-full h-16 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] disabled:opacity-50 group"
+              >
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-6 h-6" />
+                <span className="font-bold text-xs uppercase tracking-widest">Connect Identity</span>
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
 
- <div className="mt-8 text-center text-sm text-gray-800">
- <p>By signing in, you agree to our Terms of Service.</p>
- </div>
- </motion.div>
+      <div className="mt-12 text-center flex flex-col gap-4">
+        {!tenantSchool && (
+          <button
+            onClick={() => {
+              setSelectedRole('super_admin');
+              setSelectedSchool('');
+              setStepAndSignUp('credentials', false);
+              setError(null);
+            }}
+            className="text-[10px] font-black text-slate-500 hover:text-blue-400 uppercase tracking-[0.4em] transition-all"
+          >
+            Platform Administrator Access
+          </button>
+        )}
+        <p className="text-[9px] text-slate-600 font-medium leading-relaxed max-w-[200px] mx-auto uppercase tracking-wider">
+          By accessing SEEDD, you agree to our terms of digital engagement.
+        </p>
+      </div>
  </div>
  );
 };
@@ -1374,7 +1383,9 @@ export default function App() {
  const [subdomainNotFound, setSubdomainNotFound] = useState(false);
 
  useEffect(() => {
- const fetchTenantSchool = async () => {
+  const fetchTenantSchool = async () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const schoolIdParam = searchParams.get('school');
  const hostname = window.location.hostname;
  const parts = hostname.split('.');
  let slug = null;
@@ -1382,37 +1393,53 @@ export default function App() {
  const mainDomains = ['seedify.name.ng','seed-app.vercel.app','seed-app.netlify.app'];
  const isMainDomain = mainDomains.includes(hostname) || hostname  === 'localhost'|| hostname  === '127.0.0.1'|| hostname  === 'www.seedify.name.ng';
  
- if (!isMainDomain) {
- if (hostname.endsWith('.seedify.name.ng')) {
- slug = parts[0];
- } else if (parts.length >= 3 && parts[0] !=='www') {
- slug = parts[0];
- } else if (parts.length === 2 && parts[1]  === 'localhost') {
- slug = parts[0];
- }
- }
+      // 1. Try to fetch by school ID from query param
+      if (schoolIdParam) {
+        try {
+          const docRef = doc(db, 'schools', schoolIdParam);
+          const snap = await getDoc(docRef);
+          if (snap.exists()) {
+            setTenantSchool({ id: snap.id, ...snap.data() } as School);
+            setSubdomainNotFound(false);
+            return;
+          }
+        } catch (error) {
+          console.error("Error fetching school by ID:", error);
+        }
+      }
 
- if (slug) {
- try {
- const q = query(collection(db,'schools'), where('slug','==', slug));
- const snap = await getDocs(q);
- if (!snap.empty) {
- const schoolData = { id: snap.docs[0].id, ...snap.docs[0].data() } as School;
- setTenantSchool(schoolData);
- setSubdomainNotFound(false);
- } else {
- setSubdomainNotFound(true);
- }
- } catch (error) {
- console.error("Wildcard Debug - Error fetching tenant school:", error);
- }
- } else {
- setTenantSchool(null);
- setSubdomainNotFound(false);
- }
+      // 2. Try to fetch by subdomain slug
+      if (!isMainDomain) {
+        if (hostname.endsWith('.seedify.name.ng')) {
+          slug = parts[0];
+        } else if (parts.length >= 3 && parts[0] !== 'www') {
+          slug = parts[0];
+        } else if (parts.length === 2 && parts[1] === 'localhost') {
+          slug = parts[0];
+        }
+      }
+
+      if (slug) {
+        try {
+          const q = query(collection(db, 'schools'), where('slug', '==', slug));
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            const schoolData = { id: snap.docs[0].id, ...snap.docs[0].data() } as School;
+            setTenantSchool(schoolData);
+            setSubdomainNotFound(false);
+          } else {
+            setSubdomainNotFound(true);
+          }
+        } catch (error) {
+          console.error("Wildcard Debug - Error fetching tenant school:", error);
+        }
+      } else {
+        setTenantSchool(null);
+        setSubdomainNotFound(false);
+      }
  };
  fetchTenantSchool();
- }, [window.location.hostname]);
+ }, [window.location.hostname, window.location.search]);
 
  if (loading) return <LoadingScreen />;
 
