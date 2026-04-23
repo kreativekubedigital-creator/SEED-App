@@ -90,7 +90,6 @@ export const LandingPage = () => {
         <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
 
         <div className="max-w-7xl mx-auto w-full relative z-10 flex-grow flex flex-col justify-center">
-          <div className="grid lg:grid-cols-2 gap-8 items-center mb-12">
             {/* Left: CTAs */}
             <div className="space-y-10">
               <motion.div
@@ -185,38 +184,38 @@ export const LandingPage = () => {
               </AnimatePresence>
             </div>
 
-            {/* Right: Description */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="lg:pl-12 space-y-4"
-            >
-              <h3 className="text-lg font-space font-black text-white leading-tight uppercase tracking-widest">
-                Power the intelligence behind <br /> modern education.
-              </h3>
-              <p className="text-xs text-white/50 max-w-sm leading-relaxed font-medium">
-                SEEDD connects institutions, centralizes data, and transforms everyday operations into a seamless, insight-driven system. 
-                From administration to academics, everything works in sync—giving you clarity, control, and the ability to scale without friction.
-              </p>
-            </motion.div>
-          </div>
-
-          {/* Bottom: Massive Typography */}
+          {/* Bottom: Massive Typography + Description */}
           <div className="pb-8">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-              className="relative flex flex-col items-start"
-            >
-              <h1 className="text-[8vw] lg:text-[10vw] font-space font-black tracking-tighter text-white leading-[0.7] opacity-90 drop-shadow-[0_0_50px_rgba(255,255,255,0.05)]">
-                SEEDD
-              </h1>
-              <h1 className="text-[6vw] lg:text-[7.5vw] font-space font-black tracking-tighter bg-gradient-to-b from-blue-400 via-blue-600 to-blue-900 bg-clip-text text-transparent leading-[0.7] drop-shadow-[0_0_80px_rgba(37,99,235,0.2)]">
-                ECO-SYSTEM
-              </h1>
-            </motion.div>
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12">
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
+                className="relative flex flex-col items-start gap-4"
+              >
+                <h1 className="text-[8vw] lg:text-[10vw] font-space font-black tracking-tighter text-white leading-[0.8] opacity-90 drop-shadow-[0_0_50px_rgba(255,255,255,0.05)]">
+                  SEEDD
+                </h1>
+                <h1 className="text-[6vw] lg:text-[7.5vw] font-space font-black tracking-tighter bg-gradient-to-b from-blue-400 via-blue-600 to-blue-900 bg-clip-text text-transparent leading-[0.8] drop-shadow-[0_0_80px_rgba(37,99,235,0.2)]">
+                  ECO-SYSTEM
+                </h1>
+              </motion.div>
+
+              {/* Right Aligned Description */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6, duration: 1 }}
+                className="max-w-sm space-y-4 lg:mb-4 lg:text-right"
+              >
+                <h3 className="text-xs font-space font-black text-white leading-tight uppercase tracking-[0.3em]">
+                  Power the intelligence behind <br /> modern education.
+                </h3>
+                <p className="text-[10px] text-white/40 leading-relaxed font-bold uppercase tracking-widest">
+                  SEEDD connects institutions, centralizes data, and transforms everyday operations into a seamless, insight-driven system. 
+                </p>
+              </motion.div>
+            </div>
           </div>
         </div>
 
