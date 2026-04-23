@@ -9,7 +9,8 @@ import {
   Github, Linkedin, Twitter, Facebook, Youtube,
   Mail, Phone, ArrowUpRight, GraduationCap, School as SchoolIcon,
   MessageSquare, Settings, Clock, Sparkles, TrendingUp, CreditCard,
-  Cloud, Terminal, Command, Activity
+  Cloud, Terminal, Command, Activity, Building2, BookOpen, FileText,
+  ShieldCheck, LayoutGrid
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
