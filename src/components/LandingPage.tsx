@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, db, handleFirestoreError, OperationType } from '../firebase';
 import { Logo } from './Logo';
+import { School } from '../types';
 import { 
   Shield, Search, CheckCircle2, Zap, Globe, 
   BarChart3, Lock, ArrowRight, Star, Plus,

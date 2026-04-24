@@ -75,17 +75,18 @@ export class DatabaseService {
     let query = supabase.from(table).select('*');
 
     // Apply path filters
+    let finalQuery: any = query;
     Object.entries(filters).forEach(([key, value]) => {
-      query = query.eq(key, value);
+      finalQuery = finalQuery.eq(key, value);
     });
 
     // Apply additional conditions (mapping keys to snake_case)
     Object.entries(conditions).forEach(([key, value]) => {
       const snakeKey = this.toSnakeCase(key, table);
-      query = query.eq(snakeKey, value);
+      finalQuery = finalQuery.eq(snakeKey, value);
     });
 
-    const { data, error } = await query;
+    const { data, error } = await finalQuery;
     if (error) throw error;
     return this.toCamelCase(data, table) as T[];
   }

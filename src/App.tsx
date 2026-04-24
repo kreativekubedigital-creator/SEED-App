@@ -956,6 +956,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
  initial={{ opacity: 0, scale: 0.95 }}
  animate={{ opacity: 1, scale: 1 }}
       className="w-full max-w-lg bg-white/5 backdrop-blur-3xl rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-10 md:p-14 relative z-10 overflow-hidden"
+    >
       {/* Top Glow Edge */}
       <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
       
@@ -1277,7 +1278,8 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
           By accessing SEEDD, you agree to our terms of digital engagement.
         </p>
       </div>
- </div>
+    </motion.div>
+  </div>
  );
 };
 
