@@ -152,13 +152,19 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
  const location = useLocation();
  const { scrollY } = useScroll();
  const [isScrolled, setIsScrolled] = useState(false);
+ const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
 
  useEffect(() => {
- return scrollY.on('change', (latest) => {
- // Use a small buffer to prevent rapid toggling
- if (latest > 30 && !isScrolled) setIsScrolled(true);
- if (latest <= 10 && isScrolled) setIsScrolled(false);
- });
+   const handleResize = () => setIsMobile(window.innerWidth < 640);
+   window.addEventListener('resize', handleResize);
+   return () => window.removeEventListener('resize', handleResize);
+ }, []);
+
+ useEffect(() => {
+   return scrollY.on('change', (latest) => {
+     if (latest > 30 && !isScrolled) setIsScrolled(true);
+     if (latest <= 10 && isScrolled) setIsScrolled(false);
+   });
  }, [scrollY, isScrolled]);
 
  const navItems = [
@@ -191,12 +197,12 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
              ? "rgba(226, 232, 240, 0.5)" 
              : (isLandingPage ? "transparent" : "rgba(255, 255, 255, 0.1)"),
            boxShadow: isScrolled ?"0 20px 40px -10px rgba(0, 0, 0, 0.05)":"none",
-           width: (window.innerWidth < 640) ? "100%" : (isScrolled ? "92%" : "100%"),
+           width: isMobile ? "100%" : (isScrolled ? "92%" : "100%"),
            maxWidth:"1280px",
-           height: (window.innerWidth < 640) ? "64px" : (isScrolled ? "72px" : "80px"),
-           borderRadius: (window.innerWidth < 640) ? "0px" : (isScrolled ? "20px" : "0px"),
-           paddingLeft: (window.innerWidth < 640) ? "1.5rem" : (isScrolled ? "2rem" : "1.5rem"),
-           paddingRight: (window.innerWidth < 640) ? "1.5rem" : (isScrolled ? "2rem" : "1.5rem"),
+           height: isMobile ? "64px" : (isScrolled ? "72px" : "80px"),
+           borderRadius: isMobile ? "0px" : (isScrolled ? "20px" : "0px"),
+           paddingLeft: isMobile ? "1.5rem" : (isScrolled ? "2rem" : "1.5rem"),
+           paddingRight: isMobile ? "1.5rem" : (isScrolled ? "2rem" : "1.5rem"),
          }}
          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
          className={ cn(
