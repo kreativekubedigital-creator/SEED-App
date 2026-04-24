@@ -260,35 +260,40 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  // Use default password if not provided
  const finalPassword = password || '1234567';
  
- const userData = {
- ...userDataWithoutPassword,
- schoolId: school.id,
- createdAt: editingUser ? editingUser.createdAt : new Date().toISOString(),
- dob: newUser.dob === "" ? null : newUser.dob
- };
+    const cleanDob = (val: any) => {
+      if (val === undefined || val === null || val === "" || (typeof val === 'string' && val.trim() === "")) return null;
+      return val;
+    };
 
- if (editingUser) {
- await updateDoc(doc(db, 'users', editingUser.uid), userData);
- setSuccess("User updated successfully");
- } else {
- const trimmedEmail = userData.email?.trim();
- if (!trimmedEmail) {
- setError("Email is required.");
- return;
- }
+    const userData = {
+      ...userDataWithoutPassword,
+      schoolId: school.id,
+      createdAt: editingUser ? editingUser.createdAt : new Date().toISOString(),
+      dob: cleanDob(newUser.dob)
+    };
 
- // Create user in Supabase Auth using secondary app to avoid logging out current admin
- const userCredential = await createUserWithEmailAndPassword(secondaryAuth, trimmedEmail, finalPassword, { data: { email_confirm: true } });
- const newUid = userCredential.user.uid;
- 
- const finalUserData = { 
- ...userData, 
- email: trimmedEmail, 
- uid: newUid,
- forcePasswordChange: true,
- dob: userData.dob === "" ? null : userData.dob
- };
- await setDoc(doc(db, 'users', newUid), finalUserData);
+    if (editingUser) {
+      await updateDoc(doc(db, 'users', editingUser.uid), userData);
+      setSuccess("User updated successfully");
+    } else {
+      const trimmedEmail = userData.email?.trim();
+      if (!trimmedEmail) {
+        setError("Email is required.");
+        return;
+      }
+
+      // Create user in Supabase Auth using secondary app to avoid logging out current admin
+      const userCredential = await createUserWithEmailAndPassword(secondaryAuth, trimmedEmail, finalPassword, { data: { email_confirm: true } });
+      const newUid = userCredential.user.uid;
+      
+      const finalUserData = { 
+        ...userData, 
+        email: trimmedEmail, 
+        uid: newUid,
+        forcePasswordChange: true,
+        dob: cleanDob(userData.dob)
+      };
+      await setDoc(doc(db, 'users', newUid), finalUserData);
  await secondaryAuth.signOut(); // Clean up secondary auth session
  setSuccess(`User added successfully. Temporary password: ${finalPassword}`);
  }
