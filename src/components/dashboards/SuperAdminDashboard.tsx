@@ -607,7 +607,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="flex flex-col gap-1">
  <span className="text-xs font-bold text-slate-900 capitalize flex items-center gap-2">
  <Globe size={ 12 } className="text-blue-600"/>
- { school.slug }.seedify.ng
+ { school.slug }.seedify.name.ng
  </span>
  <span className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">{ school.planId } Tier</span>
  </div>
@@ -895,6 +895,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
       accept="image/*" 
     />
     <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mt-4">Official School Logo</p>
+    <div className="text-xs text-slate-400 mt-2">{newSchool.slug}.seedify.name.ng</div>
   </div>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
  <div className="space-y-3">
@@ -940,7 +941,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  placeholder="e.g. green-valley"
  />
  <div className="p-5 bg-slate-100 border border-slate-200 rounded-r-2xl text-slate-600 font-bold text-sm whitespace-nowrap flex items-center">
- .{ window.location.hostname.replace('www.','').split('.').slice(-2).join('.')}
+ .seedify.name.ng
  </div>
  </div>
  </div>
@@ -1264,31 +1265,31 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  animate={{ opacity: 1 }}
  exit={{ opacity: 0 }}
  onClick={ onClose }
- className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+ className="absolute inset-0 bg-black/60 backdrop-blur-md"
  />
  
  <motion.div
  initial={{ opacity: 0, scale: 0.95, y: 20 }}
  animate={{ opacity: 1, scale: 1, y: 0 }}
  exit={{ opacity: 0, scale: 0.95, y: 20 }}
- className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-[#050505] border border-slate-200 rounded-[2.5rem] shadow-2xl shadow-blue-500/10 custom-scrollbar"
+ className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-white border border-slate-200 rounded-[2.5rem] shadow-2xl custom-scrollbar"
  >
  {/* Header Section */}
- <div className="sticky top-0 z-10 bg-[#050505]/80 backdrop-blur-md p-8 border-b border-slate-100 flex items-center justify-between">
+ <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md p-8 border-b border-slate-100 flex items-center justify-between">
  <div className="flex items-center gap-6">
- <div className="w-16 h-16 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-2xl">
+ <div className="w-16 h-16 rounded-2xl bg-blue-600/5 border border-blue-500/10 flex items-center justify-center text-blue-600 font-bold text-2xl">
  { school.logoUrl ? <img src={ school.logoUrl } className="w-full h-full object-cover"/> : school.name.charAt(0)}
  </div>
  <div>
  <h2 className="text-2xl font-black text-slate-900 tracking-tight">{ school.name } <span className="text-blue-500 font-medium text-lg ml-2">Quick Statistics</span></h2>
- <p className="text-slate-600 font-bold text-xs uppercase tracking-widest flex items-center gap-2 mt-1">
- <Globe size={ 12 } className="text-blue-500"/> { school.slug }.seedify.ng • { school.planId.toUpperCase()} TIER
+ <p className="text-slate-500 font-bold text-xs uppercase tracking-widest flex items-center gap-2 mt-1">
+ <Globe size={ 12 } className="text-blue-500"/> { school.slug }.seedify.name.ng • { school.planId.toUpperCase()} TIER
  </p>
  </div>
  </div>
  <button 
  onClick={ onClose }
- className="p-4 rounded-2xl bg-slate-50 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all border border-slate-100"
+ className="p-4 rounded-2xl bg-slate-50 text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all border border-slate-100"
  >
  <X size={ 24 } />
  </button>
@@ -1297,91 +1298,91 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  <div className="p-8 space-y-8">
  {/* Top Row Stats */}
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
- <div className="p-6 rounded-3xl bg-white/[0.02] border border-slate-100 relative overflow-hidden group text-left">
+ <div className="p-6 rounded-3xl bg-slate-50/50 border border-slate-100 relative overflow-hidden group text-left">
  <div className="flex justify-between items-start mb-4">
  <div className="p-3 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
  <CreditCard size={ 20 } />
  </div>
- <div className="w-12 h-12 rounded-full border-2 border-slate-100 flex items-center justify-center relative">
+ <div className="w-12 h-12 rounded-full border-2 border-slate-200 flex items-center justify-center relative">
  <svg className="w-full h-full -rotate-90">
- <circle cx="24"cy="24"r="20"fill="transparent"stroke="currentColor"strokeWidth="3"className="text-slate-900/5"/>
+ <circle cx="24"cy="24"r="20"fill="transparent"stroke="currentColor"strokeWidth="3"className="text-slate-100"/>
  <circle cx="24"cy="24"r="20"fill="transparent"stroke="currentColor"strokeWidth="3"strokeDasharray={ 125.6 } strokeDashoffset={ 125.6 * (1 - stats.feesAwaiting.count/stats.feesAwaiting.total)} className="text-amber-500 transition-all duration-1000"/>
  </svg>
  <span className="absolute text-[10px] font-bold text-amber-500">{ Math.round((stats.feesAwaiting.count/stats.feesAwaiting.total) * 100)}%</span>
  </div>
  </div>
- <p className="text-slate-600 text-xs font-bold uppercase tracking-widest">Fees Awaiting Payment</p>
- <h3 className="text-2xl font-black text-slate-900 mt-1">{ stats.feesAwaiting.count } <span className="text-slate-600 text-lg">/ { stats.feesAwaiting.total }</span></h3>
+ <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Fees Awaiting Payment</p>
+ <h3 className="text-2xl font-black text-slate-900 mt-1">{ stats.feesAwaiting.count } <span className="text-slate-400 text-lg">/ { stats.feesAwaiting.total }</span></h3>
  </div>
 
- <div className="p-6 rounded-3xl bg-white/[0.02] border border-slate-100 text-left">
+ <div className="p-6 rounded-3xl bg-slate-50/50 border border-slate-100 text-left">
  <div className="p-3 rounded-xl bg-blue-500/10 text-blue-500 border border-blue-500/20 w-fit mb-4">
  <LayoutDashboard size={ 20 } />
  </div>
- <p className="text-slate-600 text-xs font-bold uppercase tracking-widest">Converted Leads</p>
- <h3 className="text-2xl font-black text-slate-900 mt-1">20 <span className="text-slate-600 text-lg">/ 100</span></h3>
- <div className="mt-4 h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
- <motion.div initial={{ width: 0 }} animate={{ width:'20%'}} className="h-full bg-blue-500"/>
+ <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Converted Leads</p>
+ <h3 className="text-2xl font-black text-slate-900 mt-1">20 <span className="text-slate-400 text-lg">/ 100</span></h3>
+ <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+ <motion.div initial={{ width: 0 }} animate={{ width:'20%'}} className="h-full bg-blue-600"/>
  </div>
  </div>
 
- <div className="p-6 rounded-3xl bg-white/[0.02] border border-slate-100 text-left">
+ <div className="p-6 rounded-3xl bg-slate-50/50 border border-slate-100 text-left">
  <div className="p-3 rounded-xl bg-purple-500/10 text-purple-500 border border-purple-500/20 w-fit mb-4">
  <Users size={ 20 } />
  </div>
- <p className="text-slate-600 text-xs font-bold uppercase tracking-widest">Staff Present Today</p>
- <h3 className="text-2xl font-black text-slate-900 mt-1">{ Math.floor(stats.staff * 0.9)} <span className="text-slate-600 text-lg">/ { stats.staff }</span></h3>
+ <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Staff Present Today</p>
+ <h3 className="text-2xl font-black text-slate-900 mt-1">{ Math.floor(stats.staff * 0.9)} <span className="text-slate-400 text-lg">/ { stats.staff }</span></h3>
  <div className="mt-4 flex gap-1">
  {[...Array(8)].map((_, i) => (
- <div key={ i } className={`h-1 flex-1 rounded-full ${ i < 7 ?'bg-purple-500':'bg-slate-50'}`} />
+ <div key={ i } className={`h-1 flex-1 rounded-full ${ i < 7 ?'bg-purple-500':'bg-slate-200'}`} />
  ))}
  </div>
  </div>
 
- <div className="p-6 rounded-3xl bg-white/[0.02] border border-slate-100 text-left">
- <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 w-fit mb-4">
+ <div className="p-6 rounded-3xl bg-slate-50/50 border border-slate-100 text-left">
+ <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 w-fit mb-4">
  <Users size={ 20 } />
  </div>
- <p className="text-slate-600 text-xs font-bold uppercase tracking-widest">Student Count</p>
+ <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Student Count</p>
  <h3 className="text-2xl font-black text-slate-900 mt-1">{ stats.students }</h3>
- <p className="text-[10px] text-emerald-500 font-bold mt-2 flex items-center gap-1">
+ <p className="text-[10px] text-emerald-600 font-bold mt-2 flex items-center gap-1">
  <Activity size={ 10 } /> Live Population
  </p>
  </div>
 
- <div className="p-6 rounded-3xl bg-white/[0.02] border border-slate-100 text-left">
- <div className="p-3 rounded-xl bg-blue-600/10 text-blue-400 border border-blue-600/20 w-fit mb-4">
+ <div className="p-6 rounded-3xl bg-slate-50/50 border border-slate-100 text-left">
+ <div className="p-3 rounded-xl bg-blue-500/10 text-blue-600 border border-blue-500/20 w-fit mb-4">
  <DollarSign size={ 20 } />
  </div>
- <p className="text-slate-600 text-xs font-bold uppercase tracking-widest">Monthly Fees Collection</p>
+ <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Monthly Fees Collection</p>
  <h3 className="text-2xl font-black text-slate-900 mt-1">₦{ stats.monthlyFees.toLocaleString()}</h3>
- <p className="text-[10px] text-slate-600 font-bold mt-2 italic">Current billing cycle</p>
+ <p className="text-[10px] text-slate-400 font-bold mt-2 italic">Current billing cycle</p>
  </div>
  </div>
 
  {/* Main Analytics Grid */}
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
  {/* Fees Collection Chart */}
- <div className="lg:col-span-2 p-8 rounded-[2rem] bg-white/[0.02] border border-slate-100 text-left">
+ <div className="lg:col-span-2 p-8 rounded-[2rem] bg-slate-50/50 border border-slate-100 text-left">
  <div className="flex items-center justify-between mb-10">
  <div className="flex items-center gap-4">
- <div className="p-3 rounded-xl bg-blue-600/10 text-blue-400 border border-blue-500/20">
+ <div className="p-3 rounded-xl bg-blue-600/10 text-blue-600 border border-blue-500/20">
  <Activity size={ 20 } />
  </div>
  <div>
  <h3 className="font-black text-slate-900 tracking-tight">Fee Collection Progress</h3>
- <p className="text-xs text-slate-600 font-bold uppercase tracking-widest">Yearly Performance: { new Date().getFullYear()}</p>
+ <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Yearly Performance: { new Date().getFullYear()}</p>
  </div>
  </div>
- <div className="px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-300">
+ <div className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-400">
  Daily Update
  </div>
  </div>
  
  <div className="h-64 flex items-end justify-between gap-2 px-4 relative">
  {/* Grid Lines */}
- <div className="absolute inset-x-0 top-0 bottom-0 flex flex-col justify-between pointer-events-none opacity-5">
- {[...Array(5)].map((_, i) => <div key={ i } className="w-full h-px bg-white"/>)}
+ <div className="absolute inset-x-0 top-0 bottom-0 flex flex-col justify-between pointer-events-none opacity-10">
+ {[...Array(5)].map((_, i) => <div key={ i } className="w-full h-px bg-slate-900/10"/>)}
  </div>
  
  { stats.monthlyHistory.map((v, i) => (
@@ -1406,14 +1407,14 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
 
  {/* Fees Overview Breakdown */}
  <div className="space-y-4 text-left">
- <div className="p-8 rounded-[2rem] bg-white/[0.02] border border-slate-100 h-full">
+ <div className="p-8 rounded-[2rem] bg-slate-50/50 border border-slate-100 h-full">
  <div className="flex items-center gap-4 mb-8">
- <div className="p-3 rounded-xl bg-blue-600/10 text-blue-400 border border-blue-500/20">
+ <div className="p-3 rounded-xl bg-blue-600/10 text-blue-600 border border-blue-500/20">
  <DollarSign size={ 20 } />
  </div>
  <div>
  <h3 className="font-black text-slate-900 tracking-tight">Fees Overview</h3>
- <p className="text-xs text-slate-600 font-bold uppercase tracking-widest">Active Invoices</p>
+ <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Active Invoices</p>
  </div>
  </div>
 

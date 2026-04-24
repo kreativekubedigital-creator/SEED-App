@@ -167,7 +167,7 @@ export const LandingPage = () => {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="font-bold text-white truncate">{school.name}</div>
-                                  <div className="text-xs text-white/40">{school.slug}.seedify.ng</div>
+                                  <div className="text-xs text-white/40">{school.slug}.seedify.name.ng</div>
                                 </div>
                                 <ArrowUpRight className="text-white/20 group-hover:text-blue-400 transition-colors" size={18} />
                               </button>
