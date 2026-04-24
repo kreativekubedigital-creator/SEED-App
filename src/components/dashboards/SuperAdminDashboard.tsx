@@ -272,9 +272,9 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  const schoolToPurge = schools.find(s => s.id === id);
  await deleteDoc(doc(db,'schools', id));
  if (schoolToPurge) {
- await logAuditAction('DELETE_SCHOOL',`Terminated infrastructure for: ${ schoolToPurge.name }`, id,'school');
+ await logAuditAction('DELETE_SCHOOL',`Deleted school: ${ schoolToPurge.name }`, id,'school');
  }
- setSuccess("Entity infrastructure purged successfully");
+ setSuccess("School deleted successfully");
  } catch (error) {
  console.error("Failed to delete school:", error);
  try {
@@ -309,10 +309,10 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 
  const tabs = [
  { id:'overview', label:'Overview', icon: LayoutDashboard },
- { id:'schools', label:'Institutions', icon: SchoolIcon },
+ { id:'schools', label:'Schools', icon: SchoolIcon },
  { id:'financials', label:'Financials', icon: DollarSign },
- { id:'logs', label:'Audit Logs', icon: History },
- { id:'system', label:'System Health', icon: Activity },
+ { id:'logs', label:'Activity Logs', icon: History },
+ { id:'system', label:'System Status', icon: Activity },
  ] as const;
 
  return (
@@ -361,7 +361,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all font-bold text-xs uppercase tracking-widest"
  >
  <LogOut size={ 18 } />
- { isSidebarOpen && <span>Terminate Session</span>}
+ { isSidebarOpen && <span>Log Out</span>}
  </button>
  </div>
  </motion.div>
@@ -380,16 +380,16 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="h-4 w-px bg-slate-200 mx-2"/>
  <h1 className="text-xs font-black text-slate-600 uppercase tracking-[0.3em]">
  { activeTab  === 'overview'?'System Overview': 
- activeTab  === 'schools'?'Institutional Network': 
- activeTab  === 'financials'?'Economic Core': 
- activeTab  === 'logs'?'Audit Intelligence':'Security Kernel'}
+ activeTab  === 'schools'?'Schools List': 
+ activeTab  === 'financials'?'Financial Stats': 
+ activeTab  === 'logs'?'Activity Logs':'System Status'}
  </h1>
  </div>
 
  <div className="flex items-center gap-6">
  <div className="hidden md:flex flex-col items-end">
  <span className="text-xs font-bold text-slate-900">{ user.firstName } { user.lastName }</span>
- <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Root Level Access</span>
+ <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Full Admin Access</span>
  </div>
  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 p-0.5">
  <div className="w-full h-full rounded-[10px] bg-white flex items-center justify-center font-bold text-slate-900 text-xs">
@@ -412,7 +412,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  {/* Header */}
  <div>
  <h1 className="text-3xl font-bold text-slate-900 tracking-tight">System Overview</h1>
- <p className="text-slate-600 mt-1 font-medium">Global platform health and administrative intelligence.</p>
+ <p className="text-slate-600 mt-1 font-medium">Global platform health and school statistics.</p>
  </div>
 
  {/* Stats Grid */}
@@ -457,8 +457,8 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="bg-white border border-slate-200 rounded-3xl p-8 relative overflow-hidden group shadow-sm">
  <div className="flex justify-between items-center mb-4 relative z-10">
  <div>
- <h3 className="text-xl font-bold text-slate-900 tracking-tight">Growth Velocity</h3>
- <p className="text-slate-600 text-sm font-medium">Monthly platform acquisition rate</p>
+ <h3 className="text-xl font-bold text-slate-900 tracking-tight">Growth Stats</h3>
+ <p className="text-slate-600 text-sm font-medium">Monthly school registration rate</p>
  </div>
  <div className="text-right">
  <p className="text-2xl font-black text-blue-600">+{ Math.round(schools.length * 1.5)}%</p>
@@ -471,21 +471,21 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 
  <div className="bg-white border border-slate-200 rounded-3xl p-8 group shadow-sm">
  <div className="flex items-center justify-between mb-8">
- <h3 className="text-xl font-bold text-slate-900 tracking-tight">Kernel Health</h3>
+ <h3 className="text-xl font-bold text-slate-900 tracking-tight">Server Health</h3>
  <Activity size={ 20 } className="text-emerald-500 animate-pulse"/>
  </div>
  <div className="space-y-8">
- <SystemMeter label="CPU Infrastructure"value={ 24 } color="bg-blue-600 shadow-blue-600/20"/>
- <SystemMeter label="Database I/O"value={ 42 } color="bg-emerald-600 shadow-emerald-600/20"/>
- <SystemMeter label="Neural Engine"value={ 18 } color="bg-purple-600 shadow-purple-600/20"/>
- <SystemMeter label="Storage Capacity"value={ 65 } color="bg-amber-600 shadow-amber-600/20"/>
+ <SystemMeter label="Processor Load"value={ 24 } color="bg-blue-600 shadow-blue-600/20"/>
+ <SystemMeter label="Database Activity"value={ 42 } color="bg-emerald-600 shadow-emerald-600/20"/>
+ <SystemMeter label="Logic Engine"value={ 18 } color="bg-purple-600 shadow-purple-600/20"/>
+ <SystemMeter label="Storage Usage"value={ 65 } color="bg-amber-600 shadow-amber-600/20"/>
  </div>
  </div>
  </div>
 
  <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 group">
  <div className="flex items-center justify-between mb-8">
- <h3 className="text-xl font-bold text-slate-900">Audit Intelligence</h3>
+ <h3 className="text-xl font-bold text-slate-900">Recent Activity</h3>
  <History size={ 20 } className="text-blue-500"/>
  </div>
  <div className="space-y-6">
@@ -511,7 +511,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  onClick={() => setActiveTab('logs')}
  className="w-full mt-8 py-4 bg-slate-50 hover:bg-slate-100 rounded-2xl text-xs font-bold text-blue-600 uppercase tracking-widest transition-all"
  >
- Access Full Archives
+ View All Logs
  </button>
  </div>
  </motion.div>
@@ -528,8 +528,8 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  {/* Header Section */}
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
  <div>
- <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Institutional Network</h2>
- <p className="text-slate-600 mt-1 font-medium">Monitor and control individual school environments.</p>
+ <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Schools List</h2>
+ <p className="text-slate-600 mt-1 font-medium">Manage and monitor all schools on the platform.</p>
  </div>
  <button
   onClick={() => {
@@ -540,7 +540,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
   }}
  className="w-full md:w-auto bg-blue-600 text-white px-8 py-3.5 rounded-2xl flex justify-center items-center gap-3 text-sm font-bold shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:translate-y-[-2px] transition-all active:translate-y-0"
  >
- <Plus size={ 20 } /> Register Institution
+ <Plus size={ 20 } /> Register New School
  </button>
  </div>
 
@@ -548,7 +548,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
  <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
  <div className="flex items-center gap-4">
- <h3 className="text-xl font-bold text-slate-900">Active Management</h3>
+ <h3 className="text-xl font-bold text-slate-900">Manage Schools</h3>
  { filterStatus !=='all'&& (
  <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
  { filterStatus }
@@ -573,8 +573,8 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <table className="w-full text-left">
  <thead className="bg-slate-50 text-[10px] uppercase text-slate-600 font-bold tracking-[0.2em] border-b border-slate-200">
  <tr>
- <th className="pl-8 pr-4 py-5 font-bold">Institution</th>
- <th className="px-4 py-5 font-bold">Infrastructure</th>
+ <th className="pl-8 pr-4 py-5 font-bold">School Name</th>
+ <th className="px-4 py-5 font-bold">Details</th>
  <th className="px-4 py-5 font-bold">Status</th>
  <th className="px-4 py-5 text-right font-bold pr-8">Actions</th>
  </tr>
@@ -627,7 +627,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <button
  onClick={() => setPreviewSchool(school)}
  className="p-2 rounded-xl bg-slate-50 text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-all border border-slate-100"
- title="Live Intel Preview"
+ title="Quick Preview"
  >
  <Eye size={ 18 } />
  </button>
@@ -643,13 +643,13 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  </button>
  <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-2xl p-2 hidden group-hover/actions:block z-50">
  <button onClick={() => toggleSchoolStatus(school)} className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-slate-50 text-xs font-medium text-slate-300 flex items-center gap-2">
- <Shield size={ 14 } /> { school.status  === 'active'?'Suspend':'Activate'} Access
+ <Shield size={ 14 } /> { school.status  === 'active'?'Deactivate':'Activate'} School
  </button>
  <button onClick={() => handleEditSchool(school)} className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-slate-50 text-xs font-medium text-slate-300 flex items-center gap-2">
- <Settings size={ 14 } /> Update Config
+ <Settings size={ 14 } /> Edit Details
  </button>
  <button onClick={() => setShowDeleteConfirm(school.id)} className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-red-500/10 text-xs font-medium text-red-400 flex items-center gap-2">
- <Trash2 size={ 14 } /> Terminate
+ <Trash2 size={ 14 } /> Delete
  </button>
  </div>
  </div>
@@ -673,14 +673,14 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  className="space-y-8"
  >
  <div>
- <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Financial Intelligence</h2>
- <p className="text-slate-600 mt-1 font-medium">Subscription revenue and market distribution.</p>
+ <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Revenue & Billing</h2>
+ <p className="text-slate-600 mt-1 font-medium">Track subscriptions and platform earnings.</p>
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  <div className="lg:col-span-2 bg-slate-50 border border-slate-200 rounded-3xl p-8 relative overflow-hidden">
  <div className="flex justify-between items-center mb-8">
- <h3 className="text-xl font-bold text-slate-900 tracking-tight uppercase tracking-widest text-xs text-slate-600">Revenue Trajectory (MTD)</h3>
+ <h3 className="text-xl font-bold text-slate-900 tracking-tight uppercase tracking-widest text-xs text-slate-600">Revenue Growth (MTD)</h3>
  <div className="text-right">
  <p className="text-2xl font-black text-slate-900">₦{((schools.length * 25000) / 1000).toFixed(0)}k</p>
  <p className="text-[10px] font-bold text-emerald-500 uppercase">Est. Recurring</p>
@@ -737,8 +737,8 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  className="space-y-8"
  >
  <div>
- <h2 className="text-3xl font-bold text-slate-900 tracking-tight">System Infrastructure</h2>
- <p className="text-slate-600 mt-1 font-medium">Real-time server and database monitoring.</p>
+ <h2 className="text-3xl font-bold text-slate-900 tracking-tight">System Status</h2>
+ <p className="text-slate-600 mt-1 font-medium">Real-time server and database metrics.</p>
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -778,17 +778,17 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  className="space-y-8"
  >
  <div>
- <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Audit Trail</h2>
- <p className="text-slate-600 mt-1 font-medium">Immutable record of all administrative activities.</p>
+ <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Activity Logs</h2>
+ <p className="text-slate-600 mt-1 font-medium">A permanent record of all admin actions.</p>
  </div>
 
  <div className="bg-slate-50 border border-slate-200 rounded-3xl overflow-hidden">
  <div className="p-8 border-b border-slate-200 flex justify-between items-center bg-white/[0.02]">
  <div>
- <h3 className="text-xl font-bold text-slate-900 tracking-tight">Security Intel Feed</h3>
- <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1">Live from Kernel Audit</p>
+ <h3 className="text-xl font-bold text-slate-900 tracking-tight">Live Activity Feed</h3>
+ <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1">Live updates from system logs</p>
  </div>
- <button className="px-6 py-2.5 bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-blue-600/20 transition-all">Export Archive</button>
+ <button className="px-6 py-2.5 bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-blue-600/20 transition-all">Download Logs</button>
  </div>
  <div className="divide-y divide-slate-100">
  { auditLogs.length > 0 ? auditLogs.map((log, i) => (
@@ -838,8 +838,8 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="w-16 h-16 bg-blue-600/10 border border-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
  <SchoolIcon className="text-blue-500" size={ 32 } />
  </div>
- <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">{ editingSchool ?'Update Infrastructure':'Register New Institution'}</h3>
- <p className="text-slate-600 mt-2 font-bold text-xs uppercase tracking-widest">SEEDD Provisioning Engine</p>
+ <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">{ editingSchool ?'Edit School Details':'Register New School'}</h3>
+ <p className="text-slate-600 mt-2 font-bold text-xs uppercase tracking-widest">School Registration Wizard</p>
  </div>
 
 { error && <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm border border-red-100 font-medium">{ error }</div>}
@@ -849,7 +849,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
  <h4 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-3">
  <div className="w-6 h-6 rounded-full bg-blue-500 text-[10px] flex items-center justify-center font-black">1</div>
- { editingSchool ?'Entity Configuration':'Institutional Identity'}
+ { editingSchool ?'School Details':'School Branding'}
  </h4>
   
   <div className="mb-10 flex flex-col items-center">
@@ -894,11 +894,11 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
       className="hidden" 
       accept="image/*" 
     />
-    <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mt-4">Institutional Identity Mark</p>
+    <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mt-4">Official School Logo</p>
   </div>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
  <div className="space-y-3">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">Entity Name</label>
+ <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">School Name</label>
  <input
  required
  type="text"
@@ -916,7 +916,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  />
  </div>
  <div className="space-y-3">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">Terminal Email</label>
+ <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">School Email Address</label>
  <input
  required
  type="email"
@@ -958,7 +958,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  </div>
 
  <div className="space-y-3">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">Comm Channel (Phone)</label>
+ <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">Phone Number</label>
  <input
  required
  type="tel"
@@ -998,7 +998,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
  <h4 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-3">
  <div className="w-6 h-6 rounded-full bg-blue-500 text-[10px] flex items-center justify-center font-black">2</div>
- Resource Allocation
+ Plan Selection
  </h4>
  <div className="space-y-4">
  { DEFAULT_PLANS.map(plan => (
@@ -1027,7 +1027,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <p className="font-bold text-slate-900">{ plan.name }</p>
  <p className="text-xs font-black text-blue-500">₦{ plan.price.toLocaleString()} / term</p>
  </div>
- <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Support up to { plan.studentLimit } Active Units (Students)</p>
+ <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Support up to { plan.studentLimit } Students</p>
  </div>
  </label>
  ))}
@@ -1037,13 +1037,13 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
  <h4 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-3">
  <div className="w-6 h-6 rounded-full bg-blue-500 text-[10px] flex items-center justify-center font-black">3</div>
- Superuser Provisioning
+ Admin Account Setup
  </h4>
- <p className="text-sm text-slate-600 font-bold mb-8">Deploy initial administrative credentials for { newSchool.name }.</p>
+ <p className="text-sm text-slate-600 font-bold mb-8">Create the first admin account for { newSchool.name }.</p>
  
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
  <div className="space-y-3">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">First Designation</label>
+ <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">First Name</label>
  <input
  required
  type="text"
@@ -1053,7 +1053,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  />
  </div>
  <div className="space-y-3">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">Last Designation</label>
+ <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">Last Name</label>
  <input
  required
  type="text"
@@ -1065,7 +1065,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  </div>
 
  <div className="space-y-3">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">Access Token (Password)</label>
+ <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">Admin Password</label>
  <input
  required
  type="password"
@@ -1100,7 +1100,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  type="submit"
  className="flex-1 p-5 rounded-[1.5rem] bg-blue-600 text-white font-black shadow-[0_0_30px_rgba(37, 99, 235, 0.3)] hover:bg-blue-700 hover:scale-[1.02] transition-all active:scale-[0.98] text-sm uppercase tracking-[0.1em]"
  >
- { editingSchool ?'Commit Changes': onboardingStep < 3 ?'Next Phase':'Initialize Entity'}
+ { editingSchool ?'Save Changes': onboardingStep < 3 ?'Next Step':'Create School'}
  </button>
  </div>
  </form>
@@ -1119,22 +1119,22 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="w-20 h-20 bg-red-500/10 border border-red-500/20 rounded-3xl flex items-center justify-center mx-auto mb-8">
  <Trash2 className="text-red-500" size={ 40 } />
  </div>
- <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight mb-4">Decommission Entity?</h3>
+ <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight mb-4">Delete School?</h3>
  <p className="text-slate-600 font-bold text-sm mb-10 leading-relaxed">
- You are about to terminate all infrastructure for <span className="text-slate-900 font-black">"{ schoolToDelete?.name }"</span>. This action is final and will purge all associated data.
+ You are about to delete all records for <span className="text-slate-900 font-black">"{ schoolToDelete?.name }"</span>. This action is final and will remove all school data.
  </p>
  <div className="flex gap-4">
  <button
                 onClick={() => setShowDeleteConfirm(null)}
  className="flex-1 p-5 rounded-2xl border border-slate-200 font-bold text-slate-600 hover:bg-slate-50 transition-all text-xs uppercase tracking-widest"
  >
- Abort
+ Cancel
  </button>
  <button
  onClick={ handleDeleteSchool }
  className="flex-1 p-5 rounded-2xl bg-red-600 text-white font-black shadow-[0_0_30px_rgba(220, 38, 38, 0.3)] hover:bg-red-700 transition-all text-xs uppercase tracking-widest"
  >
- Purge Data
+ Delete School
  </button>
  </div>
  </motion.div>
@@ -1280,7 +1280,7 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  { school.logoUrl ? <img src={ school.logoUrl } className="w-full h-full object-cover"/> : school.name.charAt(0)}
  </div>
  <div>
- <h2 className="text-2xl font-black text-slate-900 tracking-tight">{ school.name } <span className="text-blue-500 font-medium text-lg ml-2">Intel Preview</span></h2>
+ <h2 className="text-2xl font-black text-slate-900 tracking-tight">{ school.name } <span className="text-blue-500 font-medium text-lg ml-2">Quick Statistics</span></h2>
  <p className="text-slate-600 font-bold text-xs uppercase tracking-widest flex items-center gap-2 mt-1">
  <Globe size={ 12 } className="text-blue-500"/> { school.slug }.seedify.ng • { school.planId.toUpperCase()} TIER
  </p>
@@ -1369,8 +1369,8 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  <Activity size={ 20 } />
  </div>
  <div>
- <h3 className="font-black text-slate-900 tracking-tight">Fees Collection Velocity</h3>
- <p className="text-xs text-slate-600 font-bold uppercase tracking-widest">Fiscal Performance: { new Date().getFullYear()}</p>
+ <h3 className="font-black text-slate-900 tracking-tight">Fee Collection Progress</h3>
+ <p className="text-xs text-slate-600 font-bold uppercase tracking-widest">Yearly Performance: { new Date().getFullYear()}</p>
  </div>
  </div>
  <div className="px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-300">
