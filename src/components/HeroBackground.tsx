@@ -179,8 +179,8 @@ export const HeroBackground: React.FC = () => {
       
       {/* Floating School Icons Layer */}
       <div className="absolute inset-0 pointer-events-none z-20">
-        {[...Array(18)].map((_, i) => (
-          <FloatingIcon key={i} delay={i * 1.5} />
+        {[...Array(8)].map((_, i) => (
+          <FloatingIcon key={i} delay={i * 2.5} />
         ))}
       </div>
 

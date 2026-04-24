@@ -177,7 +177,7 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
  if (tenantSchool) return null;
  
  return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center w-full px-6 pt-6">
+    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center w-full px-4 sm:px-6 pt-4 sm:pt-6">
       <motion.nav 
         initial={ false }
         animate={{ 
@@ -188,12 +188,12 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
             ? "rgba(226, 232, 240, 0.5)" 
             : (isLandingPage ? "transparent" : "rgba(255, 255, 255, 0.1)"),
           boxShadow: isScrolled ?"0 20px 40px -10px rgba(0, 0, 0, 0.05)":"none",
-          width: isScrolled ?"90%":"100%",
+          width: isScrolled ?"92%":"100%",
           maxWidth:"1280px",
-          height: isScrolled ?"72px":"80px",
-          borderRadius: isScrolled ?"24px":"0px",
-          paddingLeft: isScrolled ?"2rem":"1.5rem",
-          paddingRight: isScrolled ?"2rem":"1.5rem",
+          height: isScrolled ? (window.innerWidth < 640 ? "60px" : "72px") : (window.innerWidth < 640 ? "64px" : "80px"),
+          borderRadius: isScrolled ?"20px":"0px",
+          paddingLeft: isScrolled ? (window.innerWidth < 640 ? "1.25rem" : "2rem") : "1.5rem",
+          paddingRight: isScrolled ? (window.innerWidth < 640 ? "1.25rem" : "2rem") : "1.5rem",
         }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className={ cn(

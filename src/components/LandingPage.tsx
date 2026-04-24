@@ -85,160 +85,122 @@ export const LandingPage = () => {
   return (
     <div className="relative bg-[#020617] min-h-screen text-white selection:bg-blue-500/30 selection:text-white overflow-x-hidden font-inter">
       
-      <section className="relative h-screen flex flex-col pt-24 lg:pt-32 px-6 overflow-hidden">
+      <section className="relative min-h-screen flex flex-col justify-center pt-20 lg:pt-32 px-6 overflow-hidden">
         <HeroBackground />
         
         {/* Top Glow Edge */}
         <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
 
-        <div className="max-w-7xl mx-auto w-full relative z-10 flex-grow flex flex-col justify-end gap-6 pb-12">
-            {/* Left: CTAs */}
-            <div className="space-y-10">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="flex flex-col sm:flex-row gap-4 sm:gap-6"
-              >
-                <Button 
-                  onClick={() => setIsSearchVisible(!isSearchVisible)}
-                  className="h-12 w-full sm:w-auto px-6 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-[0_10px_30px_-5px_rgba(37,99,235,0.5)] flex items-center gap-2 transition-all active:scale-95 group"
-                >
-                  Find your School
-                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                </Button>
-                
-                <Link to="/#onboarding" className="w-full sm:w-auto">
-                  <Button 
-                    variant="outline"
-                    className="h-12 w-full px-6 bg-white/5 backdrop-blur-2xl border-white/10 text-white hover:bg-white/10 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95"
-                  >
-                    Request A Demo
-                  </Button>
-                </Link>
-              </motion.div>
-
-              {/* Revealed Search Input */}
-              <AnimatePresence>
-                {isSearchVisible && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0, y: -10 }}
-                    animate={{ opacity: 1, height: 'auto', y: 0 }}
-                    exit={{ opacity: 0, height: 0, y: -10 }}
-                    className="relative max-w-md"
-                    ref={dropdownRef}
-                  >
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40" size={20} />
-                    <input 
-                      autoFocus
-                      type="text"
-                      placeholder="Type school name..."
-                      className="w-full h-12 pl-12 pr-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-2xl text-white placeholder:text-white/30 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all font-bold text-xs"
-                      value={searchQuery}
-                      onChange={(e) => {
-                        setSearchQuery(e.target.value);
-                        setIsDropdownOpen(true);
-                      }}
-                      onFocus={() => setIsDropdownOpen(true)}
-                    />
-
-                    {/* Search Results Dropdown */}
-                    <AnimatePresence>
-                      {isDropdownOpen && searchQuery && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 10, scale: 0.98 }}
-                          className="absolute top-full left-0 right-0 mt-3 bg-slate-900/90 backdrop-blur-3xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 max-h-[300px] overflow-y-auto"
-                        >
-                          {filteredSchools.length > 0 ? (
-                            filteredSchools.map(school => (
-                              <button
-                                key={school.id}
-                                onClick={() => handleSchoolSelect(school)}
-                                className="w-full flex items-center gap-4 px-5 py-4 hover:bg-white/5 transition-colors text-left border-b border-white/5 last:border-0 group"
-                              >
-                                <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center group-hover:bg-blue-500/40 transition-colors">
-                                  {school.logoUrl ? (
-                                    <img src={school.logoUrl} alt="" className="w-6 h-6 object-contain" />
-                                  ) : (
-                                    <SchoolIcon size={20} className="text-blue-400" />
-                                  )}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="font-bold text-white truncate">{school.name}</div>
-                                  <div className="text-xs text-white/40">{school.slug}.seedify.name.ng</div>
-                                </div>
-                                <ArrowUpRight className="text-white/20 group-hover:text-blue-400 transition-colors" size={18} />
-                              </button>
-                            ))
-                          ) : (
-                            <div className="px-6 py-10 text-center">
-                              <p className="font-bold text-white">No schools found</p>
-                              <p className="text-sm text-white/40 mt-1">Check spelling or contact support</p>
-                            </div>
-                          )}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-          {/* Bottom: Massive Typography + Description */}
-          <div className="pb-4">
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12">
+        <div className="max-w-7xl mx-auto w-full relative z-10 flex-grow flex flex-col justify-center gap-12 lg:gap-16 py-20 lg:py-32">
+          {/* Top Section: Massive Typography + Description */}
+          <div className="w-full">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 lg:gap-12">
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-                className="relative flex flex-col items-start gap-4"
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                className="relative flex flex-col items-start"
               >
-                <h1 className="text-[8vw] lg:text-[10vw] font-space font-black tracking-tighter text-white leading-[0.8] opacity-90 drop-shadow-[0_0_50px_rgba(255,255,255,0.05)]">
-                  SEEDD
-                </h1>
-                <h1 className="text-[6vw] lg:text-[7.5vw] font-space font-black tracking-tighter bg-gradient-to-b from-blue-400 via-blue-600 to-blue-900 bg-clip-text text-transparent leading-[0.8] drop-shadow-[0_0_80px_rgba(37,99,235,0.2)]">
-                  ECO-SYSTEM
-                </h1>
-
-                {/* Feature Highlights Row */}
-                <div className="flex flex-wrap items-center gap-8 lg:gap-12 mt-12 pt-8 border-t border-white/5 w-full">
-                  <div className="flex items-center gap-5 group">
-                    <div className="w-14 h-14 rounded-2xl bg-blue-600/5 flex items-center justify-center border border-white/5 group-hover:border-blue-500/30 group-hover:bg-blue-600/10 transition-all duration-500">
-                      <ShieldCheck className="text-blue-500" size={28} />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-white font-space font-black text-sm tracking-tight leading-tight">Secure</span>
-                      <span className="text-white/40 font-bold text-[10px] uppercase tracking-[0.2em] leading-tight">by Design</span>
-                    </div>
-                  </div>
-
-                  <div className="hidden md:block w-px h-10 bg-white/5" />
-
-                  <div className="flex items-center gap-5 group">
-                    <div className="w-14 h-14 rounded-2xl bg-blue-600/5 flex items-center justify-center border border-white/5 group-hover:border-blue-500/30 group-hover:bg-blue-600/10 transition-all duration-500">
-                      <Layers className="text-blue-500" size={28} />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-white font-space font-black text-sm tracking-tight leading-tight">Scalable</span>
-                      <span className="text-white/40 font-bold text-[10px] uppercase tracking-[0.2em] leading-tight">by Nature</span>
-                    </div>
-                  </div>
-
-                  <div className="hidden md:block w-px h-10 bg-white/5" />
-
-                  <div className="flex items-center gap-5 group">
-                    <div className="w-14 h-14 rounded-2xl bg-blue-600/5 flex items-center justify-center border border-white/5 group-hover:border-blue-500/30 group-hover:bg-blue-600/10 transition-all duration-500">
-                      <BarChart3 className="text-blue-500" size={28} />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-white font-space font-black text-sm tracking-tight leading-tight">Data-Driven</span>
-                      <span className="text-white/40 font-bold text-[10px] uppercase tracking-[0.2em] leading-tight">Decisions</span>
-                    </div>
-                  </div>
+                <div className="space-y-0">
+                  <h1 className="text-[14vw] lg:text-[10vw] font-space font-black tracking-tighter text-white leading-[0.85] opacity-90 drop-shadow-[0_0_50px_rgba(255,255,255,0.05)]">
+                    SEEDD
+                  </h1>
+                  <h1 className="text-[10vw] lg:text-[7.5vw] font-space font-black tracking-tighter bg-gradient-to-b from-blue-400 via-blue-600 to-blue-900 bg-clip-text text-transparent leading-[0.85] drop-shadow-[0_0_80px_rgba(37,99,235,0.2)]">
+                    ECO-SYSTEM
+                  </h1>
                 </div>
+
+                {/* Right Aligned Description (for mobile it flows below) */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4, duration: 1 }}
+                  className="max-w-sm mt-8 lg:mt-0 lg:mb-4 lg:text-right"
+                >
+                  <h3 className="text-xs font-space font-black text-white leading-tight uppercase tracking-[0.3em] mb-4">
+                    Power the intelligence behind <br className="hidden sm:block" /> modern education.
+                  </h3>
+                  <p className="text-[10px] text-white/40 leading-relaxed font-bold uppercase tracking-widest">
+                    SEEDD connects institutions, centralizes data, and transforms everyday operations into a seamless, insight-driven system. 
+                  </p>
+                </motion.div>
               </motion.div>
+            </div>
+          </div>
+
+          {/* Middle: Feature Highlights Grid */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+            className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-12 w-full max-w-4xl"
+          >
+            {[
+              { icon: ShieldCheck, label: "Secure", sublabel: "by Design" },
+              { icon: Layers, label: "Scalable", sublabel: "by Nature" },
+              { icon: BarChart3, label: "Data-Driven", sublabel: "Decisions" }
+            ].map((feature, i) => (
+              <div key={i} className="flex items-center gap-4 group">
+                <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-blue-600/5 flex items-center justify-center border border-white/5 group-hover:border-blue-500/30 group-hover:bg-blue-600/10 transition-all duration-500 shrink-0">
+                  <feature.icon className="text-blue-500" size={24} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-white font-space font-black text-sm tracking-tight leading-tight">{feature.label}</span>
+                  <span className="text-white/40 font-bold text-[9px] uppercase tracking-[0.2em] leading-tight mt-1">{feature.sublabel}</span>
+                </div>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* Bottom: CTAs + Search */}
+          <div className="space-y-8 w-full max-w-xl">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
+              className="flex flex-col sm:flex-row gap-4 sm:gap-6"
+            >
+              <Button 
+                onClick={() => setIsSearchVisible(!isSearchVisible)}
+                className="h-14 w-full sm:w-auto px-8 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-[0_20px_40px_-10px_rgba(37,99,235,0.5)] flex items-center justify-center gap-3 transition-all active:scale-95 group"
+              >
+                Find your School
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              </Button>
+              
+              <Link to="/#onboarding" className="w-full sm:w-auto">
+                <Button 
+                  variant="outline"
+                  className="h-14 w-full px-8 bg-white/5 backdrop-blur-2xl border-white/10 text-white hover:bg-white/10 rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all active:scale-95"
+                >
+                  Request A Demo
+                </Button>
+              </Link>
+            </motion.div>
+
+            {/* Revealed Search Input */}
+            <AnimatePresence>
+              {isSearchVisible && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, y: -10 }}
+                  animate={{ opacity: 1, height: 'auto', y: 0 }}
+                  exit={{ opacity: 0, height: 0, y: -10 }}
+                  className="relative w-full"
+                  ref={dropdownRef}
+                >
+                  <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-white/40" size={20} />
+                  <input 
+                    autoFocus
+                    type="text"
+                    placeholder="Search for your institution..."
+                    className="w-full h-16 pl-14 pr-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-2xl text-white placeholder:text-white/30 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all font-bold text-sm"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setIsDropdownOpen(true);
+                    }}
+                    onFocus={() => setIsDropdownOpen(true)}
+                  />
 
               {/* Right Aligned Description */}
               <motion.div

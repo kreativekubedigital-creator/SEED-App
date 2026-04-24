@@ -317,26 +317,49 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 
  return (
  <div className="flex h-screen bg-slate-50 overflow-hidden relative selection:bg-blue-500/30 selection:text-blue-900">
+ {/* Sidebar Overlay for Mobile */}
+ <AnimatePresence>
+  {isSidebarOpen && (
+  <motion.div
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  exit={{ opacity: 0 }}
+  onClick={() => setIsSidebarOpen(false)}
+  className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 lg:hidden"
+  />
+  )}
+ </AnimatePresence>
+
  {/* Sidebar */}
  <motion.div 
  initial={ false }
- animate={{ width: isSidebarOpen ? 280 : 80 }}
- className="bg-white border-r border-slate-200 flex flex-col relative z-30 shadow-xl shadow-slate-200/50"
+ animate={{ 
+   x: (typeof window !== 'undefined' && window.innerWidth < 1024 && !isSidebarOpen) ? -280 : 0,
+   width: (typeof window !== 'undefined' && window.innerWidth < 1024) ? 280 : (isSidebarOpen ? 280 : 80)
+ }}
+  className={cn(
+  "bg-white border-r border-slate-200 flex flex-col fixed lg:relative h-full z-50 shadow-xl lg:shadow-none",
+  !isSidebarOpen && "lg:w-20"
+  )}
  >
  <div className="p-6 flex items-center gap-4 border-b border-slate-200">
  <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
- <Shield size={ 24 } className="text-slate-900"/>
+ <Shield size={ 24 } className="text-white"/>
  </div>
- <span className="text-xl font-bold tracking-tight text-slate-900 transition-opacity duration-300">
+ {(isSidebarOpen || (typeof window !== 'undefined' && window.innerWidth < 1024)) && (
  SEEDD Admin
  </span>
+ )}
  </div>
 
- <nav className="flex-1 px-3 py-6 space-y-2">
+ <nav className="flex-1 px-3 py-6 space-y-2 overflow-y-auto">
  { tabs.map((tab) => (
  <button
  key={ tab.id }
- onClick={() => setActiveTab(tab.id)}
+ onClick={() => {
+   setActiveTab(tab.id);
+   if (typeof window !== 'undefined' && window.innerWidth < 1024) setIsSidebarOpen(false);
+  }}
  className={ cn(
 "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all group",
  activeTab === tab.id 
@@ -348,7 +371,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 "shrink-0",
  activeTab === tab.id ?"text-slate-900":"group-hover:text-blue-600"
  )} />
- { isSidebarOpen && (
+ {(isSidebarOpen || (typeof window !== 'undefined' && window.innerWidth < 1024)) && (
  <span className="font-medium text-sm">{ tab.label }</span>
  )}
  </button>
@@ -361,7 +384,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all font-bold text-xs uppercase tracking-widest"
  >
  <LogOut size={ 18 } />
- { isSidebarOpen && <span>Log Out</span>}
+ {(isSidebarOpen || (typeof window !== 'undefined' && window.innerWidth < 1024)) && <span>Log Out</span>}
  </button>
  </div>
  </motion.div>
@@ -399,7 +422,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  </div>
  </header>
 
- <div className="flex-1 overflow-y-auto p-8 lg:p-12 scroll-smooth">
+ <div className="flex-1 overflow-y-auto p-4 sm:p-8 lg:p-12 scroll-smooth">
  <AnimatePresence mode="wait">
  { activeTab  === 'overview'&& (
  <motion.div
