@@ -11,7 +11,7 @@ import {
   Mail, Phone, ArrowUpRight, GraduationCap, School as SchoolIcon,
   MessageSquare, Settings, Clock, Sparkles, TrendingUp, CreditCard,
   Cloud, Terminal, Command, Activity, Building2, BookOpen, FileText,
-  ShieldCheck, LayoutGrid, Crosshair, Rocket, Play
+  ShieldCheck, LayoutGrid, Crosshair, Rocket, Play, Layers
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
@@ -201,6 +201,43 @@ export const LandingPage = () => {
                 <h1 className="text-[6vw] lg:text-[7.5vw] font-space font-black tracking-tighter bg-gradient-to-b from-blue-400 via-blue-600 to-blue-900 bg-clip-text text-transparent leading-[0.8] drop-shadow-[0_0_80px_rgba(37,99,235,0.2)]">
                   ECO-SYSTEM
                 </h1>
+
+                {/* Feature Highlights Row */}
+                <div className="flex flex-wrap items-center gap-8 lg:gap-12 mt-12 pt-8 border-t border-white/5 w-full">
+                  <div className="flex items-center gap-5 group">
+                    <div className="w-14 h-14 rounded-2xl bg-blue-600/5 flex items-center justify-center border border-white/5 group-hover:border-blue-500/30 group-hover:bg-blue-600/10 transition-all duration-500">
+                      <ShieldCheck className="text-blue-500" size={28} />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-white font-space font-black text-sm tracking-tight leading-tight">Secure</span>
+                      <span className="text-white/40 font-bold text-[10px] uppercase tracking-[0.2em] leading-tight">by Design</span>
+                    </div>
+                  </div>
+
+                  <div className="hidden md:block w-px h-10 bg-white/5" />
+
+                  <div className="flex items-center gap-5 group">
+                    <div className="w-14 h-14 rounded-2xl bg-blue-600/5 flex items-center justify-center border border-white/5 group-hover:border-blue-500/30 group-hover:bg-blue-600/10 transition-all duration-500">
+                      <Layers className="text-blue-500" size={28} />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-white font-space font-black text-sm tracking-tight leading-tight">Scalable</span>
+                      <span className="text-white/40 font-bold text-[10px] uppercase tracking-[0.2em] leading-tight">by Nature</span>
+                    </div>
+                  </div>
+
+                  <div className="hidden md:block w-px h-10 bg-white/5" />
+
+                  <div className="flex items-center gap-5 group">
+                    <div className="w-14 h-14 rounded-2xl bg-blue-600/5 flex items-center justify-center border border-white/5 group-hover:border-blue-500/30 group-hover:bg-blue-600/10 transition-all duration-500">
+                      <BarChart3 className="text-blue-500" size={28} />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-white font-space font-black text-sm tracking-tight leading-tight">Data-Driven</span>
+                      <span className="text-white/40 font-bold text-[10px] uppercase tracking-[0.2em] leading-tight">Decisions</span>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
 
               {/* Right Aligned Description */}
