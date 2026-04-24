@@ -1334,7 +1334,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  </div>
  { newUser.role  === 'student'&& (
  <div className="space-y-1.5">
- <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 ml-1">Registration Number</label>
+ <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 ml-1">ID Number</label>
  <input
  type="text"
  value={ newUser.registrationNumber }

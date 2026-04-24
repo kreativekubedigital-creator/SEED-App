@@ -79,7 +79,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  const [success, setSuccess] = useState<string | null>(null);
  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
  const [searchQuery, setSearchQuery] = useState('');
- const [filterStatus, setFilterStatus] = useState<'all'|'active'|'suspended'>('all');
+ const [filterStatus, setFilterStatus] = useState<'all'|'active'|'inactive'>('all');
  const [activeTab, setActiveTab] = useState<'overview'|'schools'|'financials'|'logs'|'system'>('overview');
  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
  const [previewSchool, setPreviewSchool] = useState<School | null>(null);
@@ -246,13 +246,13 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  };
 
  const toggleSchoolStatus = async (school: School) => {
- const newStatus = school.status  === 'active'?'suspended':'active';
+ const newStatus = school.status  === 'active'?'inactive':'active';
  try {
  setError(null);
  const schoolRef = doc(db,'schools', school.id);
  await updateDoc(schoolRef, { status: newStatus });
  await logAuditAction('TOGGLE_SCHOOL_STATUS',`Changed status of ${ school.name } to ${ newStatus }`, school.id,'school');
- setSuccess(`School ${ newStatus  === 'active'?'activated':'suspended'} successfully`);
+ setSuccess(`School ${ newStatus  === 'active'?'activated':'deactivated'} successfully`);
  } catch (error) {
  console.error("Failed to update status:", error);
  try {
@@ -540,7 +540,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
   }}
  className="w-full md:w-auto bg-blue-600 text-white px-8 py-3.5 rounded-2xl flex justify-center items-center gap-3 text-sm font-bold shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:translate-y-[-2px] transition-all active:translate-y-0"
  >
- <Plus size={ 20 } /> Register New School
+ <Plus size={ 20 } /> Add New School
  </button>
  </div>
 
@@ -635,7 +635,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  onClick={() => setSelectedSchoolId(school.id)}
  className="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/10"
  >
- Console
+ Manage
  </button>
  <div className="relative group/actions">
  <button className="p-2.5 rounded-xl bg-slate-50 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
@@ -643,7 +643,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  </button>
  <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-2xl p-2 hidden group-hover/actions:block z-50">
  <button onClick={() => toggleSchoolStatus(school)} className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-slate-50 text-xs font-medium text-slate-300 flex items-center gap-2">
- <Shield size={ 14 } /> { school.status  === 'active'?'Deactivate':'Activate'} School
+ <Shield size={ 14 } /> { school.status  === 'active'?'Pause Account':'Activate'} School
  </button>
  <button onClick={() => handleEditSchool(school)} className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-slate-50 text-xs font-medium text-slate-300 flex items-center gap-2">
  <Settings size={ 14 } /> Edit Details
@@ -838,8 +838,8 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="w-16 h-16 bg-blue-600/10 border border-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
  <SchoolIcon className="text-blue-500" size={ 32 } />
  </div>
- <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">{ editingSchool ?'Edit School Details':'Register New School'}</h3>
- <p className="text-slate-600 mt-2 font-bold text-xs uppercase tracking-widest">School Registration Wizard</p>
+ <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">{ editingSchool ?'Edit School Details':'Add New School'}</h3>
+ <p className="text-slate-600 mt-2 font-bold text-xs uppercase tracking-widest">School Setup Wizard</p>
  </div>
 
 { error && <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm border border-red-100 font-medium">{ error }</div>}
@@ -930,7 +930,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  </div>
 
  <div className="space-y-3 mb-6">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">System Path (Slug)</label>
+ <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">School Web Address</label>
  <div className="flex group">
  <input
  required
@@ -947,7 +947,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  </div>
 
  <div className="space-y-3 mb-6">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">Physical Coordinate</label>
+ <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">Physical Address</label>
  <input
  required
  type="text"
