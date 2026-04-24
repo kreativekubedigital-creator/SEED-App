@@ -612,34 +612,34 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
               lessons.map((lesson, idx) => {
                 const colors = ['bg-orange-100', 'bg-blue-100', 'bg-purple-100', 'bg-pink-100', 'bg-green-100'];
                 const colorClass = colors[idx % colors.length];
-                return                   <motion.div 
-                    key={idx}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.1, type: "spring", stiffness: 300, damping: 20 }}
-                    whileHover={{ y: -5, scale: 1.02 }}
-                    className={`${colorClass} p-3 rounded-2xl border border-white/40 shadow-sm transition-all group flex flex-col relative overflow-hidden`}
-                  >
-                    <div className="flex justify-between items-start mb-4 relative z-10">
-                      <span className="text-[9px] font-black text-slate-900 bg-white/60 px-3 py-1 rounded-full uppercase tracking-widest border border-white/50 shadow-sm">{lesson.level}</span>
-                      <div className="p-2 bg-white/60 text-slate-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity scale-90 group-hover:scale-100 border border-white/50 shadow-sm">
-                        <Play size={14} fill="currentColor" />
-                      </div>
-                    </div>
-                    <h4 className="text-lg font-black uppercase tracking-widest mb-1 text-slate-900 leading-tight relative z-10">{lesson.title}</h4>
-                    <p className="text-[10px] text-slate-700 font-bold uppercase tracking-wide mb-6 line-clamp-2 flex-grow relative z-10">{lesson.content}</p>
-                    <motion.button 
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                      onClick={() => startLesson(lesson)}
-                      className="w-full py-2.5 rounded-xl bg-white border border-white/50 text-[10px] font-black uppercase tracking-widest text-slate-900 hover:bg-slate-50 transition-all shadow-sm relative z-10"
-                    >
-                      Start Lesson
-                    </motion.button>
-                  </motion.div>
->
-                );
+                 return (
+                   <motion.div 
+                     key={idx}
+                     initial={{ opacity: 0, y: 20 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     transition={{ delay: idx * 0.1, type: "spring", stiffness: 300, damping: 20 }}
+                     whileHover={{ y: -5, scale: 1.02 }}
+                     className={`${colorClass} p-3 rounded-2xl border border-white/40 shadow-sm transition-all group flex flex-col relative overflow-hidden`}
+                   >
+                     <div className="flex justify-between items-start mb-4 relative z-10">
+                       <span className="text-[9px] font-black text-slate-900 bg-white/60 px-3 py-1 rounded-full uppercase tracking-widest border border-white/50 shadow-sm">{lesson.level}</span>
+                       <div className="p-2 bg-white/60 text-slate-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity scale-90 group-hover:scale-100 border border-white/50 shadow-sm">
+                         <Play size={14} fill="currentColor" />
+                       </div>
+                     </div>
+                     <h4 className="text-lg font-black uppercase tracking-widest mb-1 text-slate-900 leading-tight relative z-10">{lesson.title}</h4>
+                     <p className="text-[10px] text-slate-700 font-bold uppercase tracking-wide mb-6 line-clamp-2 flex-grow relative z-10">{lesson.content}</p>
+                     <motion.button 
+                       whileHover={{ scale: 1.02 }}
+                       whileTap={{ scale: 0.98 }}
+                       transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                       onClick={() => startLesson(lesson)}
+                       className="w-full py-2.5 rounded-xl bg-white border border-white/50 text-[10px] font-black uppercase tracking-widest text-slate-900 hover:bg-slate-50 transition-all shadow-sm relative z-10"
+                     >
+                       Start Lesson
+                     </motion.button>
+                   </motion.div>
+                 );
               })
             )}
           </div>

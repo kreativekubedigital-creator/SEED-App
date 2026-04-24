@@ -322,7 +322,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
                 <h4 className="font-black uppercase tracking-widest text-lg text-slate-900 mb-1 leading-tight">{quiz.title}</h4>
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-900/50 mb-4">{quiz.questions.length} Questions</p>
               </div>
-              
+              {result ? (
                 <div className="pt-4 border-t border-white/30 flex justify-between items-center relative z-10">
                   <div className="flex items-center gap-2">
                     <span className="text-[9px] font-black text-slate-900/50 uppercase tracking-widest">Score</span>
