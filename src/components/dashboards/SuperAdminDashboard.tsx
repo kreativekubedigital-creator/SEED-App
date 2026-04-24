@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from'framer-motion';
 import { UserProfile, School, Invoice, Payment } from'../../types';
 import { DEFAULT_PLANS } from'../../constants';
 import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, OperationType, handleFirestoreError, query, where, onSnapshot, secondaryAuth, createUserWithEmailAndPassword, setDoc, logAuditAction, limit, orderBy } from'../../lib/compatibility';
-import { LogOut, Plus, Shield, CreditCard, Users, School as SchoolIcon, Trash2, CheckCircle, Settings, Search, MoreVertical, ExternalLink, ArrowRight, LayoutDashboard, X, Activity, History, Database, Globe, DollarSign, Menu, Eye } from'lucide-react';
+import { LogOut, Plus, Shield, CreditCard, Users, School as SchoolIcon, Trash2, CheckCircle, Settings, Search, MoreVertical, ExternalLink, ArrowRight, LayoutDashboard, X, Activity, History, Database, Globe, DollarSign, Menu, Eye, Upload } from'lucide-react';
 import { SchoolManagement } from'./SchoolManagement';
 import { sortByName, cn } from'../../lib/utils';
+import { StorageService } from '../../services/storageService';
 
 const LineChart = ({ data }: { data: number[] }) => {
  const max = Math.max(...data);
@@ -69,7 +70,9 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  const [showAddSchool, setShowAddSchool] = useState(false);
  const [onboardingStep, setOnboardingStep] = useState(1);
  const [editingSchool, setEditingSchool] = useState<School | null>(null);
- const [newSchool, setNewSchool] = useState({ name:'', slug:'', email:'', address:'', phone:'', planId:'free'});
+ const [newSchool, setNewSchool] = useState({ name:'', slug:'', email:'', address:'', phone:'', planId:'free', logoUrl: ''});
+ const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+ const logoInputRef = useRef<HTMLInputElement>(null);
  const [adminDetails, setAdminDetails] = useState({ firstName:'', lastName:'', password:''});
  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
  const [error, setError] = useState<string | null>(null);
@@ -117,6 +120,30 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  unsubLogs();
  };
  }, []);
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploadingLogo(true);
+      setError(null);
+      
+      // Use the slug as part of the path if available, otherwise use a timestamp
+      const pathPrefix = newSchool.slug || `temp-${Date.now()}`;
+      const fileName = `logo-${Date.now()}.${file.name.split('.').pop()}`;
+      const path = `${pathPrefix}/${fileName}`;
+      
+      const url = await StorageService.uploadFile('schools', path, file);
+      setNewSchool(prev => ({ ...prev, logoUrl: url }));
+      setSuccess("Logo uploaded successfully");
+    } catch (err: any) {
+      console.error("Logo upload failed:", err);
+      setError(`Logo upload failed: ${err.message}`);
+    } finally {
+      setIsUploadingLogo(false);
+    }
+  };
 
  const handleAddSchool = async (e: React.FormEvent) => {
  e.preventDefault();
@@ -187,7 +214,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  setShowAddSchool(false);
  setEditingSchool(null);
  setOnboardingStep(1);
- setNewSchool({ name:'', slug:'', email:'', address:'', phone:'', planId:'free'});
+ setNewSchool({ name:'', slug:'', email:'', address:'', phone:'', planId:'free', logoUrl: ''});
  setAdminDetails({ firstName:'', lastName:'', password:''});
  } catch (error: any) {
  console.error("Failed to save school:", error);
@@ -206,14 +233,15 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 
  const handleEditSchool = (school: School) => {
  setEditingSchool(school);
- setNewSchool({ 
- name: school.name, 
- slug: school.slug ||'',
- email: school.email, 
- address: school.address ||'', 
- phone: school.phone ||'', 
- planId: school.planId 
- });
+  setNewSchool({ 
+  name: school.name, 
+  slug: school.slug ||'',
+  email: school.email, 
+  address: school.address ||'', 
+  phone: school.phone ||'', 
+  planId: school.planId,
+  logoUrl: school.logoUrl || ''
+  });
  setShowAddSchool(true);
  };
 
@@ -504,7 +532,12 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <p className="text-slate-600 mt-1 font-medium">Monitor and control individual school environments.</p>
  </div>
  <button
- onClick={() => setShowAddSchool(true)}
+  onClick={() => {
+    setEditingSchool(null);
+    setNewSchool({ name:'', slug:'', email:'', address:'', phone:'', planId:'free', logoUrl: ''});
+    setOnboardingStep(1);
+    setShowAddSchool(true);
+  }}
  className="w-full md:w-auto bg-blue-600 text-white px-8 py-3.5 rounded-2xl flex justify-center items-center gap-3 text-sm font-bold shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:translate-y-[-2px] transition-all active:translate-y-0"
  >
  <Plus size={ 20 } /> Register Institution
@@ -809,7 +842,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <p className="text-slate-600 mt-2 font-bold text-xs uppercase tracking-widest">SEEDD Provisioning Engine</p>
  </div>
 
- { error && <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm border border-red-100 font-medium">{ error }</div>}
+{ error && <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm border border-red-100 font-medium">{ error }</div>}
  
  <form onSubmit={ handleAddSchool } className="space-y-5">
  { editingSchool || onboardingStep === 1 ? (
@@ -818,6 +851,51 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="w-6 h-6 rounded-full bg-blue-500 text-[10px] flex items-center justify-center font-black">1</div>
  { editingSchool ?'Entity Configuration':'Institutional Identity'}
  </h4>
+  
+  <div className="mb-10 flex flex-col items-center">
+    <div 
+      onClick={() => logoInputRef.current?.click()}
+      className="w-32 h-32 rounded-3xl bg-slate-50 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all group overflow-hidden relative shadow-inner"
+    >
+      {newSchool.logoUrl ? (
+        <div className="relative w-full h-full">
+          <img src={newSchool.logoUrl} alt="Logo" className="w-full h-full object-contain p-2" />
+          <button 
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setNewSchool(prev => ({ ...prev, logoUrl: '' }));
+            }}
+            className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg"
+          >
+            <X size={12} />
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-3 group-hover:scale-110 transition-transform">
+            <Upload size={20} className="text-slate-400 group-hover:text-blue-500" />
+          </div>
+          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-blue-500">
+            {isUploadingLogo ? 'Processing...' : 'Upload Logo'}
+          </span>
+        </>
+      )}
+      {isUploadingLogo && (
+        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10">
+          <div className="w-6 h-6 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+    </div>
+    <input 
+      type="file" 
+      ref={logoInputRef} 
+      onChange={handleLogoUpload} 
+      className="hidden" 
+      accept="image/*" 
+    />
+    <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mt-4">Institutional Identity Mark</p>
+  </div>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
  <div className="space-y-3">
  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">Entity Name</label>
