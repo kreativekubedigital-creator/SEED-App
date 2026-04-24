@@ -1459,8 +1459,8 @@ export default function App() {
  <main className={ cn("flex-grow", isDashboardView &&"pt-0 overflow-hidden")}>
  <AnimatePresence mode="wait">
  <Routes location={ location } key={ location.pathname }>
- <Route path="/"element={<PageWrapper><LandingPage /></PageWrapper>} />
- <Route path="/login"element={ user ? <Navigate to="/dashboard"/> : <PageWrapper><LoginPage onLogin={ setUser } tenantSchool={ tenantSchool } subdomainNotFound={ subdomainNotFound } logoVariant={ logoVariant } /></PageWrapper>} />
+ <Route path="/" element={ tenantSchool ? <Navigate to="/login" /> : <PageWrapper><LandingPage /></PageWrapper> } />
+ <Route path="/login" element={ user ? <Navigate to="/dashboard" /> : <PageWrapper><LoginPage onLogin={ setUser } tenantSchool={ tenantSchool } subdomainNotFound={ subdomainNotFound } logoVariant={ logoVariant } /></PageWrapper> } />
  <Route path="/super-admin"element={ user ? <Navigate to="/dashboard"/> : <PageWrapper><LoginPage onLogin={ setUser } tenantSchool={ tenantSchool } subdomainNotFound={ subdomainNotFound } logoVariant={ logoVariant } /></PageWrapper>} />
  <Route path="/dashboard/*"element={ user?.schoolId || user?.role  === 'super_admin'? <PageWrapper><DashboardRouter user={ user } onLogout={ handleLogout } /></PageWrapper> : <Navigate to="/onboarding"/>} />
  <Route path="/announcements"element={ user ? <PageWrapper><AnnouncementsPage user={ user } /></PageWrapper> : <Navigate to="/login"/>} />
