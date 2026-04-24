@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { UserProfile as UserProfileType } from '../types';
-import { db, doc, updateDoc, handleFirestoreError, OperationType, auth, updatePassword } from '../firebase';
+import { db, doc, updateDoc, handleFirestoreError, OperationType, auth, updatePassword } from '../lib/compatibility';
 import { User, Lock, Bell, Camera, CheckCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { db, doc, getDoc, updateDoc, increment, collection, onSnapshot } from '../../firebase';
+import { db, doc, getDoc, updateDoc, increment, collection, onSnapshot } from '../../lib/compatibility';
 import { UserProfile } from '../../types';
 import { motion, AnimatePresence } from 'motion/react';
 import { Calculator, BookA, Trophy, RefreshCw, Play, Beaker, Star, ArrowLeft, TrendingUp, ShoppingBag, Award, Sparkles, Flame } from 'lucide-react';

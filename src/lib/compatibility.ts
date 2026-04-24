@@ -1,11 +1,11 @@
-import { supabase, secondarySupabase } from './lib/supabase';
+import { supabase, secondarySupabase } from './supabase';
 import { 
   signOut as supabaseSignOut, 
   onAuthStateChanged as supabaseOnAuthStateChanged,
   sendPasswordResetEmail as supabaseSendPasswordResetEmail,
   updatePassword as supabaseUpdatePassword
-} from './lib/auth';
-import { DatabaseService } from './services/databaseService';
+} from './auth';
+import { DatabaseService } from '../services/databaseService';
 
 export interface User {
   uid: string;
@@ -17,7 +17,11 @@ export interface User {
   isAnonymous?: boolean;
 }
 
-// Compatibility Layer for Firebase-to-Supabase migration
+/**
+ * Compatibility Layer for Firebase-to-Supabase migration.
+ * This shim allows the application to continue using Firestore/Firebase Auth syntax
+ * while the underlying data is handled by Supabase.
+ */
 export const db = {};
 export const auth = {
   get currentUser() { return null; }
@@ -28,7 +32,7 @@ export const secondaryAuth = {
   signOut: async () => { await secondarySupabase.auth.signOut(); }
 };
 
-// Re-exporting Supabase versions of Auth functions with Firebase names
+// Re-exporting Supabase versions of Auth functions with generic names
 export const signInWithEmailAndPassword = async (authObj: any, email: string, password: string): Promise<{ user: User }> => {
   const client = authObj === secondaryAuth ? secondarySupabase : supabase;
   const { data, error } = await client.auth.signInWithPassword({ email, password });
@@ -152,6 +156,7 @@ export const where = (field: string, op: string, value: any) => ({ field, op, va
 export const onSnapshot = (queryObj: any, callback: any, errorCallback?: (error: any) => void) => {
   const path = typeof queryObj === 'string' ? queryObj : queryObj.path;
   const constraints = typeof queryObj === 'string' ? [] : queryObj.constraints;
+  const isDocument = path.split('/').filter(Boolean).length % 2 === 0;
   
   const conditions: Record<string, any> = {};
   constraints.forEach((c: any) => {
@@ -162,18 +167,25 @@ export const onSnapshot = (queryObj: any, callback: any, errorCallback?: (error:
   });
 
   const subscription = DatabaseService.subscribe(path, (data) => {
-    callback({
-      docs: data.map((item: any) => ({
-        id: item.id,
-        data: () => item as any
-      })),
-      size: data.length,
-      empty: data.length === 0
-    });
+    if (isDocument) {
+      const item = data[0] || null;
+      callback({
+        exists: () => !!item,
+        data: () => item as any,
+        id: path.split('/').pop()
+      });
+    } else {
+      callback({
+        docs: data.map((item: any) => ({
+          id: item.id,
+          data: () => item as any
+        })),
+        size: data.length,
+        empty: data.length === 0
+      });
+    }
   }, conditions);
 
-  // In a real implementation, we would handle errors from the subscription
-  
   return () => {
     supabase.removeChannel(subscription);
   };
@@ -189,7 +201,7 @@ export enum OperationType {
 }
 
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
-  console.error('Supabase Error: ', error, operationType, path);
+  console.error('Database Error: ', error, operationType, path);
   throw error;
 }
 
@@ -213,13 +225,13 @@ export async function logAuditAction(
   }
 }
 
-// Mocks for unused Firebase features to prevent build errors
+// Mocks for unused legacy features to prevent build errors
 export const googleProvider = {};
-export const signInWithPopup = async (_auth: any, _provider: any): Promise<{ user: User }> => { throw new Error("Popup login not implemented yet in shim. Use email login."); };
-export const signInWithRedirect = async (_auth: any, _provider: any): Promise<void> => { throw new Error("Redirect login not implemented yet in shim. Use email login."); };
+export const signInWithPopup = async (_auth: any, _provider: any): Promise<{ user: User }> => { throw new Error("Popup login not implemented yet. Use email login."); };
+export const signInWithRedirect = async (_auth: any, _provider: any): Promise<void> => { throw new Error("Redirect login not implemented yet. Use email login."); };
 export const getRedirectResult = async (_auth: any): Promise<{ user: User } | null> => null;
-export const serverTimestamp = () => new Date().toISOString();
-export const increment = (n: number) => n; // This is a simplification
+export const serverTimestamp = () => ({ __type: 'timestamp' });
+export const increment = (n: number) => ({ __type: 'increment', value: n });
 export const writeBatch = (_db?: any) => ({
   set: (docRef: any, data: any, options?: any) => { console.log('Batch set', docRef, data, options); },
   update: (docRef: any, data: any) => { console.log('Batch update', docRef, data); },

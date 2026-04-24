@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from'react';
 import { Routes, Route, Navigate, Link, useNavigate, useLocation, useSearchParams } from'react-router-dom';
-import { auth, db, onAuthStateChanged, doc, getDoc, signInWithPopup, signInWithRedirect, getRedirectResult, googleProvider, signOut, setDoc, updateDoc, collection, getDocs, query, where, onSnapshot, signInWithEmailAndPassword, handleFirestoreError, OperationType, createUserWithEmailAndPassword, sendPasswordResetEmail, logAuditAction } from'./firebase';
+import { auth, db, onAuthStateChanged, doc, getDoc, signInWithPopup, signInWithRedirect, getRedirectResult, googleProvider, signOut, setDoc, updateDoc, collection, getDocs, query, where, onSnapshot, signInWithEmailAndPassword, handleFirestoreError, OperationType, createUserWithEmailAndPassword, sendPasswordResetEmail, logAuditAction } from'./lib/compatibility';
 import { UserProfile, UserRole, School, Announcement } from'./types';
 import { Logo } from'./components/Logo';
 import { useTheme } from'./components/ThemeProvider';
@@ -1317,38 +1317,38 @@ export default function App() {
  };
  checkRedirect();
 
- const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
- if (firebaseUser) {
+ const unsubscribeAuth = onAuthStateChanged(auth, async (authUser) => {
+ if (authUser) {
  // Use onSnapshot for real-time profile updates
- unsubscribeProfile = onSnapshot(doc(db,'users', firebaseUser.uid), async (userDoc) => {
+ unsubscribeProfile = onSnapshot(doc(db,'users', authUser.uid), async (userDoc) => {
  if (userDoc.exists()) {
  let userData = userDoc.data() as UserProfile;
  // Ensure platform owner always has super_admin role
- if ((firebaseUser.email === 'kreativekubesolutions@gmail.com' || firebaseUser.email === 'seedd.ng@gmail.com' || firebaseUser.email === 'abahjohnakor@gmail.com') && userData.role !=='super_admin') {
+ if ((authUser.email === 'kreativekubesolutions@gmail.com' || authUser.email === 'seedd.ng@gmail.com' || authUser.email === 'abahjohnakor@gmail.com') && userData.role !=='super_admin') {
  userData.role ='super_admin';
- await updateDoc(doc(db,'users', firebaseUser.uid), { role:'super_admin'});
+ await updateDoc(doc(db,'users', authUser.uid), { role:'super_admin'});
  }
  setUser(userData);
  } else {
  // User exists in Auth but not in Firestore (incomplete onboarding)
  // Check if this is the platform owner
- if (firebaseUser.email === 'kreativekubesolutions@gmail.com' || firebaseUser.email === 'seedd.ng@gmail.com' || firebaseUser.email === 'abahjohnakor@gmail.com') {
- const nameParts = (firebaseUser.displayName ||'Platform Owner').split('');
+ if (authUser.email === 'kreativekubesolutions@gmail.com' || authUser.email === 'seedd.ng@gmail.com' || authUser.email === 'abahjohnakor@gmail.com') {
+ const nameParts = (authUser.displayName ||'Platform Owner').split('');
  const superAdminProfile: UserProfile = {
- uid: firebaseUser.uid,
- email: firebaseUser.email ||'',
+ uid: authUser.uid,
+ email: authUser.email ||'',
  firstName: nameParts[0],
  lastName: nameParts.slice(1).join('') ||'',
  role:'super_admin',
  createdAt: new Date().toISOString()
  };
- await setDoc(doc(db,'users', firebaseUser.uid), superAdminProfile);
+ await setDoc(doc(db,'users', authUser.uid), superAdminProfile);
  setUser(superAdminProfile);
  } else {
- const nameParts = (firebaseUser.displayName ||'').split('');
+ const nameParts = (authUser.displayName ||'').split('');
  setUser({ 
- uid: firebaseUser.uid, 
- email: firebaseUser.email ||'', 
+ uid: authUser.uid, 
+ email: authUser.email ||'', 
  firstName: nameParts[0] ||'', 
  lastName: nameParts.slice(1).join('') ||'', 
  role:'student'

@@ -5,12 +5,16 @@ export class DatabaseService {
    * Helper to map Firestore-style paths to Supabase tables.
    * e.g. "schools/123/classes" -> table "classes", filter { school_id: "123" }
    */
-  private static parsePath(path: string): { table: string; filters: Record<string, any> } {
+  private static parsePath(path: string): { table: string; documentId?: string; filters: Record<string, any> } {
     const parts = path.split('/').filter(Boolean);
+    const isDocument = parts.length % 2 === 0;
+    
     // In Firestore paths, collections are at even indices (0, 2, 4...)
-    // We want the last collection name as the Supabase table name.
-    const tableIndex = (parts.length - 1) % 2 === 0 ? parts.length - 1 : parts.length - 2;
+    // If it's a document path (e.g. users/123), table is at 0, id is at 1.
+    // If it's a collection path (e.g. users), table is at 0.
+    const tableIndex = isDocument ? parts.length - 2 : parts.length - 1;
     const table = parts[tableIndex];
+    const documentId = isDocument ? parts[parts.length - 1] : undefined;
     
     // For specific nested paths we know about, we can extract filters
     const filters: Record<string, any> = {};
@@ -18,7 +22,7 @@ export class DatabaseService {
       filters.school_id = parts[1];
     }
 
-    return { table, filters };
+    return { table, documentId, filters };
   }
 
   /**
@@ -71,8 +75,13 @@ export class DatabaseService {
   }
 
   static async getItems<T>(path: string, conditions: Record<string, any> = {}): Promise<T[]> {
-    const { table, filters } = this.parsePath(path);
+    const { table, documentId, filters } = this.parsePath(path);
     let query = supabase.from(table).select('*');
+
+    // Apply document ID filter if present
+    if (documentId) {
+      query = query.eq('id', documentId);
+    }
 
     // Apply path filters
     let finalQuery: any = query;
@@ -119,11 +128,39 @@ export class DatabaseService {
 
   static async updateItem(path: string, id: string, data: any) {
     const { table } = this.parsePath(path);
+    
+    // Handle special operations like increment
     const payload = this.toSnakeCase(data, table);
+    const finalPayload: any = {};
+    const increments: string[] = [];
+
+    for (const [key, value] of Object.entries(payload)) {
+      if (value && typeof value === 'object' && (value as any).__type === 'increment') {
+        increments.push(key);
+      } else if (value && typeof value === 'object' && (value as any).__type === 'timestamp') {
+        finalPayload[key] = new Date().toISOString();
+      } else {
+        finalPayload[key] = value;
+      }
+    }
+
+    if (increments.length > 0) {
+      // For simplicity in the shim, we fetch current data and apply increments
+      const current = await this.getItemById<any>(path, id);
+      if (current) {
+        for (const key of increments) {
+          const snakeKey = key;
+          const camelKey = this.toCamelCase(key, table);
+          const currentValue = current[camelKey] || 0;
+          const incrementValue = (payload[key] as any).value;
+          finalPayload[key] = currentValue + incrementValue;
+        }
+      }
+    }
     
     const { data: updatedData, error } = await supabase
       .from(table)
-      .update(payload)
+      .update(finalPayload)
       .eq('id', id)
       .select()
       .single();
@@ -164,7 +201,7 @@ export class DatabaseService {
 
     // Real-time subscription
     return supabase
-      .channel(`${table}-changes`)
+      .channel(`${table}-changes-${Math.random().toString(36).substring(2, 9)}`)
       .on('postgres_changes', { event: '*', schema: 'public', table }, () => {
         this.getItems(path, conditions).then(callback);
       })

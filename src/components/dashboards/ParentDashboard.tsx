@@ -1,5 +1,5 @@
 import { useState, useEffect } from'react';
-import { db, collection, getDocs, query, where, onSnapshot, orderBy, handleFirestoreError, OperationType } from'../../firebase';
+import { db, collection, getDocs, query, where, onSnapshot, orderBy, handleFirestoreError, OperationType } from'../../lib/compatibility';
 import { UserProfile, Result, Announcement } from'../../types';
 import { Bell, TrendingUp, FileText, User, Heart, ArrowLeft } from'lucide-react';
 import { motion } from'motion/react';

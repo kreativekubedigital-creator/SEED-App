@@ -1,5 +1,5 @@
 import React, { useState } from'react';
-import { db, doc, updateDoc, handleFirestoreError, OperationType } from'../../firebase';
+import { db, doc, updateDoc, handleFirestoreError, OperationType } from'../../lib/compatibility';
 import { School } from'../../types';
 import { Settings, Save } from'lucide-react';
 import { StorageService } from'../../services/storageService';

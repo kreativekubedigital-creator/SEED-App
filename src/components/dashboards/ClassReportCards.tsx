@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from'react';
-import { db, collection, query, where, getDocs, doc, getDoc, OperationType, handleFirestoreError } from'../../firebase';
+import { db, collection, query, where, getDocs, doc, getDoc, OperationType, handleFirestoreError } from'../../lib/compatibility';
 import { UserProfile, School, Session, Term, Class, Result, Subject, GradeScale } from'../../types';
 import { ReportCard } from'./ReportCard';
 import { Loader2, Printer, Search, Users, X } from'lucide-react';

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db, collection, getDocs, query, where, addDoc, updateDoc, setDoc, doc, onSnapshot, serverTimestamp, OperationType, handleFirestoreError } from '../../firebase';
+import { db, collection, getDocs, query, where, addDoc, updateDoc, setDoc, doc, onSnapshot, serverTimestamp, OperationType, handleFirestoreError } from '../../lib/compatibility';
 import { UserProfile, Class, Subject, Result, Session, Term, GradeScale } from '../../types';
 import { Save, Search, ChevronRight, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';

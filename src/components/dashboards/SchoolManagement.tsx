@@ -34,7 +34,7 @@ import {
  Menu
 } from'lucide-react';
 import { motion, AnimatePresence } from'motion/react';
-import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, where, onSnapshot, OperationType, handleFirestoreError, setDoc, secondaryAuth, createUserWithEmailAndPassword, sendPasswordResetEmail, auth } from'../../firebase';
+import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, where, onSnapshot, OperationType, handleFirestoreError, setDoc, secondaryAuth, createUserWithEmailAndPassword, sendPasswordResetEmail, auth } from'../../lib/compatibility';
 import { SchoolClasses } from'./SchoolClasses';
 import { SchoolAnnouncements } from'./SchoolAnnouncements';
 import { SchoolSettings } from'./SchoolSettings';
@@ -148,11 +148,11 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  continue;
  }
 
- // Create user in Firebase Auth
+ // Create user in Supabase Auth
  const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password, { data: { email_confirm: true } });
  const newUid = userCredential.user.uid;
 
- // Save to Firestore
+ // Save to Database
  const userData: Partial<UserProfile> = {
  uid: newUid,
  email,
@@ -276,7 +276,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  return;
  }
 
- // Create user in Firebase Auth using secondary app to avoid logging out current admin
+ // Create user in Supabase Auth using secondary app to avoid logging out current admin
  const userCredential = await createUserWithEmailAndPassword(secondaryAuth, trimmedEmail, finalPassword, { data: { email_confirm: true } });
  const newUid = userCredential.user.uid;
  

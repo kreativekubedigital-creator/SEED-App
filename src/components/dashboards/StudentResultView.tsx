@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { db, collection, doc, query, where, onSnapshot, OperationType, handleFirestoreError } from '../../firebase';
+import { db, collection, doc, query, where, onSnapshot, OperationType, handleFirestoreError } from '../../lib/compatibility';
 import { UserProfile, Result, Session, Term, Subject, GradeScale, Class } from '../../types';
 import { Trophy, Target, TrendingUp, TrendingDown, BookOpen, Loader2, Award, Star, Printer, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';

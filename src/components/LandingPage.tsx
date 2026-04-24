@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { collection, onSnapshot, query, db, handleFirestoreError, OperationType } from '../firebase';
+import { collection, onSnapshot, query, db, handleFirestoreError, OperationType } from '../lib/compatibility';
 import { Logo } from './Logo';
 import { School } from '../types';
 import { 

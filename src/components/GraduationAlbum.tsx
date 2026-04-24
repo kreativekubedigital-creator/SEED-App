@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { GoogleGenAI } from "@google/genai";
-import { db, collection, getDocs, query, where, addDoc } from '../firebase';
+import { db, collection, getDocs, query, where, addDoc } from '../lib/compatibility';
 import { GraduationStudent } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Image as ImageIcon, Plus, Loader2, X } from 'lucide-react';

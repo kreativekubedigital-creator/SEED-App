@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from'react';
-import { db, collection, query, where, getDocs, doc, setDoc, onSnapshot, serverTimestamp, handleFirestoreError, OperationType } from'../../firebase';
+import { db, collection, query, where, getDocs, doc, setDoc, onSnapshot, serverTimestamp, handleFirestoreError, OperationType } from'../../lib/compatibility';
 import { UserProfile, Class, Subject, Timetable, TimetablePeriod } from'../../types';
 import { Clock, Save, Edit2, X, Plus, Trash2 } from'lucide-react';
 import { sortByName } from'../../lib/utils';

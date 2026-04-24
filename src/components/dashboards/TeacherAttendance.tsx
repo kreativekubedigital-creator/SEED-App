@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db, collection, query, where, getDocs, doc, setDoc, onSnapshot, serverTimestamp, handleFirestoreError, OperationType } from '../../firebase';
+import { db, collection, query, where, getDocs, doc, setDoc, onSnapshot, serverTimestamp, handleFirestoreError, OperationType } from '../../lib/compatibility';
 import { UserProfile, Class, AttendanceRecord } from '../../types';
 import { CheckCircle, XCircle, Clock, AlertCircle, Save, Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { sortByName, sortByFullName } from '../../lib/utils';

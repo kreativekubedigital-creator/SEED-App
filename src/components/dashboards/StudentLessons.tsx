@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ENGLISH_LESSONS, MATH_LESSONS, SCIENCE_LESSONS, SOCIAL_LESSONS, ICT_LESSONS, CIVIC_LESSONS } from '../../constants/lessonContent';
 import { getQuestionPool } from '../../constants/questionPools';
 import { addXP, updateStreak } from '../../services/gamificationService';
-import { db, collection, addDoc, serverTimestamp } from '../../firebase';
+import { db, collection, addDoc, serverTimestamp } from '../../lib/compatibility';
 
 export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classLevel?: string }) => {
   const [selectedSubject, setSelectedSubject] = useState<'English' | 'Math' | 'Science' | 'Social Studies' | 'ICT' | 'Civic Education' | null>(null);

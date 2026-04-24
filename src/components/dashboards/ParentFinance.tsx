@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db, collection, getDocs, query, where, onSnapshot, OperationType, handleFirestoreError, doc, updateDoc, addDoc } from '../../firebase';
+import { db, collection, getDocs, query, where, onSnapshot, OperationType, handleFirestoreError, doc, updateDoc, addDoc } from '../../lib/compatibility';
 import { Invoice, Payment, UserProfile } from '../../types';
 import { CreditCard, CheckCircle, Clock, Construction } from 'lucide-react';
 // import { usePaystackPayment } from 'react-paystack';

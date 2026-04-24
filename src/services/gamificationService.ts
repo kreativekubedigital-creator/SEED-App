@@ -13,7 +13,7 @@ import {
   getDocs,
   limit,
   orderBy
-} from '../firebase';
+} from'../lib/compatibility';
 import { UserProfile } from '../types';
 
 export const XP_REWARDS = {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db, collection, query, where, addDoc, doc, updateDoc, onSnapshot, OperationType, handleFirestoreError } from '../../firebase';
+import { db, collection, query, where, addDoc, doc, updateDoc, onSnapshot, OperationType, handleFirestoreError } from '../../lib/compatibility';
 import { UserProfile, Subject, Assignment, AssignmentSubmission } from '../../types';
 import { FileText, Calendar, Clock, CheckCircle2, ChevronRight, X, Send, Award, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';

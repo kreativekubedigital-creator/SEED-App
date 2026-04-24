@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Lock, Eye, EyeOff, ShieldCheck, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { updatePassword, db, doc, updateDoc } from '../firebase';
+import { updatePassword, db, doc, updateDoc } from '../lib/compatibility';
 import { UserProfile } from '../types';
 
 interface PasswordChangeModalProps {

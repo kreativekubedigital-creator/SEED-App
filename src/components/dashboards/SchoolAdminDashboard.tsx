@@ -1,5 +1,5 @@
 import { useState, useEffect } from'react';
-import { db, doc, getDoc } from'../../firebase';
+import { db, doc, getDoc } from'../../lib/compatibility';
 import { UserProfile, School } from'../../types';
 import { SchoolManagement } from'./SchoolManagement';
 import { Settings } from'lucide-react';

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { db, collection, getDocs, query, where, addDoc } from '../../firebase';
+import { db, collection, getDocs, query, where, addDoc } from '../../lib/compatibility';
 import { UserProfile, Quiz, Result, Subject } from '../../types';
 import { CheckCircle2, Circle, Trophy, ArrowRight, ArrowLeft, BookOpen, BrainCircuit, Clock } from 'lucide-react';
 import { motion } from 'motion/react';

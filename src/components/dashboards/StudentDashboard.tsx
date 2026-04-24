@@ -1,6 +1,6 @@
 import { useState, useEffect } from'react';
 import { Link } from'react-router-dom';
-import { db, collection, getDocs, query, where, onSnapshot, doc, orderBy } from'../../firebase';
+import { db, collection, getDocs, query, where, onSnapshot, doc, orderBy } from'../../lib/compatibility';
 import { UserProfile, Assignment, Subject, Class, Announcement, Result, Challenge } from'../../types';
 import { BookOpen, FileText, CheckSquare, Trophy, Calendar, Gamepad2, Clock, CheckCircle2, Star, Bell, Flame, TrendingUp, Award, ShoppingBag, Sparkles } from'lucide-react';
 import { motion, AnimatePresence } from'motion/react';
