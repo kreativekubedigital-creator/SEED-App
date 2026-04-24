@@ -347,8 +347,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <Shield size={ 24 } className="text-white"/>
  </div>
  {(isSidebarOpen || (typeof window !== 'undefined' && window.innerWidth < 1024)) && (
- SEEDD Admin
- </span>
+   <span className="text-xl font-bold tracking-tight text-slate-900">SEEDD Admin</span>
  )}
  </div>
 

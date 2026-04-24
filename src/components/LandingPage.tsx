@@ -201,8 +201,11 @@ export const LandingPage = () => {
                     }}
                     onFocus={() => setIsDropdownOpen(true)}
                   />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-              {/* Right Aligned Description */}
+            {/* Right Aligned Description */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -216,7 +219,6 @@ export const LandingPage = () => {
                   SEEDD connects institutions, centralizes data, and transforms everyday operations into a seamless, insight-driven system. 
                 </p>
               </motion.div>
-            </div>
           </div>
         </div>
 

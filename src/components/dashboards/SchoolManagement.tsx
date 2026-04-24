@@ -263,7 +263,8 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  const userData = {
  ...userDataWithoutPassword,
  schoolId: school.id,
- createdAt: editingUser ? editingUser.createdAt : new Date().toISOString()
+ createdAt: editingUser ? editingUser.createdAt : new Date().toISOString(),
+ dob: newUser.dob === "" ? null : newUser.dob
  };
 
  if (editingUser) {
@@ -284,7 +285,8 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  ...userData, 
  email: trimmedEmail, 
  uid: newUid,
- forcePasswordChange: true // Always force password change for new users
+ forcePasswordChange: true,
+ dob: userData.dob === "" ? null : userData.dob
  };
  await setDoc(doc(db, 'users', newUid), finalUserData);
  await secondaryAuth.signOut(); // Clean up secondary auth session
