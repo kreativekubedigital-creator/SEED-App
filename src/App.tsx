@@ -224,12 +224,25 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
     
     <div className={cn("flex items-center gap-6", !isLandingPage && "ml-6 border-l border-slate-100 pl-6")}>
       { user ? (
-        <button 
-          onClick={ onLogout } 
-          className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-red-500 hover:text-red-600 transition-all font-space"
-        >
-          <LogOut size={ 16 } /> Logout
-        </button>
+        <div className="flex items-center gap-6">
+          <Link 
+            to={user.role === 'super_admin' ? '/super-admin' : '/dashboard'}
+            className={cn(
+              "text-[11px] font-bold uppercase tracking-[0.2em] transition-colors font-space",
+              isScrolled ? "text-slate-950 hover:text-blue-600" : (isLandingPage ? "text-white hover:text-blue-400" : "text-slate-950 hover:text-blue-600")
+            )}
+          >
+            Dashboard
+          </Link>
+          {!isLandingPage && (
+            <button 
+              onClick={ onLogout } 
+              className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-red-500 hover:text-red-600 transition-all font-space"
+            >
+              <LogOut size={ 16 } /> Logout
+            </button>
+          )}
+        </div>
       ) : (
         <>
           <Link 
@@ -285,7 +298,7 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
  { user ? (
  <>
  <Link
- to="/dashboard"
+ to={user.role === 'super_admin' ? '/super-admin' : '/dashboard'}
  onClick={() => setIsOpen(false)}
  className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 text-sm font-semibold transition-all group"
  >
@@ -294,6 +307,7 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
  </div>
  <span className="text-gray-800">Dashboard</span>
  </Link>
+ {!isLandingPage && (
  <button 
  onClick={() => { onLogout(); setIsOpen(false); }}
  className="w-full flex items-center gap-4 p-4 rounded-2xl hover:bg-red-50 text-sm font-semibold transition-all group"
@@ -303,6 +317,7 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
  </div>
  <span className="text-red-600">Logout</span>
  </button>
+ )}
  </>
  ) : (
  <a
