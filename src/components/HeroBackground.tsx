@@ -30,7 +30,7 @@ const FloatingIcon = ({ delay }: { delay: number }) => {
     <motion.div
       initial={{ opacity: 0, scale: 0 }}
       animate={{ 
-        opacity: [0.05, 0.2, 0.05],
+        opacity: [0.02, 0.1, 0.02],
         left: `${coords.x}%`,
         top: `${coords.y}%`,
         scale: coords.scale,
@@ -113,7 +113,7 @@ export const HeroBackground: React.FC = () => {
       size: 0.04,
       vertexColors: true,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.4,
       blending: THREE.AdditiveBlending,
       sizeAttenuation: true
     });
@@ -174,7 +174,7 @@ export const HeroBackground: React.FC = () => {
     <div className="absolute inset-0 z-0 bg-[#020617] overflow-hidden">
       <div 
         ref={containerRef} 
-        className="absolute inset-0 z-10 opacity-60" 
+        className="absolute inset-0 z-10 opacity-30" 
       />
       
       {/* Floating School Icons Layer */}
