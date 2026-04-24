@@ -560,7 +560,7 @@ export const LandingPage = () => {
       </section>
 
       {/* --- CTA SECTION --- */}
-      <section className="py-20 lg:py-32 bg-[#020617]">
+      <section className="py-10 lg:py-16 bg-[#020617]">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
@@ -616,9 +616,9 @@ export const LandingPage = () => {
       </section>
 
       {/* --- FOOTER --- */}
-      <footer className="bg-black pt-20 pb-12 border-t border-white/5">
+      <footer className="bg-black pt-10 pb-8 border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-4 gap-24 mb-32">
+          <div className="grid lg:grid-cols-4 gap-12 mb-16">
             <div className="col-span-1 lg:col-span-2 space-y-10">
               <Logo variant="white" size="md" />
               <p className="text-2xl text-white/50 font-medium max-w-sm leading-relaxed">
