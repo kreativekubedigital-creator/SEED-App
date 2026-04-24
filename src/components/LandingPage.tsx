@@ -98,20 +98,20 @@ export const LandingPage = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="flex flex-wrap gap-6"
+                className="flex flex-col sm:flex-row gap-4 sm:gap-6"
               >
                 <Button 
                   onClick={() => setIsSearchVisible(!isSearchVisible)}
-                  className="h-12 px-6 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-[0_10px_30px_-5px_rgba(37,99,235,0.5)] flex items-center gap-2 transition-all active:scale-95 group"
+                  className="h-12 w-full sm:w-auto px-6 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-[0_10px_30px_-5px_rgba(37,99,235,0.5)] flex items-center gap-2 transition-all active:scale-95 group"
                 >
                   Find your School
                   <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </Button>
                 
-                <Link to="/#onboarding">
+                <Link to="/#onboarding" className="w-full sm:w-auto">
                   <Button 
                     variant="outline"
-                    className="h-12 px-6 bg-white/5 backdrop-blur-2xl border-white/10 text-white hover:bg-white/10 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95"
+                    className="h-12 w-full px-6 bg-white/5 backdrop-blur-2xl border-white/10 text-white hover:bg-white/10 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95"
                   >
                     Request A Demo
                   </Button>
@@ -273,7 +273,7 @@ export const LandingPage = () => {
       </section>
 
       {/* --- CHALLENGE VS SOLUTION --- */}
-      <section className="py-20 lg:py-32 bg-white overflow-hidden">
+      <section className="py-16 lg:py-24 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-12 gap-20 items-center">
             
@@ -361,7 +361,7 @@ export const LandingPage = () => {
       </section>
 
       {/* --- POWERFUL FEATURES --- */}
-      <section className="py-32 lg:py-48 bg-[#020617] relative overflow-hidden">
+      <section className="py-16 lg:py-24 bg-[#020617] relative overflow-hidden">
         {/* Background glow decorators */}
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px]" />
         <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px]" />
@@ -432,7 +432,7 @@ export const LandingPage = () => {
       </section>
 
       {/* --- HOW IT WORKS --- */}
-      <section id="how-it-works" className="py-40 lg:py-60 bg-[#020617] relative overflow-hidden">
+      <section id="how-it-works" className="py-20 lg:py-32 bg-[#020617] relative overflow-hidden">
         <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="text-center mb-32 space-y-6">
@@ -507,7 +507,7 @@ export const LandingPage = () => {
       </section>
 
       {/* --- BUILT FOR GROWTH --- */}
-      <section className="py-40 bg-white/5 border-y border-white/5 backdrop-blur-3xl">
+      <section className="py-20 bg-white/5 border-y border-white/5 backdrop-blur-3xl">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-24">
             <div className="text-blue-500 font-black text-[10px] uppercase tracking-[0.4em]">
@@ -616,7 +616,7 @@ export const LandingPage = () => {
       </section>
 
       {/* --- FOOTER --- */}
-      <footer className="bg-black pt-40 pb-20 border-t border-white/5">
+      <footer className="bg-black pt-20 pb-12 border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-4 gap-24 mb-32">
             <div className="col-span-1 lg:col-span-2 space-y-10">
