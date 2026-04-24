@@ -560,52 +560,52 @@ export const LandingPage = () => {
       </section>
 
       {/* --- CTA SECTION --- */}
-      <section className="py-40 lg:py-60 bg-[#020617]">
+      <section className="py-20 lg:py-32 bg-[#020617]">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="bg-[#050B1F] rounded-[3rem] border border-white/10 overflow-hidden relative"
+            className="bg-[#050B1F] rounded-[2rem] border border-white/10 overflow-hidden relative"
           >
             {/* Ambient Background Pattern */}
             <div className="absolute inset-0 opacity-30 pointer-events-none">
-              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/20 blur-[120px] rounded-full" />
-              <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-400/10 blur-[100px] rounded-full" />
+              <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-600/20 blur-[100px] rounded-full" />
+              <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-blue-400/10 blur-[80px] rounded-full" />
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
             </div>
 
             <div className="grid lg:grid-cols-2 relative z-10">
-              <div className="p-12 lg:p-24 space-y-10">
-                <h2 className="text-5xl lg:text-6xl font-space font-black tracking-tight leading-[1.1]">
+              <div className="p-8 lg:p-16 space-y-6">
+                <h2 className="text-3xl lg:text-4xl font-space font-black tracking-tight leading-[1.2]">
                   Ready to transform your institution?
                 </h2>
-                <p className="text-xl text-slate-400 font-medium max-w-lg leading-relaxed">
+                <p className="text-base text-slate-400 font-medium max-w-md leading-relaxed">
                   Join forward-thinking schools already building the future with SEEDD.
                 </p>
-                <div className="flex flex-wrap gap-6 pt-4">
-                  <button className="h-16 px-10 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-widest transition-all shadow-[0_20px_40px_-10px_rgba(37,99,235,0.4)] flex items-center gap-3 group">
+                <div className="flex flex-wrap gap-4 pt-2">
+                  <button className="h-12 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black uppercase tracking-widest transition-all shadow-[0_15px_30px_-5px_rgba(37,99,235,0.3)] flex items-center gap-2 group">
                     Get Started Now
-                    <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                    <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </button>
-                  <button className="h-16 px-10 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black uppercase tracking-widest transition-all flex items-center gap-3 group">
+                  <button className="h-12 px-6 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 group">
                     Book a Demo
-                    <Play size={18} fill="currentColor" />
+                    <Play size={14} fill="currentColor" />
                   </button>
                 </div>
               </div>
 
-              <div className="bg-white/5 border-l border-white/5 p-12 lg:p-24">
-                <div className="grid grid-cols-2 gap-12">
+              <div className="bg-white/5 border-l border-white/5 p-8 lg:p-16">
+                <div className="grid grid-cols-2 gap-8">
                   {[
                     { label: 'Institutions', value: '120+' },
                     { label: 'Students Managed', value: '250K+' },
                     { label: 'System Uptime', value: '98.9%' },
                     { label: 'Expert Support', value: '24/7' }
                   ].map((stat, i) => (
-                    <div key={i} className="space-y-2">
-                      <div className="text-4xl lg:text-5xl font-space font-black text-white">{stat.value}</div>
-                      <div className="text-[10px] font-black text-blue-400 uppercase tracking-widest">{stat.label}</div>
+                    <div key={i} className="space-y-1">
+                      <div className="text-2xl lg:text-3xl font-space font-black text-white">{stat.value}</div>
+                      <div className="text-[9px] font-black text-blue-400 uppercase tracking-widest">{stat.label}</div>
                     </div>
                   ))}
                 </div>
