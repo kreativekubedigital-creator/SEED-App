@@ -110,10 +110,10 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col gap-2">
-        <h3 className="text-2xl font-medium text-slate-900 dark:text-slate-100 tracking-tight">My Assignments</h3>
-        <p className="text-slate-900 dark:text-slate-100 font-medium">Track your homework, submit answers, and view your grades.</p>
+    <div className="space-y-4">
+      <div className="flex flex-col gap-1">
+        <h3 className="text-xl font-black uppercase tracking-widest text-slate-900">Assignments</h3>
+        <p className="text-[10px] font-black uppercase tracking-widest text-slate-900/60">Track your homework and view your grades.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -153,60 +153,60 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                 </div>
               </div>
 
-              <div className={`p-6 flex-1 flex flex-col gap-4 relative z-10`}>
-                <div className="flex items-center gap-3">
-                  <div className={`p-3 rounded-2xl bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 shadow-sm`}>
-                    <FileText size={24} />
+              <div className="p-3 flex-1 flex flex-col gap-3 relative z-10">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-xl bg-white/60 text-slate-900 shadow-sm">
+                    <FileText size={16} />
                   </div>
                   <div>
-                    <span className="text-[10px] font-medium uppercase tracking-widest text-gray-700 block mb-0.5">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-900/50 block">
                       {getSubjectName(assignment.subjectId)}
                     </span>
-                    <h4 className="font-medium text-slate-900 dark:text-slate-100 text-lg leading-tight">
+                    <h4 className="font-black uppercase tracking-widest text-slate-900 text-sm leading-tight">
                       {assignment.title}
                     </h4>
                   </div>
                 </div>
 
-                <p className="text-sm text-slate-900 dark:text-slate-100 font-medium line-clamp-2 min-h-[2.5rem]">
+                <p className="text-[10px] text-slate-900/70 font-bold uppercase tracking-wide line-clamp-2">
                   {assignment.description}
                 </p>
 
-                <div className="flex flex-wrap items-center gap-4 mt-auto pt-4 border-t border-white/20">
-                  <div className={`flex items-center gap-2 text-xs font-medium text-slate-900 dark:text-slate-100`}>
-                    <Calendar size={14} />
-                    Due: {new Date(assignment.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                <div className="flex flex-wrap items-center gap-3 mt-auto pt-3 border-t border-white/20">
+                  <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-slate-900/60">
+                    <Calendar size={12} />
+                    {new Date(assignment.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                   </div>
                   {!submission && !isOverdue && (
-                    <div className="flex items-center gap-2 text-xs font-medium text-slate-900 dark:text-slate-100">
-                      <Clock size={14} />
-                      {Math.ceil((new Date(assignment.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days left
+                    <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-slate-900/60">
+                      <Clock size={12} />
+                      {Math.ceil((new Date(assignment.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}d left
                     </div>
                   )}
                 </div>
-              </div>
-              
-              <div className="px-6 pb-6 relative z-10">
-                {submission ? (
-                  <button
-                    onClick={() => setSelectedAssignment(assignment)}
-                    className="w-full py-3 rounded-2xl bg-white dark:bg-slate-900/40 text-slate-900 dark:text-slate-100 border border-white/50 text-sm font-medium hover:bg-white dark:bg-slate-900/60 transition-all flex items-center justify-center gap-2 shadow-sm"
-                  >
-                    View Submission <ChevronRight size={18} />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setSelectedAssignment(assignment)}
-                    disabled={isOverdue}
-                    className={`w-full py-3 rounded-2xl text-sm font-medium transition-all flex items-center justify-center gap-2 shadow-sm ${
-                      isOverdue 
-                        ? 'bg-white dark:bg-slate-900/50 text-gray-600 cursor-not-allowed border border-white/30' 
-                        : 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800'
-                    }`}
-                  >
-                    {isOverdue ? 'Assignment Closed' : 'Answer Now'} <ChevronRight size={18} />
-                  </button>
-                )}
+
+                <div className="mt-3">
+                  {submission ? (
+                    <button
+                      onClick={() => setSelectedAssignment(assignment)}
+                      className="w-full py-2 rounded-xl bg-white/50 text-slate-900 border border-white/50 text-[9px] font-black uppercase tracking-widest hover:bg-white transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                    >
+                      View Submission <ChevronRight size={14} />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setSelectedAssignment(assignment)}
+                      disabled={isOverdue}
+                      className={`w-full py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-1.5 shadow-sm ${
+                        isOverdue 
+                          ? 'bg-white/30 text-slate-900/40 cursor-not-allowed border border-white/20' 
+                          : 'bg-white text-slate-900 hover:bg-slate-50'
+                      }`}
+                    >
+                      {isOverdue ? 'Overdue' : 'Answer Now'} <ChevronRight size={14} />
+                    </button>
+                  )}
+                </div>
               </div>
             </motion.div>
           );

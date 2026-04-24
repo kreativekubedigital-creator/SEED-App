@@ -127,83 +127,78 @@ export const StudentDashboard = ({ user }: { user: UserProfile }) => {
 
  return (
  <div className={ containerClass }>
- <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
- <div className="flex flex-wrap bg-white backdrop-blur-md p-1 rounded-xl border border-gray-200/50 bg-slate-50">
- {(['overview','lessons','assignments','quizzes','results','games','ai_study_buddy'] as const).map((tab, index) => {
- const colors = [
-'bg-orange-100','bg-blue-100','bg-purple-100', 
-'bg-pink-100','bg-red-100','bg-green-100','bg-yellow-100'
- ];
- const colorClass = colors[index % colors.length];
- return (
- <button
- key={ tab }
- onClick={() => setActiveTab(tab as any)}
- className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize transition-all duration-300 ${
- activeTab === tab ?`${ colorClass } text-slate-900 shadow-md`:'text-slate-900 hover:text-slate-900 hover:bg-slate-50'
- }`}
- >
- { tab.replace(/_/g,'')}
- </button>
- );
- })}
- </div>
- </div>
+  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="flex flex-wrap bg-white/50 backdrop-blur-md p-1 rounded-xl border border-gray-200/50">
+      {(['overview', 'lessons', 'assignments', 'quizzes', 'results', 'games', 'ai_study_buddy'] as const).map((tab, index) => {
+        const colors = [
+          'bg-orange-100', 'bg-blue-100', 'bg-purple-100', 
+          'bg-pink-100', 'bg-red-100', 'bg-green-100', 'bg-yellow-100'
+        ];
+        const colorClass = colors[index % colors.length];
+        return (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab as any)}
+            className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
+              activeTab === tab ? `${colorClass} text-slate-900 shadow-sm` : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+            }`}
+          >
+            {tab.replace(/_/g, ' ')}
+          </button>
+        );
+      })}
+    </div>
+  </div>
 
  { activeTab  === 'overview'&& (
  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
- <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type:"spring", stiffness: 300, damping: 20 }} className="bg-orange-100 p-4 rounded-2xl shadow-sm border border-slate-300 transition-all duration-300 relative overflow-hidden group">
- <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
- <div className="flex items-center gap-4 mb-4 relative z-10">
- <div className="p-2.5 bg-white rounded-2xl text-slate-900 shadow-sm"><FileText size={ 20 } strokeWidth={ 2.5 } /></div>
- <span className="text-slate-900 font-medium text-sm uppercase tracking-wider">Active Assignments</span>
- </div>
- <p className="text-xl font-medium text-slate-900 relative z-10">{ assignments.length }</p>
- </motion.div>
- <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type:"spring", stiffness: 300, damping: 20 }} className="bg-blue-100 p-4 rounded-2xl shadow-sm border border-slate-300 cursor-pointer transition-all duration-300 relative overflow-hidden group"onClick={() => setActiveTab('quizzes')}>
- <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
- <div className="flex items-center gap-4 mb-4 relative z-10">
- <div className="p-2.5 bg-white rounded-2xl text-slate-900 shadow-sm"><CheckSquare size={ 20 } strokeWidth={ 2.5 } /></div>
- <span className="text-slate-900 font-medium text-sm uppercase tracking-wider">Quizzes</span>
- </div>
- <p className="text-xl font-medium text-slate-900 relative z-10">View</p>
- </motion.div>
- <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type:"spring", stiffness: 300, damping: 20 }} className="bg-purple-100 p-4 rounded-2xl shadow-sm border border-slate-300 transition-all duration-300 relative overflow-hidden group">
- <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
- <div className="flex items-center gap-4 mb-4 relative z-10">
- <div className="p-2.5 bg-white rounded-2xl text-slate-900 shadow-sm"><Flame size={ 20 } strokeWidth={ 2.5 } /></div>
- <span className="text-slate-900 font-medium text-sm uppercase tracking-wider">Daily Streak</span>
- </div>
- <p className="text-xl font-medium text-slate-900 relative z-10">{ user.streakCount || 0 } Days 🔥</p>
- </motion.div>
- <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type:"spring", stiffness: 300, damping: 20 }} className="bg-pink-100 p-4 rounded-2xl shadow-sm border border-slate-300 transition-all duration-300 relative overflow-hidden group">
- <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
- <div className="flex items-center gap-4 mb-4 relative z-10">
- <div className="p-2.5 bg-white rounded-2xl text-slate-900 shadow-sm"><Trophy size={ 20 } strokeWidth={ 2.5 } /></div>
- <span className="text-slate-900 font-medium text-sm uppercase tracking-wider">Level { user.level || 1 }</span>
- </div>
- <div className="relative z-10">
- <div className="flex justify-between items-end mb-1">
- <p className="text-xl font-medium text-slate-900">{ user.xp || 0 } XP</p>
- <p className="text-[10px] font-medium text-gray-700 uppercase tracking-wider">Next: { getXPForLevel((user.level || 1) + 1)} XP</p>
- </div>
- <div className="h-1.5 w-full bg-white rounded-full overflow-hidden">
- <div 
- className="h-full bg-white transition-all duration-500"
- style={{ width:`${ Math.min(100, ((user.xp || 0) - getXPForLevel(user.level || 1)) / (getXPForLevel((user.level || 1) + 1) - getXPForLevel(user.level || 1)) * 100)}%`}}
- ></div>
- </div>
- </div>
- </motion.div>
- <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type:"spring", stiffness: 300, damping: 20 }} className="bg-red-100 p-4 rounded-2xl shadow-sm border border-slate-300 transition-all duration-300 relative overflow-hidden group">
- <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
- <div className="flex items-center gap-4 mb-4 relative z-10">
- <div className="p-2.5 bg-white rounded-2xl text-slate-900 shadow-sm"><Star size={ 20 } strokeWidth={ 2.5 } /></div>
- <span className="text-slate-900 font-medium text-sm uppercase tracking-wider">Coins</span>
- </div>
- <p className="text-xl font-medium text-slate-900 relative z-10">{ user.coins || 0 } 🪙</p>
- </motion.div>
+        <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} className="bg-orange-100 p-3 rounded-2xl shadow-sm border border-slate-300 relative overflow-hidden group">
+          <div className="flex items-center gap-3 mb-2 relative z-10">
+            <div className="p-2 bg-white rounded-xl text-slate-900 shadow-sm"><FileText size={16} strokeWidth={2.5} /></div>
+            <span className="text-slate-900 font-black text-[10px] uppercase tracking-widest">Assignments</span>
+          </div>
+          <p className="text-xl font-black text-slate-900 relative z-10">{assignments.length}</p>
+        </motion.div>
+        <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} className="bg-blue-100 p-3 rounded-2xl shadow-sm border border-slate-300 cursor-pointer relative overflow-hidden group" onClick={() => setActiveTab('quizzes')}>
+          <div className="flex items-center gap-3 mb-2 relative z-10">
+            <div className="p-2 bg-white rounded-xl text-slate-900 shadow-sm"><CheckSquare size={16} strokeWidth={2.5} /></div>
+            <span className="text-slate-900 font-black text-[10px] uppercase tracking-widest">Quizzes</span>
+          </div>
+          <p className="text-xl font-black text-slate-900 relative z-10">View</p>
+        </motion.div>
+        <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} className="bg-purple-100 p-3 rounded-2xl shadow-sm border border-slate-300 relative overflow-hidden group">
+          <div className="flex items-center gap-3 mb-2 relative z-10">
+            <div className="p-2 bg-white rounded-xl text-slate-900 shadow-sm"><Flame size={16} strokeWidth={2.5} /></div>
+            <span className="text-slate-900 font-black text-[10px] uppercase tracking-widest">Streak</span>
+          </div>
+          <p className="text-xl font-black text-slate-900 relative z-10">{user.streakCount || 0} Days 🔥</p>
+        </motion.div>
+        <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} className="bg-pink-100 p-3 rounded-2xl shadow-sm border border-slate-300 relative overflow-hidden group">
+          <div className="flex items-center gap-3 mb-2 relative z-10">
+            <div className="p-2 bg-white rounded-xl text-slate-900 shadow-sm"><Trophy size={16} strokeWidth={2.5} /></div>
+            <span className="text-slate-900 font-black text-[10px] uppercase tracking-widest">Level {user.level || 1}</span>
+          </div>
+          <div className="relative z-10">
+            <div className="flex justify-between items-end mb-1">
+              <p className="text-xl font-black text-slate-900">{user.xp || 0} XP</p>
+              <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Next: {getXPForLevel((user.level || 1) + 1)} XP</p>
+            </div>
+            <div className="h-1.5 w-full bg-white/50 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-slate-900 transition-all duration-500"
+                style={{ width: `${Math.min(100, ((user.xp || 0) - getXPForLevel(user.level || 1)) / (getXPForLevel((user.level || 1) + 1) - getXPForLevel(user.level || 1)) * 100)}%` }}
+              ></div>
+            </div>
+          </div>
+        </motion.div>
+        <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} className="bg-red-100 p-3 rounded-2xl shadow-sm border border-slate-300 relative overflow-hidden group">
+          <div className="flex items-center gap-3 mb-2 relative z-10">
+            <div className="p-2 bg-white rounded-xl text-slate-900 shadow-sm"><Star size={16} strokeWidth={2.5} /></div>
+            <span className="text-slate-900 font-black text-[10px] uppercase tracking-widest">Coins</span>
+          </div>
+          <p className="text-xl font-black text-slate-900 relative z-10">{user.coins || 0} 🪙</p>
+        </motion.div>
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

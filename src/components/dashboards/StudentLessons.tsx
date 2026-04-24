@@ -457,20 +457,20 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('English')}
-            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200 text-slate-900 dark:text-slate-100 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(59,130,246,0.2)]"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-300"
           >
-            <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform duration-500">
-              <BookOpen size={200} />
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
+              <BookOpen size={160} />
             </div>
             <div className="relative z-10">
-              <div className="w-16 h-16 bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
-                <BookOpen size={20} />
+              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
+                <BookOpen size={16} />
               </div>
-              <h3 className="text-xl font-medium mb-3">English Language</h3>
-              <p className="text-blue-900 font-medium max-w-[200px] leading-relaxed">Phonics, Grammar, and Creative Writing.</p>
+              <h3 className="text-lg font-black uppercase tracking-widest mb-1">English</h3>
+              <p className="text-[10px] font-black text-blue-900/70 uppercase tracking-widest leading-relaxed">Phonics & Grammar</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 font-medium bg-white dark:bg-slate-900/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white dark:bg-slate-900/40 transition-colors">
-              Explore Lessons <ChevronRight size={20} />
+            <div className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
+              Explore <ChevronRight size={14} />
             </div>
           </motion.button>
 
@@ -479,20 +479,20 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Math')}
-            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-100 to-purple-200 text-slate-900 dark:text-slate-100 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(99,102,241,0.2)]"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-100 to-purple-200 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-300"
           >
-            <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform duration-500">
-              <Brain size={200} />
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
+              <Brain size={160} />
             </div>
             <div className="relative z-10">
-              <div className="w-16 h-16 bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
-                <Brain size={20} />
+              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
+                <Brain size={16} />
               </div>
-              <h3 className="text-xl font-medium mb-3">Mathematics</h3>
-              <p className="text-indigo-50 font-medium max-w-[200px] leading-relaxed">Numbers, Shapes, and Problem Solving.</p>
+              <h3 className="text-lg font-black uppercase tracking-widest mb-1">Math</h3>
+              <p className="text-[10px] font-black text-indigo-900/70 uppercase tracking-widest leading-relaxed">Numbers & Logic</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 font-medium bg-white dark:bg-slate-900/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white dark:bg-slate-900/40 transition-colors">
-              Explore Lessons <ChevronRight size={20} />
+            <div className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
+              Explore <ChevronRight size={14} />
             </div>
           </motion.button>
 
@@ -501,20 +501,20 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Science')}
-            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-100 to-teal-200 text-slate-900 dark:text-slate-100 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(16,185,129,0.2)]"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-100 to-teal-200 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-300"
           >
-            <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform duration-500">
-              <Microscope size={200} />
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
+              <Microscope size={160} />
             </div>
             <div className="relative z-10">
-              <div className="w-16 h-16 bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
-                <Microscope size={20} />
+              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
+                <Microscope size={16} />
               </div>
-              <h3 className="text-xl font-medium mb-3">Science & Tech</h3>
-              <p className="text-emerald-50 font-medium max-w-[200px] leading-relaxed">Nature, Energy, and the Human Body.</p>
+              <h3 className="text-lg font-black uppercase tracking-widest mb-1">Science</h3>
+              <p className="text-[10px] font-black text-emerald-900/70 uppercase tracking-widest leading-relaxed">Nature & Energy</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 font-medium bg-white dark:bg-slate-900/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white dark:bg-slate-900/40 transition-colors">
-              Explore Lessons <ChevronRight size={20} />
+            <div className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
+              Explore <ChevronRight size={14} />
             </div>
           </motion.button>
 
@@ -523,20 +523,20 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Social Studies')}
-            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-100 to-red-200 text-slate-900 dark:text-slate-100 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(249,115,22,0.2)]"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-100 to-red-200 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-300"
           >
-            <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform duration-500">
-              <Globe size={200} />
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
+              <Globe size={160} />
             </div>
             <div className="relative z-10">
-              <div className="w-16 h-16 bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
-                <Globe size={20} />
+              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
+                <Globe size={16} />
               </div>
-              <h3 className="text-xl font-medium mb-3">Social Studies</h3>
-              <p className="text-orange-900 font-medium max-w-[200px] leading-relaxed">Family, Community, and Culture.</p>
+              <h3 className="text-lg font-black uppercase tracking-widest mb-1">Social</h3>
+              <p className="text-[10px] font-black text-orange-900/70 uppercase tracking-widest leading-relaxed">Community & Culture</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 font-medium bg-white dark:bg-slate-900/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white dark:bg-slate-900/40 transition-colors">
-              Explore Lessons <ChevronRight size={20} />
+            <div className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
+              Explore <ChevronRight size={14} />
             </div>
           </motion.button>
 
@@ -545,20 +545,20 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('ICT')}
-            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-100 to-blue-200 text-slate-900 dark:text-slate-100 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(6,182,212,0.2)]"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-100 to-blue-200 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-300"
           >
-            <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform duration-500">
-              <Monitor size={200} />
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
+              <Monitor size={160} />
             </div>
             <div className="relative z-10">
-              <div className="w-16 h-16 bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
-                <Monitor size={20} />
+              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
+                <Monitor size={16} />
               </div>
-              <h3 className="text-xl font-medium mb-3">ICT</h3>
-              <p className="text-cyan-50 font-medium max-w-[200px] leading-relaxed">Computers, Internet, and Coding.</p>
+              <h3 className="text-lg font-black uppercase tracking-widest mb-1">ICT</h3>
+              <p className="text-[10px] font-black text-cyan-900/70 uppercase tracking-widest leading-relaxed">Coding & Digital</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 font-medium bg-white dark:bg-slate-900/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white dark:bg-slate-900/40 transition-colors">
-              Explore Lessons <ChevronRight size={20} />
+            <div className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
+              Explore <ChevronRight size={14} />
             </div>
           </motion.button>
 
@@ -567,20 +567,20 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Civic Education')}
-            className="group relative h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-rose-100 to-pink-200 text-slate-900 dark:text-slate-100 p-4 text-left flex flex-col justify-between shadow-[0_20px_40px_rgba(244,63,94,0.2)]"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-rose-100 to-pink-200 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-300"
           >
-            <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform duration-500">
-              <ShieldCheck size={200} />
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
+              <ShieldCheck size={160} />
             </div>
             <div className="relative z-10">
-              <div className="w-16 h-16 bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-sm">
-                <ShieldCheck size={20} />
+              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
+                <ShieldCheck size={16} />
               </div>
-              <h3 className="text-xl font-medium mb-3">Civic Education</h3>
-              <p className="text-rose-50 font-medium max-w-[200px] leading-relaxed">Rights, Duties, and Democracy.</p>
+              <h3 className="text-lg font-black uppercase tracking-widest mb-1">Civic</h3>
+              <p className="text-[10px] font-black text-rose-900/70 uppercase tracking-widest leading-relaxed">Rights & Duties</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 font-medium bg-white dark:bg-slate-900/10 w-fit px-5 py-2.5 rounded-full backdrop-blur-sm group-hover:bg-white dark:bg-slate-900/40 transition-colors">
-              Explore Lessons <ChevronRight size={20} />
+            <div className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
+              Explore <ChevronRight size={14} />
             </div>
           </motion.button>
         </div>
@@ -612,34 +612,33 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
               lessons.map((lesson, idx) => {
                 const colors = ['bg-orange-100', 'bg-blue-100', 'bg-purple-100', 'bg-pink-100', 'bg-green-100'];
                 const colorClass = colors[idx % colors.length];
-                return (
-                  <motion.div 
+                return                   <motion.div 
                     key={idx}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1, type: "spring", stiffness: 300, damping: 20 }}
                     whileHover={{ y: -5, scale: 1.02 }}
-                    className={`${colorClass} p-4 rounded-2xl border border-white/40 shadow-sm hover:shadow-md transition-all group flex flex-col relative overflow-hidden`}
+                    className={`${colorClass} p-3 rounded-2xl border border-white/40 shadow-sm transition-all group flex flex-col relative overflow-hidden`}
                   >
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-                    <div className="flex justify-between items-start mb-6 relative z-10">
-                      <span className="text-[10px] font-medium text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900/60 px-3 py-1 rounded-full uppercase tracking-widest border border-white/50 shadow-sm">{lesson.level}</span>
-                      <div className="p-2.5 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity scale-90 group-hover:scale-100 border border-white/50 shadow-sm">
-                        <Play size={16} fill="currentColor" />
+                    <div className="flex justify-between items-start mb-4 relative z-10">
+                      <span className="text-[9px] font-black text-slate-900 bg-white/60 px-3 py-1 rounded-full uppercase tracking-widest border border-white/50 shadow-sm">{lesson.level}</span>
+                      <div className="p-2 bg-white/60 text-slate-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity scale-90 group-hover:scale-100 border border-white/50 shadow-sm">
+                        <Play size={14} fill="currentColor" />
                       </div>
                     </div>
-                    <h4 className="text-xl font-medium mb-3 text-slate-900 dark:text-slate-100 leading-snug relative z-10">{lesson.title}</h4>
-                    <p className="text-sm text-gray-700 font-medium mb-8 line-clamp-2 flex-grow relative z-10">{lesson.content}</p>
+                    <h4 className="text-lg font-black uppercase tracking-widest mb-1 text-slate-900 leading-tight relative z-10">{lesson.title}</h4>
+                    <p className="text-[10px] text-slate-700 font-bold uppercase tracking-wide mb-6 line-clamp-2 flex-grow relative z-10">{lesson.content}</p>
                     <motion.button 
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       transition={{ type: "spring", stiffness: 400, damping: 17 }}
                       onClick={() => startLesson(lesson)}
-                      className="w-full py-3.5 rounded-full bg-white dark:bg-slate-900/40 border border-white/50 font-medium text-slate-900 dark:text-slate-100 hover:bg-white dark:bg-slate-900/60 transition-all shadow-sm hover:shadow-md relative z-10"
+                      className="w-full py-2.5 rounded-xl bg-white border border-white/50 text-[10px] font-black uppercase tracking-widest text-slate-900 hover:bg-slate-50 transition-all shadow-sm relative z-10"
                     >
                       Start Lesson
                     </motion.button>
                   </motion.div>
+>
                 );
               })
             )}
