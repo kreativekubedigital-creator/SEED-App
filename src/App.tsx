@@ -177,30 +177,33 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
  if (tenantSchool) return null;
  
  return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center w-full px-4 sm:px-6 pt-4 sm:pt-6">
-      <motion.nav 
-        initial={ false }
-        animate={{ 
-          backgroundColor: isScrolled 
-            ? "rgba(255, 255, 255, 0.9)" 
-            : (isLandingPage ? "transparent" : "rgba(255, 255, 255, 0.5)"),
-          borderColor: isScrolled 
-            ? "rgba(226, 232, 240, 0.5)" 
-            : (isLandingPage ? "transparent" : "rgba(255, 255, 255, 0.1)"),
-          boxShadow: isScrolled ?"0 20px 40px -10px rgba(0, 0, 0, 0.05)":"none",
-          width: isScrolled ?"92%":"100%",
-          maxWidth:"1280px",
-          height: isScrolled ? (window.innerWidth < 640 ? "60px" : "72px") : (window.innerWidth < 640 ? "64px" : "80px"),
-          borderRadius: isScrolled ?"20px":"0px",
-          paddingLeft: isScrolled ? (window.innerWidth < 640 ? "1.25rem" : "2rem") : "1.5rem",
-          paddingRight: isScrolled ? (window.innerWidth < 640 ? "1.25rem" : "2rem") : "1.5rem",
-        }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className={ cn(
-          "backdrop-blur-xl flex items-center justify-between border transition-all duration-300",
-          isScrolled ? "text-slate-900" : (isLandingPage ? "text-white" : "text-slate-900")
-        )}
-      >
+     <div className={cn(
+       "fixed top-0 left-0 right-0 z-50 flex justify-center w-full",
+       "sm:px-6 sm:pt-6 pt-0 px-0"
+     )}>
+       <motion.nav 
+         initial={ false }
+         animate={{ 
+           backgroundColor: isScrolled 
+             ? "rgba(255, 255, 255, 0.9)" 
+             : (isLandingPage ? "transparent" : "rgba(255, 255, 255, 0.5)"),
+           borderColor: isScrolled 
+             ? "rgba(226, 232, 240, 0.5)" 
+             : (isLandingPage ? "transparent" : "rgba(255, 255, 255, 0.1)"),
+           boxShadow: isScrolled ?"0 20px 40px -10px rgba(0, 0, 0, 0.05)":"none",
+           width: (window.innerWidth < 640) ? "100%" : (isScrolled ? "92%" : "100%"),
+           maxWidth:"1280px",
+           height: (window.innerWidth < 640) ? "64px" : (isScrolled ? "72px" : "80px"),
+           borderRadius: (window.innerWidth < 640) ? "0px" : (isScrolled ? "20px" : "0px"),
+           paddingLeft: (window.innerWidth < 640) ? "1.5rem" : (isScrolled ? "2rem" : "1.5rem"),
+           paddingRight: (window.innerWidth < 640) ? "1.5rem" : (isScrolled ? "2rem" : "1.5rem"),
+         }}
+         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+         className={ cn(
+           "backdrop-blur-xl flex items-center justify-between border transition-all duration-300",
+           isScrolled ? "text-slate-900" : (isLandingPage ? "text-white" : "text-slate-900")
+         )}
+       >
  <Link to="/"className="flex items-center gap-2 transition-transform hover:scale-105 active:scale-95">
   <Logo 
   variant={isScrolled ? "black" : (isLandingPage ? "white" : "black")}
@@ -281,20 +284,7 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
  exit={{ opacity: 0, y: -20, scale: 0.95 }}
  className="absolute top-24 left-4 right-4 md:hidden bg-white/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-black/5 overflow-hidden p-6 z-[60]"
  >
- <div className="space-y-3">
- { navItems.map(item => (
- <Link
- key={ item.name }
- to={ item.path }
- onClick={() => setIsOpen(false)}
- className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 text-sm font-semibold transition-all group"
- >
- <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform">
- <item.icon size={ 20 } className="text-blue-600"/>
- </div>
- <span className="text-gray-800">{ item.name }</span>
- </Link>
- ))}
+  <div className="space-y-4">
  { user ? (
  <>
  <Link
@@ -320,13 +310,26 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
  )}
  </>
  ) : (
- <a
- href="#onboard"
+ <div className="space-y-3">
+ <Link
+ to="/super-admin"
  onClick={() => setIsOpen(false)}
- className="w-full h-14 mt-4 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold shadow-lg shadow-blue-500/25 active:scale-95 transition-transform"
+ className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 text-sm font-semibold transition-all group"
  >
- Get Started
+ <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+ <Shield size={ 20 } className="text-blue-600"/>
+ </div>
+ <span className="text-gray-800">System Login</span>
+ </Link>
+ 
+ <a
+ href="#onboarding"
+ onClick={() => setIsOpen(false)}
+ className="w-full h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold shadow-lg shadow-blue-500/25 active:scale-95 transition-transform"
+ >
+ Onboard School
  </a>
+ </div>
  )}
  </div>
  </motion.div>
