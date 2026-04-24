@@ -413,16 +413,16 @@ export const LandingPage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -8, backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
-                className="group p-10 rounded-[2.5rem] bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-500"
+                whileHover={{ y: -6, backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+                className="group p-7 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-500"
               >
-                <div className="flex flex-col gap-8">
-                  <div className="w-16 h-16 rounded-2xl bg-blue-600/20 flex items-center justify-center border border-blue-500/20 group-hover:scale-110 group-hover:bg-blue-600/30 transition-all duration-500">
-                    <feature.icon className="text-blue-400 group-hover:text-blue-300" size={32} />
+                <div className="flex flex-col gap-6">
+                  <div className="w-12 h-12 rounded-xl bg-blue-600/20 flex items-center justify-center border border-blue-500/20 group-hover:scale-110 group-hover:bg-blue-600/30 transition-all duration-500">
+                    <feature.icon className="text-blue-400 group-hover:text-blue-300" size={24} />
                   </div>
-                  <div className="space-y-4">
-                    <h3 className="text-2xl font-space font-black text-white tracking-tight">{feature.title}</h3>
-                    <p className="text-base text-slate-400 leading-relaxed font-medium">{feature.desc}</p>
+                  <div className="space-y-3">
+                    <h3 className="text-xl font-space font-black text-white tracking-tight">{feature.title}</h3>
+                    <p className="text-sm text-slate-400 leading-relaxed font-medium">{feature.desc}</p>
                   </div>
                 </div>
               </motion.div>
@@ -488,16 +488,16 @@ export const LandingPage = () => {
                 transition={{ delay: i * 0.2 }}
                 className="relative text-center group"
               >
-                <div className="relative mb-12 inline-block">
-                  <div className="w-32 h-32 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center group-hover:border-blue-500/50 transition-colors duration-500">
-                    <item.icon className="text-blue-500" size={40} />
+                <div className="relative mb-8 inline-block">
+                  <div className="w-20 h-20 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center group-hover:border-blue-500/50 transition-colors duration-500">
+                    <item.icon className="text-blue-500" size={28} />
                   </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center border-4 border-[#020617]">
+                  <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-blue-600 text-white font-bold text-[10px] flex items-center justify-center border-2 border-[#020617]">
                     {item.step}
                   </div>
                 </div>
-                <h3 className="text-2xl font-space font-black mb-4 tracking-tight">{item.title}</h3>
-                <p className="text-slate-400 font-medium leading-relaxed max-w-xs mx-auto">
+                <h3 className="text-lg font-space font-black mb-3 tracking-tight">{item.title}</h3>
+                <p className="text-xs text-slate-400 font-medium leading-relaxed max-w-[200px] mx-auto">
                   {item.desc}
                 </p>
               </motion.div>
@@ -544,14 +544,14 @@ export const LandingPage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="flex flex-col items-center text-center gap-6"
+                className="flex flex-col items-center text-center gap-4"
               >
-                <div className="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center text-blue-500 bg-white/5">
-                  <feature.icon size={24} />
+                <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-blue-500 bg-white/5">
+                  <feature.icon size={20} />
                 </div>
-                <div className="space-y-3">
-                  <h4 className="text-lg font-bold tracking-tight leading-snug px-4">{feature.title}</h4>
-                  <p className="text-sm text-slate-400 font-medium leading-relaxed">{feature.desc}</p>
+                <div className="space-y-2">
+                  <h4 className="text-sm font-bold tracking-tight leading-snug px-4">{feature.title}</h4>
+                  <p className="text-[11px] text-slate-400 font-medium leading-relaxed">{feature.desc}</p>
                 </div>
               </motion.div>
             ))}

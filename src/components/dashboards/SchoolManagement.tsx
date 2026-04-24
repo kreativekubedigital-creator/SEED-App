@@ -836,13 +836,13 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  { label:'Students', value: stats.students, icon: GraduationCap, colorClass:'from-purple-50 to-purple-100 text-purple-600 border-purple-200/50'},
  { label:'Parents', value: stats.parents, icon: Users, colorClass:'from-pink-50 to-pink-100 text-pink-600 border-pink-200/50'},
  ].map(stat => (
- <div key={ stat.label } className="bg-white p-4 rounded-2xl border border-slate-300 shadow-sm flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all duration-300">
- <div className={`w-10 h-10 bg-gradient-to-br ${ stat.colorClass } rounded-2xl flex items-center justify-center shadow-sm border`}>
- <stat.icon size={ 20 } />
+ <div key={ stat.label } className="bg-white p-3 rounded-2xl border border-slate-300 shadow-sm flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+ <div className={`w-8 h-8 bg-gradient-to-br ${ stat.colorClass } rounded-xl flex items-center justify-center shadow-sm border`}>
+ <stat.icon size={16} />
  </div>
  <div>
  <p className="text-[10px] font-medium text-slate-900 uppercase tracking-wider">{ stat.label }</p>
- <p className="text-xl font-medium text-slate-900 mt-1">{ stat.value }</p>
+ <p className="text-lg font-bold text-slate-900 mt-0.5">{ stat.value }</p>
  </div>
  </div>
  ))}
@@ -861,13 +861,13 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  { label:'School Settings', desc:'Update school info & logo', icon: Settings, tab:'settings', colorClass:'from-orange-50 to-orange-100 text-orange-600 border-orange-200/50'}
  ] : [])
  ].map(action => (
- <div key={ action.label } onClick={() => { setActiveTab(action.tab as any); if (action.role) setRoleFilter(action.role as any); }} className="bg-white p-4 rounded-2xl border border-slate-300 shadow-sm flex items-center gap-4 hover:border-blue-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer min-w-0 group">
- <div className={`w-10 h-10 bg-gradient-to-br ${ action.colorClass } rounded-2xl flex items-center justify-center shrink-0 shadow-sm border group-hover:scale-110 transition-transform duration-300`}>
- <action.icon size={ 20 } />
+ <div key={ action.label } onClick={() => { setActiveTab(action.tab as any); if (action.role) setRoleFilter(action.role as any); }} className="bg-white p-3 rounded-2xl border border-slate-300 shadow-sm flex items-center gap-4 hover:border-blue-200 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-pointer min-w-0 group">
+ <div className={`w-8 h-8 bg-gradient-to-br ${ action.colorClass } rounded-xl flex items-center justify-center shrink-0 shadow-sm border group-hover:scale-110 transition-transform duration-300`}>
+ <action.icon size={16} />
  </div>
  <div className="min-w-0">
- <p className="text-base font-medium text-slate-900 truncate">{ action.label }</p>
- <p className="text-xs text-slate-900 font-medium truncate mt-0.5">{ action.desc }</p>
+ <p className="text-sm font-bold text-slate-900 truncate">{ action.label }</p>
+ <p className="text-[10px] text-slate-900 font-medium truncate mt-0.5">{ action.desc }</p>
  </div>
  </div>
  ))}

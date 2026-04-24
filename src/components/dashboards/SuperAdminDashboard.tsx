@@ -400,26 +400,26 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  initial={{ opacity: 0, y: 20 }}
  animate={{ opacity: 1, y: 0 }}
  transition={{ delay: i * 0.1 }}
- className="bg-white border border-slate-200 p-6 rounded-3xl hover:shadow-xl hover:shadow-blue-500/5 transition-all group"
+ className="bg-white border border-slate-200 p-4 rounded-2xl hover:shadow-xl hover:shadow-blue-500/5 transition-all group"
  >
- <div className="flex justify-between items-start mb-4">
+ <div className="flex justify-between items-start mb-3">
  <div className={ cn(
-"p-3 rounded-2xl group-hover:scale-110 transition-transform",
+"p-2 rounded-xl group-hover:scale-110 transition-transform",
  stat.color  === 'blue'?"bg-blue-50 text-blue-600":
  stat.color  === 'emerald'?"bg-emerald-50 text-emerald-600":
 "bg-amber-50 text-amber-600"
  )}>
- <stat.icon size={ 24 } />
+ <stat.icon size={ 20 } />
  </div>
  <span className={ cn(
-"text-[10px] font-bold px-2 py-1 rounded-full",
+"text-[9px] font-bold px-1.5 py-0.5 rounded-full",
  stat.trend.startsWith('+') ?"bg-emerald-50 text-emerald-600":"bg-blue-50 text-blue-600"
  )}>
  { stat.trend }
  </span>
  </div>
- <p className="text-3xl font-bold text-slate-900 mb-1 tracking-tight">{ stat.value }</p>
- <p className="text-xs font-bold text-slate-600 uppercase tracking-widest">{ stat.label }</p>
+ <p className="text-xl font-bold text-slate-900 mb-0.5 tracking-tight">{ stat.value }</p>
+ <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{ stat.label }</p>
  </motion.div>
  ))}
  </div>
@@ -714,20 +714,20 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  { label:'Cloud SQL Cluster', status:'Operational', usage:'12%', icon: Database },
  { label:'Asset Storage', status:'Healthy', usage:'8.4TB', icon: Globe },
  ].map((sys, i) => (
- <div key={ i } className="bg-slate-50 border border-slate-200 rounded-3xl p-6 flex flex-col gap-6">
+ <div key={ i } className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col gap-4">
  <div className="flex justify-between items-center">
- <div className="p-3 bg-slate-50 rounded-2xl text-blue-400">
- <sys.icon size={ 20 } />
+ <div className="p-2.5 bg-slate-50 rounded-xl text-blue-400">
+ <sys.icon size={ 18 } />
  </div>
- <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-full text-[10px] font-bold uppercase tracking-widest border border-emerald-500/20">
+ <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-full text-[9px] font-bold uppercase tracking-widest border border-emerald-500/20">
  { sys.status }
  </span>
  </div>
  <div>
- <p className="text-lg font-bold text-slate-900">{ sys.label }</p>
- <p className="text-xs text-slate-600 font-medium mt-1">Current Load: { sys.usage }</p>
+ <p className="text-base font-bold text-slate-900">{ sys.label }</p>
+ <p className="text-[11px] text-slate-600 font-medium mt-0.5">Current Load: { sys.usage }</p>
  </div>
- <div className="h-1.5 bg-slate-50 rounded-full overflow-hidden">
+ <div className="h-1 bg-slate-50 rounded-full overflow-hidden">
  <div className="h-full bg-blue-500 w-1/4 rounded-full"/>
  </div>
  </div>
