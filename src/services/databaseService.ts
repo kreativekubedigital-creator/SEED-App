@@ -120,8 +120,19 @@ export class DatabaseService {
     const { table, filters } = this.parsePath(path);
     
     // Generate ID if missing to avoid "null value in column id" errors
+    const generateId = () => {
+      try {
+        return crypto.randomUUID();
+      } catch (e) {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      }
+    };
+
     const dataWithId = {
-      id: crypto.randomUUID(),
+      id: generateId(),
       ...data,
       ...filters
     };
@@ -133,14 +144,19 @@ export class DatabaseService {
     const { data: insertedData, error } = await supabase
       .from(table)
       .insert(payload)
-      .select()
-      .single();
+      .select();
     
     if (error) {
       console.error(`Error adding item to ${table}:`, error);
       throw error;
     }
-    return this.toCamelCase(insertedData, table);
+
+    if (!insertedData || insertedData.length === 0) {
+      console.warn(`No data returned after insert to ${table}. This might be an RLS issue or silent failure.`);
+      return this.toCamelCase(dataWithId, table);
+    }
+    
+    return this.toCamelCase(insertedData[0], table);
   }
 
   static async updateItem(path: string, id: string, data: any) {

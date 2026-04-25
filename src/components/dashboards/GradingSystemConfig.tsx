@@ -143,6 +143,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
   };
 
   const handleAddTerm = async () => {
+    console.log("handleAddTerm triggered", { newTermName, schoolId, selectedSessionForTerm });
     if (!newTermName.trim()) {
       setMessage({ type: 'error', text: 'Please enter a term name.' });
       return;
