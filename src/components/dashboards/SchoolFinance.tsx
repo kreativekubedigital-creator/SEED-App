@@ -164,7 +164,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
             sessionId,
             amount: totalAmount,
             amountPaid: 0,
-            status: 'pending',
+            status: 'unpaid',
             dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
             items,
             createdAt: new Date().toISOString()
