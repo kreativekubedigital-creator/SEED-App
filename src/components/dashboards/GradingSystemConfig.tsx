@@ -121,7 +121,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
  setTimeout(() => setMessage(null), 3000);
  } catch (err) {
  handleFirestoreError(err, OperationType.CREATE,'sessions');
- setMessage({ type:'error', text:'Failed to add session.'});
+ setMessage({ type:'error', text: `Failed to add session: ${err.message || 'Unknown error'}`});
  }
  };
 
@@ -162,7 +162,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
  setTimeout(() => setMessage(null), 3000);
  } catch (err) {
  handleFirestoreError(err, OperationType.CREATE,'terms');
- setMessage({ type:'error', text:'Failed to add term.'});
+ setMessage({ type:'error', text: `Failed to add term: ${err.message || 'Unknown error'}`});
  }
  };
 
