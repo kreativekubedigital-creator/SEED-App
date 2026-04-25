@@ -120,7 +120,6 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
       });
       
       setNewSessionName('');
-      setShowAddSession(false);
       setMessage({ type: 'success', text: 'Academic session added successfully' });
       setTimeout(() => setMessage(null), 3000);
     } catch (err: any) {
@@ -168,7 +167,6 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
       });
       
       setNewTermName('');
-      setShowAddTerm(false);
       setMessage({ type: 'success', text: 'Term added successfully' });
       setTimeout(() => setMessage(null), 3000);
     } catch (err: any) {
