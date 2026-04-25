@@ -420,15 +420,15 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
       className={ cn(
         "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all w-full text-left group",
         activeTab === 'overview'
-          ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+          ? "!bg-[#2563EB] !text-white shadow-lg shadow-blue-500/40 border border-blue-400/20"
           : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
       )}
     >
       <LayoutDashboard size={ 18 } className={cn(
-        "shrink-0",
-        activeTab === 'overview' ? "text-white" : "group-hover:text-blue-600"
+        "shrink-0 transition-colors",
+        activeTab === 'overview' ? "!text-white" : "group-hover:text-blue-600 text-slate-500"
       )} />
-      <span>Overview</span>
+      <span className={cn(activeTab === 'overview' ? "!text-white" : "")}>Overview</span>
     </button>
 
  {/* User Management Section */}
