@@ -539,6 +539,18 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  >
  <button
  onClick={() => {
+ setActiveTab('promotion');
+ setIsMobileMenuOpen(false);
+ }}
+ className={ cn(
+"flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all w-full text-left",
+ activeTab  === 'promotion'?"bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50":"text-slate-900 hover:bg-slate-50 hover:text-slate-900"
+ )}
+ >
+ <GraduationCap size={ 18 } /> Student Promotion
+ </button>
+ <button
+ onClick={() => {
  setActiveTab('classes');
  setIsMobileMenuOpen(false);
  }}
@@ -584,18 +596,6 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  )}
  >
  <BookOpen size={ 18 } /> Timetable
- </button>
- <button
- onClick={() => {
- setActiveTab('promotion');
- setIsMobileMenuOpen(false);
- }}
- className={ cn(
-"flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all w-full text-left",
- activeTab  === 'promotion'?"bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50":"text-slate-900 hover:bg-slate-50 hover:text-slate-900"
- )}
- >
- <GraduationCap size={ 18 } /> Student Promotion
  </button>
  </motion.div>
  )}
@@ -792,6 +792,9 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
 
  <div className="space-y-1">
  <p className="px-4 text-[10px] font-medium uppercase tracking-widest text-slate-900 mb-2">Academics</p>
+ <button onClick={() => { setActiveTab('promotion'); setIsMobileMenuOpen(false); }} className={ cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left", activeTab  === 'promotion'?"bg-blue-50 text-blue-700":"text-slate-900")}>
+ <GraduationCap size={ 18 } /> Student Promotion
+ </button>
  <button onClick={() => { setActiveTab('classes'); setIsMobileMenuOpen(false); }} className={ cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left", activeTab  === 'classes'?"bg-blue-50 text-blue-700":"text-slate-900")}>
  <BookOpen size={ 18 } /> Classes & Subjects
  </button>
@@ -800,9 +803,6 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  </button>
  <button onClick={() => { setActiveTab('reports'); setIsMobileMenuOpen(false); }} className={ cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left", activeTab  === 'reports'?"bg-blue-50 text-blue-700":"text-slate-900")}>
  <BookOpen size={ 18 } /> Report Cards
- </button>
- <button onClick={() => { setActiveTab('promotion'); setIsMobileMenuOpen(false); }} className={ cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left", activeTab  === 'promotion'?"bg-blue-50 text-blue-700":"text-slate-900")}>
- <GraduationCap size={ 18 } /> Student Promotion
  </button>
  </div>
  </div>
@@ -815,23 +815,18 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  {/* Main Content */}
  <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden overflow-y-auto w-full pt-20 lg:pt-10">
  <div className="max-w-7xl mx-auto space-y-6 pb-20 lg:pb-0">
- <header className="mb-8 hidden lg:block">
- { activeTab  === 'overview'? (
- <div className="bg-white p-4 rounded-3xl border border-slate-300 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
- <div className="flex items-center gap-4">
- <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center shadow-sm">
- <span className="text-2xl">👋</span>
- </div>
- <div>
- <h3 className="text-xl font-medium text-slate-900">Welcome back, { school.name }</h3>
- <p className="text-sm text-slate-900 font-medium">Manage your school's operations</p>
- </div>
- </div>
- <div className="text-sm font-medium text-blue-600 bg-blue-50 border border-blue-100 rounded-xl px-4 py-2 shadow-sm">
- { school.planId.toUpperCase()} PLAN
- </div>
- </div>
- ) : (
+  <header className="mb-8">
+  { activeTab  === 'overview'? (
+  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+  <div>
+  <h2 className="text-2xl md:text-xl font-medium text-slate-900 capitalize tracking-tight">Overview</h2>
+  <p className="text-slate-900 mt-1 md:mt-2 text-sm md:text-base font-medium">Welcome back, { school.name }. Manage your school's operations.</p>
+  </div>
+  <div className="text-sm font-medium text-blue-600 bg-blue-50 border border-blue-100 rounded-xl px-4 py-2 shadow-sm">
+  { school.planId.toUpperCase()} PLAN
+  </div>
+  </div>
+  ) : (
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-4">
  <div>
  <h2 className="text-2xl md:text-xl font-medium text-slate-900 capitalize tracking-tight">

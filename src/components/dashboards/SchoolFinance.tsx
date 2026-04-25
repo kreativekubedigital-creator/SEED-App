@@ -18,8 +18,11 @@ export const SchoolFinance = ({ school }: { school: School }) => {
  const [showAddFee, setShowAddFee] = useState(false);
  const [showGenerateInvoice, setShowGenerateInvoice] = useState(false);
 
- // Form states
- const [newFee, setNewFee] = useState<Partial<FeeStructure>>({ name:'', amount: 0, classId:'all', isMandatory: true, termId:'1', sessionId:'2025/2026'});
+  // Form states
+  const [newFee, setNewFee] = useState<Partial<FeeStructure>>({ name:'', amount: 0, classId:'all', isMandatory: true, termId:'', sessionId:''});
+  const [genSessionId, setGenSessionId] = useState('');
+  const [genTermId, setGenTermId] = useState('');
+  const [genClassId, setGenClassId] = useState('all');
 
  useEffect(() => {
   const unsubFees = onSnapshot(collection(db,`schools/${ school.id }/feeStructures`), (snap) => {
@@ -76,8 +79,8 @@ export const SchoolFinance = ({ school }: { school: School }) => {
  schoolId: school.id,
  createdAt: new Date().toISOString()
  });
- setShowAddFee(false);
- setNewFee({ name:'', amount: 0, classId:'all', isMandatory: true, termId:'1', sessionId:'2025/2026'});
+  setShowAddFee(false);
+  setNewFee({ name:'', amount: 0, classId:'all', isMandatory: true, termId:'', sessionId:''});
  } catch (err) {
  handleFirestoreError(err, OperationType.CREATE,`schools/${ school.id }/feeStructures`);
  }
@@ -212,15 +215,15 @@ export const SchoolFinance = ({ school }: { school: School }) => {
       <td className="p-4">₦{ inv.amountPaid.toLocaleString()}</td>
       <td className="p-4">
       <div className="flex flex-col gap-1">
-        <span className={`px-2 py-1 rounded-md text-[10px] uppercase tracking-wider font-bold w-fit ${
-        paid ? 'bg-green-100 text-green-700' :
-        inv.amountPaid > 0 ? 'bg-yellow-100 text-yellow-700' :
-        'bg-red-100 text-red-700'
+        <span className={`px-2 py-1 rounded-md text-[10px] uppercase tracking-wider font-bold w-fit flex items-center gap-1 ${
+        paid ? 'bg-emerald-100 text-emerald-700' :
+        inv.amountPaid > 0 ? 'bg-amber-100 text-amber-700' :
+        'bg-rose-100 text-rose-700'
         }`}>
-        { paid ? 'FULLY PAID' : inv.amountPaid > 0 ? 'PARTIAL' : 'UNPAID' }
+        { paid ? <><CheckCircle size={10} /> FULLY PAID</> : inv.amountPaid > 0 ? 'PARTIAL' : 'UNPAID' }
         </span>
         {overdue && !paid && (
-          <span className="text-[10px] font-bold text-red-600 flex items-center gap-1">
+          <span className="text-[10px] font-bold text-rose-600 flex items-center gap-1">
             <Clock size={10} /> OVERDUE
           </span>
         )}
@@ -306,10 +309,28 @@ export const SchoolFinance = ({ school }: { school: School }) => {
  { classes.map(c => <option key={ c.id } value={ c.id }>{ c.name }</option>)}
  </select>
  </div>
- <div className="flex items-center gap-2">
- <input type="checkbox"id="isMandatory"checked={ newFee.isMandatory } onChange={ e => setNewFee({...newFee, isMandatory: e.target.checked })} className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"/>
- <label htmlFor="isMandatory"className="text-sm text-slate-900">Mandatory Fee</label>
- </div>
+  <div className="grid grid-cols-2 gap-4">
+    <div>
+    <label className="block text-xs font-medium text-slate-900 mb-1">Session</label>
+    <select required value={ newFee.sessionId } onChange={ e => setNewFee({...newFee, sessionId: e.target.value, termId: '' })} className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none">
+    <option value="">Select Session</option>
+    { sessions.map(s => <option key={ s.id } value={ s.id }>{ s.name }</option>)}
+    </select>
+    </div>
+    <div>
+    <label className="block text-xs font-medium text-slate-900 mb-1">Term</label>
+    <select required value={ newFee.termId } onChange={ e => setNewFee({...newFee, termId: e.target.value })} className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none">
+    <option value="">Select Term</option>
+    { newFee.sessionId && Object.values(termsMap[newFee.sessionId] || {}).map((t: any) => (
+      <option key={ t.id } value={ t.id }>{ t.name }</option>
+    ))}
+    </select>
+    </div>
+  </div>
+  <div className="flex items-center gap-2">
+  <input type="checkbox"id="isMandatory"checked={ newFee.isMandatory } onChange={ e => setNewFee({...newFee, isMandatory: e.target.checked })} className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"/>
+  <label htmlFor="isMandatory"className="text-sm text-slate-900">Mandatory Fee</label>
+  </div>
  <button type="submit"className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">Save Fee</button>
  </form>
  </motion.div>
@@ -326,17 +347,61 @@ export const SchoolFinance = ({ school }: { school: School }) => {
  <h3 className="text-xl font-medium">Generate Invoices</h3>
  <button onClick={() => setShowGenerateInvoice(false)} className="text-slate-900 hover:text-slate-900"><X size={ 24 } /></button>
  </div>
- <div className="space-y-4">
- <p className="text-sm text-slate-900">Select a class to generate invoices for the current term based on active fee structures.</p>
- <div>
- <label className="block text-xs font-medium text-slate-900 mb-1">Class</label>
- <select className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none">
- <option value="all">All Classes</option>
- { classes.map(c => <option key={ c.id } value={ c.id }>{ c.name }</option>)}
- </select>
- </div>
- <button onClick={() => handleGenerateInvoices('all','1','2025/2026')} className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">Generate</button>
- </div>
+  <div className="space-y-4">
+  <p className="text-sm text-slate-500 leading-relaxed">Generate invoices for students based on active fee structures for the selected session and term.</p>
+  
+  <div className="space-y-4">
+    <div>
+    <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-widest mb-1">Session</label>
+    <select 
+      value={genSessionId}
+      onChange={e => {
+        setGenSessionId(e.target.value);
+        setGenTermId('');
+      }}
+      className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-slate-50 font-medium"
+    >
+      <option value="">Select Session</option>
+      { sessions.map(s => <option key={ s.id } value={ s.id }>{ s.name } {s.isCurrent ? '(Current)' : ''}</option>)}
+    </select>
+    </div>
+
+    <div>
+    <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-widest mb-1">Term</label>
+    <select 
+      disabled={!genSessionId}
+      value={genTermId}
+      onChange={e => setGenTermId(e.target.value)}
+      className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-slate-50 font-medium disabled:opacity-50"
+    >
+      <option value="">Select Term</option>
+      { genSessionId && Object.values(termsMap[genSessionId] || {}).map((t: any) => (
+        <option key={ t.id } value={ t.id }>{ t.name } {t.isCurrent ? '(Current)' : ''}</option>
+      ))}
+    </select>
+    </div>
+
+    <div>
+    <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-widest mb-1">Class</label>
+    <select 
+      value={genClassId}
+      onChange={e => setGenClassId(e.target.value)}
+      className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-slate-50 font-medium"
+    >
+    <option value="all">All Classes</option>
+    { classes.map(c => <option key={ c.id } value={ c.id }>{ c.name }</option>)}
+    </select>
+    </div>
+  </div>
+
+  <button 
+    onClick={() => handleGenerateInvoices(genClassId, genTermId, genSessionId)} 
+    disabled={!genSessionId || !genTermId}
+    className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 disabled:opacity-50 disabled:shadow-none mt-4"
+  >
+    Generate Invoices
+  </button>
+  </div>
  </motion.div>
  </div>
  )}

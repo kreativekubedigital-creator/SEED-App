@@ -23,7 +23,7 @@ export const PromotionManagement = ({ schoolId }: PromotionManagementProps) => {
 
     const unsubSessions = onSnapshot(collection(db, 'schools', schoolId, 'sessions'), (snap) => {
       const sessionsData = snap.docs.map(d => ({ id: d.id, ...d.data() } as Session));
-      const sorted = sortByName(sessionsData);
+      const sorted = sortByName<Session>(sessionsData);
       setSessions(sorted);
       
       // Auto-select current session

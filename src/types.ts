@@ -26,6 +26,12 @@ export interface UserProfile {
   lastActivityDate?: string;
   purchasedItems?: string[];
   forcePasswordChange?: boolean;
+  promotionHistory?: {
+    from: string;
+    to: string;
+    date: string;
+    sessionId: string;
+  }[];
 }
 
 export interface School {
@@ -34,6 +40,7 @@ export interface School {
   slug?: string;
   description?: string;
   address: string;
+  location?: string;
   email: string;
   phone: string;
   logoUrl?: string;

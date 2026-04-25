@@ -374,7 +374,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                 <div key={session.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 group">
                   <div className="flex items-center gap-3">
                     <span className="font-medium text-slate-900">{session.name}</span>
-                    <div className="hidden group-hover:flex items-center gap-1">
+                    <div className="flex items-center gap-1">
                       <button 
                         onClick={() => handleEditSession(session)}
                         className="p-1.5 text-slate-400 hover:text-blue-600 transition-colors"
@@ -402,10 +402,6 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                 </div>
               ))}
             </div>
-          </div>
-
-          </div>
-
           </div>
 
           <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
@@ -465,7 +461,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                         <span className="text-[10px] text-slate-400">Resumes: {new Date(term.resumptionDate).toLocaleDateString()}</span>
                       )}
                     </div>
-                    <div className="hidden group-hover:flex items-center gap-1">
+                    <div className="flex items-center gap-1">
                       <button 
                         onClick={() => handleEditTerm(term)}
                         className="p-1.5 text-slate-400 hover:text-indigo-600 transition-colors"
