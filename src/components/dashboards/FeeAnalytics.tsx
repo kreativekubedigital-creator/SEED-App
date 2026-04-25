@@ -26,6 +26,13 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
         const items = inv.items?.filter(item => {
           // Check if the item matches a fee structure with this category
           const structure = feeStructures.find(f => f.name === item.name);
+          
+          if (category === 'miscellaneous') {
+            // Include everything that isn't tuition or activities in the miscellaneous card
+            return structure?.category === 'miscellaneous' || 
+                   !['tuition', 'activities'].includes(structure?.category || '');
+          }
+          
           return structure?.category === category;
         }) || [];
         return sum + items.reduce((s, i) => s + i.amount, 0);

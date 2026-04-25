@@ -56,26 +56,41 @@ export const promoteStudents = async (schoolId: string, currentSessionId: string
     const classesSnap = await getDocs(collection(db, `schools/${schoolId}/classes`));
     const classes = classesSnap.docs.map(d => ({ id: d.id, ...d.data() } as Class));
 
+    // 4. Get terms for current session to find the "3rd Term" (Promotion usually happens at the end of the year)
+    const termsSnap = await getDocs(collection(db, `schools/${schoolId}/sessions/${currentSessionId}/terms`));
+    const sessionTerms = termsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    
+    // Logic to find the final term: "3rd Term" or the term with the highest order/name
+    const finalTerm = sessionTerms.find(t => 
+      t.name?.toLowerCase().includes('3rd') || 
+      t.name?.toLowerCase().includes('third')
+    ) || sessionTerms.sort((a, b) => (b.name || '').localeCompare(a.name || ''))[0];
+
+    if (!finalTerm) {
+      throw new Error("No terms found for the selected session. Ensure terms are defined.");
+    }
+
     const promotions = [];
 
     for (const student of students) {
       if (!student.classId) continue;
 
-      // 4. Check if student passed (Average score > threshold)
+      // 5. Check if student passed (Average score > threshold)
       const resultsSnap = await getDocs(query(
         collection(db, `schools/${schoolId}/results`),
         where('studentId', '==', student.uid),
         where('sessionId', '==', currentSessionId),
-        where('termId', '==', '3rd_term')
+        where('termId', '==', finalTerm.id)
       ));
 
       if (resultsSnap.empty) {
-        failed++; // Count as failed/repeated if no 3rd term result
+        failed++; // Count as failed/repeated if no final term results found
         continue;
       }
 
       const results = resultsSnap.docs.map(d => d.data());
-      const average = results.reduce((acc, r) => acc + (r.total || 0), 0) / results.length;
+      // Use finalScore (actual marks) instead of total (hardcoded 100)
+      const average = results.reduce((acc, r) => acc + (Number(r.finalScore) || Number(r.score) || 0), 0) / results.length;
 
       if (average >= threshold) {
         const currentClass = classes.find(c => c.id === student.classId);
