@@ -465,12 +465,12 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
        className={ cn(
          "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all w-full text-left group border mb-4",
          activeTab === 'overview'
-           ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30 border-blue-500"
+           ? "bg-blue-600 text-white border-blue-700 shadow-sm"
            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-transparent"
        )}
      >
        <LayoutDashboard size={ 18 } className="shrink-0 transition-colors" />
-       <span>Overview</span>
+       <span className={cn("font-bold", activeTab === 'overview' ? "text-white" : "text-slate-900")}>Overview</span>
      </button>
 
  {/* User Management Section */}
@@ -544,10 +544,10 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  }}
  className={ cn(
 "flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all w-full text-left",
- activeTab  === 'promotion'?"bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50":"text-slate-900 hover:bg-slate-50 hover:text-slate-900"
+ activeTab  === 'promotion'?"bg-blue-600 text-white shadow-md border border-blue-700":"text-slate-900 hover:bg-slate-50 hover:text-slate-900"
  )}
  >
- <GraduationCap size={ 18 } /> Student Promotion
+ <GraduationCap size={ 18 } /> Promotion Management
  </button>
  <button
  onClick={() => {
@@ -756,12 +756,12 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
        className={ cn(
          "flex items-center gap-3 px-4 py-4 rounded-2xl text-sm font-bold transition-all w-full text-left group",
          activeTab === 'overview'
-           ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+           ? "bg-blue-600 text-white border-blue-700 shadow-lg shadow-blue-200"
            : "text-slate-600 hover:bg-slate-50"
        )}
      >
        <LayoutDashboard size={ 20 } className="shrink-0" />
-       <span>Overview</span>
+       <span className={cn("font-bold", activeTab === 'overview' ? "text-white" : "text-slate-900")}>Overview</span>
      </button>
  
  {/* Re-using the same navigation structure for mobile */}
@@ -792,8 +792,8 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
 
  <div className="space-y-1">
  <p className="px-4 text-[10px] font-medium uppercase tracking-widest text-slate-900 mb-2">Academics</p>
- <button onClick={() => { setActiveTab('promotion'); setIsMobileMenuOpen(false); }} className={ cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left", activeTab  === 'promotion'?"bg-blue-50 text-blue-700":"text-slate-900")}>
- <GraduationCap size={ 18 } /> Student Promotion
+ <button onClick={() => { setActiveTab('promotion'); setIsMobileMenuOpen(false); }} className={ cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left border shadow-sm", activeTab  === 'promotion'?"bg-blue-600 text-white border-blue-700":"text-slate-900 border-transparent hover:bg-slate-50")}>
+ <GraduationCap size={ 18 } /> Promotion Management
  </button>
  <button onClick={() => { setActiveTab('classes'); setIsMobileMenuOpen(false); }} className={ cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left", activeTab  === 'classes'?"bg-blue-50 text-blue-700":"text-slate-900")}>
  <BookOpen size={ 18 } /> Classes & Subjects

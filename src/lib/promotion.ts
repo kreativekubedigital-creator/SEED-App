@@ -6,11 +6,23 @@ import { UserProfile, Class, GradeScale } from '../types';
  * Example: "Primary 1" -> "Primary 2", "SSS 3" -> "Graduate"
  */
 export const getNextClassName = (currentName: string): string => {
-  const name = currentName.trim();
+  const name = currentName.trim().toUpperCase();
   
-  // Handle specific terminal classes
-  if (name.toUpperCase().includes('SSS 3') || name.toUpperCase().includes('YEAR 12') || name.toUpperCase().includes('GRADE 12')) {
-    return 'Graduate';
+  // Terminal SSS/High School
+  if (name.includes('SSS 3') || name.includes('YEAR 12') || name.includes('GRADE 12') || name.includes('JS 3')) {
+    if (name.includes('SSS 3') || name.includes('YEAR 12') || name.includes('GRADE 12')) {
+      return 'Graduate';
+    }
+  }
+
+  // Primary 6 to JSS 1 transition
+  if (name.includes('PRIMARY 6') || name.includes('GRADE 6') || name.includes('YEAR 6')) {
+    return 'JSS 1';
+  }
+
+  // JSS 3 to SSS 1 transition
+  if (name.includes('JSS 3') || name.includes('JS 3') || name.includes('GRADE 9') || name.includes('YEAR 9')) {
+    return 'SSS 1';
   }
 
   // Look for a number at the end or middle and increment it
@@ -18,11 +30,13 @@ export const getNextClassName = (currentName: string): string => {
   if (match) {
     const currentNum = parseInt(match[0], 10);
     const nextNum = currentNum + 1;
-    return name.replace(match[0], nextNum.toString());
+    // Replace the number with next number, keeping original casing if possible
+    // But since we converted to upper, we'll return upper or try to preserve
+    const originalName = currentName.trim();
+    return originalName.replace(match[0], nextNum.toString());
   }
 
-  // Fallback: append " (Promoted)" if we can't figure it out
-  return `${name} (Next)`;
+  return `${currentName.trim()} (Next)`;
 };
 
 /**
