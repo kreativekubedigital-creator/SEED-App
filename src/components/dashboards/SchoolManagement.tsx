@@ -396,34 +396,40 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <ArrowLeft size={ 18 } /> { activeTab !=='overview'?'Back to Overview': (currentUserRole  === 'super_admin'?'Back to Schools':'Logout')}
  </button>
 
- <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-white to-gray-50/50 backdrop-blur-sm rounded-2xl border border-slate-100 shadow-sm">
- { school.logoUrl ? (
- <img src={ school.logoUrl } alt={ school.name } className="w-10 h-10 rounded-2xl object-cover shadow-sm border-2 border-white"referrerPolicy="no-referrer"/>
- ) : (
- <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-medium text-2xl shadow-md border-2 border-slate-100">
- { school.name?.charAt(0) ||'?'}
- </div>
- )}
- <div className="overflow-hidden">
- <h3 className="font-medium text-slate-900 truncate text-base">{ school.name }</h3>
- <p className="text-[10px] text-blue-600 font-medium uppercase tracking-widest mt-0.5">{ school.planId } Plan</p>
- </div>
- </div>
+  <div className="flex items-center gap-4 p-4 bg-slate-50/80 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-sm">
+    { school.logoUrl ? (
+      <img src={ school.logoUrl } alt={ school.name } className="w-10 h-10 rounded-xl object-cover shadow-sm border border-slate-200" referrerPolicy="no-referrer"/>
+    ) : (
+      <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-600/20">
+        { school.name?.charAt(0) || '?'}
+      </div>
+    )}
+    <div className="overflow-hidden">
+      <h3 className="font-bold text-slate-900 truncate text-sm leading-tight">{ school.name }</h3>
+      <p className="text-[10px] text-blue-600 font-black uppercase tracking-widest mt-1">{ school.planId } Plan</p>
+    </div>
+  </div>
 
  <nav className="flex flex-col gap-2 overflow-y-auto pr-2 custom-scrollbar">
- <button
- onClick={() => {
- setActiveTab('overview');
- setRoleFilter('all');
- setIsMobileMenuOpen(false);
- }}
- className={ cn(
-"flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-medium transition-all w-full text-left",
- activeTab  === 'overview'?"bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/30":"text-slate-900 hover:bg-slate-50 hover:text-slate-900"
- )}
- >
- <LayoutDashboard size={ 18 } /> Overview
- </button>
+    <button
+      onClick={() => {
+        setActiveTab('overview');
+        setRoleFilter('all');
+        setIsMobileMenuOpen(false);
+      }}
+      className={ cn(
+        "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all w-full text-left group",
+        activeTab === 'overview'
+          ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+      )}
+    >
+      <LayoutDashboard size={ 18 } className={cn(
+        "shrink-0",
+        activeTab === 'overview' ? "text-white" : "group-hover:text-blue-600"
+      )} />
+      <span>Overview</span>
+    </button>
 
  {/* User Management Section */}
  <div className="space-y-1">
@@ -687,19 +693,25 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  </button>
 
  <nav className="flex flex-col gap-2 flex-1">
- <button
- onClick={() => {
- setActiveTab('overview');
- setRoleFilter('all');
- setIsMobileMenuOpen(false);
- }}
- className={ cn(
-"flex items-center gap-3 px-4 py-4 rounded-2xl text-sm font-medium transition-all w-full text-left",
- activeTab  === 'overview'?"bg-blue-600 text-white shadow-lg shadow-blue-500/30":"text-slate-900 hover:bg-slate-50"
- )}
- >
- <LayoutDashboard size={ 20 } /> Overview
- </button>
+    <button
+      onClick={() => {
+        setActiveTab('overview');
+        setRoleFilter('all');
+        setIsMobileMenuOpen(false);
+      }}
+      className={ cn(
+        "flex items-center gap-3 px-4 py-4 rounded-2xl text-sm font-bold transition-all w-full text-left group",
+        activeTab === 'overview'
+          ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+          : "text-slate-600 hover:bg-slate-50"
+      )}
+    >
+      <LayoutDashboard size={ 20 } className={cn(
+        "shrink-0",
+        activeTab === 'overview' ? "text-white" : "group-hover:text-blue-600"
+      )} />
+      <span>Overview</span>
+    </button>
  
  {/* Re-using the same navigation structure for mobile */}
  <div className="space-y-4 mt-4">
