@@ -283,19 +283,20 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
  <h3 className="text-xl font-medium text-slate-900">Academic Sessions</h3>
  </div>
  
- <div className="flex gap-2 mb-6">
+ <div className="flex flex-col sm:flex-row gap-3 mb-6">
  <input
  type="text"
  placeholder="e.g. 2025/2026"
  value={ newSessionName }
  onChange={ e => setNewSessionName(e.target.value)}
- className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-text"
+ className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-text min-w-0"
  />
  <button
  onClick={ handleAddSession }
- className="p-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
+ className="w-full sm:w-auto p-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 flex items-center justify-center gap-2"
  >
  <Plus size={ 20 } />
+<span className="sm:hidden font-bold">Add Session</span>
  </button>
  </div>
 
@@ -333,19 +334,20 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
  <option value="">Select Session</option>
  { sessions.map(s => <option key={ s.id } value={ s.id }>{ s.name }</option>)}
  </select>
- <div className="flex gap-2">
+ <div className="flex flex-col sm:flex-row gap-3">
  <input
  type="text"
  placeholder="e.g. 1st Term"
  value={ newTermName }
  onChange={ e => setNewTermName(e.target.value)}
- className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-text"
+ className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-text min-w-0"
  />
  <button
  onClick={ handleAddTerm }
- className="p-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
+ className="w-full sm:w-auto p-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2"
  >
  <Plus size={ 20 } />
+<span className="sm:hidden font-bold">Add Term</span>
  </button>
  </div>
  </div>
