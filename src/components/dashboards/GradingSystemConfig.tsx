@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { db, collection, addDoc, updateDoc, doc, onSnapshot, OperationType, handleFirestoreError } from '../../lib/compatibility';
+import { db, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, OperationType, handleFirestoreError } from '../../lib/compatibility';
 import { Session, Term, GradeScale } from '../../types';
-import { Plus, Trash2, Save, CheckCircle2, AlertCircle, Loader2, Calendar, Settings, Award } from 'lucide-react';
+import { Plus, Trash2, Edit2, Save, CheckCircle2, AlertCircle, Loader2, Calendar, Settings, Award } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { sortByName } from '../../lib/utils';
 
@@ -142,6 +142,31 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
     }
   };
 
+  const handleDeleteSession = async (sessionId: string) => {
+    if (!window.confirm('Are you sure you want to delete this session and all its terms? This action cannot be undone.')) return;
+    try {
+      await deleteDoc(doc(db, 'schools', schoolId, 'sessions', sessionId));
+      setMessage({ type: 'success', text: 'Session deleted successfully' });
+      setTimeout(() => setMessage(null), 3000);
+    } catch (err: any) {
+      console.error('Error deleting session:', err);
+      setMessage({ type: 'error', text: 'Failed to delete session' });
+    }
+  };
+
+  const handleEditSession = async (session: Session) => {
+    const newName = window.prompt('Enter new session name:', session.name);
+    if (!newName || newName.trim() === '' || newName === session.name) return;
+    try {
+      await updateDoc(doc(db, 'schools', schoolId, 'sessions', session.id), { name: newName.trim() });
+      setMessage({ type: 'success', text: 'Session updated successfully' });
+      setTimeout(() => setMessage(null), 3000);
+    } catch (err: any) {
+      console.error('Error updating session:', err);
+      setMessage({ type: 'error', text: 'Failed to update session' });
+    }
+  };
+
   const handleAddTerm = async () => {
     if (!newTermName.trim()) {
       setMessage({ type: 'error', text: 'Please enter a term name.' });
@@ -188,6 +213,31 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
     } catch (err: any) {
       handleFirestoreError(err, OperationType.UPDATE, 'terms');
       setMessage({ type: 'error', text: 'Failed to update current term' });
+    }
+  };
+
+  const handleDeleteTerm = async (termId: string, sessionId: string) => {
+    if (!window.confirm('Are you sure you want to delete this term? This action cannot be undone.')) return;
+    try {
+      await deleteDoc(doc(db, 'schools', schoolId, 'sessions', sessionId, 'terms', termId));
+      setMessage({ type: 'success', text: 'Term deleted successfully' });
+      setTimeout(() => setMessage(null), 3000);
+    } catch (err: any) {
+      console.error('Error deleting term:', err);
+      setMessage({ type: 'error', text: 'Failed to delete term' });
+    }
+  };
+
+  const handleEditTerm = async (term: Term) => {
+    const newName = window.prompt('Enter new term name:', term.name);
+    if (!newName || newName.trim() === '' || newName === term.name) return;
+    try {
+      await updateDoc(doc(db, 'schools', schoolId, 'sessions', term.sessionId, 'terms', term.id), { name: newName.trim() });
+      setMessage({ type: 'success', text: 'Term updated successfully' });
+      setTimeout(() => setMessage(null), 3000);
+    } catch (err: any) {
+      console.error('Error updating term:', err);
+      setMessage({ type: 'error', text: 'Failed to update term' });
     }
   };
 
@@ -316,8 +366,26 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
 
             <div className="space-y-3">
               {sessions.map(session => (
-                <div key={session.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                  <span className="font-medium text-slate-900">{session.name}</span>
+                <div key={session.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 group">
+                  <div className="flex items-center gap-3">
+                    <span className="font-medium text-slate-900">{session.name}</span>
+                    <div className="hidden group-hover:flex items-center gap-1">
+                      <button 
+                        onClick={() => handleEditSession(session)}
+                        className="p-1.5 text-slate-400 hover:text-blue-600 transition-colors"
+                        title="Edit Session"
+                      >
+                        <Edit2 size={14} />
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteSession(session.id)}
+                        className="p-1.5 text-slate-400 hover:text-red-600 transition-colors"
+                        title="Delete Session"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
                   <button
                     onClick={() => handleSetCurrentSession(session.id)}
                     className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${
@@ -369,8 +437,26 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
 
             <div className="space-y-3">
               {terms.filter(t => t.sessionId === selectedSessionForTerm).map(term => (
-                <div key={term.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                  <span className="font-medium text-slate-900">{term.name}</span>
+                <div key={term.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 group">
+                  <div className="flex items-center gap-3">
+                    <span className="font-medium text-slate-900">{term.name}</span>
+                    <div className="hidden group-hover:flex items-center gap-1">
+                      <button 
+                        onClick={() => handleEditTerm(term)}
+                        className="p-1.5 text-slate-400 hover:text-indigo-600 transition-colors"
+                        title="Edit Term"
+                      >
+                        <Edit2 size={14} />
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteTerm(term.id, term.sessionId)}
+                        className="p-1.5 text-slate-400 hover:text-red-600 transition-colors"
+                        title="Delete Term"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
                   <button
                     onClick={() => handleSetCurrentTerm(term.id, term.sessionId)}
                     className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${
