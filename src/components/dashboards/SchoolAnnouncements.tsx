@@ -156,14 +156,14 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  >
  
   <form onSubmit={ handleAdd } className="flex flex-col flex-1 overflow-hidden">
-  <div className="flex justify-between items-center p-6 border-b border-slate-100 relative z-10 shrink-0">
+  <div className="flex justify-between items-center p-4 border-b border-slate-100 relative z-10 shrink-0">
   <h3 className="text-lg font-semibold text-slate-900">Post Announcement</h3>
   <button onClick={() => setShowAdd(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-full transition-colors">
   <X size={ 20 } />
   </button>
   </div>
 
-  <div className="flex-1 overflow-y-auto p-6">
+  <div className="flex-1 overflow-y-auto p-4 md:p-6">
   { error && (
   <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm mb-6">
   { error }
@@ -176,7 +176,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  type="button"
  onClick={() => setTargetType('school')}
  className={ cn(
-"p-4 rounded-2xl border text-sm font-medium transition-all flex items-center justify-center gap-2",
+"p-3 rounded-2xl border text-sm font-medium transition-all flex items-center justify-center gap-2",
  targetType  === 'school'?"bg-blue-50 text-blue-700 border-blue-200/50 shadow-sm":"border-gray-200/50 text-slate-900 hover:bg-slate-50 hover:text-slate-900 bg-white"
  )}
  >
@@ -186,7 +186,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  type="button"
  onClick={() => setTargetType('class')}
  className={ cn(
-"p-4 rounded-2xl border text-sm font-medium transition-all flex items-center justify-center gap-2",
+"p-3 rounded-2xl border text-sm font-medium transition-all flex items-center justify-center gap-2",
  targetType  === 'class'?"bg-indigo-50 text-indigo-700 border-indigo-200/50 shadow-sm":"border-gray-200/50 text-slate-900 hover:bg-slate-50 hover:text-slate-900 bg-white"
  )}
  >
@@ -230,7 +230,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  value={ newContent }
  onChange={ setNewContent }
  placeholder="Write your announcement here..."
- className="h-[200px] mb-12"
+ className="h-[120px] mb-11"
  modules={{
  toolbar: [
  [{'header': [1, 2, false] }],
@@ -244,11 +244,11 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  </div>
  </div>
 
- <div className="p-6 border-t border-slate-100 bg-slate-50/50 shrink-0">
+ <div className="p-4 border-t border-slate-100 bg-slate-50/50 shrink-0">
  <button
  type="submit"
  disabled={ loading }
- className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 disabled:opacity-50 flex items-center justify-center gap-2"
+ className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 disabled:opacity-50 flex items-center justify-center gap-2"
  >
  { loading ? (
  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
