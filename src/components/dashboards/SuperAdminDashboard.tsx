@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from'react';
-import { motion, AnimatePresence } from'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile, School, Invoice, Payment } from'../../types';
 import { DEFAULT_PLANS } from'../../constants';
 import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, OperationType, handleFirestoreError, query, where, onSnapshot, secondaryAuth, createUserWithEmailAndPassword, setDoc, logAuditAction, limit, orderBy } from'../../lib/compatibility';

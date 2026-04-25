@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { GraduationCap, BookOpen, Pencil, Globe, Calculator, Apple, Lightbulb, Brain } from 'lucide-react';
 
 const icons = [GraduationCap, BookOpen, Pencil, Globe, Calculator, Apple, Lightbulb, Brain];
