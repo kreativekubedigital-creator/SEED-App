@@ -4,6 +4,7 @@ import { Session, Term, GradeScale } from '../../types';
 import { Plus, Trash2, Edit2, Save, CheckCircle2, AlertCircle, Loader2, Calendar, Settings, Award } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { sortByName } from '../../lib/utils';
+import { promoteStudents } from '../../lib/promotion';
 
 interface GradingSystemConfigProps {
   schoolId: string;
@@ -16,6 +17,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
   
   const [newSessionName, setNewSessionName] = useState('');
   const [newTermName, setNewTermName] = useState('');
+  const [newTermResumptionDate, setNewTermResumptionDate] = useState('');
   const [selectedSessionForTerm, setSelectedSessionForTerm] = useState('');
   
   const [hasAutoSelected, setHasAutoSelected] = useState(false);
@@ -25,6 +27,32 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
   const [addingSession, setAddingSession] = useState(false);
   const [addingTerm, setAddingTerm] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [promoting, setPromoting] = useState(false);
+  const [promotionResult, setPromotionResult] = useState<{ promoted: number, graduated: number, failed: number } | null>(null);
+
+  const handlePromoteStudents = async () => {
+    if (!schoolId || !selectedSessionForTerm) return;
+    
+    const session = sessions.find(s => s.id === selectedSessionForTerm);
+    if (!session) return;
+
+    if (!window.confirm(`Are you sure you want to promote students for the ${session.name} session? This process will move eligible students to their next classes and graduate final year students. This action cannot be easily undone.`)) {
+      return;
+    }
+
+    setPromoting(true);
+    setPromotionResult(null);
+    try {
+      const result = await promoteStudents(schoolId, selectedSessionForTerm, gradeScale?.promotionThreshold || 40);
+      setPromotionResult(result);
+      setMessage({ type: 'success', text: `Promotion completed! ${result.promoted} promoted, ${result.graduated} graduated, ${result.failed} repeated.` });
+    } catch (err: any) {
+      console.error("Promotion failed:", err);
+      setMessage({ type: 'error', text: err.message || "Failed to promote students. Ensure 3rd term results are published." });
+    } finally {
+      setPromoting(false);
+    }
+  };
 
   useEffect(() => {
     if (!schoolId) return;
@@ -188,10 +216,12 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
         name: newTermName.trim(),
         schoolId: schoolId,
         sessionId: selectedSessionForTerm,
+        resumptionDate: newTermResumptionDate || null,
         isCurrent: sessionTerms.length === 0
       });
       
       setNewTermName('');
+      setNewTermResumptionDate('');
       setMessage({ type: 'success', text: 'Term added successfully' });
       setTimeout(() => setMessage(null), 3000);
     } catch (err: any) {
@@ -247,9 +277,9 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
     try {
       const dataToSave = {
         schoolId: schoolId,
-        name: gradeScale.name || 'Default Grading System',
         grades: gradeScale.grades,
-        caConfig: gradeScale.caConfig || { cas: [{ name: 'CA 1', maxScore: 10 }, { name: 'CA 2', maxScore: 10 }, { name: 'CA 3', maxScore: 10 }], maxExamScore: 70 }
+        caConfig: gradeScale.caConfig || { cas: [{ name: 'CA 1', maxScore: 10 }, { name: 'CA 2', maxScore: 10 }, { name: 'CA 3', maxScore: 10 }], maxExamScore: 70 },
+        promotionThreshold: gradeScale.promotionThreshold || 40
       };
 
       if (gradeScale.id) {
@@ -258,7 +288,9 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
         await addDoc(collection(db, 'schools', schoolId, 'gradeScales'), dataToSave);
       }
       setMessage({ type: 'success', text: 'Grading system updated!' });
+      setTimeout(() => setMessage(null), 3000);
     } catch (err: any) {
+      console.error('Grade scale save error:', err);
       handleFirestoreError(err, OperationType.WRITE, 'gradeScales');
       setMessage({ type: 'error', text: 'Failed to update grading system.' });
     } finally {
@@ -399,6 +431,68 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
             </div>
           </div>
 
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4">
+              <Award className="text-blue-500/10 w-24 h-24 -mr-8 -mt-8 rotate-12" />
+            </div>
+            
+            <div className="flex items-center gap-4 mb-6 relative">
+              <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm">
+                <CheckCircle2 size={20} />
+              </div>
+              <h3 className="text-xl font-medium text-slate-900">Promotion Management</h3>
+            </div>
+
+            <p className="text-sm text-slate-500 mb-6 relative">
+              Trigger student promotion for the selected session. This should be done only after <strong>3rd Term</strong> results have been finalized and published.
+            </p>
+
+            <div className="space-y-4 relative">
+              <div className="p-4 rounded-xl bg-blue-50 border border-blue-100">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-xs font-bold text-blue-600 uppercase">Promotion Threshold</span>
+                  <span className="text-sm font-bold text-blue-700">{gradeScale?.promotionThreshold || 40}%</span>
+                </div>
+                <p className="text-[10px] text-blue-600/70">Students with an average score below this across all terms will repeat their current class.</p>
+              </div>
+
+              <button
+                onClick={handlePromoteStudents}
+                disabled={promoting || !selectedSessionForTerm}
+                className="w-full p-4 rounded-xl bg-slate-900 text-white hover:bg-black transition-all shadow-lg shadow-slate-200 flex items-center justify-center gap-3 disabled:opacity-50 group"
+              >
+                {promoting ? (
+                  <Loader2 className="animate-spin" size={20} />
+                ) : (
+                  <Award size={20} className="group-hover:scale-110 transition-transform" />
+                )}
+                <div className="text-left">
+                  <p className="font-bold leading-none">Promote Students</p>
+                  <p className="text-[10px] opacity-70">Process moves students to next class level</p>
+                </div>
+              </button>
+
+              {promotionResult && (
+                <div className="mt-4 p-4 rounded-xl bg-emerald-50 border border-emerald-100 grid grid-cols-3 gap-2 text-center animate-in fade-in slide-in-from-top-2">
+                  <div>
+                    <p className="text-[10px] text-emerald-600 font-bold uppercase">Promoted</p>
+                    <p className="text-xl font-black text-emerald-700">{promotionResult.promoted}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-indigo-600 font-bold uppercase">Graduated</p>
+                    <p className="text-xl font-black text-indigo-700">{promotionResult.graduated}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-orange-600 font-bold uppercase">Repeated</p>
+                    <p className="text-xl font-black text-orange-700">{promotionResult.failed}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-sm">
@@ -416,21 +510,32 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                 <option value="">Select Session</option>
                 {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="text"
-                  placeholder="e.g. 1st Term"
-                  value={newTermName}
-                  onChange={e => setNewTermName(e.target.value)}
-                  className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-text min-w-0"
-                />
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <input
+                    type="text"
+                    placeholder="e.g. 1st Term"
+                    value={newTermName}
+                    onChange={e => setNewTermName(e.target.value)}
+                    className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-text min-w-0"
+                  />
+                  <div className="flex-1 flex flex-col">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase px-2 mb-1">Resumption Date</label>
+                    <input
+                      type="date"
+                      value={newTermResumptionDate}
+                      onChange={e => setNewTermResumptionDate(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-text"
+                    />
+                  </div>
+                </div>
                 <button
                   onClick={handleAddTerm}
                   disabled={addingTerm || !newTermName.trim() || !selectedSessionForTerm}
-                  className="w-full sm:w-auto p-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full p-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {addingTerm ? <Loader2 className="animate-spin" size={20} /> : <Plus size={20} />}
-                  <span className="sm:hidden font-bold">{addingTerm ? 'Adding...' : 'Add Term'}</span>
+                  <span className="font-bold">{addingTerm ? 'Adding...' : 'Add Term'}</span>
                 </button>
               </div>
             </div>
@@ -439,7 +544,12 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
               {terms.filter(t => t.sessionId === selectedSessionForTerm).map(term => (
                 <div key={term.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 group">
                   <div className="flex items-center gap-3">
-                    <span className="font-medium text-slate-900">{term.name}</span>
+                    <div className="flex flex-col">
+                      <span className="font-medium text-slate-900">{term.name}</span>
+                      {term.resumptionDate && (
+                        <span className="text-[10px] text-slate-400">Resumes: {new Date(term.resumptionDate).toLocaleDateString()}</span>
+                      )}
+                    </div>
                     <div className="hidden group-hover:flex items-center gap-1">
                       <button 
                         onClick={() => handleEditTerm(term)}
@@ -543,6 +653,22 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                   <span className="font-medium text-lg">
                     {((gradeScale?.caConfig?.cas.reduce((sum, ca) => sum + ca.maxScore, 0)) || 0) + (gradeScale?.caConfig?.maxExamScore || 0)}
                   </span>
+                </div>
+
+                <div className="pt-4 mt-4 border-t border-gray-200">
+                  <h4 className="text-sm font-medium text-slate-900 mb-3">Promotion Standards</h4>
+                  <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-gray-200">
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-slate-900">Promotion Threshold (%)</span>
+                      <span className="text-[10px] text-slate-400">Min. average score to promote to next class</span>
+                    </div>
+                    <input
+                      type="number"
+                      value={gradeScale?.promotionThreshold || 40}
+                      onChange={e => setGradeScale(prev => prev ? { ...prev, promotionThreshold: Number(e.target.value) } : null)}
+                      className="w-20 px-3 py-2.5 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-slate-900 text-sm text-center"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

@@ -135,6 +135,7 @@ export interface Term {
   schoolId: string;
   sessionId: string;
   isCurrent: boolean;
+  resumptionDate?: string; // ISO date string
   createdAt?: string;
 }
 
@@ -151,6 +152,7 @@ export interface GradeScale {
     cas: { name: string; maxScore: number }[];
     maxExamScore: number;
   };
+  promotionThreshold?: number; // Minimum average score to be promoted (default 40)
 }
 
 export interface Result {

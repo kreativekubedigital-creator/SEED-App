@@ -31,8 +31,10 @@ import {
  Award,
  ChevronUp,
  School as SchoolIcon,
- Menu
-} from'lucide-react';
+ Menu,
+  CreditCard,
+  AlertCircle
+ } from'lucide-react';
 import { motion, AnimatePresence } from'motion/react';
 import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, where, onSnapshot, OperationType, handleFirestoreError, setDoc, secondaryAuth, createUserWithEmailAndPassword, sendPasswordResetEmail, auth } from'../../lib/compatibility';
 import { SchoolClasses } from'./SchoolClasses';
@@ -42,7 +44,7 @@ import { GradingSystemConfig } from'./GradingSystemConfig';
 import { ClassReportCards } from'./ClassReportCards';
 import ClassTimetable from'./ClassTimetable';
 import { SchoolFinance } from'./SchoolFinance';
-import { sortByName, sortByFullName } from'../../lib/utils';
+import { sortByName, sortByFullName, cn } from'../../lib/utils';
 
 interface SchoolManagementProps {
  school: School;
@@ -244,12 +246,54 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  sortByFullName([...users]), 
  [users]);
 
- const stats = useMemo(() => ({
- admins: users.filter(u => u.role  === 'school_admin').length,
- teachers: users.filter(u => u.role  === 'teacher').length,
- students: users.filter(u => u.role  === 'student').length,
- parents: users.filter(u => u.role  === 'parent').length,
- }), [users]);
+   const [stats, setStats] = useState({ 
+    admins: 0, 
+    teachers: 0, 
+    students: 0, 
+    parents: 0,
+    totalRevenue: 0,
+    outstandingFees: 0,
+    activeClasses: 0
+  });
+
+  useEffect(() => {
+    if (!school.id) return;
+    
+    // Calculate basic user stats
+    const admins = users.filter(u => u.role === 'school_admin').length;
+    const teachers = users.filter(u => u.role === 'teacher').length;
+    const students = users.filter(u => u.role === 'student').length;
+    const parents = users.filter(u => u.role === 'parent').length;
+
+    // Fetch financial stats (invoices)
+    const fetchFinanceStats = async () => {
+      try {
+        const invoicesSnap = await getDocs(collection(db, 'schools', school.id, 'invoices'));
+        let totalPaid = 0;
+        let totalOwed = 0;
+        invoicesSnap.docs.forEach(doc => {
+          const data = doc.data();
+          totalPaid += (data.amountPaid || 0);
+          totalOwed += (data.amount || 0) - (data.amountPaid || 0);
+        });
+        
+        setStats({
+          admins,
+          teachers,
+          students,
+          parents,
+          totalRevenue: totalPaid,
+          outstandingFees: totalOwed,
+          activeClasses: classes.length
+        });
+      } catch (err) {
+        console.error('Error fetching finance stats:', err);
+        setStats(prev => ({ ...prev, admins, teachers, students, parents, activeClasses: classes.length }));
+      }
+    };
+
+    fetchFinanceStats();
+  }, [users, classes, school.id]);
 
  const handleSaveUser = async (e: React.FormEvent) => {
  e.preventDefault();
@@ -411,30 +455,22 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
   </div>
 
  <nav className="flex flex-col gap-2 overflow-y-auto pr-2 custom-scrollbar">
-    <button
-      onClick={() => {
-        setActiveTab('overview');
-        setRoleFilter('all');
-        setIsMobileMenuOpen(false);
-      }}
-      className={ cn(
-        "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all w-full text-left group border",
-        activeTab === 'overview'
-          ? "shadow-lg shadow-blue-500/40 border-blue-400/20"
-          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-transparent"
-      )}
-      style={{
-        backgroundColor: activeTab === 'overview' ? '#2563EB' : 'transparent',
-        color: activeTab === 'overview' ? 'white' : undefined
-      }}
-    >
-      <LayoutDashboard 
-        size={ 18 } 
-        className="shrink-0 transition-colors" 
-        style={{ color: activeTab === 'overview' ? 'white' : undefined }}
-      />
-      <span style={{ color: activeTab === 'overview' ? 'white' : undefined }}>Overview</span>
-    </button>
+     <button
+       onClick={() => {
+         setActiveTab('overview');
+         setRoleFilter('all');
+         setIsMobileMenuOpen(false);
+       }}
+       className={ cn(
+         "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all w-full text-left group border mb-4",
+         activeTab === 'overview'
+           ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30 border-blue-500"
+           : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-transparent"
+       )}
+     >
+       <LayoutDashboard size={ 18 } className="shrink-0 transition-colors" />
+       <span>Overview</span>
+     </button>
 
  {/* User Management Section */}
  <div className="space-y-1">
@@ -698,30 +734,22 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  </button>
 
  <nav className="flex flex-col gap-2 flex-1">
-    <button
-      onClick={() => {
-        setActiveTab('overview');
-        setRoleFilter('all');
-        setIsMobileMenuOpen(false);
-      }}
-      className={ cn(
-        "flex items-center gap-3 px-4 py-4 rounded-2xl text-sm font-bold transition-all w-full text-left group",
-        activeTab === 'overview'
-          ? "shadow-lg shadow-blue-600/20"
-          : "text-slate-600 hover:bg-slate-50"
-      )}
-      style={{
-        backgroundColor: activeTab === 'overview' ? '#2563EB' : 'transparent',
-        color: activeTab === 'overview' ? 'white' : undefined
-      }}
-    >
-      <LayoutDashboard 
-        size={ 20 } 
-        className="shrink-0" 
-        style={{ color: activeTab === 'overview' ? 'white' : undefined }}
-      />
-      <span style={{ color: activeTab === 'overview' ? 'white' : undefined }}>Overview</span>
-    </button>
+     <button
+       onClick={() => {
+         setActiveTab('overview');
+         setRoleFilter('all');
+         setIsMobileMenuOpen(false);
+       }}
+       className={ cn(
+         "flex items-center gap-3 px-4 py-4 rounded-2xl text-sm font-bold transition-all w-full text-left group",
+         activeTab === 'overview'
+           ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+           : "text-slate-600 hover:bg-slate-50"
+       )}
+     >
+       <LayoutDashboard size={ 20 } className="shrink-0" />
+       <span>Overview</span>
+     </button>
  
  {/* Re-using the same navigation structure for mobile */}
  <div className="space-y-4 mt-4">
@@ -1736,7 +1764,3 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  </div>
  );
 };
-
-function cn(...inputs: any[]) {
- return inputs.filter(Boolean).join('');
-}
