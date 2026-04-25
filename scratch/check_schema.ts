@@ -7,14 +7,12 @@ const supabaseAnonKey = 'sb_publishable_vYy_iHTwzvma7kVwPVnXGA_ZwMpx_Bw';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 
-async function checkData() {
-  const tables = ['schools', 'grade_scales', 'sessions', 'terms'];
-  for (const table of tables) {
-    console.log(`Checking ${table} table...`);
-    const { data, error } = await supabase.from(table).select('*');
-    if (error) console.error(`${table} error:`, error.message);
-    else console.log(`${table} has ${data.length} records.`);
-  }
+async function testInsert() {
+  const table = 'sessions';
+  console.log(`Testing insert into ${table}...`);
+  const { data, error } = await supabase.from(table).insert({ name: 'Test', school_id: 'any' }).select();
+  if (error) console.error(`Insert Error:`, error);
+  else console.log(`Insert Success:`, data);
 }
 
-checkData();
+testInsert();

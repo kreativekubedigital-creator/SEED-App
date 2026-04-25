@@ -118,7 +118,15 @@ export class DatabaseService {
 
   static async addItem(path: string, data: any) {
     const { table, filters } = this.parsePath(path);
-    const payload = this.toSnakeCase({ ...data, ...filters }, table);
+    
+    // Generate ID if missing to avoid "null value in column id" errors
+    const dataWithId = {
+      id: crypto.randomUUID(),
+      ...data,
+      ...filters
+    };
+    
+    const payload = this.toSnakeCase(dataWithId, table);
     
     console.log(`Adding item to ${table}:`, payload);
     
