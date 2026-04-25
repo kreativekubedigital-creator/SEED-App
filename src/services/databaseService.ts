@@ -139,7 +139,7 @@ export class DatabaseService {
     
     const payload = this.toSnakeCase(dataWithId, table);
     
-    console.log(`Adding item to ${table}:`, payload);
+    console.log(`Adding item to ${table}:`, { payload, path });
     
     const { data: insertedData, error } = await supabase
       .from(table)

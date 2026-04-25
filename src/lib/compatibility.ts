@@ -202,7 +202,7 @@ export enum OperationType {
 
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
   console.error('Database Error: ', error, operationType, path);
-  throw error;
+  // We no longer throw here to allow call sites to continue with UI feedback (e.g. showing error messages)
 }
 
 // Audit logging

@@ -110,20 +110,21 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
       return;
     }
 
+
     setAddingSession(true);
     try {
       await addDoc(collection(db, 'schools', schoolId, 'sessions'), {
         name: newSessionName,
         schoolId: schoolId,
-        isCurrent: sessions.length === 0,
-        createdAt: new Date().toISOString()
+        isCurrent: sessions.length === 0
       });
+      
       setNewSessionName('');
-      setMessage({ type: 'success', text: 'Session added successfully!' });
+      setShowAddSession(false);
+      setMessage({ type: 'success', text: 'Academic session added successfully' });
       setTimeout(() => setMessage(null), 3000);
     } catch (err: any) {
-      console.error("Session Add Error:", err);
-      handleFirestoreError(err, OperationType.CREATE, 'sessions');
+      console.error('Error adding session:', err);
       setMessage({ type: 'error', text: `Failed to add session: ${err.message || 'Unknown database error'}` });
     } finally {
       setAddingSession(false);
@@ -138,12 +139,11 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
       setTimeout(() => setMessage(null), 3000);
     } catch (err: any) {
       handleFirestoreError(err, OperationType.UPDATE, 'sessions');
-      setMessage({ type: 'error', text: 'Failed to update current session.' });
+      setMessage({ type: 'error', text: 'Failed to update current session' });
     }
   };
 
   const handleAddTerm = async () => {
-    console.log("handleAddTerm triggered", { newTermName, schoolId, selectedSessionForTerm });
     if (!newTermName.trim()) {
       setMessage({ type: 'error', text: 'Please enter a term name.' });
       return;
@@ -164,15 +164,15 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
         name: newTermName,
         schoolId: schoolId,
         sessionId: selectedSessionForTerm,
-        isCurrent: sessionTerms.length === 0,
-        createdAt: new Date().toISOString()
+        isCurrent: sessionTerms.length === 0
       });
+      
       setNewTermName('');
-      setMessage({ type: 'success', text: 'Term added successfully!' });
+      setShowAddTerm(false);
+      setMessage({ type: 'success', text: 'Term added successfully' });
       setTimeout(() => setMessage(null), 3000);
     } catch (err: any) {
-      console.error("Term Add Error:", err);
-      handleFirestoreError(err, OperationType.CREATE, 'terms');
+      console.error('Error adding term:', err);
       setMessage({ type: 'error', text: `Failed to add term: ${err.message || 'Unknown database error'}` });
     } finally {
       setAddingTerm(false);
@@ -189,7 +189,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
       setTimeout(() => setMessage(null), 3000);
     } catch (err: any) {
       handleFirestoreError(err, OperationType.UPDATE, 'terms');
-      setMessage({ type: 'error', text: 'Failed to update current term.' });
+      setMessage({ type: 'error', text: 'Failed to update current term' });
     }
   };
 

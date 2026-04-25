@@ -126,7 +126,7 @@ export interface Session {
   name: string; // e.g., "2025/2026"
   schoolId: string;
   isCurrent: boolean;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export interface Term {
@@ -135,7 +135,7 @@ export interface Term {
   schoolId: string;
   sessionId: string;
   isCurrent: boolean;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export interface GradeScale {
