@@ -256,15 +256,16 @@ export const SchoolFinance = ({ school }: { school: School }) => {
   </div>
 
   { activeTab === 'feeAnalytics' && (
-    <FeeAnalytics 
-      school={school} 
-      invoices={invoices} 
-      payments={payments} 
-      feeStructures={feeStructures} 
-      classes={classes}
-      termsMap={termsMap}
-      students={students}
-    />
+      <FeeAnalytics 
+        school={school} 
+        invoices={invoices} 
+        payments={payments} 
+        feeStructures={feeStructures} 
+        classes={classes}
+        termsMap={termsMap}
+        students={students}
+        sessions={sessions}
+      />
   )}
 
  { activeTab  === 'feeStructures'&& (

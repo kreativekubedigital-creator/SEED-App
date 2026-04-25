@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { School, Invoice, Payment, FeeStructure, Class, UserProfile } from '../../types';
-import { CheckCircle, Clock, TrendingUp, DollarSign, Wallet, CreditCard, ArrowUpRight, Filter } from 'lucide-react';
+import { CheckCircle, Clock, TrendingUp, DollarSign, Wallet, CreditCard, ArrowUpRight, Filter, ChevronDown, Search } from 'lucide-react';
 import { format, parseISO, eachMonthOfInterval, isSameMonth, subMonths } from 'date-fns';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface FeeAnalyticsProps {
   school: School;
@@ -13,26 +13,39 @@ interface FeeAnalyticsProps {
   classes: Class[];
   termsMap: Record<string, Record<string, any>>;
   students: UserProfile[];
+  sessions: any[];
 }
 
-export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classes, termsMap, students }: FeeAnalyticsProps) => {
-  // 1. Analytics Aggregation
+export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classes, termsMap, students, sessions }: FeeAnalyticsProps) => {
+  // 1. Filter State
+  const [selectedClass, setSelectedClass] = useState<string>('all');
+  const [selectedSession, setSelectedSession] = useState<string>(school.currentSessionId || 'all');
+  const [selectedTerm, setSelectedTerm] = useState<string>(school.currentTermId || 'all');
+  const [showFilters, setShowFilters] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // 2. Filter Logic
+  const filteredInvoices = useMemo(() => {
+    return invoices.filter(inv => {
+      const student = students.find(s => s.uid === inv.studentId);
+      const matchClass = selectedClass === 'all' || student?.classId === selectedClass;
+      const matchSession = selectedSession === 'all' || inv.sessionId === selectedSession;
+      const matchTerm = selectedTerm === 'all' || inv.termId === selectedTerm;
+      return matchClass && matchSession && matchTerm;
+    });
+  }, [invoices, selectedClass, selectedSession, selectedTerm, students]);
+
+  // 3. Analytics Aggregation (Respecting Filters)
   const stats = useMemo(() => {
-    const totalRevenue = payments.reduce((sum, p) => p.status === 'success' ? sum + p.amount : sum, 0);
+    const totalRevenue = filteredInvoices.reduce((sum, inv) => sum + inv.amountPaid, 0);
     
-    // Categorization logic
     const calculateCategoryTotal = (category: string) => {
-      return invoices.reduce((sum, inv) => {
+      return filteredInvoices.reduce((sum, inv) => {
         const items = inv.items?.filter(item => {
-          // Check if the item matches a fee structure with this category
           const structure = feeStructures.find(f => f.name === item.name);
-          
           if (category === 'miscellaneous') {
-            // Include everything that isn't tuition or activities in the miscellaneous card
-            return structure?.category === 'miscellaneous' || 
-                   !['tuition', 'activities'].includes(structure?.category || '');
+            return structure?.category === 'miscellaneous' || !['tuition', 'activities'].includes(structure?.category || '');
           }
-          
           return structure?.category === category;
         }) || [];
         return sum + items.reduce((s, i) => s + i.amount, 0);
@@ -44,7 +57,53 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
     const miscTotal = calculateCategoryTotal('miscellaneous');
 
     return { totalRevenue, tuitionTotal, activitiesTotal, miscTotal };
-  }, [invoices, payments, feeStructures]);
+  }, [filteredInvoices, feeStructures]);
+
+  // 4. Student Data for Breakdown Table
+  const studentFeeData = useMemo(() => {
+    return students
+      .filter(s => {
+        const matchesClass = selectedClass === 'all' || s.classId === selectedClass;
+        const matchesSearch = !searchQuery || 
+          `${s.firstName} ${s.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          s.uid.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesClass && matchesSearch;
+      })
+      .map(student => {
+        const studentInvoices = invoices.filter(inv => 
+          inv.studentId === student.uid &&
+          (selectedSession === 'all' || inv.sessionId === selectedSession) &&
+          (selectedTerm === 'all' || inv.termId === selectedTerm)
+        );
+
+        const totalFee = studentInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+        const paid = studentInvoices.reduce((sum, inv) => sum + inv.amountPaid, 0);
+        const balance = totalFee - paid;
+        
+        // Find if any invoice is overdue
+        const hasOverdue = studentInvoices.some(inv => {
+          if (inv.status === 'paid' || inv.amountPaid >= inv.amount) return false;
+          const term = termsMap[inv.sessionId]?.[inv.termId];
+          if (term?.resumptionDate) {
+            const resDate = new Date(term.resumptionDate);
+            const oneMonthLater = new Date(resDate);
+            oneMonthLater.setMonth(resDate.getMonth() + 1);
+            return new Date() > oneMonthLater;
+          }
+          return new Date() > new Date(inv.dueDate);
+        });
+
+        return {
+          student,
+          totalFee,
+          paid,
+          balance,
+          hasOverdue,
+          hasInvoices: studentInvoices.length > 0
+        };
+      })
+      .sort((a, b) => b.balance - a.balance); // Sort by balance descending
+  }, [students, invoices, selectedClass, selectedSession, selectedTerm, searchQuery, termsMap]);
 
   // 2. Chart Data Preparation (Last 6 Months)
   const chartData = useMemo(() => {
@@ -166,16 +225,96 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
 
       {/* Fee Table: Core Section */}
       <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-slate-50 flex justify-between items-center">
-          <div>
-            <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Student Fee Breakdown</h3>
-            <p className="text-xs text-slate-500 mt-1">Real-time tracking of individual student balances</p>
+        <div className="p-6 border-b border-slate-50">
+          <div className="flex justify-between items-center">
+            <div>
+              <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Student Fee Breakdown</h3>
+              <p className="text-xs text-slate-500 mt-1">Real-time tracking of individual student balances</p>
+            </div>
+            <div className="flex gap-2">
+              <div className="relative group">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+                <input 
+                  type="text" 
+                  placeholder="Search students..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 pr-4 py-2 bg-slate-50 border-none rounded-xl text-xs font-medium focus:ring-2 focus:ring-blue-100 outline-none w-48 transition-all"
+                />
+              </div>
+              <button 
+                onClick={() => setShowFilters(!showFilters)}
+                className={`p-2 rounded-xl transition-all border ${showFilters ? 'bg-blue-50 border-blue-200 text-blue-600' : 'bg-white border-slate-100 text-slate-500 hover:bg-slate-50'}`}
+              >
+                <Filter size={16} />
+              </button>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <button className="p-2 hover:bg-slate-50 rounded-xl transition-colors border border-slate-100">
-              <Filter size={16} className="text-slate-500" />
-            </button>
-          </div>
+
+          <AnimatePresence>
+            {showFilters && (
+              <motion.div 
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="grid grid-cols-3 gap-4 pt-4 mt-4 border-t border-slate-50">
+                  <div>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block">Class</label>
+                    <div className="relative">
+                      <select 
+                        value={selectedClass}
+                        onChange={(e) => setSelectedClass(e.target.value)}
+                        className="w-full pl-3 pr-8 py-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold text-slate-700 outline-none appearance-none focus:ring-2 focus:ring-blue-100 transition-all"
+                      >
+                        <option value="all">All Classes</option>
+                        {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                      </select>
+                      <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block">Session</label>
+                    <div className="relative">
+                      <select 
+                        value={selectedSession}
+                        onChange={(e) => setSelectedSession(e.target.value)}
+                        className="w-full pl-3 pr-8 py-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold text-slate-700 outline-none appearance-none focus:ring-2 focus:ring-blue-100 transition-all"
+                      >
+                        <option value="all">All Sessions</option>
+                        {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                      </select>
+                      <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block">Term</label>
+                    <div className="relative">
+                      <select 
+                        value={selectedTerm}
+                        onChange={(e) => setSelectedTerm(e.target.value)}
+                        className="w-full pl-3 pr-8 py-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold text-slate-700 outline-none appearance-none focus:ring-2 focus:ring-blue-100 transition-all"
+                      >
+                        <option value="all">All Terms</option>
+                        {selectedSession !== 'all' && termsMap[selectedSession] && Object.values(termsMap[selectedSession]).map((t: any) => (
+                          <option key={t.id} value={t.id}>{t.name}</option>
+                        ))}
+                        {selectedSession === 'all' && (
+                          <>
+                            <option value="1st_term">1st Term</option>
+                            <option value="2nd_term">2nd Term</option>
+                            <option value="3rd_term">3rd Term</option>
+                          </>
+                        )}
+                      </select>
+                      <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
         
         <div className="overflow-x-auto">
@@ -190,42 +329,31 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {invoices.map(inv => {
-                const balance = inv.amount - inv.amountPaid;
-                const isPaid = inv.status === 'paid' || balance <= 0;
-                
-                // Overdue logic
-                const term = termsMap[inv.sessionId]?.[inv.termId];
-                let isOverdue = false;
-                if (!isPaid) {
-                  if (term?.resumptionDate) {
-                    const resDate = new Date(term.resumptionDate);
-                    const oneMonthLater = new Date(resDate);
-                    oneMonthLater.setMonth(resDate.getMonth() + 1);
-                    isOverdue = new Date() > oneMonthLater;
-                  } else {
-                    isOverdue = new Date() > new Date(inv.dueDate);
-                  }
-                }
+              {studentFeeData.map(({ student, totalFee, paid, balance, hasOverdue, hasInvoices }) => {
+                const isPaid = totalFee > 0 && balance <= 0;
+                const isPartial = paid > 0 && balance > 0;
+                const className = classes.find(c => c.id === student.classId)?.name || 'Unassigned';
 
                 return (
-                  <tr key={inv.id} className="hover:bg-slate-50/50 transition-colors group">
+                  <tr key={student.uid} className="hover:bg-slate-50/50 transition-colors group">
                     <td className="px-6 py-4">
-                      <div className="flex flex-col">
-                        <span className="font-bold text-slate-900">
-                          {students.find(s => s.uid === inv.studentId) ? 
-                            `${students.find(s => s.uid === inv.studentId)?.firstName} ${students.find(s => s.uid === inv.studentId)?.lastName}` : 
-                            inv.studentId
-                          }
-                        </span>
-                        <span className="text-[10px] text-slate-500 uppercase font-medium">Term {inv.termId}</span>
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-500">
+                          {student.firstName[0]}{student.lastName[0]}
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-bold text-slate-900 leading-tight">
+                            {student.firstName} {student.lastName}
+                          </span>
+                          <span className="text-[10px] text-slate-400 uppercase font-bold">{className}</span>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-right font-medium text-slate-900">
-                      {formatCurrency(inv.amount)}
+                    <td className="px-6 py-4 text-right font-medium text-slate-600">
+                      {formatCurrency(totalFee)}
                     </td>
                     <td className="px-6 py-4 text-right font-medium text-emerald-600">
-                      {formatCurrency(inv.amountPaid)}
+                      {formatCurrency(paid)}
                     </td>
                     <td className="px-6 py-4 text-right font-black text-slate-900">
                       {formatCurrency(balance)}
@@ -233,15 +361,17 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
                         <span className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider w-fit flex items-center gap-1 ${
+                          !hasInvoices ? 'bg-slate-100 text-slate-400' :
                           isPaid ? 'bg-emerald-50 text-emerald-600' :
-                          inv.amountPaid > 0 ? 'bg-amber-50 text-amber-600' :
-                          'bg-slate-100 text-slate-600'
+                          isPartial ? 'bg-amber-50 text-amber-600' :
+                          'bg-rose-50 text-rose-600'
                         }`}>
-                          {isPaid ? <><CheckCircle size={10} /> PAID</> : 
-                           inv.amountPaid > 0 ? 'PARTIAL' : 'PENDING'}
+                          {!hasInvoices ? 'NO INVOICE' :
+                           isPaid ? <><CheckCircle size={10} /> PAID</> : 
+                           isPartial ? 'PARTIAL' : 'PENDING'}
                         </span>
-                        {isOverdue && (
-                          <span className="text-[10px] font-black text-rose-500 flex items-center gap-1">
+                        {hasOverdue && (
+                          <span className="text-[10px] font-black text-rose-500 flex items-center gap-1 animate-pulse">
                             <Clock size={10} /> OVERDUE
                           </span>
                         )}
@@ -250,10 +380,10 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
                   </tr>
                 );
               })}
-              {invoices.length === 0 && (
+              {studentFeeData.length === 0 && (
                 <tr>
                   <td colSpan={5} className="px-6 py-12 text-center text-slate-400 font-medium">
-                    No financial records found for the current selection.
+                    No students found matching the current selection.
                   </td>
                 </tr>
               )}
