@@ -418,17 +418,22 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
         setIsMobileMenuOpen(false);
       }}
       className={ cn(
-        "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all w-full text-left group",
+        "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all w-full text-left group border",
         activeTab === 'overview'
-          ? "!bg-[#2563EB] !text-white shadow-lg shadow-blue-500/40 border border-blue-400/20"
-          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+          ? "shadow-lg shadow-blue-500/40 border-blue-400/20"
+          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-transparent"
       )}
+      style={{
+        backgroundColor: activeTab === 'overview' ? '#2563EB' : 'transparent',
+        color: activeTab === 'overview' ? 'white' : undefined
+      }}
     >
-      <LayoutDashboard size={ 18 } className={cn(
-        "shrink-0 transition-colors",
-        activeTab === 'overview' ? "!text-white" : "group-hover:text-blue-600 text-slate-500"
-      )} />
-      <span className={cn(activeTab === 'overview' ? "!text-white" : "")}>Overview</span>
+      <LayoutDashboard 
+        size={ 18 } 
+        className="shrink-0 transition-colors" 
+        style={{ color: activeTab === 'overview' ? 'white' : undefined }}
+      />
+      <span style={{ color: activeTab === 'overview' ? 'white' : undefined }}>Overview</span>
     </button>
 
  {/* User Management Section */}
@@ -702,15 +707,20 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
       className={ cn(
         "flex items-center gap-3 px-4 py-4 rounded-2xl text-sm font-bold transition-all w-full text-left group",
         activeTab === 'overview'
-          ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+          ? "shadow-lg shadow-blue-600/20"
           : "text-slate-600 hover:bg-slate-50"
       )}
+      style={{
+        backgroundColor: activeTab === 'overview' ? '#2563EB' : 'transparent',
+        color: activeTab === 'overview' ? 'white' : undefined
+      }}
     >
-      <LayoutDashboard size={ 20 } className={cn(
-        "shrink-0",
-        activeTab === 'overview' ? "text-white" : "group-hover:text-blue-600"
-      )} />
-      <span>Overview</span>
+      <LayoutDashboard 
+        size={ 20 } 
+        className="shrink-0" 
+        style={{ color: activeTab === 'overview' ? 'white' : undefined }}
+      />
+      <span style={{ color: activeTab === 'overview' ? 'white' : undefined }}>Overview</span>
     </button>
  
  {/* Re-using the same navigation structure for mobile */}
