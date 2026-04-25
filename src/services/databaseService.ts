@@ -5,21 +5,25 @@ export class DatabaseService {
    * Helper to map Firestore-style paths to Supabase tables.
    * e.g. "schools/123/classes" -> table "classes", filter { school_id: "123" }
    */
+  private static toSnake(str: string) {
+    return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+  }
+
   private static parsePath(path: string): { table: string; documentId?: string; filters: Record<string, any> } {
     const parts = path.split('/').filter(Boolean);
     const isDocument = parts.length % 2 === 0;
     
-    // In Firestore paths, collections are at even indices (0, 2, 4...)
-    // If it's a document path (e.g. users/123), table is at 0, id is at 1.
-    // If it's a collection path (e.g. users), table is at 0.
     const tableIndex = isDocument ? parts.length - 2 : parts.length - 1;
-    const table = parts[tableIndex];
+    const rawTable = parts[tableIndex];
+    const table = this.toSnake(rawTable);
     const documentId = isDocument ? parts[parts.length - 1] : undefined;
     
-    // For specific nested paths we know about, we can extract filters
     const filters: Record<string, any> = {};
-    if (parts.length >= 3 && parts[0] === 'schools') {
-      filters.school_id = parts[1];
+    // Extract filters from the path hierarchy
+    // e.g. schools/123/sessions/456/terms -> { school_id: 123, session_id: 456 }
+    for (let i = 0; i < tableIndex; i += 2) {
+      const key = this.toSnake(parts[i].replace(/s$/, '')) + '_id';
+      filters[key] = parts[i + 1];
     }
 
     return { table, documentId, filters };
@@ -197,7 +201,9 @@ export class DatabaseService {
     const { table } = this.parsePath(path);
     
     // Initial fetch
-    this.getItems(path, conditions).then(callback);
+    this.getItems(path, conditions).then(callback).catch(err => {
+      console.error(`Initial fetch error for ${path}:`, err);
+    });
 
     // Real-time subscription
     return supabase

@@ -201,6 +201,48 @@ export const LandingPage = () => {
                     }}
                     onFocus={() => setIsDropdownOpen(true)}
                   />
+
+                  {isDropdownOpen && searchQuery && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute top-full left-0 right-0 mt-4 bg-white/10 backdrop-blur-3xl rounded-2xl border border-white/10 overflow-hidden shadow-2xl z-[100]"
+                    >
+                      {filteredSchools.length > 0 ? (
+                        <div className="max-h-[300px] overflow-y-auto py-2">
+                          {filteredSchools.map((school) => (
+                            <button
+                              key={school.id}
+                              onClick={() => {
+                                handleSchoolSelect(school);
+                                setIsDropdownOpen(false);
+                              }}
+                              className="w-full px-6 py-4 flex items-center justify-between hover:bg-white/10 transition-colors group text-left"
+                            >
+                              <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-blue-600/20 flex items-center justify-center border border-blue-500/20">
+                                  <SchoolIcon className="text-blue-400" size={20} />
+                                </div>
+                                <div>
+                                  <div className="text-white font-space font-bold text-sm tracking-tight">{school.name}</div>
+                                  <div className="text-white/40 text-[10px] font-bold uppercase tracking-widest mt-0.5">{school.location || 'Institution'}</div>
+                                </div>
+                              </div>
+                              <ArrowUpRight className="text-white/20 group-hover:text-white transition-colors" size={18} />
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="px-6 py-10 text-center">
+                          <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-4 border border-white/5">
+                            <Search className="text-white/20" size={24} />
+                          </div>
+                          <p className="text-white/40 text-xs font-bold uppercase tracking-widest">No matching institutions found</p>
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
