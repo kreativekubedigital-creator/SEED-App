@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { School, Invoice, Payment, FeeStructure, Class, UserProfile } from '../types';
-import { CheckCircle, Clock, TrendingUp, DollarSign, Wallet, CreditCard, ArrowUpRight } from 'lucide-react';
+import { CheckCircle, Clock, TrendingUp, DollarSign, Wallet, CreditCard, ArrowUpRight, Filter } from 'lucide-react';
 import { format, parseISO, eachMonthOfInterval, isSameMonth, subMonths } from 'date-fns';
 import { motion } from 'motion/react';
 
