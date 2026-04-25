@@ -11,6 +11,8 @@ export const SchoolFinance = ({ school }: { school: School }) => {
  const [payments, setPayments] = useState<Payment[]>([]);
  const [classes, setClasses] = useState<Class[]>([]);
  const [loading, setLoading] = useState(true);
+ const [sessions, setSessions] = useState<any[]>([]);
+ const [termsMap, setTermsMap] = useState<Record<string, Record<string, any>>>({});
 
  // Modals
  const [showAddFee, setShowAddFee] = useState(false);
@@ -20,22 +22,51 @@ export const SchoolFinance = ({ school }: { school: School }) => {
  const [newFee, setNewFee] = useState<Partial<FeeStructure>>({ name:'', amount: 0, classId:'all', isMandatory: true, termId:'1', sessionId:'2025/2026'});
 
  useEffect(() => {
- const unsubFees = onSnapshot(collection(db,`schools/${ school.id }/feeStructures`), (snap) => {
- setFeeStructures(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as FeeStructure)));
- });
- const unsubInvoices = onSnapshot(collection(db,`schools/${ school.id }/invoices`), (snap) => {
- setInvoices(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Invoice)));
- });
- const unsubPayments = onSnapshot(collection(db,`schools/${ school.id }/payments`), (snap) => {
- setPayments(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Payment)));
- });
- const unsubClasses = onSnapshot(collection(db,`schools/${ school.id }/classes`), (snap) => {
- setClasses(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Class)));
- setLoading(false);
- });
+  const unsubFees = onSnapshot(collection(db,`schools/${ school.id }/feeStructures`), (snap) => {
+  setFeeStructures(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as FeeStructure)));
+  });
+  const unsubInvoices = onSnapshot(collection(db,`schools/${ school.id }/invoices`), (snap) => {
+  setInvoices(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Invoice)));
+  });
+  const unsubPayments = onSnapshot(collection(db,`schools/${ school.id }/payments`), (snap) => {
+  setPayments(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Payment)));
+  });
+  const unsubClasses = onSnapshot(collection(db,`schools/${ school.id }/classes`), (snap) => {
+  setClasses(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Class)));
+  });
 
- return () => { unsubFees(); unsubInvoices(); unsubPayments(); unsubClasses(); };
- }, [school.id]);
+  // Fetch sessions to get terms and resumption dates
+  const unsubSessions = onSnapshot(collection(db, `schools/${school.id}/sessions`), (snap) => {
+    const sessData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    setSessions(sessData);
+    
+    sessData.forEach(sess => {
+      onSnapshot(collection(db, `schools/${school.id}/sessions/${sess.id}/terms`), (termSnap) => {
+        const terms = termSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        setTermsMap(prev => ({
+          ...prev,
+          [sess.id]: terms.reduce((acc, t) => ({ ...acc, [t.id]: t }), {})
+        }));
+      });
+    });
+    setLoading(false);
+  });
+
+  return () => { unsubFees(); unsubInvoices(); unsubPayments(); unsubClasses(); unsubSessions(); };
+  }, [school.id]);
+
+  const isOverdue = (invoice: Invoice) => {
+    if (invoice.status === 'paid' || invoice.amountPaid >= invoice.amount) return false;
+    
+    const term = termsMap[invoice.sessionId]?.[invoice.termId];
+    if (term?.resumptionDate) {
+      const resDate = new Date(term.resumptionDate);
+      const oneMonthLater = new Date(resDate);
+      oneMonthLater.setMonth(resDate.getMonth() + 1);
+      return new Date() > oneMonthLater;
+    }
+    return new Date() > new Date(invoice.dueDate);
+  };
 
  const handleSaveFee = async (e: React.FormEvent) => {
  e.preventDefault();
@@ -169,23 +200,39 @@ export const SchoolFinance = ({ school }: { school: School }) => {
  </tr>
  </thead>
  <tbody className="divide-y divide-slate-100">
- { invoices.map(inv => (
- <tr key={ inv.id } className="hover:bg-slate-50">
- <td className="p-4 font-medium">{ inv.studentId }</td>
- <td className="p-4">₦{ inv.amount.toLocaleString()}</td>
- <td className="p-4">₦{ inv.amountPaid.toLocaleString()}</td>
- <td className="p-4">
- <span className={`px-2 py-1 rounded-md text-[10px] uppercase tracking-wider font-medium ${
- inv.status  === 'paid'?'bg-green-100 text-green-700':
- inv.status  === 'partial'?'bg-yellow-100 text-yellow-700':
-'bg-red-100 text-red-700'
- }`}>
- { inv.status }
- </span>
- </td>
- <td className="p-4 text-slate-900">{ new Date(inv.dueDate).toLocaleDateString()}</td>
- </tr>
- ))}
+ { invoices.map(inv => {
+    const paid = inv.status === 'paid' || inv.amountPaid >= inv.amount;
+    const overdue = isOverdue(inv);
+    const balance = inv.amount - inv.amountPaid;
+
+    return (
+      <tr key={ inv.id } className="hover:bg-slate-50 transition-colors">
+      <td className="p-4 font-medium">{ inv.studentId }</td>
+      <td className="p-4">₦{ inv.amount.toLocaleString()}</td>
+      <td className="p-4">₦{ inv.amountPaid.toLocaleString()}</td>
+      <td className="p-4">
+      <div className="flex flex-col gap-1">
+        <span className={`px-2 py-1 rounded-md text-[10px] uppercase tracking-wider font-bold w-fit ${
+        paid ? 'bg-green-100 text-green-700' :
+        inv.amountPaid > 0 ? 'bg-yellow-100 text-yellow-700' :
+        'bg-red-100 text-red-700'
+        }`}>
+        { paid ? 'FULLY PAID' : inv.amountPaid > 0 ? 'PARTIAL' : 'UNPAID' }
+        </span>
+        {overdue && !paid && (
+          <span className="text-[10px] font-bold text-red-600 flex items-center gap-1">
+            <Clock size={10} /> OVERDUE
+          </span>
+        )}
+      </div>
+      </td>
+      <td className="p-4 text-slate-900">
+        <div>{ new Date(inv.dueDate).toLocaleDateString()}</div>
+        {balance > 0 && <div className="text-[10px] text-amber-600 font-bold">OUTSTANDING: ₦{balance.toLocaleString()}</div>}
+      </td>
+      </tr>
+    );
+  })}
  { invoices.length === 0 && <tr><td colSpan={ 5 } className="p-4 text-center text-slate-900">No invoices found.</td></tr>}
  </tbody>
  </table>

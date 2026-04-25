@@ -4,7 +4,6 @@ import { Session, Term, GradeScale } from '../../types';
 import { Plus, Trash2, Edit2, Save, CheckCircle2, AlertCircle, Loader2, Calendar, Settings, Award } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { sortByName } from '../../lib/utils';
-import { promoteStudents } from '../../lib/promotion';
 
 interface GradingSystemConfigProps {
   schoolId: string;
@@ -27,32 +26,6 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
   const [addingSession, setAddingSession] = useState(false);
   const [addingTerm, setAddingTerm] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-  const [promoting, setPromoting] = useState(false);
-  const [promotionResult, setPromotionResult] = useState<{ promoted: number, graduated: number, failed: number } | null>(null);
-
-  const handlePromoteStudents = async () => {
-    if (!schoolId || !selectedSessionForTerm) return;
-    
-    const session = sessions.find(s => s.id === selectedSessionForTerm);
-    if (!session) return;
-
-    if (!window.confirm(`Are you sure you want to promote students for the ${session.name} session? This process will move eligible students to their next classes and graduate final year students. This action cannot be easily undone.`)) {
-      return;
-    }
-
-    setPromoting(true);
-    setPromotionResult(null);
-    try {
-      const result = await promoteStudents(schoolId, selectedSessionForTerm, gradeScale?.promotionThreshold || 40);
-      setPromotionResult(result);
-      setMessage({ type: 'success', text: `Promotion completed! ${result.promoted} promoted, ${result.graduated} graduated, ${result.failed} repeated.` });
-    } catch (err: any) {
-      console.error("Promotion failed:", err);
-      setMessage({ type: 'error', text: err.message || "Failed to promote students. Ensure 3rd term results are published." });
-    } finally {
-      setPromoting(false);
-    }
-  };
 
   useEffect(() => {
     if (!schoolId) return;
@@ -433,64 +406,6 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
 
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4">
-              <Award className="text-blue-500/10 w-24 h-24 -mr-8 -mt-8 rotate-12" />
-            </div>
-            
-            <div className="flex items-center gap-4 mb-6 relative">
-              <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm">
-                <CheckCircle2 size={20} />
-              </div>
-              <h3 className="text-xl font-medium text-slate-900">Promotion Management</h3>
-            </div>
-
-            <p className="text-sm text-slate-500 mb-6 relative">
-              Trigger student promotion for the selected session. This should be done only after <strong>3rd Term</strong> results have been finalized and published.
-            </p>
-
-            <div className="space-y-4 relative">
-              <div className="p-4 rounded-xl bg-blue-50 border border-blue-100">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-xs font-bold text-blue-600 uppercase">Promotion Threshold</span>
-                  <span className="text-sm font-bold text-blue-700">{gradeScale?.promotionThreshold || 40}%</span>
-                </div>
-                <p className="text-[10px] text-blue-600/70">Students with an average score below this across all terms will repeat their current class.</p>
-              </div>
-
-              <button
-                onClick={handlePromoteStudents}
-                disabled={promoting || !selectedSessionForTerm}
-                className="w-full p-4 rounded-xl bg-slate-900 text-white hover:bg-black transition-all shadow-lg shadow-slate-200 flex items-center justify-center gap-3 disabled:opacity-50 group"
-              >
-                {promoting ? (
-                  <Loader2 className="animate-spin" size={20} />
-                ) : (
-                  <Award size={20} className="group-hover:scale-110 transition-transform" />
-                )}
-                <div className="text-left">
-                  <p className="font-bold leading-none">Promote Students</p>
-                  <p className="text-[10px] opacity-70">Process moves students to next class level</p>
-                </div>
-              </button>
-
-              {promotionResult && (
-                <div className="mt-4 p-4 rounded-xl bg-emerald-50 border border-emerald-100 grid grid-cols-3 gap-2 text-center animate-in fade-in slide-in-from-top-2">
-                  <div>
-                    <p className="text-[10px] text-emerald-600 font-bold uppercase">Promoted</p>
-                    <p className="text-xl font-black text-emerald-700">{promotionResult.promoted}</p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] text-indigo-600 font-bold uppercase">Graduated</p>
-                    <p className="text-xl font-black text-indigo-700">{promotionResult.graduated}</p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] text-orange-600 font-bold uppercase">Repeated</p>
-                    <p className="text-xl font-black text-orange-700">{promotionResult.failed}</p>
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
 
           <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">

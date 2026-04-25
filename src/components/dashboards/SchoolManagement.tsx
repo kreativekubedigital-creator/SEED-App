@@ -43,7 +43,8 @@ import { SchoolSettings } from'./SchoolSettings';
 import { GradingSystemConfig } from'./GradingSystemConfig';
 import { ClassReportCards } from'./ClassReportCards';
 import ClassTimetable from'./ClassTimetable';
-import { SchoolFinance } from'./SchoolFinance';
+import { SchoolFinance } from './SchoolFinance';
+import { PromotionManagement } from './PromotionManagement';
 import { sortByName, sortByFullName, cn } from'../../lib/utils';
 
 interface SchoolManagementProps {
@@ -53,7 +54,7 @@ interface SchoolManagementProps {
 }
 
 export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin'}: SchoolManagementProps) => {
- const [activeTab, setActiveTab] = useState<'overview'|'users'|'parents'|'classes'|'announcements'|'settings'|'grading'|'reports'|'timetable'|'finance'>('overview');
+ const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'parents' | 'classes' | 'announcements' | 'settings' | 'grading' | 'reports' | 'timetable' | 'finance' | 'promotion'>('overview');
  const [roleFilter, setRoleFilter] = useState<UserRole |'all'>('all');
  const [classFilter, setClassFilter] = useState<string>('all');
  const [users, setUsers] = useState<UserProfile[]>([]);
@@ -584,6 +585,18 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  >
  <BookOpen size={ 18 } /> Timetable
  </button>
+ <button
+ onClick={() => {
+ setActiveTab('promotion');
+ setIsMobileMenuOpen(false);
+ }}
+ className={ cn(
+"flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all w-full text-left",
+ activeTab  === 'promotion'?"bg-blue-50/80 text-blue-700 shadow-sm border border-blue-100/50":"text-slate-900 hover:bg-slate-50 hover:text-slate-900"
+ )}
+ >
+ <GraduationCap size={ 18 } /> Student Promotion
+ </button>
  </motion.div>
  )}
  </AnimatePresence>
@@ -788,6 +801,9 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <button onClick={() => { setActiveTab('reports'); setIsMobileMenuOpen(false); }} className={ cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left", activeTab  === 'reports'?"bg-blue-50 text-blue-700":"text-slate-900")}>
  <BookOpen size={ 18 } /> Report Cards
  </button>
+ <button onClick={() => { setActiveTab('promotion'); setIsMobileMenuOpen(false); }} className={ cn("flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full text-left", activeTab  === 'promotion'?"bg-blue-50 text-blue-700":"text-slate-900")}>
+ <GraduationCap size={ 18 } /> Student Promotion
+ </button>
  </div>
  </div>
  </nav>
@@ -886,12 +902,14 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  </div>
 
  {/* Stats Grid */}
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
  {[
- { label: 'School Admins', value: stats.admins, icon: ShieldCheck, colorClass:'from-blue-50 to-blue-100 text-blue-600 border-blue-200/50'},
- { label:'Teachers', value: stats.teachers, icon: Users, colorClass:'from-indigo-50 to-indigo-100 text-indigo-600 border-indigo-200/50'},
- { label:'Students', value: stats.students, icon: GraduationCap, colorClass:'from-purple-50 to-purple-100 text-purple-600 border-purple-200/50'},
- { label:'Parents', value: stats.parents, icon: Users, colorClass:'from-pink-50 to-pink-100 text-pink-600 border-pink-200/50'},
+ { label: 'School Admins', value: stats.admins, icon: ShieldCheck, colorClass: 'from-blue-50 to-blue-100 text-blue-600 border-blue-200/50' },
+ { label: 'Teachers', value: stats.teachers, icon: Users, colorClass: 'from-indigo-50 to-indigo-100 text-indigo-600 border-indigo-200/50' },
+ { label: 'Students', value: stats.students, icon: GraduationCap, colorClass: 'from-purple-50 to-purple-100 text-purple-600 border-purple-100/50' },
+ { label: 'Parents', value: stats.parents, icon: Users, colorClass: 'from-pink-50 to-pink-100 text-pink-600 border-pink-100/50' },
+ { label: 'Total Revenue', value: `₦${stats.totalRevenue.toLocaleString()}`, icon: CreditCard, colorClass: 'from-emerald-50 to-emerald-100 text-emerald-600 border-emerald-100/50' },
+ { label: 'Outstanding Fees', value: `₦${stats.outstandingFees.toLocaleString()}`, icon: AlertCircle, colorClass: 'from-amber-50 to-amber-100 text-amber-600 border-amber-100/50' },
  ].map(stat => (
  <div key={ stat.label } className="bg-white p-3 rounded-2xl border border-slate-300 shadow-sm flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all duration-300">
  <div className={`w-8 h-8 bg-gradient-to-br ${ stat.colorClass } rounded-xl flex items-center justify-center shadow-sm border`}>
@@ -1297,6 +1315,8 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <ClassReportCards school={ school } />
  ) : activeTab  === 'timetable'? (
  <ClassTimetable user={{ schoolId: school.id } as UserProfile } mode="edit"/>
+ ) : activeTab  === 'promotion'? (
+ <PromotionManagement schoolId={ school.id } />
  ) : activeTab  === 'finance'&& (currentUserRole  === 'school_admin'|| currentUserRole  === 'super_admin') ? (
  <SchoolFinance school={ school } />
  ) : activeTab  === 'announcements'&& (currentUserRole  === 'school_admin'|| currentUserRole  === 'super_admin') ? (
