@@ -160,7 +160,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
     try {
       const sessionTerms = terms.filter(t => t.sessionId === selectedSessionForTerm);
       await addDoc(collection(db, 'schools', schoolId, 'sessions', selectedSessionForTerm, 'terms'), {
-        name: newTermName,
+        name: newTermName.trim(),
         schoolId: schoolId,
         sessionId: selectedSessionForTerm,
         isCurrent: sessionTerms.length === 0
@@ -197,6 +197,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
     try {
       const dataToSave = {
         schoolId: schoolId,
+        name: gradeScale.name || 'Default Grading System',
         grades: gradeScale.grades,
         caConfig: gradeScale.caConfig || { cas: [{ name: 'CA 1', maxScore: 10 }, { name: 'CA 2', maxScore: 10 }, { name: 'CA 3', maxScore: 10 }], maxExamScore: 70 }
       };
@@ -305,7 +306,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
               />
               <button
                 onClick={handleAddSession}
-                disabled={addingSession}
+                disabled={addingSession || !newSessionName.trim()}
                 className="w-full sm:w-auto p-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {addingSession ? <Loader2 className="animate-spin" size={20} /> : <Plus size={20} />}
@@ -357,7 +358,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                 />
                 <button
                   onClick={handleAddTerm}
-                  disabled={addingTerm}
+                  disabled={addingTerm || !newTermName.trim() || !selectedSessionForTerm}
                   className="w-full sm:w-auto p-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {addingTerm ? <Loader2 className="animate-spin" size={20} /> : <Plus size={20} />}
