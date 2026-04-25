@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from'react';
 import { db, collection, addDoc, updateDoc, doc, getDocs, query, where, onSnapshot, OperationType, handleFirestoreError } from'../../lib/compatibility';
-import { School, FeeStructure, Invoice, Payment, Class, UserProfile } from'../../types';
-import { Plus, Edit2, Trash2, FileText, CheckCircle, Clock, Search, X } from'lucide-react';
-import { motion, AnimatePresence } from'motion/react';
+import { School, FeeStructure, Invoice, Payment, Class, UserProfile } from '../../types';
+import { Plus, Edit2, Trash2, FileText, CheckCircle, Clock, Search, X, BarChart2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { FeeAnalytics } from './FeeAnalytics';
 
 export const SchoolFinance = ({ school }: { school: School }) => {
- const [activeTab, setActiveTab] = useState<'feeStructures'|'invoices'|'payments'>('feeStructures');
+  const [activeTab, setActiveTab] = useState<'feeAnalytics' | 'feeStructures' | 'invoices' | 'payments'>('feeAnalytics');
  const [feeStructures, setFeeStructures] = useState<FeeStructure[]>([]);
  const [invoices, setInvoices] = useState<Invoice[]>([]);
- const [payments, setPayments] = useState<Payment[]>([]);
- const [classes, setClasses] = useState<Class[]>([]);
- const [loading, setLoading] = useState(true);
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [students, setStudents] = useState<UserProfile[]>([]);
+  const [loading, setLoading] = useState(true);
  const [sessions, setSessions] = useState<any[]>([]);
  const [termsMap, setTermsMap] = useState<Record<string, Record<string, any>>>({});
 
@@ -19,7 +21,15 @@ export const SchoolFinance = ({ school }: { school: School }) => {
  const [showGenerateInvoice, setShowGenerateInvoice] = useState(false);
 
   // Form states
-  const [newFee, setNewFee] = useState<Partial<FeeStructure>>({ name:'', amount: 0, classId:'all', isMandatory: true, termId:'', sessionId:''});
+  const [newFee, setNewFee] = useState<Partial<FeeStructure>>({ 
+    name: '', 
+    amount: 0, 
+    classId: 'all', 
+    isMandatory: true, 
+    termId: '', 
+    sessionId: '',
+    category: 'tuition'
+  });
   const [genSessionId, setGenSessionId] = useState('');
   const [genTermId, setGenTermId] = useState('');
   const [genClassId, setGenClassId] = useState('all');
@@ -35,7 +45,10 @@ export const SchoolFinance = ({ school }: { school: School }) => {
   setPayments(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Payment)));
   });
   const unsubClasses = onSnapshot(collection(db,`schools/${ school.id }/classes`), (snap) => {
-  setClasses(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Class)));
+    setClasses(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Class)));
+  });
+  const unsubStudents = onSnapshot(query(collection(db, 'users'), where('schoolId', '==', school.id), where('role', '==', 'student')), (snap) => {
+    setStudents(snap.docs.map(doc => ({ uid: doc.id, ...doc.data() } as UserProfile)));
   });
 
   // Fetch sessions to get terms and resumption dates
@@ -55,7 +68,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
     setLoading(false);
   });
 
-  return () => { unsubFees(); unsubInvoices(); unsubPayments(); unsubClasses(); unsubSessions(); };
+  return () => { unsubFees(); unsubInvoices(); unsubPayments(); unsubClasses(); unsubStudents(); unsubSessions(); };
   }, [school.id]);
 
   const isOverdue = (invoice: Invoice) => {
@@ -80,7 +93,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
  createdAt: new Date().toISOString()
  });
   setShowAddFee(false);
-  setNewFee({ name:'', amount: 0, classId:'all', isMandatory: true, termId:'', sessionId:''});
+  setNewFee({ name: '', amount: 0, classId: 'all', isMandatory: true, termId: '', sessionId: '', category: 'tuition' });
  } catch (err) {
  handleFirestoreError(err, OperationType.CREATE,`schools/${ school.id }/feeStructures`);
  }
@@ -149,12 +162,30 @@ export const SchoolFinance = ({ school }: { school: School }) => {
 
  return (
  <div className="space-y-6">
- {/* Tabs */}
- <div className="flex gap-4 border-b border-gray-200">
- <button onClick={() => setActiveTab('feeStructures')} className={`pb-2 px-1 font-medium text-sm ${ activeTab  === 'feeStructures'?'border-b-2 border-blue-600 text-blue-600':'text-slate-900 hover:text-slate-900'}`}>Fee Structures</button>
- <button onClick={() => setActiveTab('invoices')} className={`pb-2 px-1 font-medium text-sm ${ activeTab  === 'invoices'?'border-b-2 border-blue-600 text-blue-600':'text-slate-900 hover:text-slate-900'}`}>Invoices</button>
- <button onClick={() => setActiveTab('payments')} className={`pb-2 px-1 font-medium text-sm ${ activeTab  === 'payments'?'border-b-2 border-blue-600 text-blue-600':'text-slate-900 hover:text-slate-900'}`}>Payments</button>
- </div>
+  {/* Tabs */}
+  <div className="flex gap-4 border-b border-gray-100 mb-6">
+    <button onClick={() => setActiveTab('feeAnalytics')} className={`pb-3 px-1 font-black text-[10px] uppercase tracking-widest transition-all ${ activeTab === 'feeAnalytics' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-400 hover:text-slate-900'}`}>
+      <div className="flex items-center gap-2">
+        <BarChart2 size={12} />
+        Fee Analytics
+      </div>
+    </button>
+    <button onClick={() => setActiveTab('feeStructures')} className={`pb-3 px-1 font-black text-[10px] uppercase tracking-widest transition-all ${ activeTab === 'feeStructures' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-400 hover:text-slate-900'}`}>Fee Structures</button>
+    <button onClick={() => setActiveTab('invoices')} className={`pb-3 px-1 font-black text-[10px] uppercase tracking-widest transition-all ${ activeTab === 'invoices' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-400 hover:text-slate-900'}`}>Invoices</button>
+    <button onClick={() => setActiveTab('payments')} className={`pb-3 px-1 font-black text-[10px] uppercase tracking-widest transition-all ${ activeTab === 'payments' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-400 hover:text-slate-900'}`}>Payments</button>
+  </div>
+
+  { activeTab === 'feeAnalytics' && (
+    <FeeAnalytics 
+      school={school} 
+      invoices={invoices} 
+      payments={payments} 
+      feeStructures={feeStructures} 
+      classes={classes}
+      termsMap={termsMap}
+      students={students}
+    />
+  )}
 
  { activeTab  === 'feeStructures'&& (
  <div className="space-y-4">
@@ -302,6 +333,14 @@ export const SchoolFinance = ({ school }: { school: School }) => {
  <label className="block text-xs font-medium text-slate-900 mb-1">Amount (₦)</label>
  <input required type="number"min="0"value={ newFee.amount } onChange={ e => setNewFee({...newFee, amount: Number(e.target.value)})} className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none"/>
  </div>
+ <div>
+  <label className="block text-xs font-medium text-slate-900 mb-1">Category</label>
+  <select required value={ newFee.category } onChange={ e => setNewFee({...newFee, category: e.target.value as any })} className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none">
+    <option value="tuition">Tuition Fee</option>
+    <option value="activities">Activities Fee</option>
+    <option value="miscellaneous">Miscellaneous Fee</option>
+  </select>
+  </div>
  <div>
  <label className="block text-xs font-medium text-slate-900 mb-1">Applicable Class</label>
  <select value={ newFee.classId } onChange={ e => setNewFee({...newFee, classId: e.target.value })} className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none">

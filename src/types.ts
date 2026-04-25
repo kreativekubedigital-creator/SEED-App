@@ -279,6 +279,7 @@ export interface FeeStructure {
   termId: string;
   sessionId: string;
   name: string; // e.g., "Tuition Fee", "Bus Fee"
+  category: 'tuition' | 'activities' | 'miscellaneous';
   amount: number;
   isMandatory: boolean;
   createdAt: string;
