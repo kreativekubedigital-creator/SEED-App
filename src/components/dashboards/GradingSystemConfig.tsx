@@ -98,19 +98,24 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
  return () => unsubTerms();
  }, [schoolId, selectedSessionForTerm]);
 
- const handleAddSession = async () => {
- if (!newSessionName.trim()) {
- setMessage({ type:'error', text:'Please enter a session name.'});
- return;
- }
- if (!schoolId) return;
- try {
- await addDoc(collection(db,'schools', schoolId,'sessions'), {
- name: newSessionName,
- schoolId: schoolId,
- isCurrent: sessions.length === 0,
- createdAt: new Date().toISOString()
- });
+  const handleAddSession = async () => {
+    console.log("handleAddSession triggered", { newSessionName, schoolId });
+    if (!newSessionName.trim()) {
+      setMessage({ type:'error', text:'Please enter a session name.'});
+      return;
+    }
+    if (!schoolId) {
+      console.warn("No schoolId provided to handleAddSession");
+      return;
+    }
+    try {
+      console.log("Calling addDoc for sessions...");
+      await addDoc(collection(db,'schools', schoolId,'sessions'), {
+        name: newSessionName,
+        schoolId: schoolId,
+        isCurrent: sessions.length === 0,
+        createdAt: new Date().toISOString()
+      });
  setNewSessionName('');
  setMessage({ type:'success', text:'Session added successfully!'});
  setTimeout(() => setMessage(null), 3000);

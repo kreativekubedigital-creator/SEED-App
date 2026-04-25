@@ -120,13 +120,18 @@ export class DatabaseService {
     const { table, filters } = this.parsePath(path);
     const payload = this.toSnakeCase({ ...data, ...filters }, table);
     
+    console.log(`Adding item to ${table}:`, payload);
+    
     const { data: insertedData, error } = await supabase
       .from(table)
       .insert(payload)
       .select()
       .single();
     
-    if (error) throw error;
+    if (error) {
+      console.error(`Error adding item to ${table}:`, error);
+      throw error;
+    }
     return this.toCamelCase(insertedData, table);
   }
 
