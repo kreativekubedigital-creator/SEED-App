@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from'react';
 import { db, collection, addDoc, deleteDoc, doc, onSnapshot, query, where, handleFirestoreError, OperationType, orderBy } from'../../lib/compatibility';
 import { Announcement, School, Class } from'../../types';
-import { Bell, Plus, Trash2, X, Globe, Users } from'lucide-react';
+import { Bell, Plus, Trash2, X, Globe, Users, Send } from 'lucide-react';
 import { motion, AnimatePresence } from'motion/react';
 import { cn, sortByName } from'../../lib/utils';
 import ReactQuill from'react-quill-new';
@@ -163,7 +163,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
   </button>
   </div>
 
-  <div className="flex-1 overflow-y-auto p-4 md:p-6">
+  <div className="flex-1 overflow-y-auto p-4">
   { error && (
   <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm mb-6">
   { error }
@@ -177,7 +177,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  onClick={() => setTargetType('school')}
  className={ cn(
 "p-3 rounded-2xl border text-sm font-medium transition-all flex items-center justify-center gap-2",
- targetType  === 'school'?"bg-blue-50 text-blue-700 border-blue-200/50 shadow-sm":"border-gray-200/50 text-slate-900 hover:bg-slate-50 hover:text-slate-900 bg-white"
+  targetType  === 'school'?"bg-blue-50 text-blue-700 border-blue-200/50 shadow-sm":"border-gray-200/50 text-slate-900 hover:bg-slate-50 bg-white"
  )}
  >
  <Globe size={ 18 } /> School-wide
@@ -187,7 +187,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  onClick={() => setTargetType('class')}
  className={ cn(
 "p-3 rounded-2xl border text-sm font-medium transition-all flex items-center justify-center gap-2",
- targetType  === 'class'?"bg-indigo-50 text-indigo-700 border-indigo-200/50 shadow-sm":"border-gray-200/50 text-slate-900 hover:bg-slate-50 hover:text-slate-900 bg-white"
+  targetType  === 'class'?"bg-indigo-50 text-indigo-700 border-indigo-200/50 shadow-sm":"border-gray-200/50 text-slate-900 hover:bg-slate-50 bg-white"
  )}
  >
  <Users size={ 18 } /> Class-specific
@@ -196,7 +196,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
 
  { targetType  === 'class'&& (
  <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
- <label className="block text-sm font-medium text-slate-900 mb-2">Select Class</label>
+  <label className="block text-[11px] uppercase tracking-wider font-bold text-slate-500 mb-1.5">Select Class</label>
  <select
  required
  value={ selectedClassId }
@@ -212,7 +212,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  )}
 
  <div>
- <label className="block text-sm font-medium text-slate-900 mb-2">Title</label>
+  <label className="block text-[11px] uppercase tracking-wider font-bold text-slate-500 mb-1.5">Title</label>
  <input
  type="text"
  required
@@ -223,14 +223,14 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  />
  </div>
  <div>
- <label className="block text-sm font-medium text-slate-900 mb-2">Content</label>
+  <label className="block text-[11px] uppercase tracking-wider font-bold text-slate-500 mb-1.5">Content</label>
  <div className="bg-white rounded-xl overflow-hidden border border-gray-200 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all">
  <ReactQuill
  theme="snow"
  value={ newContent }
  onChange={ setNewContent }
  placeholder="Write your announcement here..."
- className="h-[120px] mb-11"
+  className="h-[100px] mb-12"
  modules={{
  toolbar: [
  [{'header': [1, 2, false] }],
@@ -240,6 +240,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  ],
  }}
  />
+ </div>
  </div>
  </div>
  </div>

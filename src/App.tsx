@@ -480,7 +480,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-lg bg-white/5 backdrop-blur-3xl rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-10 md:p-14 relative z-10 overflow-hidden"
+        className="w-full max-w-md bg-white/5 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-6 md:p-8 relative z-10 overflow-hidden"
       >
         {/* Top Glow Edge */}
         <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
@@ -494,7 +494,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
               exit={{ opacity: 0, x: 20 }}
               className="flex flex-col items-center"
             >
-              <div className="mb-10 text-center w-full">
+              <div className="mb-8 text-center w-full">
                 <motion.div 
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -502,7 +502,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
                 >
                   <div className="absolute inset-0 bg-blue-600/20 blur-2xl rounded-full" />
                   {tenantSchool.logoUrl ? (
-                    <img src={tenantSchool.logoUrl} alt={tenantSchool.name} className="h-24 w-auto relative z-10 object-contain drop-shadow-2xl" />
+                    <img src={tenantSchool.logoUrl} alt={tenantSchool.name} className="h-20 w-auto relative z-10 object-contain drop-shadow-2xl" />
                   ) : (
                     <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl flex items-center justify-center text-white relative z-10 shadow-2xl">
                       <SchoolIcon size={40} strokeWidth={1.5} />
@@ -513,7 +513,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
                 <p className="text-slate-400 text-sm font-medium">To continue to <span className="text-blue-400 font-bold">{tenantSchool.name}</span></p>
               </div>
               
-              <div className="grid grid-cols-2 gap-4 w-full mb-10">
+              <div className="grid grid-cols-2 gap-4 w-full mb-8">
                 {roles.map((role) => (
                   <motion.button
                     key={role.id}
@@ -521,7 +521,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setSelectedRole(role.id)}
                     className={cn(
-                      "group h-24 flex flex-col items-center justify-center gap-2 px-4 rounded-3xl border transition-all duration-300",
+                      "group h-20 flex flex-col items-center justify-center gap-2 px-4 rounded-3xl border transition-all duration-300",
                       selectedRole === role.id 
                         ? "bg-blue-600 border-blue-500 text-white shadow-[0_0_30px_-5px_rgba(37,99,235,0.5)]" 
                         : "border-white/10 bg-white/5 text-slate-400 hover:border-white/20"
@@ -536,14 +536,14 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
               <div className="flex gap-4 w-full">
                 <button
                   onClick={() => navigate('/')}
-                  className="flex-1 h-16 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all active:scale-95 flex items-center justify-center"
+                  className="flex-1 h-14 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all active:scale-95 flex items-center justify-center"
                 >
                   Home
                 </button>
                 <button
                   disabled={!selectedRole}
                   onClick={() => setStep('credentials')}
-                  className="flex-1 h-16 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-500 transition-all active:scale-95 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed shadow-xl shadow-blue-600/20"
+                  className="flex-1 h-14 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-500 transition-all active:scale-95 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed shadow-xl shadow-blue-600/20"
                 >
                   Continue
                 </button>
@@ -561,7 +561,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
               exit={{ opacity: 0, x: -20 }}
               className="w-full"
             >
-              <div className="mb-12 text-center">
+              <div className="mb-8 text-center">
                 <motion.button 
                   onClick={() => setStep('role')}
                   whileHover={{ x: -4 }}
@@ -571,7 +571,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
                 </motion.button>
                 
                  {tenantSchool.logoUrl ? (
-                  <img src={tenantSchool.logoUrl} alt={tenantSchool.name} className="h-16 w-auto mb-6 mx-auto object-contain" />
+                  <img src={tenantSchool.logoUrl} alt={tenantSchool.name} className="h-14 w-auto mb-6 mx-auto object-contain" />
                 ) : (
                   <div className="w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center text-blue-400 mx-auto mb-6 border border-blue-500/20">
                     <SchoolIcon size={32} strokeWidth={1.5} />
@@ -603,7 +603,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email"
-                      className="w-full h-16 pl-16 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium"
+                      className="w-full h-14 pl-14 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium"
                       required
                     />
                   </div>
@@ -617,7 +617,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Enter your password"
-                      className="w-full h-16 pl-16 pr-16 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium"
+                      className="w-full h-14 pl-14 pr-16 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium"
                       required
                     />
                     <button
@@ -633,7 +633,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-16 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center transition-all mt-8 text-lg"
+                  className="w-full h-14 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center transition-all mt-6 text-base"
                 >
                   {loading ? (
                     <div className="flex items-center gap-3">
@@ -877,14 +877,14 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full max-w-lg bg-white/5 backdrop-blur-3xl rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-10 md:p-14 relative z-10 overflow-hidden"
+          className="w-full max-w-md bg-white/5 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-6 md:p-8 relative z-10 overflow-hidden"
         >
           {/* Top Glow Edge */}
           <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
           
-          <div className="text-center mb-10">
-            <div className="w-16 h-16 bg-blue-600/20 border border-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-inner">
-              <Shield className="text-blue-400" size={32} />
+          <div className="text-center mb-8">
+            <div className="w-12 h-12 bg-blue-600/20 border border-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
+              <Shield className="text-blue-400" size={24} />
             </div>
             
             <h1 className="text-3xl font-bold text-white tracking-tight mb-2 font-space">System Command</h1>
@@ -911,7 +911,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter admin identifier"
-                  className="w-full h-16 pl-16 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium"
+                  className="w-full h-14 pl-14 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium"
                   required
                 />
               </div>
@@ -925,7 +925,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Auth Token"
-                  className="w-full h-16 pl-16 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium tracking-widest"
+                  className="w-full h-14 pl-14 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium tracking-widest"
                   required
                 />
               </div>
@@ -934,12 +934,12 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-16 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center transition-all text-lg mt-8"
+              className="w-full h-14 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center transition-all text-base mt-6"
             >
               {loading ? "Decrypting..." : "Access System Core"}
             </button>
 
-            <div className="relative py-8">
+            <div className="relative py-6">
               <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
               <div className="relative flex justify-center text-[10px] uppercase font-black tracking-[0.4em]"><span className="bg-[#050811] px-6 text-slate-500">Secure SSO</span></div>
             </div>
@@ -948,14 +948,14 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
               type="button"
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="w-full h-16 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] disabled:opacity-50 group"
+              className="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] disabled:opacity-50 group"
             >
               <img src="https://www.google.com/favicon.ico" alt="Google" className="w-6 h-6 grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
               <span className="font-bold text-xs uppercase tracking-widest">Sign in with Google</span>
             </button>
           </form>
 
-          <div className="mt-12 text-center">
+          <div className="mt-8 text-center">
             <button
               onClick={() => {
                 setSelectedRole('');
@@ -979,12 +979,12 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
  <motion.div
  initial={{ opacity: 0, scale: 0.95 }}
  animate={{ opacity: 1, scale: 1 }}
-      className="w-full max-w-lg bg-white/5 backdrop-blur-3xl rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-10 md:p-14 relative z-10 overflow-hidden"
+      className="w-full max-w-md bg-white/5 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-6 md:p-8 relative z-10 overflow-hidden"
     >
       {/* Top Glow Edge */}
       <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
       
-      <div className="text-center mb-10">
+      <div className="text-center mb-8">
         {tenantSchool ? (
           <div className="space-y-6">
             <motion.div 
@@ -1008,8 +1008,8 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
           </div>
         ) : (
           <>
-            <Logo variant="white" size="lg" className="mx-auto mb-8 h-12 md:h-16 relative z-10" />
-            <h2 className="text-3xl font-bold text-white tracking-tight font-space">{isSignUp ? 'Platform Setup' : 'Login Portal'}</h2>
+            <Logo variant="white" size="md" className="mx-auto mb-4 h-8 md:h-10 relative z-10" />
+            <h2 className="text-2xl font-bold text-white tracking-tight font-space">{isSignUp ? 'Platform Setup' : 'Login Portal'}</h2>
             <p className="text-slate-400 text-sm mt-3 font-medium">Access your educational ecosystem</p>
           </>
         )}
@@ -1019,7 +1019,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8 p-5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-2xl text-xs font-bold text-center flex items-center justify-center gap-3"
+          className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-2xl text-xs font-bold text-center flex items-center justify-center gap-3"
         >
           <AlertTriangle size={16} />
           {error}
@@ -1057,7 +1057,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
                   <button
                     type="button"
                     onClick={() => setIsSchoolDropdownOpen(!isSchoolDropdownOpen)}
-                    className="w-full h-16 px-6 rounded-2xl border border-white/10 bg-white/5 hover:border-white/20 focus:outline-none focus:ring-4 focus:ring-blue-500/5 transition-all font-medium text-white flex items-center justify-between group"
+                    className="w-full h-14 px-6 rounded-2xl border border-white/10 bg-white/5 hover:border-white/20 focus:outline-none focus:ring-4 focus:ring-blue-500/5 transition-all font-medium text-white flex items-center justify-between group"
                   >
                     <div className="flex items-center gap-3">
                       <SchoolIcon size={20} className="text-slate-500 group-hover:text-blue-400 transition-colors" />
@@ -1129,7 +1129,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
               <button 
                 onClick={() => setStep('role')}
                 disabled={!selectedSchool}
-                className="w-full h-16 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed transition-all text-lg mt-4"
+                className="w-full h-14 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed transition-all text-base mt-4"
               >
                 Continue to Roles
               </button>
@@ -1152,7 +1152,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setSelectedRole(r.id)}
                     className={cn(
-                      "h-24 p-4 rounded-3xl border text-xs font-black uppercase tracking-widest transition-all text-center flex flex-col items-center justify-center gap-3",
+                      "h-20 p-4 rounded-3xl border text-xs font-black uppercase tracking-widest transition-all text-center flex flex-col items-center justify-center gap-2",
                       selectedRole === r.id 
                         ? "bg-blue-600 border-blue-500 text-white shadow-[0_0_30px_-5px_rgba(37,99,235,0.5)]" 
                         : "border-white/10 bg-white/5 text-slate-500 hover:border-white/20"
@@ -1165,14 +1165,14 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
               <div className="flex gap-4">
                 <button 
                   onClick={() => setStep('school')}
-                  className="flex-1 h-16 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all active:scale-[0.98]"
+                  className="flex-1 h-14 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all active:scale-[0.98]"
                 >
                   Back
                 </button>
                 <button 
                   onClick={() => setStep('credentials')}
                   disabled={!selectedRole}
-                  className="flex-[2] h-16 bg-blue-600 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 hover:bg-blue-500 transition-all active:scale-[0.98] disabled:opacity-30"
+                  className="flex-[2] h-14 bg-blue-600 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 hover:bg-blue-500 transition-all active:scale-[0.98] disabled:opacity-30"
                 >
                   Next Step
                 </button>
@@ -1197,7 +1197,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full h-16 pl-16 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition-all font-medium"
+                    className="w-full h-14 pl-14 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition-all font-medium"
                   />
                 </div>
                 
@@ -1209,7 +1209,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full h-16 pl-16 pr-16 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition-all font-medium"
+                    className="w-full h-14 pl-14 pr-16 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition-all font-medium"
                   />
                   <button
                     type="button"
@@ -1252,21 +1252,21 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
                   <button 
                     type="button"
                     onClick={() => setStep('role')}
-                    className="flex-1 h-16 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all active:scale-[0.98]"
+                    className="flex-1 h-14 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all active:scale-[0.98]"
                   >
                     Back
                   </button>
                   <button 
                     type="submit"
                     disabled={loading}
-                    className="flex-[2] h-16 bg-blue-600 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 hover:bg-blue-500 transition-all active:scale-[0.98] disabled:opacity-50"
+                    className="flex-[2] h-14 bg-blue-600 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 hover:bg-blue-500 transition-all active:scale-[0.98] disabled:opacity-50"
                   >
                     {loading ? (isSignUp ? 'Setting up...' : 'Verifying...') : (isSignUp ? 'Initialize' : 'Sign In')}
                   </button>
                 </div>
               </form>
 
-              <div className="relative py-8">
+              <div className="relative py-6">
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
                 <div className="relative flex justify-center text-[10px] uppercase font-black tracking-[0.4em]"><span className="bg-[#050811] px-6 text-slate-500">SSO Logic</span></div>
               </div>
@@ -1274,7 +1274,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
               <button
                 onClick={handleGoogleLogin}
                 disabled={loading}
-                className="w-full h-16 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] disabled:opacity-50 group"
+                className="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] disabled:opacity-50 group"
               >
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-6 h-6" />
                 <span className="font-bold text-xs uppercase tracking-widest">Connect Identity</span>
@@ -1284,14 +1284,11 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
         </AnimatePresence>
       )}
 
-      <div className="mt-12 text-center flex flex-col gap-4">
+      <div className="mt-8 text-center flex flex-col gap-4">
         {!tenantSchool && (
           <button
             onClick={() => {
-              setSelectedRole('super_admin');
-              setSelectedSchool('');
-              setStepAndSignUp('credentials', false);
-              setError(null);
+              navigate('/super-admin');
             }}
             className="text-[10px] font-black text-slate-500 hover:text-blue-400 uppercase tracking-[0.4em] transition-all"
           >
@@ -1481,7 +1478,7 @@ export default function App() {
       onSuccess={() => setUser({ ...user, forcePasswordChange: false })} 
     />
   )}
-  {!isDashboardView && !tenantSchool && <Navbar user={ user } onLogout={ handleLogout } tenantSchool={ tenantSchool } logoVariant={ logoVariant } />}
+  {!isDashboardView && !tenantSchool && !['/login', '/super-admin'].includes(location.pathname) && <Navbar user={ user } onLogout={ handleLogout } tenantSchool={ tenantSchool } logoVariant={ logoVariant } />}
  <main className={ cn("flex-grow", isDashboardView &&"pt-0 overflow-hidden")}>
  <AnimatePresence mode="wait">
  <Routes location={ location } key={ location.pathname }>
