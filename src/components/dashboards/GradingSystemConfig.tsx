@@ -285,8 +285,9 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
   if (loading) return <div className="p-20 text-center text-slate-900 font-medium">Loading configuration...</div>;
 
   return (
-    <div className="space-y-5">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+  <div className="space-y-5">
+    <div className="text-[10px] text-slate-400 font-mono">v1.0.5 - Updated 01:12</div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="space-y-5">
           <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
             <div className="flex items-center gap-4 mb-6">
