@@ -152,23 +152,25 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  initial={{ scale: 0.95, opacity: 0, y: 20 }}
  animate={{ scale: 1, opacity: 1, y: 0 }}
  exit={{ scale: 0.95, opacity: 0, y: 20 }}
- className="bg-white backdrop-blur-xl rounded-2xl p-4 w-full max-w-lg shadow-2xl border border-slate-300 relative overflow-hidden"
+ className="bg-white backdrop-blur-xl rounded-2xl w-full max-w-lg shadow-2xl border border-slate-300 relative flex flex-col max-h-[90vh] overflow-hidden"
  >
  
- <div className="flex justify-between items-center mb-8 relative z-10">
- <h3 className="text-lg font-medium text-slate-900">Post Announcement</h3>
- <button onClick={() => setShowAdd(false)} className="p-2 text-slate-900 hover:text-slate-900 hover:bg-gray-100/50 rounded-full transition-colors">
- <X size={ 20 } />
- </button>
- </div>
+  <form onSubmit={ handleAdd } className="flex flex-col flex-1 overflow-hidden">
+  <div className="flex justify-between items-center p-6 border-b border-slate-100 relative z-10 shrink-0">
+  <h3 className="text-lg font-semibold text-slate-900">Post Announcement</h3>
+  <button onClick={() => setShowAdd(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-full transition-colors">
+  <X size={ 20 } />
+  </button>
+  </div>
 
- { error && (
- <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm mb-6">
- { error }
- </div>
- )}
+  <div className="flex-1 overflow-y-auto p-6">
+  { error && (
+  <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm mb-6">
+  { error }
+  </div>
+  )}
 
- <form onSubmit={ handleAdd } className="space-y-5">
+ <div className="space-y-5">
  <div className="grid grid-cols-2 gap-3">
  <button
  type="button"
@@ -240,13 +242,24 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  />
  </div>
  </div>
+ </div>
+
+ <div className="p-6 border-t border-slate-100 bg-slate-50/50 shrink-0">
  <button
  type="submit"
  disabled={ loading }
- className="w-full bg-blue-600 text-white hover:bg-blue-700 py-2.5 rounded-full font-medium hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
+ className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 disabled:opacity-50 flex items-center justify-center gap-2"
  >
- { loading ?'Posting...':'Post Announcement'}
+ { loading ? (
+ <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+ ) : (
+ <>
+ <Send size={ 18 } />
+ Post Announcement
+ </>
+ )}
  </button>
+ </div>
  </form>
  </motion.div>
  </div>
