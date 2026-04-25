@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from'react';
-import { db, collection, addDoc, updateDoc, doc, getDocs, query, where, onSnapshot, OperationType, handleFirestoreError } from'../../lib/compatibility';
+import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, where, onSnapshot, OperationType, handleFirestoreError } from '../../lib/compatibility';
 import { School, FeeStructure, Invoice, Payment, Class, UserProfile } from '../../types';
 import { Plus, Edit2, Trash2, FileText, CheckCircle, Clock, Search, X, BarChart2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -30,6 +30,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
     sessionId: '',
     category: 'tuition'
   });
+  const [editingFee, setEditingFee] = useState<FeeStructure | null>(null);
   const [genSessionId, setGenSessionId] = useState('');
   const [genTermId, setGenTermId] = useState('');
   const [genClassId, setGenClassId] = useState('all');
@@ -84,20 +85,99 @@ export const SchoolFinance = ({ school }: { school: School }) => {
     return new Date() > new Date(invoice.dueDate);
   };
 
- const handleSaveFee = async (e: React.FormEvent) => {
- e.preventDefault();
- try {
- await addDoc(collection(db,`schools/${ school.id }/feeStructures`), {
- ...newFee,
- schoolId: school.id,
- createdAt: new Date().toISOString()
- });
-  setShowAddFee(false);
-  setNewFee({ name: '', amount: 0, classId: 'all', isMandatory: true, termId: '', sessionId: '', category: 'tuition' });
- } catch (err) {
- handleFirestoreError(err, OperationType.CREATE,`schools/${ school.id }/feeStructures`);
- }
- };
+  const handleSaveFee = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newFee.name || !newFee.amount || !newFee.sessionId || !newFee.termId) return;
+
+    try {
+      const feeData = {
+        ...newFee,
+        schoolId: school.id,
+        updatedAt: new Date().toISOString(),
+        amount: Number(newFee.amount)
+      };
+
+      if (editingFee) {
+        const feeRef = doc(db, 'schools', school.id, 'feeStructures', editingFee.id);
+        await updateDoc(feeRef, feeData);
+        setEditingFee(null);
+      } else {
+        await addDoc(collection(db, `schools/${school.id}/feeStructures`), {
+          ...feeData,
+          createdAt: new Date().toISOString()
+        });
+      }
+      setNewFee({ name: '', amount: 0, classId: 'all', isMandatory: true, termId: '', sessionId: '', category: 'tuition' });
+      setShowAddFee(false);
+    } catch (error) {
+      handleFirestoreError(error, editingFee ? OperationType.UPDATE : OperationType.CREATE, `schools/${school.id}/feeStructures`);
+    }
+  };
+
+  const handleEditFee = (fee: FeeStructure) => {
+    setEditingFee(fee);
+    setNewFee(fee);
+    setShowAddFee(true);
+  };
+
+  const handleGenerateInvoices = async (classId: string, termId: string, sessionId: string) => {
+    try {
+      // Fetch students
+      const qStudents = classId === 'all'
+        ? query(collection(db, 'users'), where('schoolId', '==', school.id), where('role', '==', 'student'))
+        : query(collection(db, 'users'), where('schoolId', '==', school.id), where('role', '==', 'student'), where('classId', '==', classId));
+      
+      const studentsSnap = await getDocs(qStudents);
+      const studentsData = studentsSnap.docs.map(d => ({ uid: d.id, ...d.data() } as UserProfile));
+
+      // Filter applicable fees
+      const applicableFees = feeStructures.filter(f => 
+        f.termId === termId && 
+        f.sessionId === sessionId && 
+        (f.classId === 'all' || f.classId === classId)
+      );
+
+      if (applicableFees.length === 0) {
+        alert("No fee structures found for the selected criteria.");
+        return;
+      }
+
+      const totalAmount = applicableFees.reduce((sum, fee) => sum + fee.amount, 0);
+      const items = applicableFees.map(f => ({ name: f.name, amount: f.amount }));
+
+      // Generate invoices
+      for (const student of studentsData) {
+        // Check if invoice already exists
+        const qExisting = query(
+          collection(db, `schools/${school.id}/invoices`), 
+          where('studentId', '==', student.uid),
+          where('termId', '==', termId),
+          where('sessionId', '==', sessionId)
+        );
+        const existingSnap = await getDocs(qExisting);
+        
+        if (existingSnap.empty) {
+          await addDoc(collection(db, `schools/${school.id}/invoices`), {
+            schoolId: school.id,
+            studentId: student.uid,
+            termId,
+            sessionId,
+            amount: totalAmount,
+            amountPaid: 0,
+            status: 'pending',
+            dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+            items,
+            createdAt: new Date().toISOString()
+          });
+        }
+      }
+
+      alert(`Invoices generated successfully for ${studentsData.length} students.`);
+      setShowGenerateInvoice(false);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.CREATE, `schools/${school.id}/invoices`);
+    }
+  };
 
  const handleGenerateInvoices = async (classId: string, termId: string, sessionId: string) => {
  try {
@@ -197,15 +277,33 @@ export const SchoolFinance = ({ school }: { school: School }) => {
  </div>
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
  { feeStructures.map(fee => (
- <div key={ fee.id } className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+ <div key={ fee.id } className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm group relative">
  <div className="flex justify-between items-start mb-2">
- <h4 className="font-medium text-slate-900">{ fee.name }</h4>
- <span className="text-sm font-medium text-blue-600">₦{ fee.amount.toLocaleString()}</span>
+  <div>
+    <h4 className="font-medium text-slate-900">{ fee.name }</h4>
+    <p className="text-[10px] text-slate-400 uppercase tracking-wider font-medium">
+      {termsMap[fee.sessionId]?.[fee.termId]?.name || 'Unknown Term'}
+    </p>
+  </div>
+  <div className="flex items-center gap-2">
+    <button 
+      onClick={() => handleEditFee(fee)}
+      className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-blue-600 transition-all opacity-0 group-hover:opacity-100"
+    >
+      <Edit2 size={14} />
+    </button>
+    <button 
+      onClick={() => handleDeleteFee(fee.id)}
+      className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-red-600 transition-all opacity-0 group-hover:opacity-100"
+    >
+      <Trash2 size={14} />
+    </button>
+    <span className="text-sm font-medium text-blue-600">₦{ fee.amount.toLocaleString()}</span>
+  </div>
  </div>
  <p className="text-xs text-slate-900 mb-4">Class: { fee.classId  === 'all'?'All Classes': classes.find(c => c.id === fee.classId)?.name || fee.classId }</p>
  <div className="flex gap-2">
  <span className="text-[10px] bg-gray-100 px-2 py-1 rounded-md text-slate-900 uppercase tracking-wider">{ fee.isMandatory ?'Mandatory':'Optional'}</span>
- <span className="text-[10px] bg-gray-100 px-2 py-1 rounded-md text-slate-900 uppercase tracking-wider">Term { fee.termId }</span>
  </div>
  </div>
  ))}
@@ -321,8 +419,12 @@ export const SchoolFinance = ({ school }: { school: School }) => {
  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
  <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-3xl p-6 w-full max-w-md shadow-xl">
  <div className="flex justify-between items-center mb-6">
- <h3 className="text-xl font-medium">Add Fee Structure</h3>
- <button onClick={() => setShowAddFee(false)} className="text-slate-900 hover:text-slate-900"><X size={ 24 } /></button>
+ <h3 className="text-xl font-medium">{editingFee ? 'Edit Fee Structure' : 'Add Fee Structure'}</h3>
+ <button onClick={() => {
+   setShowAddFee(false);
+   setEditingFee(null);
+   setNewFee({ name: '', amount: 0, classId: 'all', isMandatory: true, termId: '', sessionId: '', category: 'tuition' });
+ }} className="text-slate-900 hover:text-slate-900"><X size={ 24 } /></button>
  </div>
  <form onSubmit={ handleSaveFee } className="space-y-4">
  <div>
@@ -370,7 +472,22 @@ export const SchoolFinance = ({ school }: { school: School }) => {
   <input type="checkbox"id="isMandatory"checked={ newFee.isMandatory } onChange={ e => setNewFee({...newFee, isMandatory: e.target.checked })} className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"/>
   <label htmlFor="isMandatory"className="text-sm text-slate-900">Mandatory Fee</label>
   </div>
- <button type="submit"className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">Save Fee</button>
+ <div className="flex gap-3">
+  <button 
+    type="button"
+    onClick={() => {
+      setShowAddFee(false);
+      setEditingFee(null);
+      setNewFee({ name: '', amount: 0, classId: 'all', isMandatory: true, termId: '', sessionId: '', category: 'tuition' });
+    }}
+    className="flex-1 px-4 py-3 rounded-xl border border-gray-200 text-slate-900 font-medium hover:bg-gray-50 transition-colors"
+  >
+    Cancel
+  </button>
+  <button type="submit"className="flex-[2] bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">
+    {editingFee ? 'Update Fee' : 'Save Fee'}
+  </button>
+ </div>
  </form>
  </motion.div>
  </div>
