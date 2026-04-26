@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { School, Invoice, Payment, FeeStructure, Class, UserProfile } from '../../types';
-import { CheckCircle, Clock, TrendingUp, DollarSign, Wallet, CreditCard, ArrowUpRight, Filter, ChevronDown, Search } from 'lucide-react';
+import { School, Invoice, Payment, FeeStructure, Class, UserProfile, Session } from '../../types';
+import { CheckCircle, Clock, TrendingUp, DollarSign, Wallet, CreditCard, ArrowUpRight, Filter, ChevronDown, Search, BarChart3 } from 'lucide-react';
 import { format, parseISO, eachMonthOfInterval, isSameMonth, subMonths } from 'date-fns';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -13,14 +13,32 @@ interface FeeAnalyticsProps {
   classes: Class[];
   termsMap: Record<string, Record<string, any>>;
   students: UserProfile[];
-  sessions: any[];
+  sessions: Session[];
 }
 
 export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classes, termsMap, students, sessions }: FeeAnalyticsProps) => {
   // 1. Filter State
   const [selectedClass, setSelectedClass] = useState<string>('all');
-  const [selectedSession, setSelectedSession] = useState<string>(school.currentSessionId || 'all');
-  const [selectedTerm, setSelectedTerm] = useState<string>(school.currentTermId || 'all');
+  
+  // Default to current session/term if available
+  const defaultSession = useMemo(() => {
+    if (school.currentSessionId) return school.currentSessionId;
+    const current = sessions.find(s => s.isCurrent);
+    if (current) return current.id;
+    return sessions.length > 0 ? sessions[0].id : 'all';
+  }, [school.currentSessionId, sessions]);
+
+  const defaultTerm = useMemo(() => {
+    if (school.currentTermId) return school.currentTermId;
+    if (defaultSession !== 'all' && termsMap[defaultSession]) {
+      const current = Object.values(termsMap[defaultSession]).find((t: any) => t.isCurrent);
+      if (current) return current.id;
+    }
+    return 'all';
+  }, [school.currentTermId, defaultSession, termsMap]);
+
+  const [selectedSession, setSelectedSession] = useState<string>(defaultSession);
+  const [selectedTerm, setSelectedTerm] = useState<string>(defaultTerm);
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -30,10 +48,22 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
       const student = students.find(s => s.uid === inv.studentId);
       const matchClass = selectedClass === 'all' || student?.classId === selectedClass;
       const matchSession = selectedSession === 'all' || inv.sessionId === selectedSession;
-      const matchTerm = selectedTerm === 'all' || inv.termId === selectedTerm;
+      
+      let matchTerm = selectedTerm === 'all';
+      if (!matchTerm) {
+        if (inv.termId === selectedTerm) {
+          matchTerm = true;
+        } else if (selectedSession === 'all' && ['1st_term', '2nd_term', '3rd_term'].includes(selectedTerm)) {
+          // Generic term match across sessions
+          const termName = termsMap[inv.sessionId]?.[inv.termId]?.name || '';
+          const genericTermPrefix = selectedTerm.split('_')[0]; // e.g., '1st'
+          matchTerm = termName.toLowerCase().includes(genericTermPrefix);
+        }
+      }
+
       return matchClass && matchSession && matchTerm;
     });
-  }, [invoices, selectedClass, selectedSession, selectedTerm, students]);
+  }, [invoices, selectedClass, selectedSession, selectedTerm, students, termsMap]);
 
   // 3. Analytics Aggregation (Respecting Filters)
   const stats = useMemo(() => {
@@ -70,11 +100,25 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
         return matchesClass && matchesSearch;
       })
       .map(student => {
-        const studentInvoices = invoices.filter(inv => 
-          inv.studentId === student.uid &&
-          (selectedSession === 'all' || inv.sessionId === selectedSession) &&
-          (selectedTerm === 'all' || inv.termId === selectedTerm)
-        );
+        const studentInvoices = invoices.filter(inv => {
+          const isStudent = inv.studentId === student.uid;
+          if (!isStudent) return false;
+
+          const matchSession = selectedSession === 'all' || inv.sessionId === selectedSession;
+          
+          let matchTerm = selectedTerm === 'all';
+          if (!matchTerm) {
+            if (inv.termId === selectedTerm) {
+              matchTerm = true;
+            } else if (selectedSession === 'all' && ['1st_term', '2nd_term', '3rd_term'].includes(selectedTerm)) {
+              const termName = termsMap[inv.sessionId]?.[inv.termId]?.name || '';
+              const genericTermPrefix = selectedTerm.split('_')[0];
+              matchTerm = termName.toLowerCase().includes(genericTermPrefix);
+            }
+          }
+
+          return matchSession && matchTerm;
+        });
 
         const totalFee = studentInvoices.reduce((sum, inv) => sum + inv.amount, 0);
         const paid = studentInvoices.reduce((sum, inv) => sum + inv.amountPaid, 0);

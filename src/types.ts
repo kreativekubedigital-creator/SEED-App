@@ -47,6 +47,8 @@ export interface School {
   planId: string;
   status: 'active' | 'suspended' | 'pending';
   createdAt: string;
+  currentSessionId?: string;
+  currentTermId?: string;
 }
 
 export interface Plan {

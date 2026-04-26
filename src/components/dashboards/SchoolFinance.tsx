@@ -120,62 +120,12 @@ export const SchoolFinance = ({ school }: { school: School }) => {
     setShowAddFee(true);
   };
 
-  const handleGenerateInvoices = async (classId: string, termId: string, sessionId: string) => {
+  const handleDeleteFee = async (feeId: string) => {
+    if (!window.confirm('Are you sure you want to delete this fee structure? This will not affect already generated invoices.')) return;
     try {
-      // Fetch students
-      const qStudents = classId === 'all'
-        ? query(collection(db, 'users'), where('schoolId', '==', school.id), where('role', '==', 'student'))
-        : query(collection(db, 'users'), where('schoolId', '==', school.id), where('role', '==', 'student'), where('classId', '==', classId));
-      
-      const studentsSnap = await getDocs(qStudents);
-      const studentsData = studentsSnap.docs.map(d => ({ uid: d.id, ...d.data() } as UserProfile));
-
-      // Filter applicable fees
-      const applicableFees = feeStructures.filter(f => 
-        f.termId === termId && 
-        f.sessionId === sessionId && 
-        (f.classId === 'all' || f.classId === classId)
-      );
-
-      if (applicableFees.length === 0) {
-        alert("No fee structures found for the selected criteria.");
-        return;
-      }
-
-      const totalAmount = applicableFees.reduce((sum, fee) => sum + fee.amount, 0);
-      const items = applicableFees.map(f => ({ name: f.name, amount: f.amount }));
-
-      // Generate invoices
-      for (const student of studentsData) {
-        // Check if invoice already exists
-        const qExisting = query(
-          collection(db, `schools/${school.id}/invoices`), 
-          where('studentId', '==', student.uid),
-          where('termId', '==', termId),
-          where('sessionId', '==', sessionId)
-        );
-        const existingSnap = await getDocs(qExisting);
-        
-        if (existingSnap.empty) {
-          await addDoc(collection(db, `schools/${school.id}/invoices`), {
-            schoolId: school.id,
-            studentId: student.uid,
-            termId,
-            sessionId,
-            amount: totalAmount,
-            amountPaid: 0,
-            status: 'unpaid',
-            dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
-            items,
-            createdAt: new Date().toISOString()
-          });
-        }
-      }
-
-      alert(`Invoices generated successfully for ${studentsData.length} students.`);
-      setShowGenerateInvoice(false);
-    } catch (err) {
-      handleFirestoreError(err, OperationType.CREATE, `schools/${school.id}/invoices`);
+      await deleteDoc(doc(db, 'schools', school.id, 'feeStructures', feeId));
+    } catch (error) {
+      handleFirestoreError(error, OperationType.DELETE, `schools/${school.id}/feeStructures`);
     }
   };
 
@@ -340,12 +290,19 @@ export const SchoolFinance = ({ school }: { school: School }) => {
 
     return (
       <tr key={ inv.id } className="hover:bg-slate-50 transition-colors">
-      <td className="p-4 font-medium">{ inv.studentId }</td>
-      <td className="p-4">₦{ inv.amount.toLocaleString()}</td>
-      <td className="p-4">₦{ inv.amountPaid.toLocaleString()}</td>
+      <td className="p-4">
+        <div className="flex flex-col">
+          <span className="font-bold text-slate-900">{ students.find(s => s.uid === inv.studentId)?.firstName } { students.find(s => s.uid === inv.studentId)?.lastName }</span>
+          <span className="text-[10px] text-slate-400 uppercase font-medium">
+            { sessions.find(s => s.id === inv.sessionId)?.name } • { termsMap[inv.sessionId]?.[inv.termId]?.name || 'Unknown Term' }
+          </span>
+        </div>
+      </td>
+      <td className="p-4 font-medium">₦{ inv.amount.toLocaleString()}</td>
+      <td className="p-4 font-medium text-emerald-600">₦{ inv.amountPaid.toLocaleString()}</td>
       <td className="p-4">
       <div className="flex flex-col gap-1">
-        <span className={`px-2 py-1 rounded-md text-[10px] uppercase tracking-wider font-bold w-fit flex items-center gap-1 ${
+        <span className={`px-2 py-1 rounded-md text-[10px] uppercase tracking-wider font-black w-fit flex items-center gap-1 ${
         paid ? 'bg-emerald-100 text-emerald-700' :
         inv.amountPaid > 0 ? 'bg-amber-100 text-amber-700' :
         'bg-rose-100 text-rose-700'
@@ -353,15 +310,15 @@ export const SchoolFinance = ({ school }: { school: School }) => {
         { paid ? <><CheckCircle size={10} /> FULLY PAID</> : inv.amountPaid > 0 ? 'PARTIAL' : 'UNPAID' }
         </span>
         {overdue && !paid && (
-          <span className="text-[10px] font-bold text-rose-600 flex items-center gap-1">
+          <span className="text-[10px] font-black text-rose-600 flex items-center gap-1">
             <Clock size={10} /> OVERDUE
           </span>
         )}
       </div>
       </td>
       <td className="p-4 text-slate-900">
-        <div>{ new Date(inv.dueDate).toLocaleDateString()}</div>
-        {balance > 0 && <div className="text-[10px] text-amber-600 font-bold">OUTSTANDING: ₦{balance.toLocaleString()}</div>}
+        <div className="font-medium">{ new Date(inv.dueDate).toLocaleDateString()}</div>
+        {balance > 0 && <div className="text-[10px] text-amber-600 font-black">BALANCE: ₦{balance.toLocaleString()}</div>}
       </td>
       </tr>
     );
@@ -392,10 +349,14 @@ export const SchoolFinance = ({ school }: { school: School }) => {
  { payments.map(pay => (
  <tr key={ pay.id } className="hover:bg-slate-50">
  <td className="p-4 text-slate-900">{ new Date(pay.date).toLocaleString()}</td>
- <td className="p-4 font-medium">{ pay.studentId }</td>
+  <td className="p-4">
+    <div className="flex flex-col">
+      <span className="font-bold text-slate-900">{ students.find(s => s.uid === pay.studentId)?.firstName } { students.find(s => s.uid === pay.studentId)?.lastName }</span>
+      <span className="text-[10px] text-slate-400 uppercase font-medium">REF: { pay.reference }</span>
+    </div>
+  </td>
  <td className="p-4">₦{ pay.amount.toLocaleString()}</td>
- <td className="p-4 capitalize">{ pay.method }</td>
- <td className="p-4 text-xs font-mono text-slate-900">{ pay.reference }</td>
+  <td className="p-4 text-xs font-mono text-slate-900 uppercase">{ pay.method }</td>
  <td className="p-4">
  <span className={`px-2 py-1 rounded-md text-[10px] uppercase tracking-wider font-medium ${
  pay.status  === 'success'?'bg-green-100 text-green-700':
