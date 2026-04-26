@@ -230,10 +230,10 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
             >
               <div className="flex justify-between items-center mb-6">
                 <div>
-                  <h3 className="text-2xl font-medium text-slate-900 dark:text-slate-100">
+                  <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900 dark:text-slate-100">
                     {isEditing ? 'Edit Submission' : selectedAssignment.title}
                   </h3>
-                  <p className="text-slate-900 dark:text-slate-100 font-medium">{getSubjectName(selectedAssignment.subjectId)}</p>
+                  <p className="text-[10px] text-slate-900/60 dark:text-slate-400 font-black uppercase tracking-widest mt-1">{getSubjectName(selectedAssignment.subjectId)}</p>
                 </div>
                 <button 
                   onClick={() => {
@@ -249,8 +249,8 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
 
               <div className="mb-8 p-5 rounded-3xl bg-blue-50 border border-blue-100 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-200/20 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-                <h4 className="text-xs font-medium text-blue-800 uppercase tracking-[0.2em] mb-2 relative z-10">Instructions</h4>
-                <p className="text-blue-700 font-medium relative z-10">{selectedAssignment.description}</p>
+                <h4 className="text-[10px] font-black text-blue-800 uppercase tracking-widest mb-2 relative z-10">Instructions</h4>
+                <p className="text-blue-700 font-bold uppercase tracking-wide text-xs relative z-10">{selectedAssignment.description}</p>
               </div>
 
               {getSubmission(selectedAssignment.id) && !isEditing ? (
@@ -446,11 +446,11 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                           ? Object.keys(answers).length < (selectedAssignment.questions || []).length
                           : !answers['general']
                       )}
-                      className="px-10 py-4 rounded-2xl font-medium bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+                      className="px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl shadow-blue-200/50 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                     >
                       {submitting ? 'Submitting...' : (
                         <>
-                          {isEditing ? 'Update Submission' : 'Complete & Submit'} <Send size={20} />
+                          {isEditing ? 'Update Submission' : 'Complete & Submit'} <Send size={16} />
                         </>
                       )}
                     </motion.button>

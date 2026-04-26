@@ -151,10 +151,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
     return <div className="p-4 text-center text-slate-900 dark:text-slate-100">Loading quizzes...</div>;
   }
 
-  const isFemale = user.gender === 'female';
-  const containerClass = isFemale 
-    ? "space-y-5 min-h-screen -mx-4 -mt-8 px-4 pt-8 bg-gradient-to-br from-[#FFD1D1] via-[#FFF3E0] to-[#E0F7FA]" 
-    : "space-y-5";
+  const containerClass = "space-y-6";
 
   if (activeQuiz) {
     if (score) {
@@ -167,8 +164,8 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
             <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-emerald-200/50">
               <Trophy size={48} />
             </div>
-            <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100 mb-3">Quiz Completed!</h2>
-            <p className="text-slate-900 dark:text-slate-100 font-medium mb-8 text-lg">You have successfully completed {activeQuiz.title}.</p>
+            <h2 className="text-xl font-black uppercase tracking-tighter text-slate-900 dark:text-slate-100 mb-3">Quiz Completed!</h2>
+            <p className="text-slate-900/60 dark:text-slate-400 font-black uppercase tracking-widest mb-8 text-[10px]">You have successfully completed {activeQuiz.title}.</p>
             
             <div className="text-6xl font-medium text-blue-600 mb-10 drop-shadow-sm">
               {score.score} <span className="text-3xl text-slate-900 dark:text-slate-100 font-medium">/ {score.total}</span>
@@ -203,7 +200,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
                 {formatTime(timeLeft)}
               </div>
             )}
-            <div className="text-[10px] font-medium uppercase tracking-wider text-slate-900 dark:text-slate-100 text-blue-700 bg-blue-50 px-5 py-2.5 rounded-full border border-blue-200/50 shadow-sm">
+            <div className="text-[10px] font-black uppercase tracking-widest text-blue-700 bg-blue-50 px-5 py-2.5 rounded-full border border-blue-200/50 shadow-sm">
               Question {currentQuestion + 1} of {activeQuiz.questions.length}
             </div>
           </div>
@@ -265,7 +262,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
               onClick={() => setCurrentQuestion(prev => Math.min(activeQuiz.questions.length - 1, prev + 1))}
-              className="flex items-center gap-2 bg-gradient-to-r from-gray-800 to-gray-900 text-slate-900 dark:text-slate-100 px-8 py-3.5 rounded-xl font-medium hover:shadow-md transition-all shadow-sm"
+              className="flex items-center gap-2 bg-slate-900 text-white px-8 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:shadow-md transition-all shadow-sm"
             >
               Next <ArrowRight size={20} />
             </motion.button>
@@ -276,7 +273,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
   }
 
   return (
-    <div className="space-y-4">
+    <div className={containerClass}>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h3 className="text-xl font-black uppercase tracking-widest text-slate-900">Quiz Hub</h3>

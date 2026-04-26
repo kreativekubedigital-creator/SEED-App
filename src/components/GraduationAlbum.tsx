@@ -42,12 +42,12 @@ export const GraduationAlbum = () => {
     try {
       let apiKey = '';
       try {
-        apiKey = process.env.GEMINI_API_KEY || '';
+        apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
       } catch (e) {
         // Ignore ReferenceError
       }
       try {
-        const userKey = process.env.API_KEY;
+        const userKey = import.meta.env.VITE_API_KEY;
         if (userKey) apiKey = userKey;
       } catch (e) {
         // Ignore ReferenceError

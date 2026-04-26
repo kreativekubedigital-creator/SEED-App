@@ -169,10 +169,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
     }
   };
 
-    const isFemale = user.gender === 'female';
-  const containerClass = isFemale 
-    ? "space-y-5 min-h-screen -mx-4 -mt-8 px-4 pt-8 bg-gradient-to-br from-[#FFD1D1] via-[#FFF3E0] to-[#E0F7FA]" 
-    : "space-y-5";
+  const containerClass = "space-y-6";
 
   if (selectedLesson) {
     return (
@@ -185,12 +182,12 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
           {/* Header */}
           <div className="p-4 border-b border-slate-100 dark:border-slate-800/50 flex justify-between items-center bg-slate-50 dark:bg-slate-800/30 relative z-10">
             <div>
-              <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">{selectedLesson.title}</h3>
-              <p className="text-sm text-slate-900 dark:text-slate-100 font-medium mt-1">{selectedSubject} • {selectedLesson.level}</p>
+              <h3 className="text-lg font-black uppercase tracking-tighter text-slate-900 dark:text-slate-100">{selectedLesson.title}</h3>
+              <p className="text-[10px] text-slate-900/60 dark:text-slate-400 font-black uppercase tracking-widest mt-1">{selectedSubject} • {selectedLesson.level}</p>
             </div>
             <button 
               onClick={() => setSelectedLesson(null)}
-              className="px-5 py-2.5 rounded-full border border-gray-200/50 bg-white dark:bg-slate-900/50 hover:bg-white dark:bg-slate-900 hover:text-slate-900 dark:text-slate-100 transition-all text-sm font-medium text-slate-900 dark:text-slate-100 shadow-sm hover:shadow-md"
+              className="px-5 py-2.5 rounded-full border border-gray-200/50 bg-white dark:bg-slate-900/50 hover:bg-white dark:bg-slate-900 hover:text-slate-900 dark:text-slate-100 transition-all text-[10px] font-black uppercase tracking-widest shadow-sm hover:shadow-md"
             >
               Exit Lesson
             </button>
@@ -230,9 +227,9 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                   </div>
                   <button 
                     onClick={handleNextStep}
-                    className="bg-blue-600 text-white hover:bg-blue-700 px-10 py-2.5 rounded-full font-medium  hover:scale-105 transition-all flex items-center gap-2 mx-auto"
+                    className="bg-blue-600 text-white hover:bg-blue-700 px-10 py-2.5 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all flex items-center gap-2 mx-auto shadow-lg shadow-blue-200/50"
                   >
-                    Start Learning <ChevronRight size={20} />
+                    Start Learning <ChevronRight size={14} />
                   </button>
                 </motion.div>
               )}
@@ -441,8 +438,8 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
     <div className={containerClass}>
       <div className="flex justify-between items-end">
         <div>
-          <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">Revision Hub</h2>
-          <p className="text-slate-900 dark:text-slate-100 font-medium mt-1">Master your subjects with interactive lessons.</p>
+          <h2 className="text-xl font-black uppercase tracking-tighter text-slate-900 dark:text-slate-100">Revision Hub</h2>
+          <p className="text-[10px] text-slate-900/60 dark:text-slate-400 font-black uppercase tracking-widest mt-1">Master your subjects with interactive lessons.</p>
         </div>
         <div className="flex items-center gap-2 bg-white dark:bg-slate-900/80 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/40 shadow-sm">
           <Award className="text-yellow-500" size={20} />

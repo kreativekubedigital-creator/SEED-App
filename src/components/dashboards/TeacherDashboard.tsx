@@ -10,7 +10,7 @@ import { TeacherAssignments } from'./TeacherAssignments';
 import TeacherAttendance from'./TeacherAttendance';
 import ClassTimetable from'./ClassTimetable';
 
-export const TeacherDashboard = ({ user }: { user: UserProfile }) => {
+export const TeacherDashboard = ({ user, onLogout }: { user: UserProfile, onLogout: () => void }) => {
  const [activeTab, setActiveTab] = useState<'overview'|'classes'|'assignments'|'quizzes'|'results'|'attendance'|'timetable'>('overview');
  const [subjects, setSubjects] = useState<Subject[]>([]);
  const [classes, setClasses] = useState<Class[]>([]);

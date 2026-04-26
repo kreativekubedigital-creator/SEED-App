@@ -121,10 +121,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
   const caConfig = gradeScale?.caConfig || { cas: [{ name: 'CA1', maxScore: 10 }, { name: 'CA2', maxScore: 10 }, { name: 'CA3', maxScore: 20 }], maxExamScore: 60 };
   const totalCaMax = caConfig.cas.reduce((sum, ca) => sum + ca.maxScore, 0);
 
-  const isFemale = user.gender === 'female';
-  const containerClass = isFemale 
-    ? "space-y-5 min-h-screen -mx-4 -mt-8 px-4 pt-8 bg-gradient-to-br from-[#FFD1D1] via-[#FFF3E0] to-[#E0F7FA]" 
-    : "space-y-5";
+  const containerClass = "space-y-6";
 
   return (
     <div className={containerClass}>
@@ -132,7 +129,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
         <div className="bg-white dark:bg-slate-900/80 backdrop-blur-md p-4 rounded-2xl shadow-sm border border-white/50">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100 tracking-tight">{user.firstName} {user.lastName}</h2>
+              <h2 className="text-xl font-black uppercase tracking-tighter text-slate-900 dark:text-slate-100">{user.firstName} {user.lastName}</h2>
               <p className="text-slate-900 dark:text-slate-100 font-medium text-xs uppercase tracking-widest mt-1">
                 Class: {getClassName(user.classId || '')} • Reg No: {user.registrationNumber || 'N/A'}
               </p>
@@ -141,7 +138,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
               <button
                 onClick={() => setShowReportCard(true)}
                 disabled={results.length === 0}
-                className="px-4 py-2.5 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium text-sm transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2.5 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 font-black uppercase tracking-widest text-[10px] transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm border border-blue-100/50"
               >
                 <Printer size={18} />
                 <span className="hidden sm:inline">Print Report</span>
@@ -169,10 +166,10 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                   key={termName}
                   onClick={() => term && setSelectedTerm(term.id)}
                   disabled={!term}
-                  className={`px-6 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                  className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
                     selectedTerm === term?.id 
-                      ? `${colorClass} text-slate-900 dark:text-slate-100 shadow-sm` 
-                      : 'text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 disabled:opacity-30'
+                      ? `${colorClass} text-slate-900 shadow-sm` 
+                      : 'text-slate-900/40 hover:text-slate-900'
                   }`}
                 >
                   {termName}
@@ -186,7 +183,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
           <div className="lg:col-span-2 space-y-5">
             <div className="bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm overflow-hidden">
               <div className="p-4 border-b border-white/50">
-                <h3 className="font-medium text-lg text-slate-900 dark:text-slate-100">Subject Performance</h3>
+                <h3 className="font-black uppercase tracking-widest text-xs text-slate-900 dark:text-slate-100">Subject Performance</h3>
               </div>
               <AnimatePresence mode="wait">
                 {loading ? (
@@ -323,7 +320,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
 
           <div className="space-y-5">
             <div className="bg-white dark:bg-slate-900/80 backdrop-blur-md p-4 rounded-2xl border border-white/50 shadow-sm">
-              <h3 className="font-medium text-lg text-slate-900 dark:text-slate-100 mb-6">Summary</h3>
+              <h3 className="font-black uppercase tracking-widest text-xs text-slate-900 dark:text-slate-100 mb-6">Summary</h3>
               <div className="space-y-5">
                 <div className="flex justify-between items-center p-4 rounded-2xl bg-blue-100 border border-white/50">
                   <div>
@@ -373,7 +370,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
             <div className="bg-yellow-100 p-4 rounded-2xl text-slate-900 dark:text-slate-100 shadow-xl shadow-yellow-200/50 relative overflow-hidden">
               <div className="relative z-10">
                 <Award className="mb-4 opacity-50" size={40} />
-                <h4 className="text-xl font-medium mb-2">Academic Excellence</h4>
+                <h4 className="text-xl font-black uppercase tracking-tighter mb-2">Academic Excellence</h4>
                 <p className="text-slate-900 dark:text-slate-100 text-sm leading-relaxed">
                   Keep up the great work! Your performance in {stats.best ? getSubjectName(stats.best.subjectId) : 'your subjects'} is outstanding.
                 </p>

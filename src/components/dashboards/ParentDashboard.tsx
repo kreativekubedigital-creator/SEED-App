@@ -8,7 +8,7 @@ import { StudentResultView } from'./StudentResultView';
 import ClassTimetable from'./ClassTimetable';
 import { ParentFinance } from'./ParentFinance';
 
-export const ParentDashboard = ({ user }: { user: UserProfile }) => {
+export const ParentDashboard = ({ user, onLogout }: { user: UserProfile, onLogout: () => void }) => {
   const [activeTab, setActiveTab] = useState<'overview'|'timetable'|'finance'>('overview');
   const [students, setStudents] = useState<UserProfile[]>([]);
   const [activeStudentId, setActiveStudentId] = useState<string | null>(null);

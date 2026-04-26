@@ -727,7 +727,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
  setError(null);
  try {
  let user;
- const trimmedEmail = email.trim();
+ const trimmedEmail = email.trim().toLowerCase();
  if (isSignUp) {
  // Only allow super admin sign up for the specific email
  if (!SUPER_ADMIN_EMAILS.includes(trimmedEmail.toLowerCase())) {
@@ -1568,11 +1568,11 @@ const DashboardRouter = ({ user, onLogout }: { user: UserProfile, onLogout: () =
  </div>
  
  <Routes>
- <Route index element={
- user.role  === 'teacher'? <TeacherDashboard user={ user } /> :
- user.role  === 'student'? <StudentDashboard user={ user } /> :
- <ParentDashboard user={ user } />
- } />
+          <Route index element={
+            user.role === 'teacher' ? <TeacherDashboard user={user} onLogout={onLogout} /> :
+            user.role === 'student' ? <StudentDashboard user={user} onLogout={onLogout} /> :
+            <ParentDashboard user={user} onLogout={onLogout} />
+          } />
  </Routes>
  </div>
  );

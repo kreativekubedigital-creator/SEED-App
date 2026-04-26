@@ -67,10 +67,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
   const isSecondary = classLevel.toLowerCase().includes('secondary') || classLevel.toLowerCase().includes('jss');
   const levelNum = parseInt(classLevel.match(/\d+/)?.[0] || '1');
 
-  const isFemale = user.gender === 'female';
-  const containerClass = isFemale 
-    ? "space-y-5 min-h-screen -mx-4 -mt-8 px-4 pt-8 bg-gradient-to-br from-[#FFD1D1] via-[#FFF3E0] to-[#E0F7FA]" 
-    : "space-y-5";
+  const containerClass = "space-y-6";
 
   const generateMathQuestion = () => {
     let ops = ['+', '-'];
@@ -260,8 +257,8 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           <div className="w-24 h-24 bg-gradient-to-br from-yellow-100 to-amber-200 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-yellow-200/50">
             <Trophy size={48} />
           </div>
-          <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100 mb-3">Game Over!</h2>
-          <p className="text-slate-900 dark:text-slate-100 font-medium mb-8 text-lg">Great job exercising your brain.</p>
+          <h2 className="text-xl font-black uppercase tracking-tighter text-slate-900 dark:text-slate-100 mb-3">Game Over!</h2>
+          <p className="text-slate-900/60 dark:text-slate-400 font-black uppercase tracking-widest mb-8 text-[10px]">Great job exercising your brain.</p>
           
           <div className="grid grid-cols-2 gap-4 mb-10">
             <div className="bg-blue-50 border border-blue-100/50 p-4 rounded-2xl">
@@ -470,8 +467,8 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
             <button
               key={tab}
               onClick={() => setGameTab(tab)}
-              className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize transition-all duration-300 ${
-                gameTab === tab ? `${colorClass} text-slate-900 dark:text-slate-100 shadow-md` : 'text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800'
+              className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
+                gameTab === tab ? `${colorClass} text-slate-900 shadow-md` : 'text-slate-900/40 hover:text-slate-900'
               }`}
             >
               {tab}
@@ -487,7 +484,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-100/20 rounded-full -ml-32 -mb-32 blur-3xl"></div>
             
             <div className="relative z-10 text-center">
-              <h2 className="text-5xl font-medium mb-6 drop-shadow-sm">Brain Games</h2>
+              <h2 className="text-5xl font-black uppercase tracking-tighter mb-6 drop-shadow-sm">Brain Games</h2>
               <p className="text-xl text-blue-900 max-w-2xl mx-auto leading-relaxed font-medium">
                 Sharpen your mind, reinforce your learning, and earn points for your profile. 
                 Games are tailored to your level: <span className="font-medium text-slate-900 dark:text-slate-100 underline decoration-blue-200/50 underline-offset-4">{classLevel}</span>.
