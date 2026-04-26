@@ -226,10 +226,42 @@ export async function logAuditAction(
 }
 
 // Mocks for unused legacy features to prevent build errors
-export const googleProvider = {};
-export const signInWithPopup = async (_auth: any, _provider: any): Promise<{ user: User }> => { throw new Error("Popup login not implemented yet. Use email login."); };
-export const signInWithRedirect = async (_auth: any, _provider: any): Promise<void> => { throw new Error("Redirect login not implemented yet. Use email login."); };
-export const getRedirectResult = async (_auth: any): Promise<{ user: User } | null> => null;
+export const googleProvider = { provider: 'google' };
+export const signInWithPopup = async (_auth: any, _provider: any): Promise<{ user: User }> => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin,
+      skipBrowserRedirect: false
+    },
+  });
+  if (error) throw error;
+  // Note: OAuth doesn't return user immediately in popup/redirect flow for Supabase JS usually
+  // but the auth state listener will catch it.
+  return { user: {} as User }; 
+};
+export const signInWithRedirect = async (_auth: any, _provider: any): Promise<void> => {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin,
+    },
+  });
+  if (error) throw error;
+};
+export const getRedirectResult = async (_auth: any): Promise<{ user: User } | null> => {
+  const { data: { session }, error } = await supabase.auth.getSession();
+  if (error) throw error;
+  if (!session?.user) return null;
+  return { 
+    user: { 
+      uid: session.user.id, 
+      email: session.user.email!, 
+      emailVerified: !!session.user.email_confirmed_at, 
+      isAnonymous: false 
+    } 
+  };
+};
 export const serverTimestamp = () => ({ __type: 'timestamp' });
 export const increment = (n: number) => ({ __type: 'increment', value: n });
 export const writeBatch = (_db?: any) => ({

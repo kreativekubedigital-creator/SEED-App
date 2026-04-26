@@ -227,17 +227,40 @@ export class DatabaseService {
   }
 
   static subscribe(path: string, callback: (data: any[]) => void, conditions: Record<string, any> = {}) {
-    const { table } = this.parsePath(path);
+    const { table, documentId, filters: pathFilters } = this.parsePath(path);
     
     // Initial fetch
     this.getItems(path, conditions).then(callback).catch(err => {
       console.error(`Initial fetch error for ${path}:`, err);
     });
 
+    // Merge all filters for the subscription
+    const allFilters = { ...pathFilters, ...conditions };
+    
+    // Create a filter string for Supabase real-time
+    // Note: Supabase real-time filters are limited. We'll use the most specific one available.
+    let filterString = undefined;
+    if (documentId) {
+      filterString = `id=eq.${documentId}`;
+    } else {
+      // Use the first available filter for the subscription
+      const firstFilter = Object.entries(allFilters)[0];
+      if (firstFilter) {
+        const [key, value] = firstFilter;
+        const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+        filterString = `${snakeKey}=eq.${value}`;
+      }
+    }
+
     // Real-time subscription
     return supabase
       .channel(`${table}-changes-${Math.random().toString(36).substring(2, 9)}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table }, () => {
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table,
+        filter: filterString
+      }, () => {
         this.getItems(path, conditions).then(callback);
       })
       .subscribe();

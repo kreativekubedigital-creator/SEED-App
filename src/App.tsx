@@ -404,7 +404,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
             'user'
           );
           onLogin(userData);
-          navigate('/dashboard');
+          // Removed redundant navigate('/dashboard') as the protected route will handle it
         } else {
           setError(`Access denied. Your account is not authorized for this school or role.`);
           await signOut(auth);
@@ -470,7 +470,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
             user={showPasswordChange} 
             onSuccess={() => {
               onLogin({ ...showPasswordChange, forcePasswordChange: false });
-              navigate('/dashboard');
+              // Removed redundant navigate('/dashboard')
             }} 
           />
         )}
@@ -764,7 +764,6 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
 
  if (isSuperAdminMatch || isSchoolRoleMatch) {
  onLogin(userData);
- navigate('/dashboard');
  } else {
  setError("Invalid credentials for the selected school or role.");
  await signOut(auth);
@@ -1314,82 +1313,85 @@ export default function App() {
  const isLandingPage = location.pathname  === '/';
  const logoVariant ='black';
 
- useEffect(() => {
- let unsubscribeProfile: (() => void) | null = null;
+  useEffect(() => {
+    let unsubscribeProfile: (() => void) | null = null;
 
- // Handle Google Redirect Result
- const checkRedirect = async () => {
- try {
- const result = await getRedirectResult(auth);
- if (result) {
- setLoading(true);
- // The onAuthStateChanged listener will handle the profile fetching and state update
- // We just need to ensure we navigate if they land on a page that doesn't auto-redirect
- if (window.location.pathname  === '/login'|| window.location.pathname  === '/') {
- // Wait a bit for the profile to be fetched by onAuthStateChanged
- setTimeout(() => {
- navigate('/dashboard');
- }, 1500);
- }
- }
- } catch (err: any) {
- console.error("Redirect result error:", err);
- }
- };
- checkRedirect();
+    // Handle Google Redirect Result
+    const checkRedirect = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result) {
+          setLoading(true);
+          // The onAuthStateChanged listener will handle the profile fetching and state update
+        }
+      } catch (err: any) {
+        console.error("Redirect result error:", err);
+      }
+    };
+    checkRedirect();
 
- const unsubscribeAuth = onAuthStateChanged(auth, async (authUser) => {
- if (authUser) {
- // Use onSnapshot for real-time profile updates
- unsubscribeProfile = onSnapshot(doc(db,'users', authUser.uid), async (userDoc) => {
- if (userDoc.exists()) {
- let userData = userDoc.data() as UserProfile;
- // Ensure platform owner always has super_admin role
- if ((authUser.email === 'kreativekubesolutions@gmail.com' || authUser.email === 'seedd.ng@gmail.com' || authUser.email === 'abahjohnakor@gmail.com') && userData.role !=='super_admin') {
- userData.role ='super_admin';
- await updateDoc(doc(db,'users', authUser.uid), { role:'super_admin'});
- }
- setUser(userData);
- } else {
- // User exists in Auth but not in Firestore (incomplete onboarding)
- // Check if this is the platform owner
- if (authUser.email === 'kreativekubesolutions@gmail.com' || authUser.email === 'seedd.ng@gmail.com' || authUser.email === 'abahjohnakor@gmail.com') {
- const nameParts = (authUser.displayName ||'Platform Owner').split('');
- const superAdminProfile: UserProfile = {
- uid: authUser.uid,
- email: authUser.email ||'',
- firstName: nameParts[0],
- lastName: nameParts.slice(1).join('') ||'',
- role:'super_admin',
- createdAt: new Date().toISOString()
- };
- await setDoc(doc(db,'users', authUser.uid), superAdminProfile);
- setUser(superAdminProfile);
- } else {
- const nameParts = (authUser.displayName ||'').split('');
- setUser({ 
- uid: authUser.uid, 
- email: authUser.email ||'', 
- firstName: nameParts[0] ||'', 
- lastName: nameParts.slice(1).join('') ||'', 
- role:'student'
- } as UserProfile);
- }
- }
- setLoading(false);
- });
- } else {
- if (unsubscribeProfile) unsubscribeProfile();
- setUser(null);
- setLoading(false);
- }
- });
+    const unsubscribeAuth = onAuthStateChanged(auth, async (authUser) => {
+      if (authUser) {
+        // Clean up previous profile subscription if it exists
+        if (unsubscribeProfile) {
+          unsubscribeProfile();
+          unsubscribeProfile = null;
+        }
 
- return () => {
- unsubscribeAuth();
- if (unsubscribeProfile) unsubscribeProfile();
- };
- }, []);
+        // Use onSnapshot for real-time profile updates
+        unsubscribeProfile = onSnapshot(doc(db, 'users', authUser.uid), async (userDoc) => {
+          if (userDoc.exists()) {
+            let userData = userDoc.data() as UserProfile;
+            
+            // Ensure platform owner always has super_admin role
+            const isOwner = ['kreativekubesolutions@gmail.com', 'seedd.ng@gmail.com', 'abahjohnakor@gmail.com'].includes(authUser.email || '');
+            if (isOwner && userData.role !== 'super_admin') {
+              userData = { ...userData, role: 'super_admin' };
+              await updateDoc(doc(db, 'users', authUser.uid), { role: 'super_admin' });
+            }
+            
+            setUser(prevUser => {
+              // Only update state if data is actually different to avoid flicker
+              if (JSON.stringify(prevUser) === JSON.stringify(userData)) return prevUser;
+              return userData;
+            });
+          } else {
+            // User exists in Auth but not in Firestore (incomplete onboarding)
+            const isOwner = ['kreativekubesolutions@gmail.com', 'seedd.ng@gmail.com', 'abahjohnakor@gmail.com'].includes(authUser.email || '');
+            const nameParts = (authUser.displayName || (isOwner ? 'Platform Owner' : '')).split(' ');
+            
+            const partialProfile: UserProfile = {
+              uid: authUser.uid,
+              email: authUser.email || '',
+              firstName: nameParts[0] || '',
+              lastName: nameParts.slice(1).join(' ') || '',
+              role: isOwner ? 'super_admin' : 'student',
+              createdAt: new Date().toISOString()
+            };
+
+            if (isOwner) {
+              await setDoc(doc(db, 'users', authUser.uid), partialProfile);
+            }
+            
+            setUser(partialProfile);
+          }
+          setLoading(false);
+        });
+      } else {
+        if (unsubscribeProfile) {
+          unsubscribeProfile();
+          unsubscribeProfile = null;
+        }
+        setUser(null);
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeProfile) unsubscribeProfile();
+    };
+  }, [navigate]);
 
  const handleLogout = async () => {
  await signOut(auth);
@@ -1405,17 +1407,17 @@ export default function App() {
  const [tenantSchool, setTenantSchool] = useState<School | null>(null);
  const [subdomainNotFound, setSubdomainNotFound] = useState(false);
 
- useEffect(() => {
-  const fetchTenantSchool = async () => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const schoolIdParam = searchParams.get('school');
- const hostname = window.location.hostname;
- const parts = hostname.split('.');
- let slug = null;
- 
- const mainDomains = ['seedify.name.ng','seed-app.vercel.app','seed-app.netlify.app'];
- const isMainDomain = mainDomains.includes(hostname) || hostname  === 'localhost'|| hostname  === '127.0.0.1'|| hostname  === 'www.seedify.name.ng';
- 
+  useEffect(() => {
+    const fetchTenantSchool = async () => {
+      const searchParams = new URLSearchParams(location.search);
+      const schoolIdParam = searchParams.get('school');
+      const hostname = window.location.hostname;
+      const parts = hostname.split('.');
+      let slug = null;
+      
+      const mainDomains = ['seedify.name.ng','seed-app.vercel.app','seed-app.netlify.app'];
+      const isMainDomain = mainDomains.includes(hostname) || hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'www.seedify.name.ng';
+      
       // 1. Try to fetch by school ID from query param
       if (schoolIdParam) {
         try {
@@ -1460,9 +1462,9 @@ export default function App() {
         setTenantSchool(null);
         setSubdomainNotFound(false);
       }
- };
- fetchTenantSchool();
- }, [window.location.hostname, window.location.search]);
+    };
+    fetchTenantSchool();
+  }, [location.hostname, location.search, location.pathname]);
 
  if (loading) return <LoadingScreen />;
 
