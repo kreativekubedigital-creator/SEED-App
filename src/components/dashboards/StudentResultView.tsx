@@ -141,6 +141,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
             </div>
             <div className="flex flex-wrap gap-3 w-full md:w-auto">
               <button
+                id="btn_student_result_print_report"
                 onClick={() => setShowReportCard(true)}
                 disabled={results.length === 0}
                 className="flex-1 md:flex-none px-6 py-3.5 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-blue-500/20 active:scale-95"
@@ -150,6 +151,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
               </button>
               <div className="relative group flex-1 md:flex-none">
                 <select
+                  id="select_student_result_session"
                   value={selectedSession}
                   onChange={e => setSelectedSession(e.target.value)}
                   className="w-full appearance-none pl-6 pr-12 py-3.5 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black uppercase tracking-widest text-[10px] text-slate-900 cursor-pointer shadow-sm"
@@ -178,6 +180,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                   whileHover={term ? { scale: 1.02 } : {}}
                   whileTap={term ? { scale: 0.98 } : {}}
                   key={termName}
+                  id={`btn_student_result_term_${index + 1}`}
                   onClick={() => term && setSelectedTerm(term.id)}
                   disabled={!term}
                   className={`px-8 py-3 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest transition-all border border-transparent ${
@@ -423,6 +426,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                 <h3 className="text-xl font-medium text-slate-900">Student Report Card Preview</h3>
                 <div className="flex items-center gap-3">
                   <button
+                    id="btn_student_result_modal_print"
                     onClick={() => window.print()}
                     className="px-4 py-2 bg-blue-600 text-white rounded-xl font-medium text-sm hover:bg-blue-700 transition-colors flex items-center gap-2"
                   >
@@ -430,6 +434,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                     Print
                   </button>
                   <button
+                    id="btn_student_result_modal_close"
                     onClick={() => setShowReportCard(false)}
                     className="p-2 text-slate-900 hover:text-slate-900 hover:bg-gray-100 rounded-xl transition-colors"
                   >

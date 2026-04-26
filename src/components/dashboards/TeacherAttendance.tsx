@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { db, collection, query, where, getDocs, doc, setDoc, onSnapshot, serverTimestamp, handleFirestoreError, OperationType } from '../../lib/compatibility';
 import { UserProfile, Class, AttendanceRecord } from '../../types';
-import { CheckCircle, XCircle, Clock, AlertCircle, Save, Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { 
+  CheckCircle, 
+  XCircle, 
+  Clock, 
+  AlertCircle, 
+  Save, 
+  Calendar as CalendarIcon, 
+  ChevronLeft, 
+  ChevronRight,
+  Loader2 
+} from 'lucide-react';
 import { sortByName, sortByFullName } from '../../lib/utils';
 
 interface TeacherAttendanceProps {
@@ -139,12 +149,12 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
             <div className="flex flex-col gap-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Academic Date</label>
               <div className="flex items-center bg-slate-50 rounded-2xl border border-slate-200 p-1.5 shadow-sm">
-                <button id="btn_attendance_prev_day" onClick={() => changeDate(-1)} className="p-3 hover:bg-white text-slate-400 hover:text-blue-600 rounded-xl transition-all active:scale-90"><ChevronLeft size={20} strokeWidth={2.5} /></button>
+                <button id="btn_teacher_attendance_prev_day" onClick={() => changeDate(-1)} className="p-3 hover:bg-white text-slate-400 hover:text-blue-600 rounded-xl transition-all active:scale-90"><ChevronLeft size={20} strokeWidth={2.5} /></button>
                 <div className="px-6 py-1 flex items-center gap-3 font-black uppercase tracking-widest text-[10px] text-slate-900 min-w-[180px] justify-center">
                   <CalendarIcon size={16} className="text-blue-500" strokeWidth={2.5} />
                   {new Date(selectedDate).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
                 </div>
-                <button id="btn_attendance_next_day" onClick={() => changeDate(1)} className="p-3 hover:bg-white text-slate-400 hover:text-blue-600 rounded-xl transition-all active:scale-90"><ChevronRight size={20} strokeWidth={2.5} /></button>
+                <button id="btn_teacher_attendance_next_day" onClick={() => changeDate(1)} className="p-3 hover:bg-white text-slate-400 hover:text-blue-600 rounded-xl transition-all active:scale-90"><ChevronRight size={20} strokeWidth={2.5} /></button>
               </div>
             </div>
           </div>
@@ -168,10 +178,10 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
         ) : (
           <>
             <div className="flex flex-wrap gap-4 mb-10">
-              <button id="btn_attendance_mark_all_present" onClick={() => markAll('present')} className="px-8 py-3 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center gap-3 shadow-sm border border-emerald-100 active:scale-95">
+              <button id="btn_teacher_attendance_mark_all_present" onClick={() => markAll('present')} className="px-8 py-3 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center gap-3 shadow-sm border border-emerald-100 active:scale-95">
                 <CheckCircle size={16} strokeWidth={2.5} /> Mark All Present
               </button>
-              <button id="btn_attendance_mark_all_absent" onClick={() => markAll('absent')} className="px-8 py-3 bg-red-50 text-red-600 hover:bg-red-100 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center gap-3 shadow-sm border border-red-100 active:scale-95">
+              <button id="btn_teacher_attendance_mark_all_absent" onClick={() => markAll('absent')} className="px-8 py-3 bg-red-50 text-red-600 hover:bg-red-100 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center gap-3 shadow-sm border border-red-100 active:scale-95">
                 <XCircle size={16} strokeWidth={2.5} /> Mark All Absent
               </button>
             </div>
@@ -205,7 +215,7 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
                         </td>
                         <td className="px-4 py-5 text-center">
                           <button 
-                            id={`btn_attendance_present_${student.uid}`}
+                            id={`btn_teacher_attendance_present_${student.uid}`}
                             onClick={() => handleStatusChange(student.uid, 'present')}
                             className={`p-3 rounded-2xl transition-all active:scale-90 ${status === 'present' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm' : 'text-slate-200 hover:bg-slate-50 hover:text-slate-400'}`}
                           >
@@ -214,7 +224,7 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
                         </td>
                         <td className="px-4 py-5 text-center">
                           <button 
-                            id={`btn_attendance_absent_${student.uid}`}
+                            id={`btn_teacher_attendance_absent_${student.uid}`}
                             onClick={() => handleStatusChange(student.uid, 'absent')}
                             className={`p-3 rounded-2xl transition-all active:scale-90 ${status === 'absent' ? 'bg-red-50 text-red-600 border border-red-100 shadow-sm' : 'text-slate-200 hover:bg-slate-50 hover:text-slate-400'}`}
                           >
@@ -223,7 +233,7 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
                         </td>
                         <td className="px-4 py-5 text-center">
                           <button 
-                            id={`btn_attendance_late_${student.uid}`}
+                            id={`btn_teacher_attendance_late_${student.uid}`}
                             onClick={() => handleStatusChange(student.uid, 'late')}
                             className={`p-3 rounded-2xl transition-all active:scale-90 ${status === 'late' ? 'bg-yellow-50 text-yellow-600 border border-yellow-100 shadow-sm' : 'text-slate-200 hover:bg-slate-50 hover:text-slate-400'}`}
                           >
@@ -232,7 +242,7 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
                         </td>
                         <td className="px-4 py-5 text-center">
                           <button 
-                            id={`btn_attendance_excused_${student.uid}`}
+                            id={`btn_teacher_attendance_excused_${student.uid}`}
                             onClick={() => handleStatusChange(student.uid, 'excused')}
                             className={`p-3 rounded-2xl transition-all active:scale-90 ${status === 'excused' ? 'bg-purple-50 text-purple-600 border border-purple-100 shadow-sm' : 'text-slate-200 hover:bg-slate-50 hover:text-slate-400'}`}
                           >

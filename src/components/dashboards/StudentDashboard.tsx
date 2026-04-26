@@ -18,7 +18,8 @@ import {
   BookMarked, 
   Bell,
   Calendar,
-  Clock
+  Clock,
+  CheckCircle2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { sortByName } from '../../lib/utils';
@@ -447,7 +448,7 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
           )}
 
           {activeTab === 'lessons' && (
-            <StudentLessons key="lessons" user={user} subjects={subjects} classLevel={classLevel} />
+            <StudentLessons key="lessons" user={user} classLevel={classLevel} />
           )}
 
           {activeTab === 'results' && (

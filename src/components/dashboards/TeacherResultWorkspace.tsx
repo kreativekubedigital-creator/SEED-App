@@ -369,7 +369,6 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
   const totalCaMax = caConfig.cas.reduce((sum, ca) => sum + ca.maxScore, 0);
 
   return (
-  return (
     <div className="space-y-6">
       {/* Header & Status */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -694,6 +693,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                           <div key={idx} className="flex flex-col gap-2">
                             <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 ml-1">{ca.name} (Max:{ca.maxScore})</span>
                             <input
+                              id={`input_teacher_result_ca_mobile_${idx}_${student.uid}`}
                               type="number"
                               min="0" max={ca.maxScore}
                               placeholder="-"
@@ -715,6 +715,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                       <div className="flex flex-col gap-2">
                         <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 text-center">Exam (Max:{caConfig.maxExamScore})</span>
                         <input
+                          id={`input_teacher_result_exam_mobile_${student.uid}`}
                           type="number"
                           min="0" max={caConfig.maxExamScore}
                           placeholder="-"

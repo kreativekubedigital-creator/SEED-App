@@ -1474,7 +1474,7 @@ export default function App() {
       }
     };
     fetchTenantSchool();
-  }, [location.hostname, location.search, location.pathname]);
+  }, [window.location.hostname, location.search, location.pathname]);
 
  if (loading) return <LoadingScreen />;
 

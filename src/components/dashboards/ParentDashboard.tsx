@@ -224,7 +224,7 @@ export const ParentDashboard = ({ user, onLogout, school }: { user: UserProfile,
           <div className="flex items-center gap-4 w-full lg:w-auto">
             <button
               onClick={onLogout}
-              id="parent_logout_btn"
+              id="btn_parent_logout"
               className="flex-1 lg:flex-none flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white hover:bg-red-50 text-slate-400 hover:text-red-500 border border-white shadow-xl shadow-slate-200/20 hover:shadow-red-500/10 transition-all font-black uppercase tracking-widest text-[10px] group"
             >
               <LogOut size={16} className="group-hover:translate-x-1 transition-transform" /> Logout

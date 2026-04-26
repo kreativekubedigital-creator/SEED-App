@@ -160,7 +160,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
           <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Create and manage academic tasks</p>
         </div>
         <button
-          id="btn_create_assignment"
+          id="btn_teacher_create_assignment"
           onClick={() => setShowAddAssignment(true)}
           className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-500/20 active:scale-95"
         >
@@ -181,7 +181,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                 <FileText size={24} strokeWidth={2.5} />
               </div>
               <button
-                id={`btn_assignment_delete_${assignment.id}`}
+                id={`btn_teacher_assignment_delete_${assignment.id}`}
                 onClick={() => setAssignmentToDelete(assignment.id)}
                 className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
               >
@@ -200,7 +200,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
             </div>
             <div className="pt-6 border-t border-slate-50 relative z-10">
               <button
-                id={`btn_assignment_view_submissions_${assignment.id}`}
+                id={`btn_teacher_assignment_view_submissions_${assignment.id}`}
                 onClick={() => setViewingSubmissions(assignment.id)}
                 className="w-full py-4 rounded-2xl bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 active:scale-[0.98]"
               >
@@ -246,7 +246,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Title</label>
                     <input
-                      id="input_assignment_title"
+                      id="input_teacher_assignment_title"
                       type="text"
                       required
                       value={newAssignment.title}
@@ -272,7 +272,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                   <div className="md:col-span-2 space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Description</label>
                     <textarea
-                      id="input_assignment_description"
+                      id="input_teacher_assignment_description"
                       required
                       value={newAssignment.description}
                       onChange={e => setNewAssignment({ ...newAssignment, description: e.target.value })}
@@ -350,7 +350,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                         {newQuestion.options.map((opt, idx) => (
                           <input
                             key={idx}
-                            id={`input_assignment_option_${idx}`}
+                            id={`input_teacher_assignment_option_${idx}`}
                             type="text"
                             value={opt}
                             onChange={e => {
@@ -366,7 +366,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                     )}
 
                     <button
-                      id="btn_assignment_add_question"
+                      id="btn_teacher_assignment_add_question"
                       type="button"
                       onClick={handleAddQuestion}
                       className="w-full py-4 rounded-2xl bg-white border border-blue-200 text-blue-600 text-[10px] font-black uppercase tracking-widest hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-sm"
@@ -378,7 +378,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
 
                 <div className="flex flex-col sm:flex-row justify-end gap-3 pt-8 border-t border-slate-100">
                   <button
-                    id="btn_assignment_cancel_create"
+                    id="btn_teacher_assignment_cancel_create"
                     type="button"
                     onClick={() => setShowAddAssignment(false)}
                     className="order-2 sm:order-1 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] text-slate-400 hover:bg-slate-50 transition-all"
@@ -386,7 +386,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                     Cancel
                   </button>
                   <button
-                    id="btn_assignment_save"
+                    id="btn_teacher_assignment_save"
                     type="submit"
                     className="order-1 sm:order-2 px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95"
                   >

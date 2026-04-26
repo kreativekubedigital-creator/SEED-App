@@ -173,7 +173,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
         <div className="flex flex-col sm:flex-row gap-5 w-full lg:w-auto">
           <div className="relative group min-w-[200px]">
             <select
-              id="quiz_class_select"
+              id="select_teacher_quiz_class_filter"
               value={newQuiz.subjectId ? subjects.find(s => s.id === newQuiz.subjectId)?.classId : ''}
               onChange={(e) => {
                 // This is a filter for the list, not the new quiz
@@ -186,7 +186,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
           </div>
           
           <button
-            id="create_quiz_btn"
+            id="btn_teacher_create_quiz"
             onClick={() => setShowAddQuiz(true)}
             className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-500/20 active:scale-95 transition-all font-black uppercase tracking-widest text-[10px] border border-blue-500"
           >
@@ -209,7 +209,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Design an interactive assessment</p>
               </div>
               <button 
-                id="close_quiz_modal_btn"
+                id="btn_teacher_quiz_close_modal"
                 onClick={() => setShowAddQuiz(false)} 
                 className="p-3 bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-900 rounded-2xl transition-all"
               >
@@ -222,7 +222,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Quiz Title</label>
                   <input
-                    id="quiz_title_input"
+                    id="input_teacher_quiz_title"
                     type="text"
                     required
                     value={newQuiz.title}
@@ -234,7 +234,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Subject</label>
                   <select
-                    id="quiz_subject_select"
+                    id="select_teacher_quiz_subject"
                     required
                     value={newQuiz.subjectId}
                     onChange={e => setNewQuiz({ ...newQuiz, subjectId: e.target.value })}
@@ -249,7 +249,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Time Limit (Mins)</label>
                   <input
-                    id="quiz_time_limit_input"
+                    id="input_teacher_quiz_time_limit"
                     type="number"
                     required
                     min="1"
@@ -266,7 +266,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
                   <div key={qIndex} className="bg-slate-50 p-8 rounded-3xl border border-slate-100 relative group hover:bg-white hover:shadow-md transition-all">
                     {newQuiz.questions.length > 1 && (
                       <button 
-                        id={`remove_question_btn_${qIndex}`}
+                        id={`btn_teacher_quiz_remove_question_${qIndex}`}
                         type="button" 
                         onClick={() => handleRemoveQuestion(qIndex)}
                         className="absolute top-6 right-6 text-slate-300 hover:text-red-500 p-2.5 rounded-xl transition-colors"
@@ -349,7 +349,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
           return (
             <motion.div
               key={quiz.id}
-              id={`quiz_card_${quiz.id}`}
+              id={`card_teacher_quiz_${quiz.id}`}
               whileHover={{ y: -4 }}
               className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 flex flex-col gap-6 group hover:shadow-md transition-all relative overflow-hidden"
             >
@@ -360,7 +360,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
                   {getSubjectName(quiz.subjectId)}
                 </span>
                 <button 
-                  id={`delete_quiz_btn_${quiz.id}`}
+                  id={`btn_teacher_quiz_delete_${quiz.id}`}
                   onClick={() => setQuizToDelete(quiz.id)} 
                   className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                 >
@@ -385,7 +385,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
                   </span>
                 </div>
                 <button 
-                  id={`view_quiz_results_btn_${quiz.id}`}
+                  id={`btn_teacher_quiz_view_results_${quiz.id}`}
                   onClick={() => handleViewResults(quiz.id)}
                   className="px-4 py-2 rounded-xl bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center gap-2 shadow-lg shadow-blue-500/10 active:scale-[0.98]"
                 >
