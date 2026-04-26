@@ -163,167 +163,244 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">Quizzes</h3>
-        <button
-          onClick={() => setShowAddQuiz(true)}
-          className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:scale-[1.02] transition-all shadow-md  border border-white/20"
-        >
-          <Plus size={20} /> Create Quiz
-        </button>
+      {/* Header & Control Panel */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-12">
+        <div>
+          <h2 className="text-3xl font-black uppercase tracking-tighter text-slate-900">Quiz Portal</h2>
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-2">Design and deploy objective assessments</p>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row gap-5 w-full lg:w-auto">
+          <div className="relative group min-w-[200px]">
+            <select
+              id="quiz_class_select"
+              value={newQuiz.subjectId ? subjects.find(s => s.id === newQuiz.subjectId)?.classId : ''}
+              onChange={(e) => {
+                // This is a filter for the list, not the new quiz
+              }}
+              className="w-full appearance-none pl-6 pr-12 py-4 rounded-2xl border border-slate-100 bg-white hover:border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black uppercase tracking-widest text-[10px] text-slate-900 cursor-pointer shadow-sm"
+            >
+              <option value="">All Classes</option>
+              {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </div>
+          
+          <button
+            id="create_quiz_btn"
+            onClick={() => setShowAddQuiz(true)}
+            className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-500/20 active:scale-95 transition-all font-black uppercase tracking-widest text-[10px] border border-blue-500"
+          >
+            <Plus size={18} strokeWidth={3} /> Create New Quiz
+          </button>
+        </div>
       </div>
 
       {showAddQuiz && (
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-2xl mb-8">
-          <h4 className="font-medium text-xl text-slate-900 dark:text-slate-100 mb-6">Create New Quiz</h4>
-          <form onSubmit={handleCreateQuiz} className="space-y-5">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Quiz Title</label>
-                <input
-                  type="text"
-                  required
-                  value={newQuiz.title}
-                  onChange={e => setNewQuiz({ ...newQuiz, title: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
-                  placeholder="e.g. Midterm Math Quiz"
-                />
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            className="bg-white rounded-[2.5rem] p-8 w-full max-w-4xl shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex justify-between items-center mb-8">
+              <div>
+                <h4 className="text-2xl font-black uppercase tracking-tighter text-slate-900">Create New Quiz</h4>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Design an interactive assessment</p>
               </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Subject</label>
-                <select
-                  required
-                  value={newQuiz.subjectId}
-                  onChange={e => setNewQuiz({ ...newQuiz, subjectId: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
-                >
-                  <option value="">Select Subject</option>
-                  {subjects.map(s => (
-                    <option key={s.id} value={s.id}>{s.name} ({getClassName(s.classId)})</option>
-                  ))}
-                </select>
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Time Limit (Minutes)</label>
-                <input
-                  type="number"
-                  required
-                  min="1"
-                  value={newQuiz.timeLimit}
-                  onChange={e => setNewQuiz({ ...newQuiz, timeLimit: parseInt(e.target.value) || 10 })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
-                  placeholder="e.g. 10"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-5">
-              <h5 className="font-medium text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-3">Questions</h5>
-              {newQuiz.questions.map((q, qIndex) => (
-                <div key={qIndex} className="bg-white dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 relative shadow-sm">
-                  {newQuiz.questions.length > 1 && (
-                    <button 
-                      type="button" 
-                      onClick={() => handleRemoveQuestion(qIndex)}
-                      className="absolute top-4 right-6 text-red-500 hover:bg-red-50 p-2.5 rounded-xl transition-colors"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  )}
-                  
-                  <div className="mb-6 pr-12 space-y-1.5">
-                    <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Question {qIndex + 1}</label>
-                    <input
-                      type="text"
-                      required
-                      value={q.question}
-                      onChange={e => handleQuestionChange(qIndex, 'question', e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-text"
-                      placeholder="Enter question text"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {q.options.map((option, oIndex) => (
-                      <div key={oIndex} className="flex items-center gap-3">
-                        <button
-                          type="button"
-                          onClick={() => handleQuestionChange(qIndex, 'correctOption', oIndex)}
-                          className={`p-2 rounded-full transition-all ${q.correctOption === oIndex ? 'text-emerald-500 bg-emerald-50 scale-110' : 'text-gray-300 hover:text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800'}`}
-                        >
-                          {q.correctOption === oIndex ? <CheckCircle2 size={20} /> : <Circle size={20} />}
-                        </button>
-                        <input
-                          type="text"
-                          required
-                          value={option}
-                          onChange={e => handleOptionChange(qIndex, oIndex, e.target.value)}
-                          className={`flex-1 px-4 py-3.5 rounded-xl border outline-none transition-all font-medium text-sm ${q.correctOption === oIndex ? 'border-emerald-500 bg-emerald-50/30 ring-4 ring-emerald-500/10' : 'border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10'}`}
-                          placeholder={`Option ${oIndex + 1}`}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <p className="text-xs text-slate-900 dark:text-slate-100 font-medium mt-3 ml-12">Select the circle next to the correct option.</p>
-                </div>
-              ))}
-
-              <button
-                type="button"
-                onClick={handleAddQuestion}
-                className="text-blue-600 font-medium flex items-center gap-2 hover:text-blue-700 transition-colors px-4 py-2.5 rounded-xl hover:bg-blue-50"
+              <button 
+                id="close_quiz_modal_btn"
+                onClick={() => setShowAddQuiz(false)} 
+                className="p-3 bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-900 rounded-2xl transition-all"
               >
-                <Plus size={20} /> Add Another Question
+                <X size={20} />
               </button>
             </div>
 
-            <div className="flex justify-end gap-3 pt-6 border-t border-slate-100 dark:border-slate-800">
-              <button type="button" onClick={() => setShowAddQuiz(false)} className="px-4 py-2 rounded-lg font-medium text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900 border border-gray-200 hover:bg-slate-50 dark:bg-slate-800 transition-colors shadow-sm">Cancel</button>
-              <button type="submit" className="px-4 py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 hover:scale-[1.02] transition-all shadow-md  border border-white/20">Save Quiz</button>
-            </div>
-          </form>
+            <form onSubmit={handleCreateQuiz} className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Quiz Title</label>
+                  <input
+                    id="quiz_title_input"
+                    type="text"
+                    required
+                    value={newQuiz.title}
+                    onChange={e => setNewQuiz({ ...newQuiz, title: e.target.value })}
+                    className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
+                    placeholder="e.g. Midterm Math Quiz"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Subject</label>
+                  <select
+                    id="quiz_subject_select"
+                    required
+                    value={newQuiz.subjectId}
+                    onChange={e => setNewQuiz({ ...newQuiz, subjectId: e.target.value })}
+                    className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
+                  >
+                    <option value="">Select Subject</option>
+                    {subjects.map(s => (
+                      <option key={s.id} value={s.id}>{s.name} ({getClassName(s.classId)})</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Time Limit (Mins)</label>
+                  <input
+                    id="quiz_time_limit_input"
+                    type="number"
+                    required
+                    min="1"
+                    value={newQuiz.timeLimit}
+                    onChange={e => setNewQuiz({ ...newQuiz, timeLimit: parseInt(e.target.value) || 10 })}
+                    className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-6 pt-8 border-t border-slate-100">
+                <h5 className="font-black uppercase tracking-widest text-slate-900 mb-6">Questions ({newQuiz.questions.length})</h5>
+                {newQuiz.questions.map((q, qIndex) => (
+                  <div key={qIndex} className="bg-slate-50 p-8 rounded-3xl border border-slate-100 relative group hover:bg-white hover:shadow-md transition-all">
+                    {newQuiz.questions.length > 1 && (
+                      <button 
+                        id={`remove_question_btn_${qIndex}`}
+                        type="button" 
+                        onClick={() => handleRemoveQuestion(qIndex)}
+                        className="absolute top-6 right-6 text-slate-300 hover:text-red-500 p-2.5 rounded-xl transition-colors"
+                      >
+                        <Trash2 size={20} />
+                      </button>
+                    )}
+                    
+                    <div className="mb-8 pr-12 space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Question {qIndex + 1}</label>
+                      <input
+                        id={`input_teacher_quiz_q${qIndex}`}
+                        type="text"
+                        required
+                        value={q.question}
+                        onChange={e => handleQuestionChange(qIndex, 'question', e.target.value)}
+                        className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
+                        placeholder="Enter question text"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {q.options.map((option, oIndex) => (
+                        <div key={oIndex} className="flex items-center gap-4">
+                          <button
+                            id={`btn_teacher_quiz_q${qIndex}_opt${oIndex}`}
+                            type="button"
+                            onClick={() => handleQuestionChange(qIndex, 'correctOption', oIndex)}
+                            className={`p-3 rounded-2xl transition-all border shadow-sm ${q.correctOption === oIndex ? 'text-emerald-600 bg-emerald-50 border-emerald-200 scale-110' : 'text-slate-300 bg-white border-slate-200 hover:text-slate-900 hover:border-slate-300'}`}
+                          >
+                            {q.correctOption === oIndex ? <CheckCircle2 size={20} strokeWidth={2.5} /> : <Circle size={20} strokeWidth={2.5} />}
+                          </button>
+                          <input
+                            id={`input_teacher_quiz_q${qIndex}_opt${oIndex}`}
+                            type="text"
+                            required
+                            value={option}
+                            onChange={e => handleOptionChange(qIndex, oIndex, e.target.value)}
+                            className={`flex-1 px-5 py-4 rounded-2xl border outline-none transition-all font-black uppercase tracking-widest text-[10px] ${q.correctOption === oIndex ? 'border-emerald-500 bg-emerald-50/30 text-emerald-900 shadow-sm' : 'border-slate-200 bg-white hover:border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-slate-900'}`}
+                            placeholder={`Option ${oIndex + 1}`}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={handleAddQuestion}
+                  className="w-full py-4 rounded-2xl bg-white border border-blue-200 text-blue-600 text-[10px] font-black uppercase tracking-widest hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <Plus size={16} strokeWidth={3} /> Add Another Question
+                </button>
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-end gap-3 pt-8 border-t border-slate-100">
+                <button 
+                  type="button" 
+                  onClick={() => setShowAddQuiz(false)} 
+                  className="order-2 sm:order-1 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] text-slate-400 hover:bg-slate-50 transition-all"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="order-1 sm:order-2 px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95"
+                >
+                  Save Quiz
+                </button>
+              </div>
+            </form>
+          </motion.div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {quizzes.map(quiz => {
           const subject = subjects.find(s => s.id === quiz.subjectId);
           return (
-            <div key={quiz.id} className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col hover:shadow-md transition-all">
-              <div className="flex-1">
-                <div className="flex justify-between items-start mb-4">
-                  <span className="inline-block px-3 py-1.5 bg-blue-50 text-blue-600 text-[10px] font-medium uppercase tracking-wider rounded-full shadow-sm border border-blue-100/50">
-                    {getSubjectName(quiz.subjectId)}
-                  </span>
-                  <button onClick={() => setQuizToDelete(quiz.id)} className="text-slate-900 dark:text-slate-100 hover:text-red-500 hover:bg-red-50 p-2.5 rounded-xl transition-colors">
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-                <h4 className="font-medium text-xl text-slate-900 dark:text-slate-100 mb-2">{quiz.title}</h4>
-                <p className="text-slate-900 dark:text-slate-100 font-medium text-sm mb-6">{subject ? getClassName(subject.classId) : ''}</p>
-              </div>
+            <motion.div
+              key={quiz.id}
+              id={`quiz_card_${quiz.id}`}
+              whileHover={{ y: -4 }}
+              className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 flex flex-col gap-6 group hover:shadow-md transition-all relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -mr-10 -mt-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               
-              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                <div className="flex gap-2">
-                  <span className="text-[10px] font-medium uppercase tracking-wider text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-gray-200/50">{quiz.questions.length} Questions</span>
-                  <span className="text-[10px] font-medium uppercase tracking-wider text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-gray-200/50">{quiz.timeLimit || 10} Mins</span>
-                </div>
+              <div className="flex justify-between items-start relative z-10">
+                <span className="inline-block px-4 py-2 bg-blue-50 text-blue-600 text-[8px] font-black uppercase tracking-widest rounded-full border border-blue-100 shadow-sm">
+                  {getSubjectName(quiz.subjectId)}
+                </span>
                 <button 
-                  onClick={() => handleViewResults(quiz.id)}
-                  className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1.5 bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
+                  id={`delete_quiz_btn_${quiz.id}`}
+                  onClick={() => setQuizToDelete(quiz.id)} 
+                  className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                 >
-                  <Eye size={16} /> Results
+                  <Trash2 size={20} />
                 </button>
               </div>
-            </div>
+
+              <div className="relative z-10">
+                <h4 className="font-black uppercase tracking-widest text-lg text-slate-900 leading-tight mb-1">{quiz.title}</h4>
+                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">
+                  {subject ? getClassName(subject.classId) : 'N/A'}
+                </p>
+              </div>
+              
+              <div className="pt-6 border-t border-slate-50 flex justify-between items-center relative z-10">
+                <div className="flex gap-2">
+                  <span className="text-[8px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                    {quiz.questions.length} Qs
+                  </span>
+                  <span className="text-[8px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                    {quiz.timeLimit || 10} Mins
+                  </span>
+                </div>
+                <button 
+                  id={`view_quiz_results_btn_${quiz.id}`}
+                  onClick={() => handleViewResults(quiz.id)}
+                  className="px-4 py-2 rounded-xl bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center gap-2 shadow-lg shadow-blue-500/10 active:scale-[0.98]"
+                >
+                  <Eye size={14} strokeWidth={3} /> Results
+                </button>
+              </div>
+            </motion.div>
           );
         })}
         {quizzes.length === 0 && !loading && (
-          <div className="col-span-full p-12 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
-            <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-3xl flex items-center justify-center text-slate-900 dark:text-slate-100 mx-auto mb-4 shadow-sm border border-slate-100 dark:border-slate-800/50">
+          <div className="col-span-full py-20 text-center bg-white rounded-[2.5rem] border border-slate-100 border-dashed">
+            <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-200 mx-auto mb-4 border border-slate-100 shadow-sm">
               <CheckSquare size={40} />
             </div>
-            <p className="text-slate-900 dark:text-slate-100 font-medium text-lg">No quizzes created yet.</p>
+            <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">No quizzes created yet.</p>
           </div>
         )}
       </div>
@@ -331,82 +408,88 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
       {/* Delete Quiz Modal */}
       <AnimatePresence>
         {quizToDelete && (
-          <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 z-50">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-slate-900 rounded-2xl p-4 w-full max-w-sm shadow-2xl text-center border border-slate-100 dark:border-slate-800"
+              className="bg-white rounded-[2.5rem] p-10 w-full max-w-md shadow-2xl border border-slate-100 text-center"
             >
-              <div className="w-20 h-20 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-red-100/50">
-                <Trash2 size={20} />
+              <div className="w-24 h-24 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-red-100 shadow-sm">
+                <Trash2 size={40} strokeWidth={2.5} />
               </div>
-              <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-2">Delete Quiz?</h3>
-              <p className="text-slate-900 dark:text-slate-100 font-medium mb-8">This action cannot be undone. Are you sure you want to delete this quiz?</p>
-              <div className="flex gap-3">
+              <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900 mb-2">Delete Quiz?</h3>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-10 leading-relaxed px-4">
+                This action is irreversible. All student results and academic records associated with this quiz will be permanently removed.
+              </p>
+              <div className="flex gap-4">
                 <button
                   onClick={() => setQuizToDelete(null)}
-                  className="flex-1 py-4 rounded-2xl border border-gray-200/50 font-medium text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 hover:text-slate-900 dark:text-slate-100 transition-all shadow-sm"
+                  className="flex-1 py-4 rounded-2xl border border-slate-200 font-black uppercase tracking-widest text-[10px] text-slate-400 hover:bg-slate-50 transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleDeleteQuiz}
-                  className="flex-1 py-4 rounded-2xl font-medium text-white bg-red-600 hover:bg-red-700  transition-all shadow-md hover:shadow-lg hover:shadow-red-500/30 border border-white/20"
+                  className="flex-1 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] text-white bg-red-600 hover:bg-red-700 transition-all shadow-xl shadow-red-500/20 active:scale-95"
                 >
-                  Delete
+                  Confirm Delete
                 </button>
               </div>
             </motion.div>
           </div>
         )}
 
-        {/* View Results Modal */}
         {viewingQuizResults && (
-          <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 z-50">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-slate-900 rounded-3xl p-6 w-full max-w-2xl shadow-2xl border border-slate-100 dark:border-slate-800 max-h-[80vh] flex flex-col"
+              className="bg-white rounded-[2.5rem] p-8 w-full max-w-3xl shadow-2xl border border-slate-100 max-h-[85vh] flex flex-col"
             >
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100">Quiz Results</h3>
-                  <p className="text-sm text-slate-900 dark:text-slate-100 font-medium mt-1">
+                  <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900">Quiz Results</h3>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-blue-600 mt-1">
                     {quizzes.find(q => q.id === viewingQuizResults)?.title}
                   </p>
                 </div>
-                <button onClick={() => setViewingQuizResults(null)} className="p-2 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:text-slate-900 dark:text-slate-100 rounded-full transition-colors border border-gray-200/50">
+                <button 
+                  onClick={() => setViewingQuizResults(null)} 
+                  className="p-3 bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-900 rounded-2xl transition-all"
+                >
                   <X size={20} />
                 </button>
               </div>
 
               <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                 {quizResults.length > 0 ? (
-                  <div className="space-y-3">
+                  <div className="space-y-4 pb-4">
                     {quizResults.map((result, idx) => {
                       const percentage = Math.round((result.score / result.total) * 100);
                       const isPassing = percentage >= 50;
                       return (
-                        <div key={result.id} className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:bg-slate-900 hover:shadow-sm transition-all">
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-medium text-sm border border-blue-200/50">
-                              {idx + 1}
+                        <div key={result.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 rounded-3xl border border-slate-100 bg-slate-50 group hover:bg-white hover:shadow-md transition-all gap-6">
+                          <div className="flex items-center gap-5">
+                            <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl flex items-center justify-center font-black text-xl shadow-lg border-2 border-white">
+                              {result.studentName?.charAt(0)}
                             </div>
                             <div>
-                              <p className="font-medium text-slate-900 dark:text-slate-100">{result.studentName}</p>
-                              <p className="text-xs text-slate-900 dark:text-slate-100 font-medium mt-0.5">
-                                Taken: {new Date(result.date).toLocaleDateString()}
+                              <p className="font-black uppercase tracking-widest text-sm text-slate-900">{result.studentName}</p>
+                              <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest mt-1">
+                                Completed: {new Date(result.date).toLocaleDateString()}
                               </p>
                             </div>
                           </div>
-                          <div className="text-right">
-                            <div className={`text-lg font-medium ${isPassing ? 'text-emerald-600' : 'text-red-600'}`}>
-                              {result.score} / {result.total}
+                          <div className="text-left sm:text-right w-full sm:w-auto flex sm:flex-col items-center sm:items-end justify-between">
+                            <div className={`text-xl font-black ${isPassing ? 'text-emerald-600' : 'text-red-600'}`}>
+                              {result.score} <span className="text-slate-300 text-sm mx-1">/</span> {result.total}
                             </div>
-                            <div className="text-xs font-medium text-slate-900 dark:text-slate-100">
-                              {percentage}%
+                            <div className={`px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest mt-1 border shadow-sm ${
+                              isPassing ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-500 border-red-100'
+                            }`}>
+                              {percentage}% • {isPassing ? 'PASSED' : 'FAILED'}
                             </div>
                           </div>
                         </div>
@@ -414,11 +497,11 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
                     })}
                   </div>
                 ) : (
-                  <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-900 dark:text-slate-100 mx-auto mb-4 border border-slate-100 dark:border-slate-800">
-                      <CheckSquare size={32} />
+                  <div className="text-center py-20">
+                    <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-200 mx-auto mb-4 border border-slate-100 shadow-sm">
+                      <CheckSquare size={40} />
                     </div>
-                    <p className="text-slate-900 dark:text-slate-100 font-medium">No students have taken this quiz yet.</p>
+                    <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">No students have taken this quiz yet.</p>
                   </div>
                 )}
               </div>

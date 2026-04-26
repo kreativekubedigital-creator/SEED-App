@@ -1,18 +1,16 @@
-import { useState, useEffect } from'react';
-import { db, collection, getDocs, query, where, onSnapshot, orderBy, handleFirestoreError, OperationType } from'../../lib/compatibility';
-import { UserProfile, Result, Announcement, Invoice, Payment, Term, Session } from'../../types';
-import { Bell, TrendingUp, FileText, User, Heart, ArrowLeft, CreditCard, CheckCircle, Clock, ChevronRight } from'lucide-react';
-import { motion } from'motion/react';
-import { sortByName, sortByFullName } from'../../lib/utils';
-import { StudentResultView } from'./StudentResultView';
-import ClassTimetable from'./ClassTimetable';
-import { ParentFinance } from'./ParentFinance';
-
+import { useState, useEffect } from 'react';
+import { db, collection, query, where, onSnapshot, orderBy, handleFirestoreError, OperationType } from '../../lib/compatibility';
+import { UserProfile, Result, Announcement, Invoice, Term, Session, School } from '../../types';
+import { Bell, TrendingUp, FileText, User, Heart, CreditCard, CheckCircle, Clock, ChevronRight, LogOut, BookOpen } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { sortByName, sortByFullName } from '../../lib/utils';
+import { StudentResultView } from './StudentResultView';
+import ClassTimetable from './ClassTimetable';
+import { ParentFinance } from './ParentFinance';
 import { Link } from 'react-router-dom';
-import { LogOut, Layout } from 'lucide-react';
 
 export const ParentDashboard = ({ user, onLogout, school }: { user: UserProfile, onLogout: () => void, school?: School }) => {
-  const [activeTab, setActiveTab] = useState<'overview'|'timetable'|'finance'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'timetable' | 'finance'>('overview');
   const [students, setStudents] = useState<UserProfile[]>([]);
   const [activeStudentId, setActiveStudentId] = useState<string | null>(null);
   const [results, setResults] = useState<Result[]>([]);
@@ -21,19 +19,18 @@ export const ParentDashboard = ({ user, onLogout, school }: { user: UserProfile,
   const [subjects, setSubjects] = useState<{ id: string, name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewingReportCard, setViewingReportCard] = useState(false);
-  
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [termsMap, setTermsMap] = useState<Record<string, Record<string, Term>>>({});
   const [sessions, setSessions] = useState<Session[]>([]);
 
   useEffect(() => {
     if (!user.schoolId) return;
-    const unsubClasses = onSnapshot(collection(db,'schools', user.schoolId,'classes'), (snap) => {
+    const unsubClasses = onSnapshot(collection(db, 'schools', user.schoolId, 'classes'), (snap) => {
       setClasses(sortByName(snap.docs.map(d => ({ id: d.id, name: d.data().name }))));
-    }, (error) => handleFirestoreError(error, OperationType.GET,`schools/${ user.schoolId }/classes`));
-    const unsubSubjects = onSnapshot(collection(db,'schools', user.schoolId,'subjects'), (snap) => {
+    }, (error) => handleFirestoreError(error, OperationType.GET, `schools/${user.schoolId}/classes`));
+    const unsubSubjects = onSnapshot(collection(db, 'schools', user.schoolId, 'subjects'), (snap) => {
       setSubjects(sortByName(snap.docs.map(d => ({ id: d.id, name: d.data().name }))));
-    }, (error) => handleFirestoreError(error, OperationType.GET,`schools/${ user.schoolId }/subjects`));
+    }, (error) => handleFirestoreError(error, OperationType.GET, `schools/${user.schoolId}/subjects`));
     return () => {
       unsubClasses();
       unsubSubjects();
@@ -41,8 +38,8 @@ export const ParentDashboard = ({ user, onLogout, school }: { user: UserProfile,
   }, [user.schoolId]);
 
   const getClassName = (classId: string) => {
-    if (classes.length === 0) return'Loading...';
-    return classes.find(c => c.id === classId)?.name ||'N/A';
+    if (classes.length === 0) return 'Loading...';
+    return classes.find(c => c.id === classId)?.name || 'N/A';
   };
 
   const getSubjectName = (subjectId: string) => {
@@ -58,9 +55,9 @@ export const ParentDashboard = ({ user, onLogout, school }: { user: UserProfile,
     }
 
     const qStudents = query(
-      collection(db,'users'), 
-      where('schoolId','==', user.schoolId),
-      where('studentId','in', studentIds)
+      collection(db, 'users'), 
+      where('schoolId', '==', user.schoolId),
+      where('studentId', 'in', studentIds)
     );
     
     const unsubStudents = onSnapshot(qStudents, (snap) => {
@@ -72,15 +69,13 @@ export const ParentDashboard = ({ user, onLogout, school }: { user: UserProfile,
       setLoading(false);
     });
 
-    return () => {
-      unsubStudents();
-    };
+    return () => unsubStudents();
   }, [user.schoolId, user.parentStudentIds, user.parentStudentId]);
 
   useEffect(() => {
-    if (!activeStudentId) return;
+    if (!activeStudentId || !user.schoolId) return;
 
-    const qResults = query(collection(db,'schools', user.schoolId,'results'), where('studentId','==', activeStudentId));
+    const qResults = query(collection(db, 'schools', user.schoolId, 'results'), where('studentId', '==', activeStudentId));
     const unsubResults = onSnapshot(qResults, (snap) => {
       const resultsData = snap.docs.map(d => ({ id: d.id, ...d.data() } as Result));
       resultsData.sort((a, b) => {
@@ -91,10 +86,8 @@ export const ParentDashboard = ({ user, onLogout, school }: { user: UserProfile,
       setResults(resultsData);
     });
 
-    return () => {
-      unsubResults();
-    };
-  }, [activeStudentId]);
+    return () => unsubResults();
+  }, [activeStudentId, user.schoolId]);
 
   useEffect(() => {
     if (!user.schoolId || !activeStudentId) return;
@@ -151,365 +144,367 @@ export const ParentDashboard = ({ user, onLogout, school }: { user: UserProfile,
     if (!user.schoolId) return;
 
     const qAnnouncements = query(
-      collection(db,'schools', user.schoolId,'announcements'),
-      orderBy('createdAt','desc')
+      collection(db, 'schools', user.schoolId, 'announcements'),
+      orderBy('createdAt', 'desc')
     );
     
     const unsubAnnouncements = onSnapshot(qAnnouncements, (snap) => {
       const allAnnouncements = snap.docs.map(d => ({ id: d.id, ...d.data() } as Announcement));
-      
       const filtered = allAnnouncements.filter(a => 
         a.isSchoolWide || (activeStudent && (a.classId === activeStudent.classId || a.studentId === activeStudent.uid))
       );
-      
       setAnnouncements(filtered);
     });
 
     return () => unsubAnnouncements();
   }, [user.schoolId, activeStudent]);
 
-  const handleLogout = () => {
-    onLogout();
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#020617] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-slate-200 border-t-slate-900 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#020617]">
+    <div className="min-h-screen bg-[#f8fafc]">
       {/* Mobile Top Header */}
-      <div className="lg:hidden flex items-center justify-between p-4 bg-white/5 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
+      <div className="lg:hidden flex items-center justify-between p-6 bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
         <div className="flex items-center gap-3">
           {school?.logoUrl ? (
-            <img src={school.logoUrl} alt={school.name} className="w-8 h-8 rounded-lg object-cover" />
+            <img src={school.logoUrl} alt={school.name} className="w-10 h-10 rounded-xl object-cover shadow-sm" />
           ) : (
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-black text-white text-xs">S</div>
+            <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center font-black text-white text-xs shadow-lg">S</div>
           )}
-          <span className="font-black uppercase tracking-tighter text-white truncate max-w-[150px]">{school?.name || 'SEEDD'}</span>
+          <span className="font-black uppercase tracking-widest text-[10px] text-slate-900 truncate max-w-[150px]">{school?.name || 'SEEDD'}</span>
         </div>
-        <button onClick={handleLogout} className="p-2 text-white/60"><LogOut size={20} /></button>
+        <button onClick={onLogout} className="p-3 bg-red-50 text-red-500 rounded-xl transition-all active:scale-95"><LogOut size={20} /></button>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-10">
         {/* Header Section */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-12">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-16">
+          <div className="flex items-center gap-6">
             <Link to="/profile" className="relative group cursor-pointer">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-2xl font-black text-white shadow-lg border-2 border-white/20 group-hover:scale-105 transition-transform">
-                {user.firstName[0]}
+              <div className="w-20 h-20 rounded-[2rem] bg-white flex items-center justify-center text-3xl font-black text-slate-900 shadow-2xl border-4 border-white group-hover:scale-105 transition-all overflow-hidden">
+                {user.photoUrl ? (
+                  <img src={user.photoUrl} alt={user.firstName} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                ) : (
+                  <div className="w-full h-full bg-slate-50 flex items-center justify-center">
+                    {user.firstName[0]}
+                  </div>
+                )}
               </div>
-              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full border-2 border-[#020617] flex items-center justify-center">
+              <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-emerald-500 rounded-full border-4 border-white flex items-center justify-center shadow-lg">
                 <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
               </div>
             </Link>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-black uppercase tracking-tighter text-white">
+              <div className="flex items-center gap-3">
+                <h1 className="text-4xl font-black uppercase tracking-tighter text-slate-900 leading-none">
                   Welcome, {user.firstName}!
                 </h1>
                 {school?.logoUrl && (
-                  <img src={school.logoUrl} alt={school.name} className="w-6 h-6 rounded-md object-cover opacity-50" />
+                  <img src={school.logoUrl} alt={school.name} className="w-8 h-8 rounded-lg object-cover opacity-20 grayscale" />
                 )}
               </div>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="text-[10px] font-black uppercase tracking-widest text-white/40 bg-white/5 px-2 py-0.5 rounded">
-                  Parent Portal
+              <div className="flex items-center gap-3 mt-3">
+                <span className="text-[10px] font-black uppercase tracking-widest text-white bg-slate-900 px-3 py-1 rounded-full shadow-lg shadow-slate-900/10">
+                  Guardian Portal
                 </span>
-                <div className="w-1 h-1 bg-white/20 rounded-full"></div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">
-                  Guardian
+                <div className="w-1.5 h-1.5 bg-slate-200 rounded-full"></div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                  Parent Account
                 </span>
-                {school?.name && (
-                  <>
-                    <div className="w-1 h-1 bg-white/20 rounded-full"></div>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-white/30 truncate max-w-[150px]">
-                      {school.name}
-                    </span>
-                  </>
-                )}
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 w-full lg:w-auto">
+          <div className="flex items-center gap-4 w-full lg:w-auto">
             <button
-              onClick={handleLogout}
-              className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-white/5 hover:bg-red-500/10 text-white/60 hover:text-red-400 border border-white/10 hover:border-red-500/20 transition-all font-black uppercase tracking-widest text-[10px]"
+              onClick={onLogout}
+              id="parent_logout_btn"
+              className="flex-1 lg:flex-none flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white hover:bg-red-50 text-slate-400 hover:text-red-500 border border-white shadow-xl shadow-slate-200/20 hover:shadow-red-500/10 transition-all font-black uppercase tracking-widest text-[10px] group"
             >
-              <LogOut size={16} /> Logout
+              <LogOut size={16} className="group-hover:translate-x-1 transition-transform" /> Logout
             </button>
           </div>
         </div>
 
         {/* Student Selector */}
-        { students.length > 1 && (
-          <div className="flex items-center gap-2 overflow-x-auto pb-6 mb-8 scrollbar-hide no-scrollbar">
-            { students.map(student => (
+        {students.length > 1 && (
+          <div className="flex items-center gap-3 overflow-x-auto pb-8 mb-12 scrollbar-hide no-scrollbar scroll-smooth">
+            {students.map(student => (
               <button
-                key={ student.uid }
-                onClick={() => setActiveStudentId(student.uid)}
-                className={`px-6 py-4 rounded-3xl font-black uppercase tracking-widest text-[10px] transition-all whitespace-nowrap shrink-0 border flex items-center gap-3 ${
+                key={student.uid}
+                id={`btn_parent_student_select_${student.uid}`}
+                onClick={() => { setActiveStudentId(student.uid); setViewingReportCard(false); }}
+                className={`px-10 py-5 rounded-[2.5rem] font-black uppercase tracking-widest text-[10px] transition-all whitespace-nowrap shrink-0 border flex items-center gap-5 ${
                   activeStudentId === student.uid 
-                  ?'bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-500/20'
-                  :'bg-white/5 text-white/40 border-white/5 hover:bg-white/10 hover:text-white'
+                  ? 'bg-slate-900 text-white border-slate-900 shadow-2xl shadow-slate-900/20 scale-105 z-10'
+                  : 'bg-white text-slate-400 border-white hover:bg-slate-50 hover:text-slate-900 shadow-xl shadow-slate-200/20'
                 }`}
               >
-                <div className="w-6 h-6 rounded-lg bg-white/20 flex items-center justify-center text-[10px]">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs border-2 ${activeStudentId === student.uid ? 'bg-white/10 border-white/20' : 'bg-slate-50 border-slate-100'}`}>
                   {student.firstName[0]}
                 </div>
-                { student.firstName } { student.lastName }
+                {student.firstName} {student.lastName}
               </button>
             ))}
           </div>
         )}
 
-        <div className="space-y-8">
-          { activeStudent ? (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white/5 p-8 rounded-[3rem] border border-white/10 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-[100px] -mr-32 -mt-32 pointer-events-none"></div>
-              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-                <div className="flex items-center gap-6">
-                  { activeStudent.photoUrl ? (
-                    <img src={ activeStudent.photoUrl } alt={ activeStudent.firstName } className="w-28 h-28 rounded-[2rem] object-cover border-4 border-white/10 shadow-2xl shadow-blue-500/10"referrerPolicy="no-referrer"/>
+        {/* Student Profile Overview */}
+        <div className="space-y-12">
+          {activeStudent ? (
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="bg-white/80 backdrop-blur-md p-12 rounded-[3rem] border border-white relative overflow-hidden shadow-2xl shadow-slate-200/40">
+              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-slate-900/[0.01] rounded-full blur-[120px] -mr-48 -mt-48 pointer-events-none"></div>
+              <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
+                <div className="flex flex-col md:flex-row items-center gap-10">
+                  {activeStudent.photoUrl ? (
+                    <div className="relative">
+                      <img src={activeStudent.photoUrl} alt={activeStudent.firstName} className="w-40 h-40 rounded-[2.5rem] object-cover border-4 border-white shadow-2xl shadow-slate-200" referrerPolicy="no-referrer"/>
+                      <div className="absolute -bottom-2 -right-2 bg-slate-900 text-white text-[8px] font-black uppercase tracking-widest px-4 py-2 rounded-full border-4 border-white shadow-lg">
+                        Lv. {activeStudent.level || 1}
+                      </div>
+                    </div>
                   ) : (
-                    <div className="w-28 h-28 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-[2rem] flex items-center justify-center text-white text-3xl font-black border-4 border-white/10 shadow-2xl">
-                      { activeStudent.firstName?.charAt(0) ||'?'}
+                    <div className="w-40 h-40 bg-slate-50 text-slate-900 rounded-[2.5rem] flex items-center justify-center text-5xl font-black border-4 border-white shadow-2xl shadow-slate-200">
+                      {activeStudent.firstName?.charAt(0) || '?'}
                     </div>
                   )}
-                  <div>
-                    <h3 className="text-3xl font-black uppercase tracking-tighter text-white mb-2">{ activeStudent.firstName } { activeStudent.lastName }</h3>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-blue-400 bg-blue-500/10 px-4 py-1.5 rounded-full border border-blue-500/20 shadow-sm">ID: { activeStudent.studentId ||'N/A'}</span>
-                      { activeStudent.classId && (
-                        <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-4 py-1.5 rounded-full border border-emerald-500/20 shadow-sm">Class: { getClassName(activeStudent.classId)}</span>
+                  <div className="text-center md:text-left">
+                    <h3 className="text-5xl font-black uppercase tracking-tighter text-slate-900 mb-4">{activeStudent.firstName} {activeStudent.lastName}</h3>
+                    <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-100 px-5 py-2 rounded-full border border-slate-200">Student ID: {activeStudent.studentId || 'N/A'}</span>
+                      {activeStudent.classId && (
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white bg-slate-900 px-5 py-2 rounded-full shadow-lg shadow-slate-900/10">{getClassName(activeStudent.classId)}</span>
                       )}
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-                  <button
-                    onClick={() => setViewingReportCard(!viewingReportCard)}
-                    className={`flex-1 md:flex-none px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all shadow-lg flex items-center justify-center gap-2 ${
-                      viewingReportCard ? 'bg-white/10 text-white' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-500/20'
-                    }`}
-                  >
-                    <FileText size={ 18 } />
-                    { viewingReportCard ?'Back to Dashboard':'View Report Card'}
-                  </button>
+                <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+                    <button
+                      id="btn_parent_view_report_card"
+                      onClick={() => setViewingReportCard(!viewingReportCard)}
+                      className={`flex-1 lg:flex-none px-12 py-6 rounded-[2rem] font-black uppercase tracking-widest text-[10px] transition-all shadow-2xl flex items-center justify-center gap-4 border-4 ${
+                        viewingReportCard 
+                        ? 'bg-white border-slate-100 text-slate-500 shadow-slate-200/50' 
+                        : 'bg-slate-900 border-slate-900 text-white hover:bg-slate-800 shadow-slate-900/20 active:scale-95'
+                      }`}
+                    >
+                      <FileText size={20} strokeWidth={2.5} />
+                      {viewingReportCard ? 'Back to Overview' : 'Full Academic Report'}
+                    </button>
                 </div>
               </div>
             </motion.div>
           ) : (
-            <div className="bg-white/5 p-12 rounded-[3rem] border border-white/10 text-center">
-              <div className="w-24 h-24 bg-white/5 rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-white/20 border border-white/10">
-                <User size={ 48 } />
+            <div className="bg-white p-24 rounded-[3rem] border border-white text-center shadow-2xl shadow-slate-200/40">
+              <div className="w-28 h-28 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 text-slate-200 border border-slate-100 shadow-inner">
+                <User size={56} strokeWidth={2.5} />
               </div>
-              <p className="text-white font-black uppercase tracking-widest text-lg">No student linked to this account.</p>
-              <p className="text-white/40 font-black uppercase tracking-widest text-[10px] mt-4">Please contact the school administrator to link your child's account.</p>
+              <h3 className="text-3xl font-black uppercase tracking-tighter text-slate-900 mb-4">Account Synchronization</h3>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 max-w-md mx-auto leading-relaxed">Please contact the institutional administration to synchronize your student's profile with this guardian account.</p>
             </div>
           )}
 
-          { activeStudent && !viewingReportCard && (
-            <div className="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-hide no-scrollbar">
-              {(['overview','timetable','finance'] as const).map((tab) => (
+          {activeStudent && !viewingReportCard && (
+            <div className="flex items-center gap-3 overflow-x-auto pb-6 scrollbar-hide no-scrollbar">
+              {(['overview', 'timetable', 'finance'] as const).map((tab) => (
                 <button
-                  key={ tab }
+                  key={tab}
+                  id={`tab_parent_${tab}`}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all whitespace-nowrap shrink-0 border ${
+                  className={`px-12 py-5 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all whitespace-nowrap shrink-0 border ${
                     activeTab === tab
-                      ? 'bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-500/20'
-                      : 'bg-white/5 text-white/40 border-white/5 hover:bg-white/10 hover:text-white'
+                      ? 'bg-slate-900 text-white border-slate-900 shadow-2xl shadow-slate-900/20 scale-105'
+                      : 'bg-white text-slate-400 border-white hover:bg-slate-50 hover:text-slate-900 shadow-xl shadow-slate-200/20'
                   }`}
                 >
-                  { tab }
+                  {tab === 'overview' ? 'Performance' : tab === 'timetable' ? 'Timetable' : 'Financials'}
                 </button>
               ))}
             </div>
           )}
 
-      { viewingReportCard && activeStudent ? (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6"
-        >
-          <StudentResultView user={ activeStudent } />
-        </motion.div>
-      ) : activeTab  === 'timetable'&& activeStudent ? (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6"
-        >
-          <ClassTimetable user={ user } mode="view"studentClassId={ activeStudent.classId } />
-        </motion.div>
-      ) : activeTab  === 'finance'&& activeStudent ? (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6"
-        >
-          <ParentFinance user={ user } studentId={ activeStudent.uid } />
-        </motion.div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10">
-              <h3 className="text-sm font-black uppercase tracking-widest text-white/60 mb-8 flex items-center gap-3">
-                <div className="p-3 bg-blue-500/20 rounded-2xl text-blue-400 border border-blue-500/20"><TrendingUp size={ 20 } /></div>
-                Recent Scores
-              </h3>
-              { results.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 text-center bg-white/5 rounded-3xl border border-white/5">
-                  <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center text-white/20 mb-4 border border-white/10">
-                    <TrendingUp size={ 32 } />
+          {viewingReportCard && activeStudent ? (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="pt-4">
+              <StudentResultView user={activeStudent} />
+            </motion.div>
+          ) : activeTab === 'timetable' && activeStudent ? (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="pt-4">
+              <ClassTimetable user={user} mode="view" studentClassId={activeStudent.classId} />
+            </motion.div>
+          ) : activeTab === 'finance' && activeStudent ? (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="pt-4">
+              <ParentFinance user={user} studentId={activeStudent.uid} />
+            </motion.div>
+          ) : activeStudent && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-12">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                {/* Academic Snap */}
+                <div className="bg-white p-12 rounded-[3rem] border border-white shadow-2xl shadow-slate-200/40">
+                  <div className="flex justify-between items-center mb-12">
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-4">
+                      <div className="p-4 bg-blue-50 rounded-2xl text-blue-600 border border-blue-100"><TrendingUp size={20} strokeWidth={3} /></div>
+                      Academic Progress
+                    </h3>
                   </div>
-                  <p className="text-white/40 font-black uppercase tracking-widest text-[10px]">No recent scores available.</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  { results.map((res, i) => (
-                    <div key={ i } className="flex items-center justify-between p-5 rounded-3xl bg-white/5 border border-white/5 hover:border-blue-500/20 hover:bg-white/[0.07] transition-all group">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-blue-500/20 flex items-center justify-center text-blue-400 font-black border border-blue-500/20 group-hover:scale-110 transition-transform">
-                          { getSubjectName(res.subjectId).substring(0, 2).toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="font-black uppercase tracking-widest text-[10px] text-white">{ getSubjectName(res.subjectId)}</p>
-                          <p className="text-[8px] text-white/40 font-black uppercase tracking-widest mt-1">{ res.date ? new Date(res.date).toLocaleDateString() :'Recent'}</p>
-                        </div>
+                  {results.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-24 text-center bg-slate-50/50 rounded-[2.5rem] border border-slate-100 border-dashed">
+                      <div className="w-20 h-20 bg-white rounded-[2rem] flex items-center justify-center text-slate-200 mb-8 shadow-sm">
+                        <TrendingUp size={36} />
                       </div>
-                      <div className="text-right">
-                        <p className="font-black text-2xl text-blue-400">{ res.score }<span className="text-sm text-white/40 font-black">/{ res.total }</span></p>
-                        <span className={`inline-flex items-center px-4 py-1.5 rounded-full text-[8px] uppercase font-black mt-2 tracking-widest border ${
-                          res.score / res.total >= 0.5 
-                          ?'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                          :'bg-red-500/10 text-red-400 border-red-500/20'
-                        }`}>
-                          { res.score / res.total >= 0.5 ?'Passed':'Needs Review'}
-                        </span>
-                      </div>
+                      <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">No records detected.</p>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 flex flex-col">
-              <h3 className="text-sm font-black uppercase tracking-widest text-white/60 mb-8 flex items-center gap-3">
-                <div className="p-3 bg-emerald-500/20 rounded-2xl text-emerald-400 border border-emerald-500/20"><CreditCard size={ 20 } /></div>
-                Finance Summary
-              </h3>
-              
-              <div className="space-y-6 flex-1 flex flex-col justify-center">
-                <div className="p-10 rounded-[2.5rem] bg-white/5 border border-white/5 text-center relative overflow-hidden">
-                  <div className="absolute top-0 left-0 w-full h-full bg-emerald-500/5 blur-[40px] pointer-events-none"></div>
-                  <p className="text-[10px] text-white/40 font-black uppercase tracking-widest mb-2 relative z-10">Outstanding Balance</p>
-                  <p className={`text-4xl font-black relative z-10 ${totalBalance > 0 ? 'text-blue-400' : 'text-emerald-400'}`}>
-                    ₦{totalBalance.toLocaleString()}
-                  </p>
-                  
-                  {allPaid && (
-                    <div className="mt-6 inline-flex items-center gap-2 px-6 py-2 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-500/20 relative z-10">
-                      <CheckCircle size={14} />
-                      FULLY PAID
-                    </div>
-                  )}
-                  
-                  {hasOverdue && (
-                    <div className="mt-6 inline-flex items-center gap-2 px-6 py-2 rounded-full bg-red-500/10 text-red-400 text-[10px] font-black uppercase tracking-widest border border-red-500/20 animate-pulse relative z-10">
-                      <Clock size={14} />
-                      OVERDUE WARNING
+                  ) : (
+                    <div className="space-y-5">
+                      {results.slice(0, 5).map((res, i) => (
+                        <div key={i} className="flex items-center justify-between p-7 rounded-[2rem] bg-slate-50/50 border border-slate-100 hover:border-white hover:bg-white hover:shadow-2xl transition-all group">
+                          <div className="flex items-center gap-6">
+                            <div className="w-16 h-16 rounded-[1.5rem] bg-white flex items-center justify-center text-blue-600 font-black text-xs border-2 border-slate-50 shadow-sm group-hover:bg-slate-900 group-hover:text-white transition-all">
+                              {getSubjectName(res.subjectId).substring(0, 2).toUpperCase()}
+                            </div>
+                            <div>
+                              <p className="font-black uppercase tracking-widest text-[11px] text-slate-900 mb-2">{getSubjectName(res.subjectId)}</p>
+                              <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest flex items-center gap-2">
+                                <Clock size={12} /> {res.date ? new Date(res.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) : 'PENDING'}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-black text-3xl text-slate-900 leading-none">{res.score}<span className="text-xs text-slate-300 font-black ml-1">/{res.total}</span></p>
+                            <span className={`inline-flex items-center px-5 py-2 rounded-full text-[8px] uppercase font-black mt-3 tracking-widest border shadow-sm ${
+                              res.score / res.total >= 0.5 
+                              ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                              : 'bg-red-50 text-red-600 border-red-100'
+                            }`}>
+                              {res.score / res.total >= 0.5 ? 'Passed' : 'Requires Review'}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
 
-                <button 
-                  onClick={() => setActiveTab('finance')}
-                  className="w-full py-5 rounded-3xl bg-white text-[#020617] font-black uppercase tracking-widest text-[10px] hover:bg-slate-200 transition-all shadow-xl shadow-white/5 flex items-center justify-center gap-2"
-                >
-                  View Detailed Invoices <ChevronRight size={16} />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10">
-              <h3 className="text-sm font-black uppercase tracking-widest text-white/60 mb-8 flex items-center gap-3">
-                <div className="p-3 bg-amber-500/20 rounded-2xl text-amber-400 border border-amber-500/20"><Bell size={ 20 } /></div>
-                School Notices
-              </h3>
-              <div className="space-y-6">
-                { announcements.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-12 text-center bg-white/5 rounded-3xl border border-white/5">
-                    <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center text-white/20 mb-4 border border-white/10">
-                      <Bell size={ 32 } />
-                    </div>
-                    <p className="text-white/40 font-black uppercase tracking-widest text-[10px]">No recent notices.</p>
+                {/* Financial Snap */}
+                <div className="bg-white p-12 rounded-[3rem] border border-white shadow-2xl shadow-slate-200/40 flex flex-col">
+                  <div className="flex justify-between items-center mb-12">
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-4">
+                      <div className="p-4 bg-emerald-50 rounded-2xl text-emerald-600 border border-emerald-100"><CreditCard size={20} strokeWidth={3} /></div>
+                      Fee Assessment
+                    </h3>
                   </div>
-                ) : (
-                  announcements.map((note, i) => (
-                    <div key={ i } className="p-6 rounded-3xl bg-white/5 border border-white/5 hover:border-amber-500/20 hover:bg-white/[0.07] transition-all group">
-                      <div className="flex justify-between items-start mb-4">
-                        <span className={`text-[8px] uppercase font-black px-4 py-1.5 rounded-full border tracking-widest ${
-                          note.isSchoolWide 
-                          ?'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                          :'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
-                        }`}>
-                          { note.isSchoolWide ?'School-wide':'Class Notice'}
-                        </span>
-                        <span className="text-[8px] text-white/40 font-black uppercase tracking-widest bg-white/5 px-3 py-1.5 rounded-full border border-white/5">{ new Date(note.createdAt).toLocaleDateString()}</span>
+                  
+                  <div className="space-y-12 flex-1 flex flex-col justify-center">
+                    <div className="p-16 rounded-[3rem] bg-slate-50 border border-slate-100 text-center relative overflow-hidden shadow-inner">
+                      <div className="absolute inset-0 bg-emerald-500/[0.02] blur-3xl"></div>
+                      <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-4 relative z-10">Outstanding Balance</p>
+                      <p className={`text-6xl font-black relative z-10 tracking-tighter leading-none ${totalBalance > 0 ? 'text-slate-900' : 'text-emerald-600'}`}>
+                        ₦{totalBalance.toLocaleString()}
+                      </p>
+                      
+                      {allPaid && (
+                        <div className="mt-10 inline-flex items-center gap-3 px-10 py-4 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest border border-emerald-100 shadow-sm relative z-10">
+                          <CheckCircle size={18} strokeWidth={3} /> Verified: All Settled
+                        </div>
+                      )}
+                      
+                      {hasOverdue && (
+                        <div className="mt-10 inline-flex items-center gap-3 px-10 py-4 rounded-full bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-widest border border-red-100 shadow-sm animate-pulse relative z-10">
+                          <Clock size={18} strokeWidth={3} /> Action: Payment Overdue
+                        </div>
+                      )}
+                    </div>
+
+                    <button 
+                      id="btn_parent_view_invoice_ledger"
+                      onClick={() => setActiveTab('finance')}
+                      className="w-full py-7 rounded-[2.5rem] bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] hover:bg-slate-800 transition-all shadow-2xl shadow-slate-900/10 flex items-center justify-center gap-4 active:scale-95"
+                    >
+                      View Invoice Ledger <ChevronRight size={20} strokeWidth={3} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Announcements & AI Insights */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div className="bg-white p-12 rounded-[3rem] border border-white shadow-2xl shadow-slate-200/40">
+                  <div className="flex justify-between items-center mb-12">
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-4">
+                      <div className="p-4 bg-amber-50 rounded-2xl text-amber-600 border border-amber-100"><Bell size={20} strokeWidth={3} /></div>
+                      Institutional Updates
+                    </h3>
+                  </div>
+                  <div className="space-y-6">
+                    {announcements.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center py-24 text-center bg-slate-50/50 rounded-[2.5rem] border border-slate-100 border-dashed">
+                        <div className="w-20 h-20 bg-white rounded-[2rem] flex items-center justify-center text-slate-200 mb-8 shadow-sm">
+                          <Bell size={36} />
+                        </div>
+                        <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">Inbox clear.</p>
                       </div>
-                      <h4 className="font-black uppercase tracking-widest text-[12px] text-white mb-3 group-hover:text-amber-400 transition-colors">{ note.title }</h4>
-                      <p className="text-[10px] text-white/60 font-black uppercase tracking-widest leading-relaxed line-clamp-3">{ note.content }</p>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
+                    ) : (
+                      announcements.slice(0, 3).map((note, i) => (
+                        <div key={i} className="p-10 rounded-[2.5rem] bg-slate-50/50 border border-slate-100 hover:border-white hover:bg-white hover:shadow-2xl transition-all group">
+                          <div className="flex justify-between items-center mb-8">
+                            <span className={`text-[8px] uppercase font-black px-5 py-2 rounded-full border tracking-widest shadow-sm ${
+                              note.isSchoolWide 
+                              ? 'bg-slate-900 text-white border-slate-900'
+                              : 'bg-indigo-50 text-indigo-600 border-indigo-100'
+                            }`}>
+                              {note.isSchoolWide ? 'Global' : 'Specific'}
+                            </span>
+                            <span className="text-[8px] text-slate-400 font-black uppercase tracking-widest bg-white px-4 py-2 rounded-full border border-slate-100 shadow-sm">{new Date(note.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}</span>
+                          </div>
+                          <h4 className="font-black uppercase tracking-widest text-sm text-slate-900 mb-4 group-hover:text-blue-600 transition-colors">{note.title}</h4>
+                          <p className="text-[11px] text-slate-500 font-black uppercase tracking-widest leading-relaxed line-clamp-3 opacity-70">{note.content}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
 
-            <motion.div whileHover={{ scale: 1.01 }} className="bg-gradient-to-br from-indigo-500/5 via-purple-500/5 to-pink-500/5 p-10 rounded-[3rem] border border-white/10 shadow-sm relative overflow-hidden flex flex-col min-h-[400px]">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-[100px] -mr-32 -mt-32 pointer-events-none"></div>
-              <div className="relative z-10 flex flex-col h-full justify-center">
-                <div className="flex items-center gap-6 mb-8">
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-3xl flex items-center justify-center text-white shadow-2xl shadow-purple-500/20 border border-white/10">
-                    <Heart size={ 32 } />
+                <div className="bg-slate-900 p-16 rounded-[4rem] relative overflow-hidden flex flex-col min-h-[500px] shadow-2xl shadow-slate-900/20">
+                  <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/[0.03] rounded-full blur-[120px] -mr-32 -mt-32 pointer-events-none"></div>
+                  <div className="relative z-10 flex flex-col h-full justify-center">
+                    <div className="flex items-center gap-10 mb-16">
+                      <div className="w-24 h-24 bg-white/10 backdrop-blur-md rounded-[2rem] flex items-center justify-center text-white shadow-2xl border border-white/10">
+                        <Heart size={48} strokeWidth={2.5} fill="white" />
+                      </div>
+                      <div>
+                        <h3 className="text-3xl font-black uppercase tracking-tighter text-white">AI Companion</h3>
+                        <p className="text-[10px] text-white/40 font-black uppercase tracking-widest mt-3">Machine Learning Intelligence</p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-8 mb-16">
+                      <div className="bg-white/5 p-10 rounded-[3rem] border border-white/5 text-center shadow-2xl">
+                        <p className="text-[10px] text-white/30 font-black uppercase tracking-widest mb-4">Mastery Grade</p>
+                        <p className="text-5xl font-black text-white tracking-tighter">Level {activeStudent?.level || 1}</p>
+                      </div>
+                      <div className="bg-white/5 p-10 rounded-[3rem] border border-white/5 text-center shadow-2xl">
+                        <p className="text-[10px] text-white/30 font-black uppercase tracking-widest mb-4">Total XP</p>
+                        <p className="text-5xl font-black text-white tracking-tighter">{activeStudent?.xp || 0}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white/10 backdrop-blur-md p-10 rounded-[3rem] border border-white/10 relative overflow-hidden">
+                      <p className="text-[11px] text-white font-black uppercase tracking-widest leading-relaxed relative z-10 italic opacity-90">
+                        "{activeStudent?.firstName} continues to show exceptional analytical capacity. Our algorithms recommend additional focus on abstract problem solving to bridge the level gap."
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-black uppercase tracking-widest text-white">AI Study Buddy Progress</h3>
-                    <p className="text-[10px] text-white/40 font-black uppercase tracking-widest mt-2">Track { activeStudent?.firstName }'s learning journey</p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4 mb-8">
-                  <div className="bg-white/5 p-6 rounded-[2rem] border border-white/5 text-center">
-                    <p className="text-[10px] text-white/40 font-black uppercase tracking-widest mb-2">Current Level</p>
-                    <p className="text-3xl font-black text-indigo-400">{ activeStudent?.level || 1 }</p>
-                  </div>
-                  <div className="bg-white/5 p-6 rounded-[2rem] border border-white/5 text-center">
-                    <p className="text-[10px] text-white/40 font-black uppercase tracking-widest mb-2">Total XP</p>
-                    <p className="text-3xl font-black text-purple-400">{ activeStudent?.xp || 0 }</p>
-                  </div>
-                </div>
-                
-                <div className="bg-white/5 p-6 rounded-[2rem] border border-white/5 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 pointer-events-none"></div>
-                  <p className="text-[10px] text-white/60 font-black uppercase tracking-widest leading-relaxed relative z-10">
-                    { activeStudent?.firstName } has been actively using the AI Study Buddy to practice concepts and complete quizzes. Encourage them to keep up the great work!
-                  </p>
                 </div>
               </div>
             </motion.div>
-          </div>v>
-        </>
-      )}
+          )}
+        </div>
+      </div>
     </div>
   );
 };

@@ -222,6 +222,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                     <p className="text-lg text-slate-700 font-medium max-w-md mx-auto leading-relaxed">{selectedLesson.intro}</p>
                   </div>
                   <button 
+                    id="btn_quiz_submit"
                     onClick={handleNextStep}
                     className="bg-blue-600 text-white hover:bg-blue-700 px-10 py-2.5 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all flex items-center gap-2 mx-auto shadow-lg shadow-blue-200/50"
                   >
@@ -302,6 +303,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                       
                       return (
                         <button 
+                          id={`btn_quiz_option_${idx}`}
                           key={idx}
                           disabled={showFeedback}
                           onClick={() => handleQuizAnswer(idx)}
@@ -414,6 +416,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                       <RefreshCcw size={18} /> Play Again
                     </button>
                     <button 
+                      id={`btn_lesson_start_${selectedLesson?.id}`}
                       onClick={() => setSelectedLesson(null)}
                       className="bg-blue-600 text-white hover:bg-blue-700 px-10 py-2.5 rounded-full font-medium  hover:scale-105 transition-all mx-auto"
                     >
@@ -447,6 +450,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
       {!selectedSubject ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <motion.button 
+            id="btn_subject_English"
             whileHover={{ y: -5, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -469,6 +473,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
           </motion.button>
 
           <motion.button 
+            id="btn_subject_Math"
             whileHover={{ y: -5, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -491,6 +496,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
           </motion.button>
 
           <motion.button 
+            id="btn_subject_Science"
             whileHover={{ y: -5, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -513,6 +519,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
           </motion.button>
 
           <motion.button 
+            id="btn_subject_Social"
             whileHover={{ y: -5, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -535,6 +542,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
           </motion.button>
 
           <motion.button 
+            id="btn_subject_ICT"
             whileHover={{ y: -5, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -557,6 +565,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
           </motion.button>
 
           <motion.button 
+            id="btn_subject_Civic"
             whileHover={{ y: -5, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -581,15 +590,13 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
       ) : (
         <div className="space-y-5">
           <div className="flex items-center gap-4">
-            <motion.button 
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            <button 
+              id="btn_lesson_back"
               onClick={() => setSelectedSubject(null)}
-              className="flex-1 px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-medium text-slate-900 shadow-sm"
+              className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors"
             >
-              <ChevronRight size={20} className="rotate-180" />
-            </motion.button>
+              <ChevronRight size={20} className="rotate-180" /> Back
+            </button>
             <h3 className="text-xl font-medium text-slate-900">{selectedSubject} Lessons</h3>
           </div>
 
@@ -613,17 +620,18 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                      animate={{ opacity: 1, y: 0 }}
                      transition={{ delay: idx * 0.1, type: "spring", stiffness: 300, damping: 20 }}
                      whileHover={{ y: -5, scale: 1.02 }}
-                     className={`${colorClass} p-3 rounded-2xl border border-white/40 shadow-sm transition-all group flex flex-col relative overflow-hidden`}
+                     className={`${colorClass} p-8 rounded-[2.5rem] border shadow-sm transition-all group flex flex-col relative overflow-hidden`}
                    >
-                     <div className="flex justify-between items-start mb-4 relative z-10">
-                       <span className="text-[9px] font-black text-slate-900 bg-white/60 px-3 py-1 rounded-full uppercase tracking-widest border border-white/50 shadow-sm">{lesson.level}</span>
-                       <div className="p-2 bg-white/60 text-slate-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity scale-90 group-hover:scale-100 border border-white/50 shadow-sm">
-                         <Play size={14} fill="currentColor" />
+                     <div className="flex justify-between items-start mb-6 relative z-10">
+                       <span className="text-[10px] font-black text-slate-900 bg-white/80 px-4 py-1.5 rounded-full uppercase tracking-widest border border-white/50 shadow-sm">{lesson.level}</span>
+                       <div className="p-2 bg-white/80 text-slate-900 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity scale-90 group-hover:scale-100 border border-white/50 shadow-sm">
+                         <Play size={16} fill="currentColor" />
                        </div>
                      </div>
-                     <h4 className="text-lg font-black uppercase tracking-widest mb-1 text-slate-900 leading-tight relative z-10">{lesson.title}</h4>
-                     <p className="text-[10px] text-slate-700 font-bold uppercase tracking-wide mb-6 line-clamp-2 flex-grow relative z-10">{lesson.content}</p>
+                     <h4 className="text-xl font-black uppercase tracking-tighter mb-2 text-slate-900 leading-tight relative z-10">{lesson.title}</h4>
+                     <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest mb-8 line-clamp-2 flex-grow relative z-10">{lesson.content}</p>
                      <motion.button 
+                       id={`btn_lesson_start_${lesson.id || idx}`}
                        whileHover={{ scale: 1.02 }}
                        whileTap={{ scale: 0.98 }}
                        transition={{ type: "spring", stiffness: 400, damping: 17 }}

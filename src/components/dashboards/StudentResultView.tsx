@@ -125,52 +125,66 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
 
   return (
     <div className={containerClass}>
-      <div className="print:hidden space-y-5">
-        <div className="bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-sm border border-white/50">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="print:hidden space-y-8">
+        <div className="bg-white/80 backdrop-blur-md p-6 md:p-8 rounded-[2.5rem] border border-white/50 shadow-sm">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
-              <h2 className="text-xl font-black uppercase tracking-tighter text-slate-900">{user.firstName} {user.lastName}</h2>
-              <p className="text-slate-900 font-medium text-xs uppercase tracking-widest mt-1">
-                Class: {getClassName(user.classId || '')} • Reg No: {user.registrationNumber || 'N/A'}
-              </p>
+              <h2 className="text-2xl font-black uppercase tracking-tighter text-slate-900">{user.firstName} {user.lastName}</h2>
+              <div className="flex flex-wrap items-center gap-3 mt-2">
+                <span className="px-3 py-1 rounded-full bg-slate-900 text-white font-black uppercase tracking-widest text-[8px]">
+                  {getClassName(user.classId || '')}
+                </span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  Reg No: {user.registrationNumber || 'N/A'}
+                </span>
+              </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3 w-full md:w-auto">
               <button
                 onClick={() => setShowReportCard(true)}
                 disabled={results.length === 0}
-                className="px-4 py-2.5 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 font-black uppercase tracking-widest text-[10px] transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm border border-blue-100/50"
+                className="flex-1 md:flex-none px-6 py-3.5 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-blue-500/20 active:scale-95"
               >
                 <Printer size={18} />
-                <span className="hidden sm:inline">Print Report</span>
+                Print Report Card
               </button>
-              <select
-                value={selectedSession}
-                onChange={e => setSelectedSession(e.target.value)}
-                className="px-4 py-2.5 rounded-2xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm text-slate-900 shadow-sm cursor-pointer"
-              >
-                {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-              </select>
+              <div className="relative group flex-1 md:flex-none">
+                <select
+                  value={selectedSession}
+                  onChange={e => setSelectedSession(e.target.value)}
+                  className="w-full appearance-none pl-6 pr-12 py-3.5 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black uppercase tracking-widest text-[10px] text-slate-900 cursor-pointer shadow-sm"
+                >
+                  {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                  <TrendingDown size={14} className="rotate-0" />
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="flex gap-2 mt-8 p-1.5 bg-white rounded-2xl w-fit">
+          <div className="flex flex-wrap gap-2 mt-10 p-2 bg-slate-50 rounded-[2rem] w-fit border border-slate-100/50">
             {['1st Term', '2nd Term', '3rd Term'].map((termName, index) => {
               const term = terms.find(t => t.name === termName);
-              const colors = ['bg-orange-100', 'bg-blue-100', 'bg-purple-100'];
-              const colorClass = colors[index % colors.length];
+              const activeStyles = [
+                'bg-white text-orange-600 shadow-xl shadow-orange-500/10 border-orange-100',
+                'bg-white text-blue-600 shadow-xl shadow-blue-500/10 border-blue-100',
+                'bg-white text-purple-600 shadow-xl shadow-purple-500/10 border-purple-100'
+              ];
+              const isActive = selectedTerm === term?.id;
+              
               return (
                 <motion.button
-                  whileHover={term ? { scale: 1.05 } : {}}
-                  whileTap={term ? { scale: 0.95 } : {}}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  whileHover={term ? { scale: 1.02 } : {}}
+                  whileTap={term ? { scale: 0.98 } : {}}
                   key={termName}
                   onClick={() => term && setSelectedTerm(term.id)}
                   disabled={!term}
-                  className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                    selectedTerm === term?.id 
-                      ? `${colorClass} text-slate-900 shadow-sm` 
-                      : 'text-slate-900/40 hover:text-slate-900'
-                  }`}
+                  className={`px-8 py-3 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest transition-all border border-transparent ${
+                    isActive 
+                      ? activeStyles[index % activeStyles.length]
+                      : 'text-slate-400 hover:text-slate-900'
+                  } disabled:opacity-30`}
                 >
                   {termName}
                 </motion.button>
@@ -179,22 +193,28 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2 space-y-5">
-            <div className="bg-white/80 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm overflow-hidden">
-              <div className="p-4 border-b border-white/50">
-                <h3 className="font-black uppercase tracking-widest text-xs text-slate-900">Subject Performance</h3>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
+            <div className="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-white/50 shadow-sm overflow-hidden">
+              <div className="px-8 py-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
+                <h3 className="font-black uppercase tracking-widest text-[10px] text-slate-900">Academic Breakdown</h3>
+                {!loading && results.length > 0 && (
+                  <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-600 font-black uppercase tracking-widest text-[8px]">
+                    {results.length} Subjects
+                  </span>
+                )}
               </div>
+              
               <AnimatePresence mode="wait">
                 {loading ? (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="p-20 flex flex-col items-center justify-center text-slate-900"
+                    className="p-32 flex flex-col items-center justify-center text-slate-900"
                   >
-                    <Loader2 className="animate-spin mb-4" size={40} />
-                    <p className="font-medium">Fetching results...</p>
+                    <div className="w-12 h-12 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin mb-4" />
+                    <p className="font-black uppercase tracking-widest text-[10px]">Processing results...</p>
                   </motion.div>
                 ) : (
                   <motion.div
@@ -205,53 +225,53 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                     {/* Desktop Table */}
                     <div className="hidden md:block overflow-x-auto">
                       <table className="w-full text-left">
-                        <thead className="bg-slate-50 text-[10px] uppercase tracking-widest text-slate-900 font-medium">
+                        <thead className="bg-slate-50/50 text-[9px] font-black uppercase tracking-widest text-slate-400">
                           <tr>
-                            <th className="px-6 py-5">Subject</th>
+                            <th className="pl-8 pr-4 py-5">Subject Name</th>
                             {caConfig.cas.map((ca, idx) => (
                               <th key={idx} className="px-4 py-5 text-center">{ca.name}</th>
                             ))}
-                            <th className="px-4 py-5 text-center">CA Total</th>
+                            <th className="px-4 py-5 text-center">CA</th>
                             <th className="px-4 py-5 text-center">Exam</th>
-                            <th className="px-4 py-5 text-center bg-blue-50/50">Final</th>
+                            <th className="px-4 py-5 text-center bg-blue-50/30 text-blue-600">Total</th>
                             <th className="px-4 py-5 text-center">Grade</th>
-                            <th className="px-6 py-5">Remark</th>
+                            <th className="pr-8 pl-4 py-5">Remark</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-50">
+                        <tbody className="divide-y divide-slate-50">
                           {results.map(result => (
-                            <tr key={result.id} className="hover:bg-slate-50 transition-colors group">
-                              <td className="px-6 py-5">
-                                <div className="font-medium text-slate-900 group-hover:text-blue-600 transition-colors">{getSubjectName(result.subjectId)}</div>
+                            <tr key={result.id} className="hover:bg-slate-50/50 transition-colors group">
+                              <td className="pl-8 pr-4 py-6">
+                                <div className="font-black uppercase tracking-tighter text-sm text-slate-900 group-hover:text-blue-600 transition-colors">{getSubjectName(result.subjectId)}</div>
                               </td>
                               {caConfig.cas.map((ca, idx) => {
                                 const val = result.cas?.[ca.name] !== undefined ? result.cas[ca.name] : (idx === 0 ? result.ca1 : idx === 1 ? result.ca2 : idx === 2 ? result.ca3 : null);
                                 return (
-                                  <td key={idx} className="px-4 py-5 text-center font-medium text-slate-900">{val !== null && val !== undefined ? val : '-'}</td>
+                                  <td key={idx} className="px-4 py-6 text-center font-bold text-slate-900">{val !== null && val !== undefined ? val : '-'}</td>
                                 );
                               })}
-                              <td className="px-4 py-5 text-center font-medium text-slate-900">{result.caTotal || 0}</td>
-                              <td className="px-4 py-5 text-center font-medium text-slate-900">{result.exam !== null && result.exam !== undefined ? result.exam : '-'}</td>
-                              <td className="px-4 py-5 text-center font-medium text-blue-600 bg-blue-50/20">{result.finalScore || 0}</td>
-                              <td className="px-4 py-5 text-center">
-                                <span className={`inline-flex items-center justify-center w-10 h-10 rounded-xl font-medium text-sm ${
-                                  result.grade === 'A' ? 'bg-emerald-50 text-emerald-600' :
-                                  result.grade === 'B' ? 'bg-blue-50 text-blue-600' :
-                                  result.grade === 'C' ? 'bg-amber-50 text-amber-600' :
-                                  'bg-red-50 text-red-600'
+                              <td className="px-4 py-6 text-center font-bold text-slate-900">{result.caTotal || 0}</td>
+                              <td className="px-4 py-6 text-center font-bold text-slate-900">{result.exam !== null && result.exam !== undefined ? result.exam : '-'}</td>
+                              <td className="px-4 py-6 text-center font-black text-blue-600 bg-blue-50/10">{result.finalScore || 0}</td>
+                              <td className="px-4 py-6 text-center">
+                                <span className={`inline-flex items-center justify-center px-4 py-1.5 rounded-full font-black text-[10px] tracking-widest ${
+                                  result.grade === 'A' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' :
+                                  result.grade === 'B' ? 'bg-blue-50 text-blue-600 border border-blue-100' :
+                                  result.grade === 'C' ? 'bg-amber-50 text-amber-600 border border-amber-100' :
+                                  'bg-rose-50 text-rose-600 border border-rose-100'
                                 }`}>
                                   {result.grade || '-'}
                                 </span>
                               </td>
-                              <td className="px-6 py-5">
-                                <span className="text-[10px] font-medium text-slate-900 uppercase tracking-wider">{result.remark || '-'}</span>
+                              <td className="pr-8 pl-4 py-6">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">{result.remark || '-'}</span>
                               </td>
                             </tr>
                           ))}
                           {results.length === 0 && (
                             <tr>
-                              <td colSpan={caConfig.cas.length + 5} className="px-6 py-20 text-center text-slate-900 font-medium">
-                                No results found for this term.
+                              <td colSpan={caConfig.cas.length + 5} className="py-32 text-center">
+                                <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">No results found for this term</p>
                               </td>
                             </tr>
                           )}
@@ -260,56 +280,56 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                     </div>
 
                     {/* Mobile Cards */}
-                    <div className="md:hidden flex flex-col gap-4 p-4 bg-slate-50">
+                    <div className="md:hidden flex flex-col gap-4 p-4 bg-slate-50/30">
                       {results.map(result => (
-                        <div key={result.id} className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 flex flex-col gap-4">
+                        <div key={result.id} className="bg-white rounded-[2rem] shadow-sm border border-slate-100 p-6 flex flex-col gap-6">
                           <div className="flex items-center justify-between">
-                            <div className="font-medium text-sm text-slate-900">{getSubjectName(result.subjectId)}</div>
-                            <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-medium text-sm ${
-                              result.grade === 'A' ? 'bg-emerald-50 text-emerald-600' :
-                              result.grade === 'B' ? 'bg-blue-50 text-blue-600' :
-                              result.grade === 'C' ? 'bg-amber-50 text-amber-600' :
-                              'bg-red-50 text-red-600'
+                            <div className="font-black uppercase tracking-tighter text-sm text-slate-900">{getSubjectName(result.subjectId)}</div>
+                            <span className={`inline-flex items-center justify-center px-4 py-1.5 rounded-full font-black text-[10px] tracking-widest ${
+                              result.grade === 'A' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' :
+                              result.grade === 'B' ? 'bg-blue-50 text-blue-600 border border-blue-100' :
+                              result.grade === 'C' ? 'bg-amber-50 text-amber-600 border border-amber-100' :
+                              'bg-rose-50 text-rose-600 border border-rose-100'
                             }`}>
                               {result.grade || '-'}
                             </span>
                           </div>
                           
-                          <div className="grid grid-cols-2 gap-2 pt-3 border-t border-gray-50">
+                          <div className="grid grid-cols-2 gap-4 py-4 border-y border-slate-50">
                             {caConfig.cas.map((ca, idx) => {
                               const val = result.cas?.[ca.name] !== undefined ? result.cas[ca.name] : (idx === 0 ? result.ca1 : idx === 1 ? result.ca2 : idx === 2 ? result.ca3 : null);
                               return (
-                                <div key={idx} className="flex flex-col items-center justify-center">
-                                  <span className="text-[10px] text-slate-900 mb-1">{ca.name}</span>
-                                  <span className="font-medium text-slate-900">{val !== null && val !== undefined ? val : '-'}</span>
+                                <div key={idx} className="flex flex-col">
+                                  <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">{ca.name} Score</span>
+                                  <span className="font-bold text-slate-900">{val !== null && val !== undefined ? val : '-'}</span>
                                 </div>
                               );
                             })}
                           </div>
                           
-                          <div className="grid grid-cols-3 gap-2 pt-3 border-t border-gray-50">
-                            <div className="flex flex-col items-center justify-center">
-                              <span className="text-[10px] text-slate-900 mb-1">CA Total</span>
-                              <span className="font-medium text-slate-900">{result.caTotal || 0}</span>
+                          <div className="grid grid-cols-3 gap-4">
+                            <div className="flex flex-col">
+                              <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">CA Total</span>
+                              <span className="font-bold text-slate-900">{result.caTotal || 0}</span>
                             </div>
-                            <div className="flex flex-col items-center justify-center">
-                              <span className="text-[10px] text-slate-900 mb-1">Exam</span>
-                              <span className="font-medium text-slate-900">{result.exam !== null && result.exam !== undefined ? result.exam : '-'}</span>
+                            <div className="flex flex-col">
+                              <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">Exam</span>
+                              <span className="font-bold text-slate-900">{result.exam !== null && result.exam !== undefined ? result.exam : '-'}</span>
                             </div>
-                            <div className="flex flex-col items-center justify-center">
-                              <span className="text-[10px] text-blue-400/80 mb-1">Final</span>
-                              <span className="font-medium text-blue-600">{result.finalScore || 0}</span>
+                            <div className="flex flex-col">
+                              <span className="text-[8px] font-black uppercase tracking-widest text-blue-400 mb-1">Final</span>
+                              <span className="font-black text-blue-600">{result.finalScore || 0}</span>
                             </div>
                           </div>
                           
-                          <div className="flex justify-between items-center pt-3 border-t border-gray-50">
-                            <span className="text-xs text-slate-900">Remark</span>
-                            <span className="text-[10px] font-medium text-slate-900 uppercase tracking-wider">{result.remark || '-'}</span>
+                          <div className="flex justify-between items-center pt-4 border-t border-slate-50">
+                            <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Teacher's Remark</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">{result.remark || '-'}</span>
                           </div>
                         </div>
                       ))}
                       {results.length === 0 && (
-                        <div className="py-8 text-center text-slate-900 text-sm">No results found for this term.</div>
+                        <div className="py-20 text-center text-slate-400 font-black uppercase tracking-widest text-[10px]">No results available</div>
                       )}
                     </div>
                   </motion.div>
@@ -318,68 +338,71 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
             </div>
           </div>
 
-          <div className="space-y-5">
-            <div className="bg-white backdrop-blur-md p-4 rounded-2xl border border-white/50 shadow-sm">
-              <h3 className="font-black uppercase tracking-widest text-xs text-slate-900 mb-6">Summary</h3>
-              <div className="space-y-5">
-                <div className="flex justify-between items-center p-4 rounded-2xl bg-blue-100 border border-white/50">
+          <div className="space-y-8">
+            <div className="bg-white/80 backdrop-blur-md p-8 rounded-[2.5rem] border border-white/50 shadow-sm">
+              <h3 className="font-black uppercase tracking-widest text-[10px] text-slate-900 mb-10">Performance Overview</h3>
+              <div className="space-y-6">
+                <div className="group flex justify-between items-center p-6 rounded-[2rem] bg-blue-50 border border-blue-100/50 transition-all hover:scale-105">
                   <div>
-                    <p className="text-[10px] font-medium text-gray-700 uppercase tracking-widest">Average Score</p>
-                    <p className="text-xl font-medium text-slate-900">{stats.average.toFixed(1)}%</p>
+                    <p className="text-[8px] font-black uppercase tracking-widest text-blue-400 mb-1">Average Score</p>
+                    <p className="text-3xl font-black tracking-tighter text-blue-600">{stats.average.toFixed(1)}%</p>
                   </div>
-                  <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-900 shadow-sm">
-                    <TrendingUp size={20} />
+                  <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-blue-600 shadow-xl shadow-blue-500/10 group-hover:rotate-12 transition-transform">
+                    <TrendingUp size={28} />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 rounded-2xl bg-orange-100 border border-white/50">
-                    <p className="text-[10px] font-medium text-gray-700 uppercase tracking-widest">Total Score</p>
-                    <p className="text-xl font-medium text-slate-900">{stats.total}</p>
+                  <div className="p-6 rounded-[2rem] bg-orange-50 border border-orange-100/50">
+                    <p className="text-[8px] font-black uppercase tracking-widest text-orange-400 mb-1">Total Points</p>
+                    <p className="text-2xl font-black tracking-tighter text-orange-600">{stats.total}</p>
                   </div>
-                  <div className="p-4 rounded-2xl bg-purple-100 border border-white/50">
-                    <p className="text-[10px] font-medium text-gray-700 uppercase tracking-widest">Overall Grade</p>
-                    <p className="text-xl font-medium text-slate-900">{getOverallGrade(stats.average)}</p>
+                  <div className="p-6 rounded-[2rem] bg-purple-50 border border-purple-100/50">
+                    <p className="text-[8px] font-black uppercase tracking-widest text-purple-400 mb-1">Overall Grade</p>
+                    <p className="text-2xl font-black tracking-tighter text-purple-600">{getOverallGrade(stats.average)}</p>
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-green-100 border border-white/50">
-                    <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-900">
-                      <Star size={20} />
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4 p-5 rounded-[2rem] bg-white border border-slate-100">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100">
+                      <Star size={24} />
                     </div>
                     <div>
-                      <p className="text-[10px] font-medium text-gray-700 uppercase tracking-widest">Best Subject</p>
-                      <p className="font-medium text-slate-900">{stats.best ? getSubjectName(stats.best.subjectId) : 'N/A'}</p>
+                      <p className="text-[8px] font-black uppercase tracking-widest text-slate-400">Best Subject</p>
+                      <p className="font-black uppercase tracking-tighter text-sm text-slate-900">{stats.best ? getSubjectName(stats.best.subjectId) : 'N/A'}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-pink-100 border border-white/50">
-                    <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-900">
-                      <Target size={20} />
+                  <div className="flex items-center gap-4 p-5 rounded-[2rem] bg-white border border-slate-100">
+                    <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-600 border border-rose-100">
+                      <Target size={24} />
                     </div>
                     <div>
-                      <p className="text-[10px] font-medium text-gray-700 uppercase tracking-widest">Needs Focus</p>
-                      <p className="font-medium text-slate-900">{stats.weakest ? getSubjectName(stats.weakest.subjectId) : 'N/A'}</p>
+                      <p className="text-[8px] font-black uppercase tracking-widest text-slate-400">Needs Focus</p>
+                      <p className="font-black uppercase tracking-tighter text-sm text-slate-900">{stats.weakest ? getSubjectName(stats.weakest.subjectId) : 'N/A'}</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-yellow-100 p-4 rounded-2xl text-slate-900 shadow-xl shadow-yellow-200/50 relative overflow-hidden">
+            <div className="bg-slate-900 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-slate-900/40 relative overflow-hidden group">
               <div className="relative z-10">
-                <Award className="mb-4 opacity-50" size={40} />
-                <h4 className="text-xl font-black uppercase tracking-tighter mb-2">Academic Excellence</h4>
-                <p className="text-slate-900 text-sm leading-relaxed">
+                <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 border border-white/10 group-hover:scale-110 transition-transform">
+                  <Award size={32} />
+                </div>
+                <h4 className="text-2xl font-black uppercase tracking-tighter mb-2">Excellence Journey</h4>
+                <p className="text-slate-400 text-sm leading-relaxed font-medium">
                   Keep up the great work! Your performance in {stats.best ? getSubjectName(stats.best.subjectId) : 'your subjects'} is outstanding.
                 </p>
               </div>
-              <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-white/60 rounded-full blur-2xl" />
+              <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-600 rounded-full blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity" />
             </div>
           </div>
         </div>
       </div>
+
 
       {/* Report Card Modal (Preview) */}
       <AnimatePresence>

@@ -140,27 +140,55 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
     );
   };
 
-  if (loading) return <div>Loading finance data...</div>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="w-12 h-12 border-4 border-blue-500/10 border-t-blue-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  const totalOutstanding = invoices.reduce((acc, inv) => acc + (inv.amount - inv.amountPaid), 0);
+  const totalPaid = payments.reduce((acc, pay) => acc + pay.amount, 0);
 
   return (
-    <div className="space-y-6">
-      <h3 className="text-xl font-medium">Fees & Payments</h3>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h4 className="font-medium text-slate-900 dark:text-slate-100">Invoice History</h4>
-            <div className="flex gap-2">
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                <span className="text-[10px] text-slate-500">Paid</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                <span className="text-[10px] text-slate-500">Overdue</span>
-              </div>
+    <div className="space-y-12">
+      {/* Finance Overview Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Total Outstanding</p>
+          <div className="flex items-end gap-2">
+            <h4 className={`text-4xl font-black tracking-tighter ${totalOutstanding > 0 ? 'text-slate-900' : 'text-emerald-600'}`}>
+              ₦{totalOutstanding.toLocaleString()}
+            </h4>
+          </div>
+        </div>
+        <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Total Settled</p>
+          <div className="flex items-end gap-2 text-blue-600">
+            <h4 className="text-4xl font-black tracking-tighter">₦{totalPaid.toLocaleString()}</h4>
+          </div>
+        </div>
+        <div className="bg-slate-900 p-8 rounded-[2.5rem] relative overflow-hidden shadow-xl shadow-slate-900/10 hidden lg:block">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent pointer-events-none"></div>
+          <div className="relative z-10">
+            <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-4">Account Status</p>
+            <div className="flex items-center gap-3">
+              <div className={`w-3 h-3 rounded-full ${totalOutstanding > 0 ? 'bg-yellow-500 shadow-[0_0_12px_rgba(234,179,8,0.4)]' : 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]'}`}></div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-white">
+                {totalOutstanding > 0 ? 'Action Required' : 'All Clear'}
+              </span>
             </div>
           </div>
+        </div>
+      </div>
+          
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="space-y-8">
+          <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-4">
+            <div className="p-2 bg-blue-50 rounded-xl text-blue-600 border border-blue-100 shadow-sm"><CreditCard size={ 16 } strokeWidth={2.5} /></div>
+            Academic Invoices
+          </h4>
           
           {invoices.map(inv => {
             const overdue = isOverdue(inv);
@@ -168,80 +196,108 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
             const balance = inv.amount - inv.amountPaid;
 
             return (
-              <div key={inv.id} className={`bg-white dark:bg-slate-900 p-4 rounded-2xl border ${paid ? 'border-green-100 dark:border-green-900/30' : overdue ? 'border-red-100 dark:border-red-900/30' : 'border-slate-100 dark:border-slate-800'} shadow-sm relative overflow-hidden transition-all hover:shadow-md`}>
-                {paid && (
-                  <div className="absolute top-0 right-0 bg-green-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl flex items-center gap-1">
-                    <CheckCircle size={10} />
-                    FULLY PAID
-                  </div>
-                )}
-                {overdue && !paid && (
-                  <div className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl flex items-center gap-1">
-                    <Clock size={10} />
-                    OVERDUE
-                  </div>
-                )}
-                
-                <div className="flex justify-between items-start mb-4">
+              <div 
+                id={`btn_invoice_item_${inv.id}`}
+                key={inv.id} 
+                className={`bg-white p-8 rounded-[2.5rem] border transition-all hover:shadow-xl hover:shadow-slate-200/50 group ${paid ? 'border-emerald-100' : overdue ? 'border-red-100' : 'border-slate-100'}`}
+              >
+                <div className="flex justify-between items-start mb-8">
                   <div>
-                    <p className="font-medium text-slate-900 dark:text-slate-100">
-                      {inv.termId.replace('_', ' ').toUpperCase()} FEES
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">
+                        {inv.termId.replace('_', ' ')} Fees
+                      </span>
+                      {paid ? (
+                        <span className="bg-emerald-50 text-emerald-600 text-[8px] font-black px-4 py-1 rounded-full border border-emerald-100 shadow-sm uppercase tracking-widest">Settled</span>
+                      ) : overdue ? (
+                        <span className="bg-red-50 text-red-600 text-[8px] font-black px-4 py-1 rounded-full border border-red-100 shadow-sm uppercase tracking-widest animate-pulse">Overdue</span>
+                      ) : (
+                        <span className="bg-blue-50 text-blue-600 text-[8px] font-black px-4 py-1 rounded-full border border-blue-100 shadow-sm uppercase tracking-widest">Pending</span>
+                      )}
+                    </div>
+                    <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest flex items-center gap-2">
+                      <Clock size={10} />
+                      Due Date: {new Date(inv.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                     </p>
-                    <p className="text-xs text-slate-500">Due: {new Date(inv.dueDate).toLocaleDateString()}</p>
-                    {overdue && !paid && (
-                      <p className="text-[10px] text-red-500 font-medium mt-1">Payment is overdue (1 month post resumption)</p>
-                    )}
                   </div>
                   <div className="text-right">
-                    <p className={`font-bold text-lg ${paid ? 'text-green-600' : 'text-blue-600'}`}>
+                    <p className={`text-2xl font-black tracking-tighter ${paid ? 'text-emerald-600' : 'text-slate-900'}`}>
                       ₦{balance.toLocaleString()}
                     </p>
-                    <p className="text-xs text-slate-500">Total: ₦{inv.amount.toLocaleString()}</p>
+                    <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest mt-1">Total: ₦{inv.amount.toLocaleString()}</p>
                   </div>
                 </div>
                 
-                <div className="space-y-2 mb-4">
+                <div className="space-y-3 mb-8 bg-slate-50/50 p-6 rounded-3xl border border-slate-100 border-dashed">
                   {inv.items.map((item, idx) => (
-                    <div key={idx} className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
+                    <div key={idx} className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500">
                       <span>{item.name}</span>
-                      <span>₦{item.amount.toLocaleString()}</span>
+                      <span className="text-slate-900">₦{item.amount.toLocaleString()}</span>
                     </div>
                   ))}
                 </div>
 
-                {!paid && <OfflinePaymentInfo invoice={inv} />}
+                {!paid && (
+                  <div className="bg-slate-900 p-6 rounded-3xl border border-slate-800 text-center relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-transparent pointer-events-none"></div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white relative z-10 flex items-center justify-center gap-3">
+                      <Construction size={16} className="text-amber-500" />
+                      Payment Method
+                    </p>
+                    <p className="text-[8px] text-white/50 font-black uppercase tracking-widest mt-3 relative z-10">
+                      Online gateway is pending. Please visit the school's bursary department for manual settlement.
+                    </p>
+                  </div>
+                )}
               </div>
             );
           })}
           
           {invoices.length === 0 && (
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 text-center text-slate-900 dark:text-slate-100">
-              <CheckCircle size={32} className="mx-auto mb-2 text-green-500" />
-              <p>No invoices found.</p>
+            <div className="bg-white p-16 rounded-[2.5rem] border border-slate-100 text-center shadow-sm">
+              <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-emerald-600 border border-emerald-100 shadow-sm">
+                <CheckCircle size={32} strokeWidth={2.5} />
+              </div>
+              <h4 className="text-slate-900 font-black uppercase tracking-widest text-xs mb-2">No Active Invoices</h4>
+              <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Your ward's account is currently fully settled.</p>
             </div>
           )}
         </div>
 
-        <div className="space-y-4">
-          <h4 className="font-medium text-slate-900 dark:text-slate-100">Payment History</h4>
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div className="space-y-8">
+          <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-4">
+            <div className="p-2 bg-emerald-50 rounded-xl text-emerald-600 border border-emerald-100 shadow-sm"><CheckCircle size={ 16 } strokeWidth={2.5} /></div>
+            Payment History
+          </h4>
+          
+          <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
             {payments.length === 0 ? (
-              <div className="p-6 text-center text-slate-900 dark:text-slate-100">No payment history found.</div>
+              <div className="p-20 text-center">
+                <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">No transaction history found.</p>
+              </div>
             ) : (
-              <div className="divide-y divide-slate-100 dark:divide-slate-800">
+              <div className="divide-y divide-slate-50">
                 {payments.map(pay => (
-                  <div key={pay.id} className="p-4 flex justify-between items-center hover:bg-slate-50 dark:bg-slate-800">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600">
-                        <CheckCircle size={20} />
+                  <div 
+                    id={`btn_payment_history_item_${pay.id}`}
+                    key={pay.id} 
+                    className="p-8 flex justify-between items-center hover:bg-slate-50 transition-colors group cursor-default"
+                  >
+                    <div className="flex items-center gap-6">
+                      <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100 shadow-sm group-hover:scale-110 transition-transform">
+                        <CheckCircle size={24} strokeWidth={2.5} />
                       </div>
                       <div>
-                        <p className="font-medium text-slate-900 dark:text-slate-100">₦{pay.amount.toLocaleString()}</p>
-                        <p className="text-xs text-slate-900 dark:text-slate-100">{new Date(pay.date).toLocaleDateString()} • {pay.method}</p>
+                        <p className="font-black text-lg text-slate-900 tracking-tighter">₦{pay.amount.toLocaleString()}</p>
+                        <div className="flex items-center gap-3 mt-1.5">
+                          <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest">{new Date(pay.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                          <div className="w-1 h-1 bg-slate-200 rounded-full"></div>
+                          <p className="text-[8px] text-slate-600 font-black uppercase tracking-widest">{pay.method}</p>
+                        </div>
                       </div>
                     </div>
-                    <span className="text-xs font-mono text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded">
-                      {pay.reference.substring(0, 8)}...
+                    <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 bg-slate-50 border border-slate-100 px-4 py-2 rounded-full shadow-inner">
+                      REF: {pay.reference.substring(0, 8).toUpperCase()}
                     </span>
                   </div>
                 ))}

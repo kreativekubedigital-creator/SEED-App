@@ -154,97 +154,114 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100">Assignment Management</h3>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900">Assignment Management</h3>
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Create and manage academic tasks</p>
+        </div>
         <button
+          id="btn_create_assignment"
           onClick={() => setShowAddAssignment(true)}
-          className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-xl font-medium flex items-center gap-2 transition-all shadow-md"
+          className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-500/20 active:scale-95"
         >
-          <Plus size={20} /> Create Assignment
+          <Plus size={16} strokeWidth={3} /> Create Assignment
         </button>
       </div>
 
-      {/* Assignment List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {assignments.map(assignment => (
           <motion.div
             key={assignment.id}
             whileHover={{ y: -4 }}
-            className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col gap-4"
+            className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 flex flex-col gap-6 group hover:shadow-md transition-all relative overflow-hidden"
           >
-            <div className="flex justify-between items-start">
-              <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
-                <FileText size={20} />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -mr-10 -mt-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="flex justify-between items-start relative z-10">
+              <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl border border-blue-100 shadow-sm">
+                <FileText size={24} strokeWidth={2.5} />
               </div>
               <button
+                id={`btn_assignment_delete_${assignment.id}`}
                 onClick={() => setAssignmentToDelete(assignment.id)}
-                className="p-2 text-slate-900 dark:text-slate-100 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
               >
-                <Trash2 size={18} />
+                <Trash2 size={20} />
               </button>
             </div>
-            <div>
-              <h4 className="font-medium text-slate-900 dark:text-slate-100 text-lg">{assignment.title}</h4>
-              <p className="text-sm text-slate-900 dark:text-slate-100 font-medium">{getSubjectName(assignment.subjectId)} • {getClassName(assignment.classId)}</p>
+            <div className="relative z-10">
+              <h4 className="font-black uppercase tracking-widest text-lg text-slate-900 leading-tight">{assignment.title}</h4>
+              <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">
+                {getSubjectName(assignment.subjectId)} <span className="mx-1 text-slate-200">•</span> {getClassName(assignment.classId)}
+              </p>
             </div>
-            <div className="flex items-center gap-2 text-sm text-slate-900 dark:text-slate-100 font-medium">
-              <Calendar size={16} className="text-slate-900 dark:text-slate-100" />
+            <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-orange-600 bg-orange-50 px-4 py-2 rounded-full border border-orange-100 w-fit relative z-10 shadow-sm">
+              <Calendar size={14} strokeWidth={3} />
               Due: {new Date(assignment.dueDate).toLocaleDateString()}
             </div>
-            <div className="pt-4 border-t border-gray-50 flex gap-2">
+            <div className="pt-6 border-t border-slate-50 relative z-10">
               <button
+                id={`btn_assignment_view_submissions_${assignment.id}`}
                 onClick={() => setViewingSubmissions(assignment.id)}
-                className="flex-1 py-2 rounded-xl bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-100 transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 rounded-2xl bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 active:scale-[0.98]"
               >
-                Submissions <ChevronRight size={16} />
+                View Submissions <ChevronRight size={14} strokeWidth={3} />
               </button>
             </div>
           </motion.div>
         ))}
         {assignments.length === 0 && (
-          <div className="col-span-full py-12 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 border-dashed">
-            <p className="text-slate-900 dark:text-slate-100 font-medium">No assignments created yet.</p>
+          <div className="col-span-full py-20 text-center bg-white rounded-[2.5rem] border border-slate-100 border-dashed">
+            <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-200 mx-auto mb-4 border border-slate-100 shadow-sm">
+              <FileText size={40} />
+            </div>
+            <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">No assignments created yet.</p>
           </div>
         )}
       </div>
 
-      {/* Create Assignment Modal */}
       <AnimatePresence>
         {showAddAssignment && (
-          <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50">
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 z-50">
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="bg-white dark:bg-slate-900 rounded-3xl p-6 w-full max-w-4xl shadow-2xl max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-[2.5rem] p-8 w-full max-w-4xl shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto"
             >
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-medium text-slate-900 dark:text-slate-100">New Assignment</h3>
-                <button onClick={() => setShowAddAssignment(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                  <X size={24} />
+              <div className="flex justify-between items-center mb-8">
+                <div>
+                  <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900">New Assignment</h3>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Design a new task for your students</p>
+                </div>
+                <button 
+                  onClick={() => setShowAddAssignment(false)} 
+                  className="p-3 bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-900 rounded-2xl transition-all"
+                >
+                  <X size={20} />
                 </button>
               </div>
 
-              <form onSubmit={handleCreateAssignment} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <form onSubmit={handleCreateAssignment} className="space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-2">
-                    <label className="text-xs font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100">Title</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Title</label>
                     <input
+                      id="input_assignment_title"
                       type="text"
                       required
                       value={newAssignment.title}
                       onChange={e => setNewAssignment({ ...newAssignment, title: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
+                      className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
                       placeholder="e.g. Weekly English Essay"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100">Subject</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Subject</label>
                     <select
                       required
                       value={newAssignment.subjectId}
                       onChange={e => setNewAssignment({ ...newAssignment, subjectId: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
+                      className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
                     >
                       <option value="">Select Subject</option>
                       {subjects.map(s => (
@@ -253,41 +270,41 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                     </select>
                   </div>
                   <div className="md:col-span-2 space-y-2">
-                    <label className="text-xs font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100">Description</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Description</label>
                     <textarea
+                      id="input_assignment_description"
                       required
                       value={newAssignment.description}
                       onChange={e => setNewAssignment({ ...newAssignment, description: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all min-h-[100px]"
+                      className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-medium text-slate-900 min-h-[120px]"
                       placeholder="Instructions for the students..."
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100">Due Date</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Due Date</label>
                     <input
                       type="date"
                       required
                       value={newAssignment.dueDate}
                       onChange={e => setNewAssignment({ ...newAssignment, dueDate: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
+                      className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
                     />
                   </div>
                 </div>
 
-                {/* Questions Section */}
-                <div className="pt-6 border-t border-slate-100 dark:border-slate-800">
-                  <h4 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-4">Questions ({newAssignment.questions.length})</h4>
+                <div className="pt-8 border-t border-slate-100">
+                  <h4 className="text-lg font-black uppercase tracking-widest text-slate-900 mb-6">Questions ({newAssignment.questions.length})</h4>
                   
-                  <div className="space-y-4 mb-6">
+                  <div className="space-y-4 mb-8">
                     {newAssignment.questions.map((q, idx) => (
-                      <div key={q.id} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800 flex justify-between items-start">
+                      <div key={q.id} className="p-6 rounded-3xl bg-slate-50 border border-slate-100 flex justify-between items-start group hover:bg-white hover:shadow-md transition-all">
                         <div>
-                          <p className="font-medium text-slate-900 dark:text-slate-100">Q{idx + 1}: {q.text}</p>
-                          <p className="text-xs text-slate-900 dark:text-slate-100 font-medium uppercase tracking-wider mt-1">{q.type.replace('_', ' ')}</p>
+                          <p className="font-black uppercase tracking-widest text-xs text-slate-900">Q{idx + 1}: {q.text}</p>
+                          <p className="text-[8px] text-blue-600 font-black uppercase tracking-widest mt-1.5 px-2 py-0.5 bg-blue-50 rounded w-fit border border-blue-100">{q.type.replace('_', ' ')}</p>
                           {q.options && (
-                            <div className="mt-2 flex flex-wrap gap-2">
+                            <div className="mt-4 flex flex-wrap gap-2">
                               {q.options.map((opt, i) => (
-                                <span key={i} className="px-2 py-1 bg-white dark:bg-slate-900 border border-gray-200 rounded-lg text-xs text-slate-900 dark:text-slate-100">{opt}</span>
+                                <span key={i} className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400">{opt}</span>
                               ))}
                             </div>
                           )}
@@ -295,33 +312,32 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                         <button
                           type="button"
                           onClick={() => removeQuestion(q.id)}
-                          className="p-2 text-slate-900 dark:text-slate-100 hover:text-red-500 transition-colors"
+                          className="p-2 text-slate-300 hover:text-red-500 transition-colors"
                         >
-                          <Trash2 size={18} />
+                          <Trash2 size={20} />
                         </button>
                       </div>
                     ))}
                   </div>
 
-                  {/* Add Question Form */}
-                  <div className="p-6 rounded-3xl bg-blue-50/50 border border-blue-100 space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-8 rounded-[2.5rem] bg-blue-50/50 border border-blue-100 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="md:col-span-2 space-y-2">
-                        <label className="text-xs font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100">Question Text</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Question Text</label>
                         <input
                           type="text"
                           value={newQuestion.text}
                           onChange={e => setNewQuestion({ ...newQuestion, text: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
+                          className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
                           placeholder="Enter question..."
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100">Type</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Type</label>
                         <select
                           value={newQuestion.type}
                           onChange={e => setNewQuestion({ ...newQuestion, type: e.target.value as any })}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
+                          className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
                         >
                           <option value="short_answer">Short Answer</option>
                           <option value="multiple_choice">Multiple Choice</option>
@@ -330,10 +346,11 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                     </div>
 
                     {newQuestion.type === 'multiple_choice' && (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {newQuestion.options.map((opt, idx) => (
                           <input
                             key={idx}
+                            id={`input_assignment_option_${idx}`}
                             type="text"
                             value={opt}
                             onChange={e => {
@@ -341,7 +358,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                               newOpts[idx] = e.target.value;
                               setNewQuestion({ ...newQuestion, options: newOpts });
                             }}
-                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all text-sm"
+                            className="w-full px-5 py-3 rounded-xl border border-slate-200 bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black uppercase tracking-widest text-[10px] text-slate-900"
                             placeholder={`Option ${idx + 1}`}
                           />
                         ))}
@@ -349,26 +366,29 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                     )}
 
                     <button
+                      id="btn_assignment_add_question"
                       type="button"
                       onClick={handleAddQuestion}
-                      className="w-full py-3 rounded-xl bg-white dark:bg-slate-900 border border-blue-200 text-blue-600 font-medium hover:bg-blue-50 transition-all flex items-center justify-center gap-2"
+                      className="w-full py-4 rounded-2xl bg-white border border-blue-200 text-blue-600 text-[10px] font-black uppercase tracking-widest hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-sm"
                     >
-                      <Plus size={20} /> Add Question to Assignment
+                      <Plus size={16} strokeWidth={3} /> Add Question to Assignment
                     </button>
                   </div>
                 </div>
 
-                <div className="flex justify-end gap-3 pt-6 border-t border-slate-100 dark:border-slate-800">
+                <div className="flex flex-col sm:flex-row justify-end gap-3 pt-8 border-t border-slate-100">
                   <button
+                    id="btn_assignment_cancel_create"
                     type="button"
                     onClick={() => setShowAddAssignment(false)}
-                    className="px-6 py-3 rounded-xl font-medium text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 transition-all"
+                    className="order-2 sm:order-1 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] text-slate-400 hover:bg-slate-50 transition-all"
                   >
                     Cancel
                   </button>
                   <button
+                    id="btn_assignment_save"
                     type="submit"
-                    className="px-8 py-3 rounded-xl font-medium bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="order-1 sm:order-2 px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95"
                   >
                     Create Assignment
                   </button>
@@ -379,48 +399,52 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
         )}
       </AnimatePresence>
 
-      {/* Submissions View Modal */}
       <AnimatePresence>
         {viewingSubmissions && (
-          <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50">
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 z-50">
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="bg-white dark:bg-slate-900 rounded-3xl p-6 w-full max-w-5xl shadow-2xl max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-[2.5rem] p-8 w-full max-w-5xl shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto"
             >
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h3 className="text-2xl font-medium text-slate-900 dark:text-slate-100">Student Submissions</h3>
-                  <p className="text-slate-900 dark:text-slate-100 font-medium">{assignments.find(a => a.id === viewingSubmissions)?.title}</p>
+                  <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900">Student Submissions</h3>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-blue-600 mt-1">
+                    {assignments.find(a => a.id === viewingSubmissions)?.title}
+                  </p>
                 </div>
-                <button onClick={() => setViewingSubmissions(null)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                  <X size={24} />
+                <button 
+                  onClick={() => setViewingSubmissions(null)} 
+                  className="p-3 bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-900 rounded-2xl transition-all"
+                >
+                  <X size={20} />
                 </button>
               </div>
 
               <div className="space-y-4">
                 {submissions.map(sub => (
-                  <div key={sub.id} className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center font-medium text-lg">
+                  <div key={sub.id} className="p-6 rounded-3xl bg-slate-50 border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 group hover:bg-white hover:shadow-md transition-all">
+                    <div className="flex items-center gap-5">
+                      <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl flex items-center justify-center font-black text-xl shadow-lg border-2 border-white">
                         {sub.studentName.charAt(0)}
                       </div>
                       <div>
-                        <h4 className="font-medium text-slate-900 dark:text-slate-100">{sub.studentName}</h4>
-                        <p className="text-xs text-slate-900 dark:text-slate-100 font-medium">Submitted: {new Date(sub.submittedAt).toLocaleString()}</p>
+                        <h4 className="font-black uppercase tracking-widest text-sm text-slate-900">{sub.studentName}</h4>
+                        <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest mt-1">Submitted: {new Date(sub.submittedAt).toLocaleString()}</p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-4 w-full md:w-auto">
-                      <div className={`px-3 py-1.5 rounded-full text-[10px] font-medium uppercase tracking-wider ${
-                        sub.status === 'graded' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-orange-50 text-orange-600 border border-orange-100'
+                      <div className={`px-4 py-2 rounded-full text-[8px] font-black uppercase tracking-widest border shadow-sm ${
+                        sub.status === 'graded' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-orange-50 text-orange-600 border-orange-100'
                       }`}>
                         {sub.status === 'graded' ? `Graded: ${sub.score}/${sub.totalScore}` : 'Pending Grade'}
                       </div>
                       <button
                         onClick={() => setGradingSubmission(sub)}
-                        className="flex-1 md:flex-none px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-gray-200 text-slate-900 dark:text-slate-100 text-sm font-medium hover:bg-slate-50 dark:bg-slate-800 transition-all"
+                        className="flex-1 md:flex-none px-6 py-3 rounded-2xl bg-white border border-slate-200 text-slate-900 text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm"
                       >
                         {sub.status === 'graded' ? 'Review Grade' : 'Grade Now'}
                       </button>
@@ -428,8 +452,11 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                   </div>
                 ))}
                 {submissions.length === 0 && (
-                  <div className="py-12 text-center">
-                    <p className="text-slate-900 dark:text-slate-100 font-medium">No submissions yet.</p>
+                  <div className="py-20 text-center">
+                    <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-200 mx-auto mb-4 border border-slate-100 shadow-sm">
+                      <User size={40} />
+                    </div>
+                    <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">No submissions yet.</p>
                   </div>
                 )}
               </div>
@@ -438,103 +465,105 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
         )}
       </AnimatePresence>
 
-      {/* Grading Modal */}
       <AnimatePresence>
         {gradingSubmission && (
-          <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-md flex items-center justify-center p-4 z-[60]">
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 z-[60]">
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="bg-white dark:bg-slate-900 rounded-3xl p-6 w-full max-w-3xl shadow-2xl max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-[2.5rem] p-8 w-full max-w-3xl shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto"
             >
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h3 className="text-2xl font-medium text-slate-900 dark:text-slate-100">Grade Submission</h3>
-                  <p className="text-slate-900 dark:text-slate-100 font-medium">{gradingSubmission.studentName}</p>
+                  <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900">Grade Submission</h3>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-blue-600 mt-1">{gradingSubmission.studentName}</p>
                 </div>
-                <button onClick={() => setGradingSubmission(null)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                  <X size={24} />
+                <button 
+                  onClick={() => setGradingSubmission(null)} 
+                  className="p-3 bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-900 rounded-2xl transition-all"
+                >
+                  <X size={20} />
                 </button>
               </div>
 
-              <div className="space-y-6">
-                {/* Answers */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-medium text-slate-900 dark:text-slate-100">Student Answers</h4>
+              <div className="space-y-8">
+                <div className="space-y-6">
+                  <h4 className="text-lg font-black uppercase tracking-widest text-slate-900">Student Answers</h4>
                   {(assignments.find(a => a.id === gradingSubmission.assignmentId)?.questions || []).length > 0 ? (
                     (assignments.find(a => a.id === gradingSubmission.assignmentId)?.questions || []).map((q, idx) => {
                       const answer = gradingSubmission.answers.find(a => a.questionId === q.id)?.answer || 'No answer provided';
                       return (
-                        <div key={q.id} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800 space-y-2">
-                          <p className="font-medium text-slate-900 dark:text-slate-100 text-sm">Q{idx + 1}: {q.text}</p>
-                          <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-gray-200 text-sm text-slate-900 dark:text-slate-100">
-                            <span className="text-xs font-medium text-slate-900 dark:text-slate-100 uppercase tracking-widest block mb-1">Student Answer:</span>
+                        <div key={q.id} className="p-6 rounded-3xl bg-slate-50 border border-slate-100 space-y-4">
+                          <p className="font-black uppercase tracking-widest text-xs text-slate-900">Q{idx + 1}: {q.text}</p>
+                          <div className="p-5 bg-white rounded-2xl border border-slate-200 text-sm text-slate-700 shadow-sm">
+                            <span className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-2">Student Answer</span>
                             {answer}
                           </div>
                           {q.correctAnswer && (
-                            <p className="text-xs font-medium text-emerald-600">Correct Answer: {q.correctAnswer}</p>
+                            <div className="flex items-center gap-2 text-[10px] font-black text-emerald-600 uppercase tracking-widest px-4 py-2 bg-emerald-50 rounded-full w-fit border border-emerald-100 shadow-sm">
+                              <CheckCircle2 size={14} /> Correct Answer: {q.correctAnswer}
+                            </div>
                           )}
                         </div>
                       );
                     })
                   ) : (
-                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800 space-y-2">
-                      <p className="font-medium text-slate-900 dark:text-slate-100 text-sm">General Response</p>
-                      <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-gray-200 text-sm text-slate-900 dark:text-slate-100">
-                        <span className="text-xs font-medium text-slate-900 dark:text-slate-100 uppercase tracking-widest block mb-1">Student Answer:</span>
+                    <div className="p-6 rounded-3xl bg-slate-50 border border-slate-100 space-y-4">
+                      <p className="font-black uppercase tracking-widest text-xs text-slate-900">General Response</p>
+                      <div className="p-5 bg-white rounded-2xl border border-slate-200 text-sm text-slate-700 shadow-sm">
+                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-2">Student Answer</span>
                         {gradingSubmission.answers.find(a => a.questionId === 'general')?.answer || 'No answer provided'}
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* Grading Form */}
-                <form onSubmit={handleGradeSubmission} className="pt-6 border-t border-slate-100 dark:border-slate-800 space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-xs font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100">Score</label>
-                      <div className="flex items-center gap-3">
+                <form onSubmit={handleGradeSubmission} className="pt-8 border-t border-slate-100 space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Academic Score</label>
+                      <div className="flex items-center gap-4">
                         <input
                           type="number"
                           required
                           min="0"
                           value={gradingSubmission.score || 0}
                           onChange={e => setGradingSubmission({ ...gradingSubmission, score: parseInt(e.target.value) })}
-                          className="w-24 px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-medium text-center"
+                          className="w-28 px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black text-center text-lg text-slate-900"
                         />
-                        <span className="text-slate-900 dark:text-slate-100 font-medium">/</span>
+                        <span className="text-slate-300 font-black text-2xl">/</span>
                         <input
                           type="number"
                           required
                           min="1"
                           value={gradingSubmission.totalScore || 100}
                           onChange={e => setGradingSubmission({ ...gradingSubmission, totalScore: parseInt(e.target.value) })}
-                          className="w-24 px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-medium text-center"
+                          className="w-28 px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black text-center text-lg text-slate-900"
                         />
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100">Feedback</label>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Professional Feedback</label>
                     <textarea
                       value={gradingSubmission.feedback || ''}
                       onChange={e => setGradingSubmission({ ...gradingSubmission, feedback: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all min-h-[100px]"
-                      placeholder="Great work! Keep it up..."
+                      className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-medium text-slate-900 min-h-[120px]"
+                      placeholder="Excellent work! Your critical analysis is improving..."
                     />
                   </div>
-                  <div className="flex justify-end gap-3 pt-4">
+                  <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6">
                     <button
                       type="button"
                       onClick={() => setGradingSubmission(null)}
-                      className="px-6 py-3 rounded-xl font-medium text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 transition-all"
+                      className="order-2 sm:order-1 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] text-slate-400 hover:bg-slate-50 transition-all"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-8 py-3 rounded-xl font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-all shadow-lg"
+                      className="order-1 sm:order-2 px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] bg-emerald-600 text-white hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-500/20 active:scale-95"
                     >
                       Submit Grade
                     </button>
@@ -546,33 +575,34 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
         )}
       </AnimatePresence>
 
-      {/* Delete Assignment Modal */}
       <AnimatePresence>
         {assignmentToDelete && (
-          <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-[70]">
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 z-[70]">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-slate-900 rounded-3xl p-8 w-full max-w-sm shadow-2xl text-center"
+              className="bg-white rounded-[2.5rem] p-10 w-full max-w-md shadow-2xl border border-slate-100 text-center"
             >
-              <div className="w-20 h-20 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                <Trash2 size={32} />
+              <div className="w-24 h-24 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-red-100 shadow-sm">
+                <Trash2 size={40} strokeWidth={2.5} />
               </div>
-              <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 mb-2">Delete Assignment?</h3>
-              <p className="text-slate-900 dark:text-slate-100 font-medium mb-8">This action cannot be undone. All student submissions will also be lost.</p>
-              <div className="flex gap-3">
+              <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900 mb-2">Delete Assignment?</h3>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-10 leading-relaxed px-4">
+                This action is irreversible. All student submissions and grades associated with this task will be permanently removed.
+              </p>
+              <div className="flex gap-4">
                 <button
                   onClick={() => setAssignmentToDelete(null)}
-                  className="flex-1 py-3 rounded-xl border border-gray-200 font-medium text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 transition-all"
+                  className="flex-1 py-4 rounded-2xl border border-slate-200 font-black uppercase tracking-widest text-[10px] text-slate-400 hover:bg-slate-50 transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleDeleteAssignment}
-                  className="flex-1 py-3 rounded-xl font-medium text-white bg-red-600 hover:bg-red-700 transition-all shadow-lg"
+                  className="flex-1 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] text-white bg-red-600 hover:bg-red-700 transition-all shadow-xl shadow-red-500/20 active:scale-95"
                 >
-                  Delete
+                  Confirm Delete
                 </button>
               </div>
             </motion.div>
