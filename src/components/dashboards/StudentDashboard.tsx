@@ -258,14 +258,15 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
           ))}
         </div>
 
-        {/* Tab Content */}
-        <AnimatePresence mode="wait">
+        {/* Tab Content - Removed mode="wait" to prevent height collapse/scroll jumping */}
+        <div className="min-h-[60vh] relative">
+          <AnimatePresence initial={false}>
           {activeTab === 'overview' && (
             <motion.div 
               key="overview"
-              initial={{ opacity: 0, y: 30 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              exit={{ opacity: 0, y: -30 }}
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }}
               className="grid grid-cols-1 lg:grid-cols-3 gap-10"
             >
               {/* Left Column: Progress & Quick Actions */}
@@ -448,33 +449,43 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
           )}
 
           {activeTab === 'lessons' && (
-            <StudentLessons key="lessons" user={user} classLevel={classLevel} />
+            <motion.div key="lessons" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <StudentLessons user={user} classLevel={classLevel} />
+            </motion.div>
           )}
 
           {activeTab === 'results' && (
-            <StudentResultView key="results" user={user} />
+            <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <StudentResultView user={user} />
+            </motion.div>
           )}
 
           {activeTab === 'assignments' && (
-            <StudentAssignments key="assignments" user={user} subjects={subjects} />
+            <motion.div key="assignments" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <StudentAssignments user={user} subjects={subjects} />
+            </motion.div>
           )}
 
           {activeTab === 'quizzes' && (
-            <StudentQuizzes key="quizzes" user={user} subjects={subjects} classLevel={classLevel} />
+            <motion.div key="quizzes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <StudentQuizzes user={user} subjects={subjects} classLevel={classLevel} />
+            </motion.div>
           )}
 
           {activeTab === 'games' && (
-            <StudentGames key="games" user={user} classLevel={classLevel} />
+            <motion.div key="games" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <StudentGames user={user} classLevel={classLevel} />
+            </motion.div>
           )}
 
           {activeTab === 'timetable' && (
-            <motion.div key="timetable" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="bg-white/80 backdrop-blur-md p-10 rounded-[3rem] border border-white shadow-2xl shadow-slate-200/40">
+            <motion.div key="timetable" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="bg-white/80 backdrop-blur-md p-10 rounded-[3rem] border border-white shadow-2xl shadow-slate-200/40">
               <ClassTimetable user={user} mode="view" studentClassId={user.classId} />
             </motion.div>
           )}
 
           {activeTab === 'ai_study_buddy' && (
-            <motion.div key="ai" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
+            <motion.div key="ai" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-10">
               <AIStudyBuddy user={user} subjects={subjects} classLevel={classLevel} />
             </motion.div>
           )}

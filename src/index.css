@@ -25,10 +25,9 @@
   }
 }
 
-/* Global Transitions */
-*, *::before, *::after {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-duration: 200ms;
+/* Global Transitions - Removed wildcard * transition to prevent jerky animations */
+.transition-standard {
+  transition: all 0.2s ease-in-out;
 }
 
 html, body {
@@ -38,7 +37,7 @@ html, body {
   color: #0F172A;
   overflow-x: hidden;
   width: 100%;
-  scroll-behavior: smooth;
+  /* Removed scroll-behavior: smooth to prevent fighting with JS animations */
   -webkit-font-smoothing: antialiased;
 }
 

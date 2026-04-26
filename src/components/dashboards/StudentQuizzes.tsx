@@ -156,7 +156,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
   if (activeQuiz) {
     if (score) {
       return (
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white/80 backdrop-blur-md p-4 rounded-3xl border border-slate-100 shadow-sm text-center max-w-2xl mx-auto relative overflow-hidden">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white/80 backdrop-blur-md p-4 rounded-3xl border border-slate-100 shadow-sm text-center max-w-2xl mx-auto relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
           <div className="absolute bottom-0 left-0 w-40 h-40 bg-blue-200/5 rounded-full blur-2xl -ml-10 -mb-10"></div>
           

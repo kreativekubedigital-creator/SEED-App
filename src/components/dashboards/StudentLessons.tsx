@@ -173,7 +173,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
 
   if (selectedLesson) {
     return (
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-4xl mx-auto">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-4xl mx-auto">
         <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col relative">
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-200/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
           <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-500/5 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>

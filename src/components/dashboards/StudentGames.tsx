@@ -249,7 +249,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
   if (activeGame && gameOver) {
     return (
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm text-center max-w-2xl mx-auto relative overflow-hidden">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm text-center max-w-2xl mx-auto relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-200/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 bg-emerald-500/5 rounded-full blur-2xl -ml-10 -mb-10"></div>
         
@@ -296,7 +296,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
   if (activeGame === 'math') {
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-4 md:p-4 rounded-2xl border border-slate-100 shadow-sm max-w-2xl mx-auto text-center">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-4 md:p-4 rounded-2xl border border-slate-100 shadow-sm max-w-2xl mx-auto text-center">
         <div className="flex justify-between items-center mb-12">
           <button onClick={() => setActiveGame(null)} className="flex items-center gap-2 text-slate-900 hover:text-slate-900 transition-colors font-medium bg-white/80 backdrop-blur-sm border border-slate-100 shadow-sm px-3.5 py-1.5 rounded-full">
             <ArrowLeft size={20} /> Exit
@@ -348,7 +348,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
   if (activeGame === 'word') {
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-4 md:p-4 rounded-2xl border border-slate-100 shadow-sm max-w-2xl mx-auto text-center">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-4 md:p-4 rounded-2xl border border-slate-100 shadow-sm max-w-2xl mx-auto text-center">
         <div className="flex justify-between items-center mb-12">
           <button onClick={() => setActiveGame(null)} className="flex items-center gap-2 text-slate-900 hover:text-slate-900 transition-colors font-medium bg-white/80 backdrop-blur-sm border border-slate-100 shadow-sm px-3.5 py-1.5 rounded-full">
             <ArrowLeft size={20} /> Exit
@@ -404,7 +404,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
   if (activeGame === 'science') {
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-4 md:p-4 rounded-2xl border border-slate-100 shadow-sm max-w-2xl mx-auto text-center">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-4 md:p-4 rounded-2xl border border-slate-100 shadow-sm max-w-2xl mx-auto text-center">
         <div className="flex justify-between items-center mb-12">
           <button onClick={() => setActiveGame(null)} className="flex items-center gap-2 text-slate-900 hover:text-slate-900 transition-colors font-medium bg-white/80 backdrop-blur-sm border border-slate-100 shadow-sm px-3.5 py-1.5 rounded-full">
             <ArrowLeft size={20} /> Exit
@@ -577,7 +577,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
       )}
 
       {gameTab === 'leaderboard' && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-5">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-medium text-slate-900 flex items-center gap-2">
               <TrendingUp className="text-blue-600" size={20} />
@@ -626,7 +626,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
       )}
 
       {gameTab === 'rewards' && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-5">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-medium text-slate-900 flex items-center gap-2">
               <ShoppingBag className="text-purple-600" size={20} />
@@ -677,7 +677,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
       )}
 
       {gameTab === 'badges' && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-5">
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm mb-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>

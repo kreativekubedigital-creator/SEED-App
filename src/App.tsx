@@ -136,11 +136,11 @@ const PageWrapper = ({ children }: { children: React.ReactNode }) => (
 );
 
 const ScrollToTop = () => {
- const { pathname, search } = useLocation();
- useEffect(() => {
- window.scrollTo(0, 0);
- }, [pathname, search]);
- return null;
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
 };
 
 
