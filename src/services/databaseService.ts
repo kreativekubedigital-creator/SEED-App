@@ -34,7 +34,12 @@ export class DatabaseService {
    * Special handling: removes 'uid' for the users table as 'id' is used instead.
    */
   private static toSnakeCase(obj: any, table?: string): any {
-    if (obj === null || typeof obj !== 'object') return obj;
+    if (obj === null || obj === undefined) return obj;
+    if (typeof obj === 'string') {
+      const snakeKey = obj.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      return (table === 'users' && snakeKey === 'uid') ? 'id' : snakeKey;
+    }
+    if (typeof obj !== 'object') return obj;
     if (Array.isArray(obj)) return obj.map(v => this.toSnakeCase(v, table));
     
     const source = { ...obj };

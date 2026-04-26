@@ -40,7 +40,7 @@ export const ReportCard: React.FC<ReportCardProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white dark:bg-slate-900 p-4 sm:p-8 print:p-0 print:m-0 print:w-full print:max-w-none">
+    <div className="w-full max-w-4xl mx-auto bg-white p-4 sm:p-8 print:p-0 print:m-0 print:w-full print:max-w-none">
       {/* Header */}
       <div className="text-center border-b-2 border-gray-800 pb-6 mb-6">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
@@ -48,35 +48,35 @@ export const ReportCard: React.FC<ReportCardProps> = ({
             <img src={school.logoUrl} alt="School Logo" className="w-16 h-16 sm:w-20 sm:h-20 object-contain" />
           )}
           <div>
-            <h1 className="text-2xl sm:text-3xl font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider">{school?.name || 'School Name'}</h1>
+            <h1 className="text-2xl sm:text-3xl font-medium text-slate-900 uppercase tracking-wider">{school?.name || 'School Name'}</h1>
 
-            <p className="text-xs sm:text-sm text-slate-900 dark:text-slate-100">{school?.phone || ''} | {school?.email || ''}</p>
+            <p className="text-xs sm:text-sm text-slate-900">{school?.phone || ''} | {school?.email || ''}</p>
           </div>
         </div>
-        <h2 className="text-lg sm:text-xl font-medium text-slate-900 dark:text-slate-100 uppercase tracking-widest mt-4">Student Terminal Report</h2>
+        <h2 className="text-lg sm:text-xl font-medium text-slate-900 uppercase tracking-widest mt-4">Student Terminal Report</h2>
       </div>
 
       {/* Student Info */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-4 mb-8">
         <div className="flex border-b border-gray-300 pb-1">
-          <span className="font-medium text-slate-900 dark:text-slate-100 w-32">Name:</span>
-          <span className="text-slate-900 dark:text-slate-100 uppercase font-medium">{student.firstName} {student.lastName}</span>
+          <span className="font-medium text-slate-900 w-32">Name:</span>
+          <span className="text-slate-900 uppercase font-medium">{student.firstName} {student.lastName}</span>
         </div>
         <div className="flex border-b border-gray-300 pb-1">
-          <span className="font-medium text-slate-900 dark:text-slate-100 w-32">Reg Number:</span>
-          <span className="text-slate-900 dark:text-slate-100 font-medium">{student.registrationNumber || 'N/A'}</span>
+          <span className="font-medium text-slate-900 w-32">Reg Number:</span>
+          <span className="text-slate-900 font-medium">{student.registrationNumber || 'N/A'}</span>
         </div>
         <div className="flex border-b border-gray-300 pb-1">
-          <span className="font-medium text-slate-900 dark:text-slate-100 w-32">Class:</span>
-          <span className="text-slate-900 dark:text-slate-100 font-medium">{studentClass?.name || 'N/A'}</span>
+          <span className="font-medium text-slate-900 w-32">Class:</span>
+          <span className="text-slate-900 font-medium">{studentClass?.name || 'N/A'}</span>
         </div>
         <div className="flex border-b border-gray-300 pb-1">
-          <span className="font-medium text-slate-900 dark:text-slate-100 w-32">Session:</span>
-          <span className="text-slate-900 dark:text-slate-100 font-medium">{session?.name || 'N/A'}</span>
+          <span className="font-medium text-slate-900 w-32">Session:</span>
+          <span className="text-slate-900 font-medium">{session?.name || 'N/A'}</span>
         </div>
         <div className="flex border-b border-gray-300 pb-1">
-          <span className="font-medium text-slate-900 dark:text-slate-100 w-32">Term:</span>
-          <span className="text-slate-900 dark:text-slate-100 font-medium">{term?.name || 'N/A'}</span>
+          <span className="font-medium text-slate-900 w-32">Term:</span>
+          <span className="text-slate-900 font-medium">{term?.name || 'N/A'}</span>
         </div>
       </div>
 
@@ -85,45 +85,45 @@ export const ReportCard: React.FC<ReportCardProps> = ({
         <table className="w-full border-collapse border border-gray-800 min-w-[600px] print:min-w-0">
           <thead>
             <tr className="bg-gray-100">
-              <th className="border border-gray-800 px-3 py-2 text-left font-medium text-slate-900 dark:text-slate-100 uppercase text-sm">Subject</th>
+              <th className="border border-gray-800 px-3 py-2 text-left font-medium text-slate-900 uppercase text-sm">Subject</th>
               {caConfig.cas.map((ca, idx) => (
-                <th key={idx} className="border border-gray-800 px-2 py-2 text-center font-medium text-slate-900 dark:text-slate-100 uppercase text-xs w-16">
+                <th key={idx} className="border border-gray-800 px-2 py-2 text-center font-medium text-slate-900 uppercase text-xs w-16">
                   {ca.name}<br/><span className="text-[10px] font-medium">({ca.maxScore})</span>
                 </th>
               ))}
-              <th className="border border-gray-800 px-2 py-2 text-center font-medium text-slate-900 dark:text-slate-100 uppercase text-xs w-20 bg-gray-200">
+              <th className="border border-gray-800 px-2 py-2 text-center font-medium text-slate-900 uppercase text-xs w-20 bg-gray-200">
                 CA Total<br/><span className="text-[10px] font-medium">({totalCaMax})</span>
               </th>
-              <th className="border border-gray-800 px-2 py-2 text-center font-medium text-slate-900 dark:text-slate-100 uppercase text-xs w-16">
+              <th className="border border-gray-800 px-2 py-2 text-center font-medium text-slate-900 uppercase text-xs w-16">
                 Exam<br/><span className="text-[10px] font-medium">({caConfig.maxExamScore})</span>
               </th>
-              <th className="border border-gray-800 px-2 py-2 text-center font-medium text-slate-900 dark:text-slate-100 uppercase text-xs w-20 bg-gray-200">
+              <th className="border border-gray-800 px-2 py-2 text-center font-medium text-slate-900 uppercase text-xs w-20 bg-gray-200">
                 Total<br/><span className="text-[10px] font-medium">({totalMaxScore})</span>
               </th>
-              <th className="border border-gray-800 px-2 py-2 text-center font-medium text-slate-900 dark:text-slate-100 uppercase text-xs w-16">Grade</th>
-              <th className="border border-gray-800 px-3 py-2 text-left font-medium text-slate-900 dark:text-slate-100 uppercase text-xs">Remark</th>
+              <th className="border border-gray-800 px-2 py-2 text-center font-medium text-slate-900 uppercase text-xs w-16">Grade</th>
+              <th className="border border-gray-800 px-3 py-2 text-left font-medium text-slate-900 uppercase text-xs">Remark</th>
             </tr>
           </thead>
           <tbody>
             {results.map(result => (
               <tr key={result.id}>
-                <td className="border border-gray-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 font-medium">{getSubjectName(result.subjectId)}</td>
+                <td className="border border-gray-800 px-3 py-2 text-sm text-slate-900 font-medium">{getSubjectName(result.subjectId)}</td>
                 {caConfig.cas.map((ca, idx) => {
                   const val = result.cas?.[ca.name] !== undefined ? result.cas[ca.name] : (idx === 0 ? result.ca1 : idx === 1 ? result.ca2 : idx === 2 ? result.ca3 : null);
                   return (
-                    <td key={idx} className="border border-gray-800 px-2 py-2 text-center text-sm text-slate-900 dark:text-slate-100">{val !== null && val !== undefined ? val : '-'}</td>
+                    <td key={idx} className="border border-gray-800 px-2 py-2 text-center text-sm text-slate-900">{val !== null && val !== undefined ? val : '-'}</td>
                   );
                 })}
-                <td className="border border-gray-800 px-2 py-2 text-center text-sm font-medium text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-800">{result.caTotal || 0}</td>
-                <td className="border border-gray-800 px-2 py-2 text-center text-sm text-slate-900 dark:text-slate-100">{result.exam !== null && result.exam !== undefined ? result.exam : '-'}</td>
-                <td className="border border-gray-800 px-2 py-2 text-center text-sm font-medium text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-800">{result.finalScore || 0}</td>
-                <td className="border border-gray-800 px-2 py-2 text-center text-sm font-medium text-slate-900 dark:text-slate-100">{result.grade || '-'}</td>
-                <td className="border border-gray-800 px-3 py-2 text-xs text-slate-900 dark:text-slate-100 uppercase">{result.remark || '-'}</td>
+                <td className="border border-gray-800 px-2 py-2 text-center text-sm font-medium text-slate-900 bg-slate-50">{result.caTotal || 0}</td>
+                <td className="border border-gray-800 px-2 py-2 text-center text-sm text-slate-900">{result.exam !== null && result.exam !== undefined ? result.exam : '-'}</td>
+                <td className="border border-gray-800 px-2 py-2 text-center text-sm font-medium text-slate-900 bg-slate-50">{result.finalScore || 0}</td>
+                <td className="border border-gray-800 px-2 py-2 text-center text-sm font-medium text-slate-900">{result.grade || '-'}</td>
+                <td className="border border-gray-800 px-3 py-2 text-xs text-slate-900 uppercase">{result.remark || '-'}</td>
               </tr>
             ))}
             {results.length === 0 && (
               <tr>
-                <td colSpan={caConfig.cas.length + 6} className="border border-gray-800 px-3 py-8 text-center text-slate-900 dark:text-slate-100 italic">
+                <td colSpan={caConfig.cas.length + 6} className="border border-gray-800 px-3 py-8 text-center text-slate-900 italic">
                   No results recorded for this term.
                 </td>
               </tr>
@@ -138,16 +138,16 @@ export const ReportCard: React.FC<ReportCardProps> = ({
           <table className="w-full border-collapse border border-gray-800">
             <tbody>
               <tr>
-                <td className="border border-gray-800 px-3 py-2 font-medium text-slate-900 dark:text-slate-100 bg-gray-100 w-1/2">Total Score</td>
-                <td className="border border-gray-800 px-3 py-2 font-medium text-slate-900 dark:text-slate-100 text-center">{totalScore}</td>
+                <td className="border border-gray-800 px-3 py-2 font-medium text-slate-900 bg-gray-100 w-1/2">Total Score</td>
+                <td className="border border-gray-800 px-3 py-2 font-medium text-slate-900 text-center">{totalScore}</td>
               </tr>
               <tr>
-                <td className="border border-gray-800 px-3 py-2 font-medium text-slate-900 dark:text-slate-100 bg-gray-100">Average Score</td>
-                <td className="border border-gray-800 px-3 py-2 font-medium text-slate-900 dark:text-slate-100 text-center">{averageScore.toFixed(2)}%</td>
+                <td className="border border-gray-800 px-3 py-2 font-medium text-slate-900 bg-gray-100">Average Score</td>
+                <td className="border border-gray-800 px-3 py-2 font-medium text-slate-900 text-center">{averageScore.toFixed(2)}%</td>
               </tr>
               <tr>
-                <td className="border border-gray-800 px-3 py-2 font-medium text-slate-900 dark:text-slate-100 bg-gray-100">Overall Grade</td>
-                <td className="border border-gray-800 px-3 py-2 font-medium text-slate-900 dark:text-slate-100 text-center">{getOverallGrade(averageScore)}</td>
+                <td className="border border-gray-800 px-3 py-2 font-medium text-slate-900 bg-gray-100">Overall Grade</td>
+                <td className="border border-gray-800 px-3 py-2 font-medium text-slate-900 text-center">{getOverallGrade(averageScore)}</td>
               </tr>
             </tbody>
           </table>
@@ -159,17 +159,17 @@ export const ReportCard: React.FC<ReportCardProps> = ({
             <table className="w-full border-collapse border border-gray-800 text-xs">
               <thead>
                 <tr className="bg-gray-100">
-                  <th className="border border-gray-800 px-2 py-1 text-center font-medium text-slate-900 dark:text-slate-100">Score Range</th>
-                  <th className="border border-gray-800 px-2 py-1 text-center font-medium text-slate-900 dark:text-slate-100">Grade</th>
-                  <th className="border border-gray-800 px-2 py-1 text-center font-medium text-slate-900 dark:text-slate-100">Remark</th>
+                  <th className="border border-gray-800 px-2 py-1 text-center font-medium text-slate-900">Score Range</th>
+                  <th className="border border-gray-800 px-2 py-1 text-center font-medium text-slate-900">Grade</th>
+                  <th className="border border-gray-800 px-2 py-1 text-center font-medium text-slate-900">Remark</th>
                 </tr>
               </thead>
               <tbody>
                 {gradeScale.grades.map((g, idx) => (
                   <tr key={idx}>
-                    <td className="border border-gray-800 px-2 py-1 text-center text-slate-900 dark:text-slate-100">{g.minScore} - {g.maxScore}</td>
-                    <td className="border border-gray-800 px-2 py-1 text-center font-medium text-slate-900 dark:text-slate-100">{g.grade}</td>
-                    <td className="border border-gray-800 px-2 py-1 text-center text-slate-900 dark:text-slate-100">{g.remark}</td>
+                    <td className="border border-gray-800 px-2 py-1 text-center text-slate-900">{g.minScore} - {g.maxScore}</td>
+                    <td className="border border-gray-800 px-2 py-1 text-center font-medium text-slate-900">{g.grade}</td>
+                    <td className="border border-gray-800 px-2 py-1 text-center text-slate-900">{g.remark}</td>
                   </tr>
                 ))}
               </tbody>
@@ -182,11 +182,11 @@ export const ReportCard: React.FC<ReportCardProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-16 mt-16 pt-8">
         <div className="text-center">
           <div className="border-b-2 border-gray-800 h-10 mb-2"></div>
-          <p className="font-medium text-slate-900 dark:text-slate-100 uppercase text-sm">Class Teacher's Signature</p>
+          <p className="font-medium text-slate-900 uppercase text-sm">Class Teacher's Signature</p>
         </div>
         <div className="text-center">
           <div className="border-b-2 border-gray-800 h-10 mb-2"></div>
-          <p className="font-medium text-slate-900 dark:text-slate-100 uppercase text-sm">Principal's Signature</p>
+          <p className="font-medium text-slate-900 uppercase text-sm">Principal's Signature</p>
         </div>
       </div>
     </div>

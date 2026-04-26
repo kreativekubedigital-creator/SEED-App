@@ -148,7 +148,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
   };
 
   if (loading) {
-    return <div className="p-4 text-center text-slate-900 dark:text-slate-100">Loading quizzes...</div>;
+    return <div className="p-4 text-center text-slate-900 font-black uppercase tracking-widest text-[10px]">Loading quizzes...</div>;
   }
 
   const containerClass = "space-y-6";
@@ -156,19 +156,19 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
   if (activeQuiz) {
     if (score) {
       return (
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-slate-900/80 backdrop-blur-sm p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm text-center max-w-2xl mx-auto relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
-          <div className="absolute bottom-0 left-0 w-40 h-40 bg-blue-200/10 rounded-full blur-2xl -ml-10 -mb-10"></div>
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white/80 backdrop-blur-md p-4 rounded-3xl border border-slate-100 shadow-sm text-center max-w-2xl mx-auto relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+          <div className="absolute bottom-0 left-0 w-40 h-40 bg-blue-200/5 rounded-full blur-2xl -ml-10 -mb-10"></div>
           
           <div className="relative z-10">
             <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-emerald-200/50">
               <Trophy size={48} />
             </div>
-            <h2 className="text-xl font-black uppercase tracking-tighter text-slate-900 dark:text-slate-100 mb-3">Quiz Completed!</h2>
-            <p className="text-slate-900/60 dark:text-slate-400 font-black uppercase tracking-widest mb-8 text-[10px]">You have successfully completed {activeQuiz.title}.</p>
+            <h2 className="text-xl font-black uppercase tracking-tighter text-slate-900 mb-3">Quiz Completed!</h2>
+            <p className="text-slate-900/40 font-black uppercase tracking-widest mb-8 text-[10px]">You have successfully completed {activeQuiz.title}.</p>
             
-            <div className="text-6xl font-medium text-blue-600 mb-10 drop-shadow-sm">
-              {score.score} <span className="text-3xl text-slate-900 dark:text-slate-100 font-medium">/ {score.total}</span>
+            <div className="text-6xl font-black text-blue-600 mb-10 drop-shadow-sm">
+              {score.score} <span className="text-3xl text-slate-900/40 font-black">/ {score.total}</span>
             </div>
             
             <button 
@@ -185,16 +185,16 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
     const question = activeQuiz.questions[currentQuestion];
 
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-slate-900 p-4 md:p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm max-w-3xl mx-auto">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-4 md:p-4 rounded-2xl border border-slate-100 shadow-sm max-w-3xl mx-auto">
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h2 className="text-lg font-medium text-slate-900 dark:text-slate-100">{activeQuiz.title}</h2>
-            <p className="text-slate-900 dark:text-slate-100 font-medium mt-1">{getSubjectName(activeQuiz.subjectId)}</p>
+            <h2 className="text-lg font-medium text-slate-900">{activeQuiz.title}</h2>
+            <p className="text-slate-900 font-medium mt-1">{getSubjectName(activeQuiz.subjectId)}</p>
           </div>
           <div className="flex items-center gap-4">
             {timeLeft !== null && (
               <div className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium border ${
-                timeLeft < 60 ? 'bg-red-50 text-red-600 border-red-200/50 animate-pulse' : 'bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border-gray-200/50'
+                timeLeft < 60 ? 'bg-red-50 text-red-600 border-red-200/50 animate-pulse' : 'bg-slate-50 text-slate-900 border-gray-200/50'
               }`}>
                 <Clock size={16} />
                 {formatTime(timeLeft)}
@@ -207,7 +207,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
         </div>
 
         <div className="mb-10">
-          <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-8 leading-snug">{question.question}</h3>
+          <h3 className="text-lg font-medium text-slate-900 mb-8 leading-snug">{question.question}</h3>
           <div className="space-y-6">
             {question.options.map((option, index) => (
               <motion.button
@@ -219,7 +219,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
                 className={`w-full text-left p-4 rounded-2xl border-2 transition-all flex items-center gap-4 group ${
                   answers[currentQuestion] === index 
                     ? 'border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 shadow-md scale-[1.02]' 
-                    : 'border-slate-100 dark:border-slate-800 hover:border-blue-300 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-indigo-50/50 bg-white dark:bg-slate-900 shadow-sm hover:shadow-md'
+                    : 'border-slate-100 hover:border-blue-300 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-indigo-50/50 bg-white shadow-sm hover:shadow-md'
                 }`}
               >
                 {answers[currentQuestion] === index ? (
@@ -227,20 +227,20 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
                 ) : (
                   <Circle className="text-gray-300 group-hover:text-blue-400 shrink-0 transition-colors" size={20} />
                 )}
-                <span className={`font-medium text-lg ${answers[currentQuestion] === index ? 'text-blue-900' : 'text-slate-900 dark:text-slate-100 group-hover:text-slate-900 dark:text-slate-100'}`}>{option}</span>
+                <span className={`font-medium text-lg ${answers[currentQuestion] === index ? 'text-blue-900' : 'text-slate-900 group-hover:text-slate-900'}`}>{option}</span>
               </motion.button>
             ))}
           </div>
         </div>
 
-        <div className="flex justify-between items-center pt-8 border-t border-slate-100 dark:border-slate-800">
+        <div className="flex justify-between items-center pt-8 border-t border-slate-100">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
             onClick={() => setCurrentQuestion(prev => Math.max(0, prev - 1))}
             disabled={currentQuestion === 0}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-slate-900 dark:text-slate-100 hover:bg-gray-100 hover:text-slate-900 dark:text-slate-100 disabled:opacity-50 transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-slate-900 hover:bg-gray-100 hover:text-slate-900 disabled:opacity-50 transition-all"
           >
             <ArrowLeft size={20} /> Previous
           </motion.button>
@@ -279,14 +279,14 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
           <h3 className="text-xl font-black uppercase tracking-widest text-slate-900">Quiz Hub</h3>
           <p className="text-[10px] font-black uppercase tracking-widest text-slate-900/60 mt-1">Test your knowledge and earn points!</p>
         </div>
-        <div className="flex bg-white dark:bg-slate-900/80 backdrop-blur-md p-1 rounded-xl border border-gray-200/50 bg-slate-50 dark:bg-slate-800/50">
+        <div className="flex bg-white/80 backdrop-blur-md p-1 rounded-xl border border-slate-100 bg-slate-50">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
             onClick={() => setQuizType('revision')}
             className={`px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-all ${
-              quizType === 'revision' ? 'bg-purple-100 text-slate-900 dark:text-slate-100 shadow-md' : 'text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800'
+              quizType === 'revision' ? 'bg-purple-100 text-slate-900 shadow-md' : 'text-slate-900 hover:bg-slate-50'
             }`}
           >
             <BookOpen size={18} /> Revision Quizzes
@@ -297,7 +297,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
             onClick={() => setQuizType('class')}
             className={`px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-all ${
-              quizType === 'class' ? 'bg-orange-100 text-slate-900 dark:text-slate-100 shadow-md' : 'text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800'
+              quizType === 'class' ? 'bg-orange-100 text-slate-900 shadow-md' : 'text-slate-900 hover:bg-slate-50'
             }`}
           >
             <BrainCircuit size={18} /> Class Quizzes
@@ -354,12 +354,12 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
           );
         })}
         {displayedQuizzes.length === 0 && (
-          <div className="col-span-full p-16 text-center bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm">
-            <div className="w-20 h-20 bg-white dark:bg-slate-900/50 rounded-3xl flex items-center justify-center mx-auto mb-4 text-slate-900 dark:text-slate-100 shadow-sm border border-white/50">
+          <div className="col-span-full p-16 text-center bg-white/80 backdrop-blur-md rounded-2xl border border-slate-100 shadow-sm">
+            <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mx-auto mb-4 text-slate-900 shadow-sm border border-slate-100">
               {quizType === 'revision' ? <BookOpen size={40} /> : <BrainCircuit size={40} />}
             </div>
-            <p className="text-slate-900 dark:text-slate-100 font-medium text-lg">No {quizType} quizzes available for your class.</p>
-            <p className="text-slate-900 dark:text-slate-100 font-medium mt-2">Check back later!</p>
+            <p className="text-slate-900 font-black uppercase tracking-widest text-sm">No {quizType} quizzes available</p>
+            <p className="text-slate-500 font-medium mt-2 text-[10px] uppercase tracking-widest">Check back later!</p>
           </div>
         )}
       </div>

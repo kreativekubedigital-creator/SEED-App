@@ -106,7 +106,7 @@ export const getDocs = async (queryOrPath: any) => {
   const conditions: Record<string, any> = {};
   constraints.forEach((c: any) => {
     if (c.op === '==') {
-      const field = c.field === 'schoolId' ? 'school_id' : c.field;
+      const field = c.field.replace(/[A-Z]/g, (l: string) => `_${l.toLowerCase()}`);
       conditions[field] = c.value;
     }
   });
@@ -161,7 +161,7 @@ export const onSnapshot = (queryObj: any, callback: any, errorCallback?: (error:
   const conditions: Record<string, any> = {};
   constraints.forEach((c: any) => {
     if (c.op === '==') {
-      const field = c.field === 'schoolId' ? 'school_id' : c.field;
+      const field = c.field.replace(/[A-Z]/g, (l: string) => `_${l.toLowerCase()}`);
       conditions[field] = c.value;
     }
   });

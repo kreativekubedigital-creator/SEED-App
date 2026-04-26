@@ -1338,8 +1338,10 @@ export default function App() {
           unsubscribeProfile = null;
         }
 
-        // Use onSnapshot for real-time profile updates
-        unsubscribeProfile = onSnapshot(doc(db, 'users', authUser.uid), async (userDoc) => {
+        try {
+          // 1. First attempt to get the document once to set initial state quickly
+          const userDoc = await getDoc(doc(db, 'users', authUser.uid));
+          
           if (userDoc.exists()) {
             let userData = userDoc.data() as UserProfile;
             
@@ -1349,12 +1351,7 @@ export default function App() {
               userData = { ...userData, role: 'super_admin' };
               await updateDoc(doc(db, 'users', authUser.uid), { role: 'super_admin' });
             }
-            
-            setUser(prevUser => {
-              // Only update state if data is actually different to avoid flicker
-              if (JSON.stringify(prevUser) === JSON.stringify(userData)) return prevUser;
-              return userData;
-            });
+            setUser(userData);
           } else {
             // User exists in Auth but not in Firestore (incomplete onboarding)
             const isOwner = ['kreativekubesolutions@gmail.com', 'seedd.ng@gmail.com', 'abahjohnakor@gmail.com'].includes(authUser.email || '');
@@ -1372,11 +1369,24 @@ export default function App() {
             if (isOwner) {
               await setDoc(doc(db, 'users', authUser.uid), partialProfile);
             }
-            
             setUser(partialProfile);
           }
+          
+          // 2. Then set up the real-time listener for updates
+          unsubscribeProfile = onSnapshot(doc(db, 'users', authUser.uid), (snap) => {
+            if (snap.exists()) {
+              const updatedData = snap.data() as UserProfile;
+              setUser(prev => {
+                if (JSON.stringify(prev) === JSON.stringify(updatedData)) return prev;
+                return updatedData;
+              });
+            }
+          });
+        } catch (error) {
+          console.error("Error in auth state change:", error);
+        } finally {
           setLoading(false);
-        });
+        }
       } else {
         if (unsubscribeProfile) {
           unsubscribeProfile();
@@ -1512,70 +1522,39 @@ export default function App() {
 // --- Dashboard Router ---
 
 const DashboardRouter = ({ user, onLogout }: { user: UserProfile, onLogout: () => void }) => {
- const [school, setSchool] = useState<School | null>(null);
+  const [school, setSchool] = useState<School | null>(null);
 
- useEffect(() => {
- if (user.schoolId) {
- getDoc(doc(db,'schools', user.schoolId)).then(snap => {
- if (snap.exists()) {
- setSchool({ id: snap.id, ...snap.data() } as School);
- }
- });
- }
- }, [user.schoolId]);
+  useEffect(() => {
+    if (user.schoolId) {
+      getDoc(doc(db, 'schools', user.schoolId)).then(snap => {
+        if (snap.exists()) {
+          setSchool({ id: snap.id, ...snap.data() } as School);
+        }
+      });
+    }
+  }, [user.schoolId]);
 
- if (user.role  === 'school_admin') {
- return <SchoolAdminDashboard user={ user } onLogout={ onLogout } />;
- }
+  if (user.role === 'school_admin') {
+    return <SchoolAdminDashboard user={user} onLogout={onLogout} />;
+  }
 
- if (user.role  === 'super_admin') {
- return (
- <Routes>
- <Route index element={<SuperAdminDashboard user={ user } onLogout={ onLogout } />} />
- </Routes>
- );
- }
+  if (user.role === 'super_admin') {
+    return (
+      <Routes>
+        <Route index element={<SuperAdminDashboard user={user} onLogout={onLogout} />} />
+      </Routes>
+    );
+  }
 
- return (
- <div className="max-w-7xl mx-auto px-4 pt-8 pb-8 min-h-screen">
- {/* School Branding Header */}
- <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/80 backdrop-blur-md p-5 rounded-[2rem] border border-slate-200/50 shadow-2xl shadow-slate-200/20">
- <div className="flex items-center gap-4">
- { school?.logoUrl ? (
- <img src={ school.logoUrl } alt={ school.name } className="w-12 h-12 rounded-2xl object-cover shadow-sm border border-white"referrerPolicy="no-referrer"/>
- ) : (
- <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-slate-900 font-bold text-xl shadow-lg border border-slate-300">
- { school?.name?.charAt(0) ||'S'}
- </div>
- )}
- <div className="min-w-0">
- <h2 className="text-xl font-bold text-slate-900 truncate">{ school?.name ||'School Dashboard'}</h2>
- <p className="text-[10px] text-blue-600 font-bold uppercase tracking-[0.2em]">{ user.role.replace('_','')} Portal</p>
- </div>
- </div>
- <button onClick={ onLogout } className="flex items-center gap-3 text-sm font-bold text-red-500 hover:text-red-600 px-5 py-3 rounded-xl hover:bg-red-50 transition-all border border-red-500/10 md:w-auto w-full justify-center">
- <LogOut size={ 18 } /> Logout
- </button>
- </div>
-
- <div className="mb-12">
- <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-slate-900 flex items-center gap-4 flex-wrap">
- Welcome, { user.firstName } <span className="text-4xl md:text-5xl animate-wave origin-bottom-right">👋</span>
- </h1>
- <p className="text-slate-500 mt-4 text-base md:text-lg font-medium max-w-2xl">
- Empowering your educational journey with data-driven intelligence and dynamic ecosystem management.
- </p>
- </div>
- 
- <Routes>
-          <Route index element={
-            user.role === 'teacher' ? <TeacherDashboard user={user} onLogout={onLogout} /> :
-            user.role === 'student' ? <StudentDashboard user={user} onLogout={onLogout} /> :
-            <ParentDashboard user={user} onLogout={onLogout} />
-          } />
- </Routes>
- </div>
- );
+  return (
+    <Routes>
+      <Route index element={
+        user.role === 'teacher' ? <TeacherDashboard user={user} onLogout={onLogout} /> :
+        user.role === 'student' ? <StudentDashboard user={user} onLogout={onLogout} school={school || undefined} /> :
+        <ParentDashboard user={user} onLogout={onLogout} />
+      } />
+    </Routes>
+  );
 };
 
 const AnnouncementsPage = ({ user }: { user: UserProfile }) => {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from'react';
 import { Link } from'react-router-dom';
 import { db, collection, getDocs, query, where, onSnapshot, doc, orderBy } from'../../lib/compatibility';
-import { UserProfile, Assignment, Subject, Class, Announcement, Result, Challenge } from'../../types';
+import { UserProfile, Assignment, Subject, Class, Announcement, Result, Challenge, School } from'../../types';
 import { 
   Trophy, 
   Coins, 
@@ -19,7 +19,8 @@ import {
   ChevronRight,
   TrendingUp,
   Award,
-  BookMarked
+  BookMarked,
+  Bell
 } from 'lucide-react';
 import { motion, AnimatePresence } from'motion/react';
 import { cn, sortByName } from'../../lib/utils';
@@ -32,7 +33,7 @@ import { StudentResultView } from'./StudentResultView';
 import { getXPForLevel, updateStreak } from'../../services/gamificationService';
 import ClassTimetable from'./ClassTimetable';
 
-export const StudentDashboard = ({ user, onLogout }: { user: UserProfile, onLogout: () => void }) => {
+export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile, onLogout: () => void, school?: School }) => {
  const [activeTab, setActiveTab] = useState<'overview'|'lessons'|'assignments'|'quizzes'|'games'|'timetable'|'ai_study_buddy'|'results'>('overview');
  const [assignments, setAssignments] = useState<Assignment[]>([]);
  const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -113,9 +114,10 @@ export const StudentDashboard = ({ user, onLogout }: { user: UserProfile, onLogo
  // Calculate progress for each challenge
  const progressMap: Record<string, number> = {};
  for (const challenge of challengesData) {
- const activitiesRef = collection(db,'users', user.uid,'activities');
+ const activitiesRef = collection(db,'user_activities');
  const q = query(
  activitiesRef, 
+ where('userId', '==', user.uid),
  where('type','==', challenge.targetType  === 'quiz'?'quiz_pass': challenge.targetType  === 'lesson'?'lesson_complete':'game_win')
  );
  const activitySnap = await getDocs(q);
@@ -155,10 +157,10 @@ export const StudentDashboard = ({ user, onLogout }: { user: UserProfile, onLogo
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={() => setActiveTab(tabId as any)}
-      className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 shrink-0 ${
+      className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 shrink-0 ${
         activeTab === tabId 
-          ? 'bg-white text-slate-900 shadow-md' 
-          : 'text-slate-900/40 hover:text-slate-900 hover:bg-white/40'
+          ? "bg-blue-100 text-slate-900 shadow-sm" 
+          : "text-slate-900/40 hover:text-slate-900 hover:bg-white/50"
       }`}
     >
       <Icon size={14} className={activeTab === tabId ? 'text-blue-600' : ''} />
@@ -166,35 +168,42 @@ export const StudentDashboard = ({ user, onLogout }: { user: UserProfile, onLogo
     </motion.button>
   );
 
- const isFemale = user.gender  === 'female';
-
  return (
-    <div className={`min-h-screen ${isFemale ? 'bg-gradient-to-br from-[#FFD1D1] via-[#FFF3E0] to-[#E0F7FA]' : 'bg-[#020617]'}`}>
+    <div className="min-h-screen bg-gradient-to-br from-[#F8FAFC] via-[#F1F5F9] to-[#E2E8F0] py-4 px-4 sm:px-6 lg:px-8 pb-20">
       {/* Mobile Top Header */}
-      <div className="lg:hidden flex items-center justify-between p-4 bg-white/10 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-black text-white text-xs">S</div>
-          <span className="font-black uppercase tracking-tighter text-slate-900">SEEDD</span>
+      <div className="lg:hidden flex items-center justify-between p-4 bg-white/50 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
+        <div className="flex items-center gap-3">
+          {school?.logoUrl ? (
+            <img src={school.logoUrl} alt={school.name} className="w-8 h-8 rounded-lg object-cover" />
+          ) : (
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-black text-white text-xs">S</div>
+          )}
+          <span className="font-black uppercase tracking-tighter text-slate-900 truncate max-w-[150px]">{school?.name || 'SEEDD'}</span>
         </div>
         <button onClick={handleLogout} className="p-2 text-slate-900/60"><LogOut size={20} /></button>
       </div>
 
-      <div className="max-w-7xl mx-auto p-4 lg:p-8 space-y-6">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div className="flex items-center gap-4">
-            <div className="relative">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-2xl font-black text-white shadow-lg border-2 border-white/20">
+            <Link to="/profile" className="relative group cursor-pointer">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-2xl font-black text-white shadow-lg border-2 border-white/20 group-hover:scale-105 transition-transform">
                 {user.firstName[0]}
               </div>
               <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full border-2 border-white flex items-center justify-center">
                 <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
               </div>
-            </div>
+            </Link>
             <div>
-              <h1 className="text-2xl font-black uppercase tracking-tighter text-slate-900">
-                Welcome, {user.firstName} {user.lastName}!
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl font-black uppercase tracking-tighter text-slate-900">
+                  Welcome, {user.firstName}!
+                </h1>
+                {school?.logoUrl && (
+                  <img src={school.logoUrl} alt={school.name} className="w-6 h-6 rounded-md object-cover opacity-50" />
+                )}
+              </div>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-900/40 bg-slate-900/5 px-2 py-0.5 rounded">
                   {user.registrationNumber || 'Student ID'}
@@ -203,13 +212,21 @@ export const StudentDashboard = ({ user, onLogout }: { user: UserProfile, onLogo
                 <span className="text-[10px] font-black uppercase tracking-widest text-blue-600">
                   {classLevel}
                 </span>
+                {school?.name && (
+                  <>
+                    <div className="w-1 h-1 bg-slate-900/20 rounded-full"></div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-900/30 truncate max-w-[150px]">
+                      {school.name}
+                    </span>
+                  </>
+                )}
               </div>
             </div>
           </div>
 
           {/* Stats Bar */}
           <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-            <div className="flex-1 lg:flex-none bg-white/40 backdrop-blur-md p-3 rounded-2xl border border-white/20 shadow-sm">
+            <div className="flex-1 lg:flex-none bg-white/60 backdrop-blur-md p-3 rounded-2xl border border-white/50 shadow-sm">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
                   <Trophy size={18} />
@@ -220,7 +237,7 @@ export const StudentDashboard = ({ user, onLogout }: { user: UserProfile, onLogo
                 </div>
               </div>
             </div>
-            <div className="flex-1 lg:flex-none bg-white/40 backdrop-blur-md p-3 rounded-2xl border border-white/20 shadow-sm">
+            <div className="flex-1 lg:flex-none bg-white/60 backdrop-blur-md p-3 rounded-2xl border border-white/50 shadow-sm">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600">
                   <Coins size={18} />
@@ -231,7 +248,7 @@ export const StudentDashboard = ({ user, onLogout }: { user: UserProfile, onLogo
                 </div>
               </div>
             </div>
-            <div className="flex-1 lg:flex-none bg-white/40 backdrop-blur-md p-3 rounded-2xl border border-white/20 shadow-sm">
+            <div className="flex-1 lg:flex-none bg-white/60 backdrop-blur-md p-3 rounded-2xl border border-white/50 shadow-sm">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600">
                   <Flame size={18} />
@@ -347,41 +364,75 @@ export const StudentDashboard = ({ user, onLogout }: { user: UserProfile, onLogo
        </div>
      </motion.div>
 
-     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white/40 backdrop-blur-md p-6 rounded-3xl border border-white/20 shadow-sm">
-       <div className="flex justify-between items-center mb-6">
-         <h3 className="text-sm font-black uppercase tracking-widest text-slate-900/40 flex items-center gap-2">
-           <Award size={16} className="text-orange-500" /> Active Challenges
-         </h3>
-         <ChevronRight size={16} className="text-slate-900/20" />
-       </div>
-       
-       <div className="space-y-6">
-         {challenges.map((challenge) => {
-           const progress = Math.min(100, Math.round(((challengeProgress[challenge.id] || 0) / (challenge.targetCount || 1)) * 100));
-           return (
-             <div key={challenge.id} className="group cursor-default">
-               <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-2">
-                 <span className="text-slate-900/80 group-hover:text-slate-900 transition-colors">{challenge.title}</span>
-                 <span className="text-orange-600">{progress}%</span>
-               </div>
-               <div className="h-2 bg-slate-900/5 rounded-full overflow-hidden p-0.5 border border-slate-900/5">
-                 <motion.div 
-                   initial={{ width: 0 }}
-                   animate={{ width: `${progress}%` }}
-                   className="h-full bg-gradient-to-r from-orange-400 to-amber-500 rounded-full shadow-[0_0_8px_rgba(249,115,22,0.2)]"
-                 />
-               </div>
-               <p className="text-[8px] font-black uppercase tracking-widest text-slate-900/30 mt-2">Reward: {challenge.xpReward} XP</p>
-             </div>
-           );
-         })}
-         {challenges.length === 0 && (
-           <div className="p-6 text-center bg-white/20 rounded-2xl">
-             <p className="text-[10px] font-black uppercase tracking-widest text-slate-900/30">No active challenges</p>
-           </div>
-         )}
-       </div>
-     </motion.div>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white/40 backdrop-blur-md p-6 rounded-3xl border border-white/20 shadow-sm">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-sm font-black uppercase tracking-widest text-slate-900/40 flex items-center gap-2">
+            <Award size={16} className="text-orange-500" /> Active Challenges
+          </h3>
+          <ChevronRight size={16} className="text-slate-900/20" />
+        </div>
+        
+        <div className="space-y-6">
+          {challenges.map((challenge) => {
+            const progress = Math.min(100, Math.round(((challengeProgress[challenge.id] || 0) / (challenge.targetCount || 1)) * 100));
+            return (
+              <div key={challenge.id} className="group cursor-default">
+                <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-2">
+                  <span className="text-slate-900/80 group-hover:text-slate-900 transition-colors">{challenge.title}</span>
+                  <span className="text-orange-600">{progress}%</span>
+                </div>
+                <div className="h-2 bg-slate-900/5 rounded-full overflow-hidden p-0.5 border border-slate-900/5">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progress}%` }}
+                    className="h-full bg-gradient-to-r from-orange-400 to-amber-500 rounded-full shadow-[0_0_8px_rgba(249,115,22,0.2)]"
+                  />
+                </div>
+                <p className="text-[8px] font-black uppercase tracking-widest text-slate-900/30 mt-2">Reward: {challenge.xpReward} XP</p>
+              </div>
+            );
+          })}
+          {challenges.length === 0 && (
+            <div className="p-6 text-center bg-white/20 rounded-2xl">
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-900/30">No active challenges</p>
+            </div>
+          )}
+        </div>
+      </motion.div>
+
+      {/* Announcements Section */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white/40 backdrop-blur-md p-6 rounded-3xl border border-white/20 shadow-sm">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-sm font-black uppercase tracking-widest text-slate-900/40 flex items-center gap-2">
+            <Bell size={16} className="text-rose-500" /> Announcements
+          </h3>
+          <Link to="/announcements" className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:underline">View All</Link>
+        </div>
+        
+        <div className="space-y-4">
+          {announcements.map((announcement) => (
+            <div key={announcement.id} className="p-4 bg-white/40 rounded-2xl border border-white/20">
+              <div className="flex justify-between items-start mb-2">
+                <span className="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 bg-blue-50 text-blue-600 rounded">
+                  {announcement.isSchoolWide ? 'School' : 'Class'}
+                </span>
+                <span className="text-[8px] font-black uppercase tracking-widest text-slate-900/30">
+                  {new Date(announcement.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+              <h4 className="text-xs font-black text-slate-900 mb-1">{announcement.title}</h4>
+              <p className="text-[10px] text-slate-900/60 line-clamp-2 leading-relaxed">
+                {announcement.content.replace(/<[^>]*>?/gm, '')}
+              </p>
+            </div>
+          ))}
+          {announcements.length === 0 && (
+            <div className="p-6 text-center bg-white/20 rounded-2xl border border-dashed border-white/40">
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-900/30">No recent updates</p>
+            </div>
+          )}
+        </div>
+      </motion.div>
    </div>
  </motion.div>
  )}

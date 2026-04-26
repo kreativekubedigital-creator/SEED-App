@@ -135,7 +135,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
               className={`group relative ${colorClass} rounded-3xl border border-white/40 transition-all duration-300 flex flex-col overflow-hidden shadow-sm`}
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-900/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
               {/* Status Ribbon/Badge */}
               <div className="absolute top-4 right-4 z-10">
                 <div className={`px-3 py-1.5 rounded-full text-[10px] font-medium uppercase tracking-wider border ${
@@ -143,7 +143,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                   isSubmitted ? 'bg-blue-50 text-blue-700 border-blue-200' :
                   isOverdue ? 'bg-red-50 text-red-700 border-red-200' :
                   isInProgress ? 'bg-indigo-50 text-indigo-700 border-indigo-200' :
-                  'bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 border-white/50'
+                  'bg-white/80 text-slate-900 border-white/50'
                 }`}>
                   {isGraded ? `Graded: ${submission?.score}/${submission?.totalScore}` : 
                    isSubmitted ? 'Submitted' : 
@@ -212,8 +212,8 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
           );
         })}
         {assignments.length === 0 && (
-          <div className="col-span-full py-12 text-center bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/40 border-dashed">
-            <p className="text-slate-900 dark:text-slate-100 font-medium">No assignments found for your class.</p>
+          <div className="col-span-full py-12 text-center bg-white/80 backdrop-blur-md rounded-2xl border border-slate-100 border-dashed">
+            <p className="text-slate-900 font-black uppercase tracking-widest text-sm">No assignments found</p>
           </div>
         )}
       </div>
@@ -226,14 +226,14 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="bg-white dark:bg-slate-900 rounded-3xl p-6 w-full max-w-3xl shadow-2xl max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-3xl p-6 w-full max-w-3xl shadow-2xl max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
                 <div>
-                  <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900 dark:text-slate-100">
+                  <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900">
                     {isEditing ? 'Edit Submission' : selectedAssignment.title}
                   </h3>
-                  <p className="text-[10px] text-slate-900/60 dark:text-slate-400 font-black uppercase tracking-widest mt-1">{getSubjectName(selectedAssignment.subjectId)}</p>
+                  <p className="text-[10px] text-slate-900/40 font-black uppercase tracking-widest mt-1">{getSubjectName(selectedAssignment.subjectId)}</p>
                 </div>
                 <button 
                   onClick={() => {
@@ -256,14 +256,15 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
               {getSubmission(selectedAssignment.id) && !isEditing ? (
                 /* View Mode */
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                  <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
                         <CheckCircle2 size={20} />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Assignment Submitted</p>
-                        <p className="text-xs text-slate-900 dark:text-slate-100 font-medium">{new Date(getSubmission(selectedAssignment.id)!.submittedAt).toLocaleString()}</p>
+                        <p className="text-sm font-medium text-slate-900">Assignment Submitted</p>
+                        <p className="text-xs text-slate-900 font-medium">{new Date(getSubmission(selectedAssignment.id)!.submittedAt).toLocaleString()}</p>
                       </div>
                     </div>
                     {getSubmission(selectedAssignment.id)?.status === 'submitted' && (
@@ -272,7 +273,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                         whileTap={{ scale: 0.95 }}
                         transition={{ type: "spring", stiffness: 400, damping: 17 }}
                         onClick={() => startEditing(selectedAssignment)}
-                        className="px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-gray-200 text-sm font-medium text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:bg-slate-800 transition-all shadow-sm"
+                        className="px-4 py-2 rounded-xl bg-white border border-gray-200 text-sm font-medium text-slate-900 hover:bg-slate-50 transition-all shadow-sm"
                       >
                         Edit Answers
                       </motion.button>
@@ -280,28 +281,28 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                   </div>
 
                   <div className="space-y-4">
-                    <h4 className="text-lg font-medium text-slate-900 dark:text-slate-100">Your Answers</h4>
+                    <h4 className="text-lg font-medium text-slate-900">Your Answers</h4>
                     {(selectedAssignment.questions || []).length > 0 ? (
                       (selectedAssignment.questions || []).map((q, idx) => {
                         const sub = getSubmission(selectedAssignment.id);
                         const answer = sub?.answers.find(a => a.questionId === q.id)?.answer || 'No answer';
                         return (
-                          <div key={q.id} className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm space-y-3">
+                          <div key={q.id} className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm space-y-3">
                             <div className="flex justify-between items-start">
-                              <p className="font-medium text-slate-900 dark:text-slate-100 text-sm flex gap-2">
+                              <p className="font-medium text-slate-900 text-sm flex gap-2">
                                 <span className="text-blue-600">Q{idx + 1}.</span> {q.text}
                               </p>
                             </div>
-                            <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-800 text-sm text-slate-900 dark:text-slate-100 font-medium italic">
+                            <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 text-sm text-slate-900 font-medium italic">
                               "{answer}"
                             </div>
                           </div>
                         );
                       })
                     ) : (
-                      <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm space-y-3">
-                        <p className="font-medium text-slate-900 dark:text-slate-100 text-sm">General Response</p>
-                        <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-800 text-sm text-slate-900 dark:text-slate-100 font-medium italic">
+                      <div className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm space-y-3">
+                        <p className="font-medium text-slate-900 text-sm">General Response</p>
+                        <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 text-sm text-slate-900 font-medium italic">
                           "{getSubmission(selectedAssignment.id)?.answers.find(a => a.questionId === 'general')?.answer || 'No answer'}"
                         </div>
                       </div>
@@ -312,10 +313,10 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                     <motion.div 
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="pt-6 border-t border-slate-100 dark:border-slate-800 space-y-4"
+                      className="pt-6 border-t border-slate-100 space-y-4"
                     >
                       <div className="flex items-center gap-4 p-6 rounded-3xl bg-emerald-50 border border-emerald-100">
-                        <div className="p-4 bg-white dark:bg-slate-900 text-emerald-600 rounded-2xl shadow-sm">
+                        <div className="p-4 bg-white text-emerald-600 rounded-2xl shadow-sm">
                           <Award size={32} />
                         </div>
                         <div>
@@ -326,13 +327,13 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                         </div>
                       </div>
                       {getSubmission(selectedAssignment.id)?.feedback && (
-                        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm flex gap-4">
+                        <div className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm flex gap-4">
                           <div className="p-2 bg-blue-50 text-blue-600 rounded-lg h-fit">
                             <MessageSquare size={20} />
                           </div>
                           <div>
-                            <h5 className="text-xs font-medium text-slate-900 dark:text-slate-100 uppercase tracking-widest mb-1">Teacher's Feedback</h5>
-                            <p className="text-sm text-slate-900 dark:text-slate-100 font-medium leading-relaxed">"{getSubmission(selectedAssignment.id)?.feedback}"</p>
+                            <h5 className="text-xs font-medium text-slate-900 uppercase tracking-widest mb-1">Teacher's Feedback</h5>
+                            <p className="text-sm text-slate-900 font-medium leading-relaxed">"{getSubmission(selectedAssignment.id)?.feedback}"</p>
                           </div>
                         </div>
                       )}
@@ -350,7 +351,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                           style={{ width: `${(Object.keys(answers).length / (selectedAssignment.questions || []).length) * 100}%` }}
                         ></div>
                       </div>
-                      <span className="text-xs font-medium text-slate-900 dark:text-slate-100">
+                      <span className="text-xs font-medium text-slate-900">
                         {Object.keys(answers).length} of {(selectedAssignment.questions || []).length} answered
                       </span>
                     </div>
@@ -359,8 +360,8 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                   <div className="space-y-8">
                     {(selectedAssignment.questions || []).length > 0 ? (
                       (selectedAssignment.questions || []).map((q, idx) => (
-                        <div key={q.id} className="space-y-4 p-6 rounded-3xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 transition-all hover:bg-white dark:bg-slate-900 hover:shadow-md group/q">
-                          <label className="block font-medium text-slate-900 dark:text-slate-100 text-lg group-hover/q:text-blue-600 transition-colors">
+                        <div key={q.id} className="space-y-4 p-6 rounded-3xl bg-slate-50 border border-slate-100 transition-all hover:bg-white hover:shadow-md group/q">
+                          <label className="block font-medium text-slate-900 text-lg group-hover/q:text-blue-600 transition-colors">
                             <span className="text-blue-600 mr-2">Question {idx + 1}:</span> {q.text}
                           </label>
                           
@@ -377,7 +378,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                                   className={`p-4 rounded-2xl border text-left transition-all font-medium text-sm ${
                                     answers[q.id] === opt 
                                       ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-200 scale-[1.02]' 
-                                      : 'bg-white dark:bg-slate-900 border-gray-200 text-slate-900 dark:text-slate-100 hover:border-blue-300 hover:bg-blue-50/30'
+                                      : 'bg-white border-gray-200 text-slate-900 hover:border-blue-300 hover:bg-blue-50/30'
                                   }`}
                                 >
                                   {opt}
@@ -390,10 +391,10 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                                 required
                                 value={answers[q.id] || ''}
                                 onChange={e => setAnswers({ ...answers, [q.id]: e.target.value })}
-                                className="w-full px-5 py-4 rounded-2xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all min-h-[150px] bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-medium placeholder:text-slate-900 dark:text-slate-100"
+                                className="w-full px-5 py-4 rounded-2xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all min-h-[150px] bg-white text-slate-900 font-medium placeholder:text-slate-900"
                                 placeholder="Type your detailed answer here..."
                               />
-                              <div className="absolute bottom-4 right-4 text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-widest pointer-events-none">
+                              <div className="absolute bottom-4 right-4 text-[10px] font-medium text-slate-900 uppercase tracking-widest pointer-events-none">
                                 {answers[q.id]?.length || 0} characters
                               </div>
                             </div>
@@ -401,8 +402,8 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                         </div>
                       ))
                     ) : (
-                      <div className="space-y-4 p-6 rounded-3xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 transition-all hover:bg-white dark:bg-slate-900 hover:shadow-md group/q">
-                        <label className="block font-medium text-slate-900 dark:text-slate-100 text-lg group-hover/q:text-blue-600 transition-colors">
+                      <div className="space-y-4 p-6 rounded-3xl bg-slate-50 border border-slate-100 transition-all hover:bg-white hover:shadow-md group/q">
+                        <label className="block font-medium text-slate-900 text-lg group-hover/q:text-blue-600 transition-colors">
                           Your Answer
                         </label>
                         <div className="relative">
@@ -410,10 +411,10 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                             required
                             value={answers['general'] || ''}
                             onChange={e => setAnswers({ ...answers, ['general']: e.target.value })}
-                            className="w-full px-5 py-4 rounded-2xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all min-h-[250px] bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-medium placeholder:text-slate-900 dark:text-slate-100"
+                            className="w-full px-5 py-4 rounded-2xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all min-h-[250px] bg-white text-slate-900 font-medium placeholder:text-slate-400"
                             placeholder="Type your response to the assignment instructions here..."
                           />
-                          <div className="absolute bottom-4 right-4 text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-widest pointer-events-none">
+                          <div className="absolute bottom-4 right-4 text-[10px] font-medium text-slate-900 uppercase tracking-widest pointer-events-none">
                             {answers['general']?.length || 0} characters
                           </div>
                         </div>
@@ -421,7 +422,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                     )}
                   </div>
 
-                  <div className="flex flex-col sm:flex-row justify-end gap-3 pt-8 border-t border-slate-100 dark:border-slate-800">
+                  <div className="flex flex-col sm:flex-row justify-end gap-3 pt-8 border-t border-slate-100">
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -432,7 +433,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
                         setIsEditing(false);
                         setAnswers({});
                       }}
-                      className="px-8 py-4 rounded-2xl font-medium text-slate-900 dark:text-slate-100 hover:bg-gray-100 transition-all"
+                      className="px-8 py-4 rounded-2xl font-medium text-slate-900 hover:bg-gray-100 transition-all"
                     >
                       {isEditing ? 'Cancel Edit' : 'Save for Later'}
                     </motion.button>

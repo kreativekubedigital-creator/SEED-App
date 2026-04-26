@@ -174,27 +174,24 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
   if (selectedLesson) {
     return (
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-4xl mx-auto">
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-white/20 shadow-sm overflow-hidden min-h-[500px] flex flex-col relative">
-          {/* Decorative background elements */}
+        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col relative">
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-200/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
           <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-500/5 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>
           
-          {/* Header */}
-          <div className="p-4 border-b border-slate-100 dark:border-slate-800/50 flex justify-between items-center bg-slate-50 dark:bg-slate-800/30 relative z-10">
+          <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 relative z-10">
             <div>
-              <h3 className="text-lg font-black uppercase tracking-tighter text-slate-900 dark:text-slate-100">{selectedLesson.title}</h3>
-              <p className="text-[10px] text-slate-900/60 dark:text-slate-400 font-black uppercase tracking-widest mt-1">{selectedSubject} • {selectedLesson.level}</p>
+              <h3 className="text-lg font-black uppercase tracking-tighter text-slate-900">{selectedLesson.title}</h3>
+              <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest mt-1">{selectedSubject} • {selectedLesson.level}</p>
             </div>
             <button 
               onClick={() => setSelectedLesson(null)}
-              className="px-5 py-2.5 rounded-full border border-gray-200/50 bg-white dark:bg-slate-900/50 hover:bg-white dark:bg-slate-900 hover:text-slate-900 dark:text-slate-100 transition-all text-[10px] font-black uppercase tracking-widest shadow-sm hover:shadow-md"
+              className="px-5 py-2.5 rounded-full border border-slate-200 bg-white hover:bg-slate-50 hover:text-slate-900 text-slate-600 transition-all text-[10px] font-black uppercase tracking-widest shadow-sm hover:shadow-md"
             >
               Exit Lesson
             </button>
           </div>
 
-          {/* Progress Bar */}
-          <div className="h-2 w-full bg-gray-100/50">
+          <div className="h-2 w-full bg-slate-100">
             <motion.div 
               className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-r-full"
               initial={{ width: '0%' }}
@@ -207,7 +204,6 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             />
           </div>
 
-          {/* Content Area */}
           <div className="flex-grow p-4 md:p-12 flex flex-col items-center justify-center text-center relative z-10">
             <AnimatePresence mode="wait">
               {step === 'intro' && (
@@ -222,8 +218,8 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                     <Play size={48} fill="currentColor" />
                   </div>
                   <div className="space-y-6">
-                    <h4 className="text-xl font-medium text-slate-900 dark:text-slate-100">Ready to learn?</h4>
-                    <p className="text-lg text-slate-900 dark:text-slate-100 font-medium max-w-md mx-auto leading-relaxed">{selectedLesson.intro}</p>
+                    <h4 className="text-xl font-medium text-slate-900">Ready to learn?</h4>
+                    <p className="text-lg text-slate-700 font-medium max-w-md mx-auto leading-relaxed">{selectedLesson.intro}</p>
                   </div>
                   <button 
                     onClick={handleNextStep}
@@ -242,10 +238,10 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                   exit={{ opacity: 0, x: -20 }}
                   className="space-y-6 w-full max-w-2xl"
                 >
-                  <div className="p-4 bg-white dark:bg-slate-900/60 backdrop-blur-sm rounded-2xl border border-white/40 shadow-sm relative overflow-hidden">
+                  <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-500"></div>
                     <h4 className="text-sm uppercase tracking-widest text-blue-600 font-medium mb-6">The Lesson</h4>
-                    <p className="text-2xl md:text-xl font-medium leading-relaxed text-slate-900 dark:text-slate-100">{selectedLesson.content}</p>
+                    <p className="text-2xl md:text-xl font-medium leading-relaxed text-slate-900">{selectedLesson.content}</p>
                   </div>
                   <button 
                     onClick={handleNextStep}
@@ -265,12 +261,12 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                   className="space-y-6 w-full max-w-2xl"
                 >
                   <div className="space-y-6">
-                    <div className="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-emerald-50 to-teal-50 backdrop-blur-sm text-emerald-700 rounded-full text-sm font-medium border border-emerald-200/50 shadow-sm">
+                    <div className="inline-flex items-center gap-2 px-5 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium border border-emerald-100 shadow-sm">
                       <Gamepad2 size={16} /> Practice Time
                     </div>
-                    <h4 className="text-lg font-medium text-slate-900 dark:text-slate-100">{selectedLesson.practice?.instruction}</h4>
+                    <h4 className="text-lg font-medium text-slate-900">{selectedLesson.practice?.instruction}</h4>
                   </div>
-                  <div className="p-12 bg-white dark:bg-slate-900/80 backdrop-blur-sm border-2 border-dashed border-blue-200/50 rounded-2xl text-4xl font-mono font-medium text-blue-600 shadow-sm">
+                  <div className="p-12 bg-white border-2 border-dashed border-blue-200 rounded-2xl text-4xl font-mono font-medium text-blue-600 shadow-sm">
                     {selectedLesson.practice?.task}
                   </div>
                   <button 
@@ -292,41 +288,40 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                 >
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-orange-50 to-amber-50 backdrop-blur-sm text-orange-600 rounded-full text-[10px] font-medium uppercase tracking-widest border border-orange-200/50 shadow-sm">Question {quizIndex + 1} / {sessionQuestions.length}</span>
-                      <div className="flex items-center gap-2 text-sm font-medium text-slate-900 dark:text-slate-100">
+                      <span className="inline-block px-4 py-1.5 bg-orange-50 text-orange-600 rounded-full text-[10px] font-medium uppercase tracking-widest border border-orange-100 shadow-sm">Question {quizIndex + 1} / {sessionQuestions.length}</span>
+                      <div className="flex items-center gap-2 text-sm font-medium text-slate-600">
                         <CheckCircle2 size={16} className="text-emerald-500" />
                         <span>Score: {score}</span>
                       </div>
                     </div>
-                    <h4 className="text-lg font-medium text-slate-900 dark:text-slate-100 leading-snug">{sessionQuestions[quizIndex]?.question}</h4>
+                    <h4 className="text-lg font-medium text-slate-900 leading-snug">{sessionQuestions[quizIndex]?.question}</h4>
                   </div>
                   <div className="grid gap-4">
                     {sessionQuestions[quizIndex]?.options.map((option, idx) => {
                       const isSelected = showFeedback && idx === sessionQuestions[quizIndex].correctOption;
-                      const isWrong = showFeedback && !isCorrect && idx !== sessionQuestions[quizIndex].correctOption; // This is a bit simplified
                       
                       return (
                         <button 
                           key={idx}
                           disabled={showFeedback}
                           onClick={() => handleQuizAnswer(idx)}
-                          className={`p-4 rounded-2xl border transition-all text-left group flex items-center justify-between backdrop-blur-sm shadow-sm relative overflow-hidden ${
+                          className={`p-4 rounded-2xl border transition-all text-left group flex items-center justify-between shadow-sm relative overflow-hidden ${
                             showFeedback 
                               ? idx === sessionQuestions[quizIndex].correctOption
-                                ? 'border-emerald-500 bg-emerald-50/50'
-                                : 'border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30 opacity-60'
-                              : 'border-white/40 hover:border-blue-400/50 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-indigo-50/50 bg-white dark:bg-slate-900/80 hover:shadow-md'
+                                ? 'border-emerald-500 bg-emerald-50'
+                                : 'border-slate-100 bg-slate-50 opacity-60'
+                              : 'border-slate-200 hover:border-blue-400 bg-white hover:shadow-md'
                           }`}
                         >
                           <span className={`font-medium text-lg ${
-                            showFeedback && idx === sessionQuestions[quizIndex].correctOption ? 'text-emerald-700' : 'text-slate-900 dark:text-slate-100'
+                            showFeedback && idx === sessionQuestions[quizIndex].correctOption ? 'text-emerald-700' : 'text-slate-900'
                           }`}>{option}</span>
                           <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center font-medium transition-colors shadow-sm ${
                             showFeedback 
                               ? idx === sessionQuestions[quizIndex].correctOption
-                                ? 'border-emerald-500 bg-emerald-500 text-slate-900 dark:text-slate-100'
-                                : 'border-gray-200 bg-gray-100 text-slate-900 dark:text-slate-100'
-                              : 'border-gray-200/50 bg-white dark:bg-slate-900 group-hover:border-blue-400 group-hover:bg-blue-50 group-hover:text-blue-600 text-slate-900 dark:text-slate-100'
+                                ? 'border-emerald-500 bg-emerald-500 text-white'
+                                : 'border-slate-200 bg-slate-100 text-slate-400'
+                              : 'border-slate-200 bg-white group-hover:border-blue-400 group-hover:bg-blue-50 group-hover:text-blue-600 text-slate-400'
                           }`}>
                             {showFeedback && idx === sessionQuestions[quizIndex].correctOption ? <CheckCircle2 size={20} /> : idx + 1}
                           </div>
@@ -384,8 +379,8 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                     </div>
                   </div>
                   <div className="space-y-3">
-                    <h4 className="text-xl font-medium text-slate-900 dark:text-slate-100">Amazing Job!</h4>
-                    <p className="text-lg text-slate-900 dark:text-slate-100 font-medium">You scored {score} / {sessionQuestions.length}</p>
+                    <h4 className="text-xl font-medium text-slate-900">Amazing Job!</h4>
+                    <p className="text-lg text-slate-600 font-medium">You scored {score} / {sessionQuestions.length}</p>
                     
                     <div className="flex flex-col gap-3 max-w-xs mx-auto mt-6">
                       <div className="flex justify-between items-center p-3 bg-blue-50 rounded-xl border border-blue-100">
@@ -414,7 +409,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                   <div className="flex flex-col gap-3 mt-8">
                     <button 
                       onClick={() => startLesson(selectedLesson!)}
-                      className="bg-white dark:bg-slate-900 text-blue-600 border border-blue-200 hover:bg-blue-50 px-10 py-2.5 rounded-full font-medium transition-all flex items-center justify-center gap-2 mx-auto"
+                      className="bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 px-10 py-2.5 rounded-full font-medium transition-all flex items-center justify-center gap-2 mx-auto"
                     >
                       <RefreshCcw size={18} /> Play Again
                     </button>
@@ -436,14 +431,16 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
 
   return (
     <div className={containerClass}>
-      <div className="flex justify-between items-end">
-        <div>
-          <h2 className="text-xl font-black uppercase tracking-tighter text-slate-900 dark:text-slate-100">Revision Hub</h2>
-          <p className="text-[10px] text-slate-900/60 dark:text-slate-400 font-black uppercase tracking-widest mt-1">Master your subjects with interactive lessons.</p>
-        </div>
-        <div className="flex items-center gap-2 bg-white dark:bg-slate-900/80 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/40 shadow-sm">
-          <Award className="text-yellow-500" size={20} />
-          <span className="font-medium text-slate-900 dark:text-slate-100">{points} Points</span>
+      <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 border border-slate-100 shadow-sm mb-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">My Lessons</h2>
+            <p className="text-slate-600 font-medium text-xs uppercase tracking-widest mt-1">Explore and learn at your own pace</p>
+          </div>
+          <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-100 bg-slate-50 shadow-sm">
+            <Award className="text-yellow-500" size={20} />
+            <span className="font-medium text-slate-900">{points} Points</span>
+          </div>
         </div>
       </div>
 
@@ -454,7 +451,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('English')}
-            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-300"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-100"
           >
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <BookOpen size={160} />
@@ -476,7 +473,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Math')}
-            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-100 to-purple-200 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-300"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-50 to-purple-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-100"
           >
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <Brain size={160} />
@@ -498,7 +495,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Science')}
-            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-100 to-teal-200 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-300"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-50 to-teal-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-100"
           >
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <Microscope size={160} />
@@ -520,7 +517,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Social Studies')}
-            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-100 to-red-200 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-300"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-50 to-red-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-100"
           >
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <Globe size={160} />
@@ -542,7 +539,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('ICT')}
-            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-100 to-blue-200 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-300"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-50 to-blue-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-100"
           >
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <Monitor size={160} />
@@ -564,7 +561,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Civic Education')}
-            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-rose-100 to-pink-200 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-300"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-rose-50 to-pink-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-100"
           >
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <ShieldCheck size={160} />
@@ -589,21 +586,21 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
               whileTap={{ scale: 0.9 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
               onClick={() => setSelectedSubject(null)}
-              className="p-2.5 rounded-full bg-white dark:bg-slate-900 border border-white/40 hover:bg-white dark:bg-slate-900 hover:shadow-md transition-all text-slate-900 dark:text-slate-100 shadow-sm"
+              className="flex-1 px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-medium text-slate-900 shadow-sm"
             >
               <ChevronRight size={20} className="rotate-180" />
             </motion.button>
-            <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100">{selectedSubject} Lessons</h3>
+            <h3 className="text-xl font-medium text-slate-900">{selectedSubject} Lessons</h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {lessons.length === 0 ? (
-              <div className="col-span-full py-16 text-center bg-white dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/40 shadow-sm">
-                <div className="w-20 h-20 bg-white dark:bg-slate-900/50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-900 dark:text-slate-100 shadow-sm border border-white">
+              <div className="col-span-full py-16 text-center bg-white/80 backdrop-blur-md rounded-2xl border border-slate-100 shadow-sm">
+                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 text-slate-900 shadow-sm border border-slate-100">
                   <BookOpen size={40} />
                 </div>
-                <p className="text-slate-900 dark:text-slate-100 font-medium text-lg">No lessons available for your current class level ({classLevel}).</p>
-                <p className="text-slate-900 dark:text-slate-100 font-medium mt-2">Check back later for new content!</p>
+                <p className="text-slate-900 font-black uppercase tracking-widest text-sm">No lessons available</p>
+                <p className="text-slate-500 font-medium mt-2 text-[10px] uppercase tracking-widest">Check back later for new content!</p>
               </div>
             ) : (
               lessons.map((lesson, idx) => {

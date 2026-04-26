@@ -10,7 +10,9 @@ import { TeacherAssignments } from'./TeacherAssignments';
 import TeacherAttendance from'./TeacherAttendance';
 import ClassTimetable from'./ClassTimetable';
 
-export const TeacherDashboard = ({ user, onLogout }: { user: UserProfile, onLogout: () => void }) => {
+import { Link } from 'react-router-dom';
+
+export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile, onLogout: () => void, school?: School }) => {
  const [activeTab, setActiveTab] = useState<'overview'|'classes'|'assignments'|'quizzes'|'results'|'attendance'|'timetable'>('overview');
  const [subjects, setSubjects] = useState<Subject[]>([]);
  const [classes, setClasses] = useState<Class[]>([]);
@@ -125,123 +127,198 @@ export const TeacherDashboard = ({ user, onLogout }: { user: UserProfile, onLogo
  const getClassName = (classId: string) => classes.find(c => c.id === classId)?.name ||'Unknown Class';
  const getSubjectName = (subjectId: string) => subjects.find(s => s.id === subjectId)?.name ||'Unknown Subject';
 
- return (
- <div className="space-y-5">
- <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
- <div className="flex flex-wrap bg-white backdrop-blur-md p-1 rounded-xl border border-gray-200/50">
- {(['overview','classes','assignments','quizzes','results','attendance','timetable'] as const).map((tab) => (
- <button
- key={ tab }
- onClick={() => setActiveTab(tab)}
- className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize transition-all duration-300 ${
- activeTab === tab ?'bg-blue-50 text-blue-700 shadow-sm border border-blue-100/50':'text-slate-900 hover:text-slate-900 hover:bg-gray-100'
- }`}
- >
- { tab }
- </button>
- ))}
- </div>
- </div>
+  const handleLogout = () => {
+    onLogout();
+  };
 
- { activeTab  === 'overview'&& (
- <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
- <motion.div whileHover={{ y: -4 }} onClick={() => setActiveTab('classes')} className="bg-white p-6 rounded-3xl shadow-xl shadow-blue-500/5 border border-slate-200 cursor-pointer transition-all">
- <div className="flex items-center gap-4 mb-6">
- <div className="p-3 bg-blue-600/10 rounded-2xl text-blue-600 shadow-sm border border-blue-500/10"><BookOpen size={ 24 } strokeWidth={ 2 } /></div>
- <span className="text-slate-500 font-bold text-xs uppercase tracking-[0.2em]">My Subjects</span>
- </div>
- <p className="text-3xl font-bold text-slate-900">{ subjects.length }</p>
- </motion.div>
- <motion.div whileHover={{ y: -4 }} onClick={() => setActiveTab('classes')} className="bg-white p-6 rounded-3xl shadow-xl shadow-emerald-500/5 border border-slate-200 cursor-pointer transition-all">
- <div className="flex items-center gap-4 mb-6">
- <div className="p-3 bg-emerald-600/10 rounded-2xl text-emerald-600 shadow-sm border border-emerald-500/10"><Users size={ 24 } strokeWidth={ 2 } /></div>
- <span className="text-slate-500 font-bold text-xs uppercase tracking-[0.2em]">My Classes</span>
- </div>
- <p className="text-3xl font-bold text-slate-900">
- { Array.from(new Set([...subjects.map(s => s.classId), ...(user.classId ? [user.classId] : [])])).length }
- </p>
- </motion.div>
- <motion.div whileHover={{ y: -4 }} onClick={() => setActiveTab('assignments')} className="bg-white p-6 rounded-3xl shadow-xl shadow-purple-500/5 border border-slate-200 cursor-pointer transition-all">
- <div className="flex items-center gap-4 mb-6">
- <div className="p-3 bg-purple-600/10 rounded-2xl text-purple-600 shadow-sm border border-purple-500/10"><FileText size={ 24 } strokeWidth={ 2 } /></div>
- <span className="text-slate-500 font-bold text-xs uppercase tracking-[0.2em]">Assignments</span>
- </div>
- <p className="text-3xl font-bold text-slate-900">{ assignments.length }</p>
- </motion.div>
- <motion.div whileHover={{ y: -4 }} onClick={() => setActiveTab('quizzes')} className="bg-white p-6 rounded-3xl shadow-xl shadow-orange-500/5 border border-slate-200 cursor-pointer transition-all">
- <div className="flex items-center gap-4 mb-6">
- <div className="p-3 bg-orange-600/10 rounded-2xl text-orange-600 shadow-sm border border-orange-500/10"><CheckSquare size={ 24 } strokeWidth={ 2 } /></div>
- <span className="text-slate-500 font-bold text-xs uppercase tracking-[0.2em]">Quizzes</span>
- </div>
- <p className="text-3xl font-bold text-slate-900">Manage</p>
- </motion.div>
- </div>
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#020617] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
- <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
- <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
- <div className="flex justify-between items-center mb-6">
- <h3 className="font-medium text-xl text-slate-900">Quick Actions</h3>
- </div>
- <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
- <motion.button whileHover={{ scale: 1.02 }} onClick={() => { setActiveTab('assignments'); }} className="p-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-100 shadow-sm hover:shadow-md transition-all text-left flex flex-col gap-1 group">
- <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-2 shadow-sm border border-blue-100/50 group-hover:scale-110 transition-transform"><Plus size={ 20 } /></div>
- <span className="font-medium text-slate-900 block truncate">New Assignment</span>
- <span className="text-xs text-slate-900 font-medium">Upload homework</span>
- </motion.button>
- <motion.button whileHover={{ scale: 1.02 }} onClick={() => setActiveTab('quizzes')} className="p-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-100 shadow-sm hover:shadow-md transition-all text-left flex flex-col gap-1 group">
- <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center mb-2 shadow-sm border border-orange-100/50 group-hover:scale-110 transition-transform"><Plus size={ 20 } /></div>
- <span className="font-medium text-slate-900 block truncate">Create Quiz</span>
- <span className="text-xs text-slate-900 font-medium">Objective test</span>
- </motion.button>
- <motion.button whileHover={{ scale: 1.02 }} onClick={() => setActiveTab('results')} className="p-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-100 shadow-sm hover:shadow-md transition-all text-left flex flex-col gap-1 group">
- <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 shadow-sm border border-emerald-100/50 group-hover:scale-110 transition-transform"><Award size={ 20 } /></div>
- <span className="font-medium text-slate-900 block truncate">Enter Results</span>
- <span className="text-xs text-slate-900 font-medium">Academic assessment</span>
- </motion.button>
- <motion.button whileHover={{ scale: 1.02 }} onClick={() => setActiveTab('attendance')} className="p-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-100 shadow-sm hover:shadow-md transition-all text-left flex flex-col gap-1 group">
- <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center mb-2 shadow-sm border border-teal-100/50 group-hover:scale-110 transition-transform"><Calendar size={ 20 } /></div>
- <span className="font-medium text-slate-900 block truncate">Mark Attendance</span>
- <span className="text-xs text-slate-900 font-medium">Daily register</span>
- </motion.button>
- <motion.button whileHover={{ scale: 1.02 }} onClick={() => setShowAddAnnouncement(true)} className="p-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-100 shadow-sm hover:shadow-md transition-all text-left flex flex-col gap-1 group">
- <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-2 shadow-sm border border-purple-100/50 group-hover:scale-110 transition-transform"><Bell size={ 20 } /></div>
- <span className="font-medium text-slate-900 block truncate">Post Update</span>
- <span className="text-xs text-slate-900 font-medium">Class announcement</span>
- </motion.button>
- </div>
- </div>
+  return (
+    <div className="min-h-screen bg-[#020617]">
+      <div className="lg:hidden flex items-center justify-between p-4 bg-white/5 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
+        <div className="flex items-center gap-3">
+          {school?.logoUrl ? (
+            <img src={school.logoUrl} alt={school.name} className="w-8 h-8 rounded-lg object-cover" />
+          ) : (
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-black text-white text-xs">S</div>
+          )}
+          <span className="font-black uppercase tracking-tighter text-white truncate max-w-[150px]">{school?.name || 'SEEDD'}</span>
+        </div>
+        <button onClick={handleLogout} className="p-2 text-white/60"><LogOut size={20} /></button>
+      </div>
 
- <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
- <h3 className="font-medium text-xl text-slate-900 mb-6">Recent Assignments</h3>
- <div className="space-y-3">
- { assignments.slice(0, 3).map(a => (
- <motion.div whileHover={{ x: 4 }} key={ a.id } className="flex gap-4 items-center p-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-100 shadow-sm hover:shadow-sm transition-all cursor-pointer">
- <div className="w-10 h-10 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0 shadow-sm border border-blue-100/50">
- <FileText size={ 20 } />
- </div>
- <div className="flex-1 overflow-hidden">
- <p className="font-medium text-slate-900 text-sm truncate">{ a.title }</p>
- <p className="text-xs text-slate-900 font-medium">{ getSubjectName(a.subjectId)}</p>
- </div>
- <div className="text-[10px] font-medium uppercase tracking-wider text-orange-600 whitespace-nowrap bg-orange-50 border border-orange-100/50 px-3 py-1.5 rounded-full shadow-sm">
- Due: { new Date(a.dueDate).toLocaleDateString()}
- </div>
- </motion.div>
- ))}
- { assignments.length === 0 && (
- <div className="flex flex-col items-center justify-center py-8 text-center">
- <div className="w-16 h-16 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-900 mb-3 shadow-sm border border-slate-100">
- <FileText size={ 20 } />
- </div>
- <p className="text-slate-900 font-medium">No recent assignments.</p>
- </div>
- )}
- </div>
- </div>
- </div>
- </motion.div>
- )}
+      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-12">
+          <div className="flex items-center gap-4">
+            <Link to="/profile" className="relative group cursor-pointer">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-2xl font-black text-white shadow-lg border-2 border-white/20 group-hover:scale-105 transition-transform">
+                {user.firstName[0]}
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full border-2 border-[#020617] flex items-center justify-center">
+                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+              </div>
+            </Link>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl font-black uppercase tracking-tighter text-white">
+                  Welcome, {user.firstName}!
+                </h1>
+                {school?.logoUrl && (
+                  <img src={school.logoUrl} alt={school.name} className="w-6 h-6 rounded-md object-cover opacity-50" />
+                )}
+              </div>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-[10px] font-black uppercase tracking-widest text-white/40 bg-white/5 px-2 py-0.5 rounded">
+                  Teacher Portal
+                </span>
+                <div className="w-1 h-1 bg-white/20 rounded-full"></div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">
+                  {user.classId ? getClassName(user.classId) : 'Specialist'}
+                </span>
+                {school?.name && (
+                  <>
+                    <div className="w-1 h-1 bg-white/20 rounded-full"></div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white/30 truncate max-w-[150px]">
+                      {school.name}
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 w-full lg:w-auto">
+            <button
+              onClick={handleLogout}
+              className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-white/5 hover:bg-red-500/10 text-white/60 hover:text-red-400 border border-white/10 hover:border-red-500/20 transition-all font-black uppercase tracking-widest text-[10px]"
+            >
+              <LogOut size={16} /> Logout
+            </button>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-hide no-scrollbar">
+          {(['overview', 'classes', 'assignments', 'quizzes', 'results', 'attendance', 'timetable'] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all whitespace-nowrap shrink-0 border ${
+                activeTab === tab
+                  ? 'bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-500/20'
+                  : 'bg-white/5 text-white/40 border-white/5 hover:bg-white/10 hover:text-white'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+  { activeTab  === 'overview'&& (
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <motion.div whileHover={{ y: -4 }} onClick={() => setActiveTab('classes')} className="bg-white/5 p-6 rounded-[2.5rem] border border-white/10 cursor-pointer transition-all hover:bg-white/[0.07]">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="p-3 bg-blue-500/20 rounded-2xl text-blue-400 shadow-sm border border-blue-500/20"><BookOpen size={ 24 } strokeWidth={ 2 } /></div>
+            <span className="text-white/40 font-black text-[10px] uppercase tracking-widest">My Subjects</span>
+          </div>
+          <p className="text-4xl font-black text-white">{ subjects.length }</p>
+        </motion.div>
+        
+        <motion.div whileHover={{ y: -4 }} onClick={() => setActiveTab('classes')} className="bg-white/5 p-6 rounded-[2.5rem] border border-white/10 cursor-pointer transition-all hover:bg-white/[0.07]">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="p-3 bg-emerald-500/20 rounded-2xl text-emerald-400 shadow-sm border border-emerald-500/20"><Users size={ 24 } strokeWidth={ 2 } /></div>
+            <span className="text-white/40 font-black text-[10px] uppercase tracking-widest">My Classes</span>
+          </div>
+          <p className="text-4xl font-black text-white">
+            { Array.from(new Set([...subjects.map(s => s.classId), ...(user.classId ? [user.classId] : [])])).length }
+          </p>
+        </motion.div>
+
+        <motion.div whileHover={{ y: -4 }} onClick={() => setActiveTab('assignments')} className="bg-white/5 p-6 rounded-[2.5rem] border border-white/10 cursor-pointer transition-all hover:bg-white/[0.07]">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="p-3 bg-purple-500/20 rounded-2xl text-purple-400 shadow-sm border border-purple-500/20"><FileText size={ 24 } strokeWidth={ 2 } /></div>
+            <span className="text-white/40 font-black text-[10px] uppercase tracking-widest">Assignments</span>
+          </div>
+          <p className="text-4xl font-black text-white">{ assignments.length }</p>
+        </motion.div>
+
+        <motion.div whileHover={{ y: -4 }} onClick={() => setActiveTab('quizzes')} className="bg-white/5 p-6 rounded-[2.5rem] border border-white/10 cursor-pointer transition-all hover:bg-white/[0.07]">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="p-3 bg-orange-500/20 rounded-2xl text-orange-400 shadow-sm border border-orange-500/20"><CheckSquare size={ 24 } strokeWidth={ 2 } /></div>
+            <span className="text-white/40 font-black text-[10px] uppercase tracking-widest">Quizzes</span>
+          </div>
+          <p className="text-4xl font-black text-white">Manage</p>
+        </motion.div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10">
+          <div className="flex justify-between items-center mb-8">
+            <h3 className="text-sm font-black uppercase tracking-widest text-white/60">Quick Actions</h3>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <motion.button whileHover={{ scale: 1.02 }} onClick={() => setActiveTab('assignments')} className="p-6 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-left flex flex-col gap-2 group">
+              <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-2 shadow-sm border border-blue-500/20 group-hover:scale-110 transition-transform"><Plus size={ 24 } /></div>
+              <span className="font-black uppercase tracking-widest text-[10px] text-white">New Assignment</span>
+              <span className="text-[8px] text-white/40 font-black uppercase tracking-widest">Upload homework</span>
+            </motion.button>
+            
+            <motion.button whileHover={{ scale: 1.02 }} onClick={() => setActiveTab('quizzes')} className="p-6 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-left flex flex-col gap-2 group">
+              <div className="w-12 h-12 rounded-2xl bg-orange-500/20 text-orange-400 flex items-center justify-center mb-2 shadow-sm border border-orange-500/20 group-hover:scale-110 transition-transform"><Plus size={ 24 } /></div>
+              <span className="font-black uppercase tracking-widest text-[10px] text-white">Create Quiz</span>
+              <span className="text-[8px] text-white/40 font-black uppercase tracking-widest">Objective test</span>
+            </motion.button>
+
+            <motion.button whileHover={{ scale: 1.02 }} onClick={() => setActiveTab('results')} className="p-6 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-left flex flex-col gap-2 group">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-2 shadow-sm border border-emerald-500/20 group-hover:scale-110 transition-transform"><Award size={ 24 } /></div>
+              <span className="font-black uppercase tracking-widest text-[10px] text-white">Enter Results</span>
+              <span className="text-[8px] text-white/40 font-black uppercase tracking-widest">Academic assessment</span>
+            </motion.button>
+
+            <motion.button whileHover={{ scale: 1.02 }} onClick={() => setActiveTab('attendance')} className="p-6 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-left flex flex-col gap-2 group">
+              <div className="w-12 h-12 rounded-2xl bg-teal-500/20 text-teal-400 flex items-center justify-center mb-2 shadow-sm border border-teal-500/20 group-hover:scale-110 transition-transform"><Calendar size={ 24 } /></div>
+              <span className="font-black uppercase tracking-widest text-[10px] text-white">Mark Attendance</span>
+              <span className="text-[8px] text-white/40 font-black uppercase tracking-widest">Daily register</span>
+            </motion.button>
+          </div>
+        </div>
+
+        <div className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10">
+          <h3 className="text-sm font-black uppercase tracking-widest text-white/60 mb-8">Recent Assignments</h3>
+          <div className="space-y-4">
+            { assignments.slice(0, 3).map(a => (
+              <motion.div whileHover={{ x: 4 }} key={ a.id } className="flex gap-4 items-center p-5 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all cursor-pointer">
+                <div className="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 shrink-0 border border-blue-500/20">
+                  <FileText size={ 24 } />
+                </div>
+                <div className="flex-1 overflow-hidden">
+                  <p className="font-black uppercase tracking-widest text-[10px] text-white truncate">{ a.title }</p>
+                  <p className="text-[8px] text-white/40 font-black uppercase tracking-widest mt-1">{ getSubjectName(a.subjectId)}</p>
+                </div>
+                <div className="text-[8px] font-black uppercase tracking-widest text-orange-400 whitespace-nowrap bg-orange-500/10 border border-orange-500/20 px-4 py-2 rounded-full shadow-sm">
+                  Due: { new Date(a.dueDate).toLocaleDateString()}
+                </div>
+              </motion.div>
+            ))}
+            { assignments.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="w-16 h-16 bg-white/5 rounded-3xl flex items-center justify-center text-white/20 mb-4 border border-white/10">
+                  <FileText size={ 32 } />
+                </div>
+                <p className="text-white/40 font-black uppercase tracking-widest text-[10px]">No recent assignments.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )}}
 
  { activeTab  === 'classes'&& (
  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
