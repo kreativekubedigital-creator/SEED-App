@@ -69,8 +69,23 @@ export const SchoolFinance = ({ school }: { school: School }) => {
     setLoading(false);
   });
 
-  return () => { unsubFees(); unsubInvoices(); unsubPayments(); unsubClasses(); unsubStudents(); unsubSessions(); };
+    return () => { unsubFees(); unsubInvoices(); unsubPayments(); unsubClasses(); unsubStudents(); unsubSessions(); };
   }, [school.id]);
+
+  // Handle pre-selection of session and term for invoice generation
+  useEffect(() => {
+    if (showGenerateInvoice && sessions.length > 0) {
+      const currentSess = sessions.find(s => s.isCurrent) || sessions[0];
+      if (currentSess) {
+        setGenSessionId(currentSess.id);
+        const terms = termsMap[currentSess.id] || {};
+        const currentTerm = Object.values(terms).find((t: any) => t.isCurrent) || Object.values(terms)[0];
+        if (currentTerm) {
+          setGenTermId((currentTerm as any).id);
+        }
+      }
+    }
+  }, [showGenerateInvoice, sessions, termsMap]);
 
   const isOverdue = (invoice: Invoice) => {
     if (invoice.status === 'paid' || invoice.amountPaid >= invoice.amount) return false;
@@ -87,29 +102,40 @@ export const SchoolFinance = ({ school }: { school: School }) => {
 
   const handleSaveFee = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newFee.name || !newFee.amount || !newFee.sessionId || !newFee.termId) return;
+    if (!newFee.name || !newFee.amount || !newFee.sessionId || !newFee.termId) {
+      alert("Please fill in all required fields (Name, Amount, Session, and Term)");
+      return;
+    }
 
     try {
+      // Destructure to remove id and other metadata fields
+      const { id, createdAt, updatedAt, ...feeDataPayload } = newFee as any;
+      
       const feeData = {
-        ...newFee,
+        ...feeDataPayload,
         schoolId: school.id,
         updatedAt: new Date().toISOString(),
-        amount: Number(newFee.amount)
+        amount: Number(newFee.amount),
+        isMandatory: Boolean(newFee.isMandatory)
       };
 
       if (editingFee) {
         const feeRef = doc(db, 'schools', school.id, 'feeStructures', editingFee.id);
         await updateDoc(feeRef, feeData);
+        alert("Fee structure updated successfully");
         setEditingFee(null);
       } else {
         await addDoc(collection(db, `schools/${school.id}/feeStructures`), {
           ...feeData,
           createdAt: new Date().toISOString()
         });
+        alert("Fee structure created successfully");
       }
       setNewFee({ name: '', amount: 0, classId: 'all', isMandatory: true, termId: '', sessionId: '', category: 'tuition' });
       setShowAddFee(false);
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Error saving fee:", error);
+      alert(`Failed to save fee: ${error.message}`);
       handleFirestoreError(error, editingFee ? OperationType.UPDATE : OperationType.CREATE, `schools/${school.id}/feeStructures`);
     }
   };
@@ -129,64 +155,83 @@ export const SchoolFinance = ({ school }: { school: School }) => {
     }
   };
 
- const handleGenerateInvoices = async (classId: string, termId: string, sessionId: string) => {
- try {
- // Fetch students
- const qStudents = classId  === 'all'
- ? query(collection(db,'users'), where('schoolId','==', school.id), where('role','==','student'))
- : query(collection(db,'users'), where('schoolId','==', school.id), where('role','==','student'), where('classId','==', classId));
- 
- const studentsSnap = await getDocs(qStudents);
- const students = studentsSnap.docs.map(d => ({ uid: d.id, ...d.data() } as UserProfile));
+  const handleGenerateInvoices = async (classId: string, termId: string, sessionId: string) => {
+    try {
+      // Fetch students in scope
+      const qStudents = classId === 'all'
+        ? query(collection(db, 'users'), where('schoolId', '==', school.id), where('role', '==', 'student'))
+        : query(collection(db, 'users'), where('schoolId', '==', school.id), where('role', '==', 'student'), where('classId', '==', classId));
 
- // Filter applicable fees
- const applicableFees = feeStructures.filter(f => 
- f.termId === termId && 
- f.sessionId === sessionId && 
- (f.classId  === 'all'|| f.classId === classId)
- );
+      const studentsSnap = await getDocs(qStudents);
+      const studentsInScope = studentsSnap.docs.map(d => ({ uid: d.id, ...d.data() } as UserProfile));
 
- if (applicableFees.length === 0) {
- alert("No fee structures found for the selected criteria.");
- return;
- }
+      if (studentsInScope.length === 0) {
+        alert("No students found in the selected class.");
+        return;
+      }
 
- const totalAmount = applicableFees.reduce((sum, fee) => sum + fee.amount, 0);
- const items = applicableFees.map(f => ({ name: f.name, amount: f.amount }));
+      let generatedCount = 0;
+      let skippedCount = 0;
 
- // Generate invoices
- for (const student of students) {
- // Check if invoice already exists
- const qExisting = query(
- collection(db,`schools/${ school.id }/invoices`), 
- where('studentId','==', student.uid),
- where('termId','==', termId),
- where('sessionId','==', sessionId)
- );
- const existingSnap = await getDocs(qExisting);
- 
- if (existingSnap.empty) {
- await addDoc(collection(db,`schools/${ school.id }/invoices`), {
- schoolId: school.id,
- studentId: student.uid,
- termId,
- sessionId,
- amount: totalAmount,
- amountPaid: 0,
- status:'pending',
- dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
- items,
- createdAt: new Date().toISOString()
- });
- }
- }
+      // Generate invoices per student
+      for (const student of studentsInScope) {
+        const studentFees = feeStructures.filter(f => 
+          f.termId === termId && 
+          f.sessionId === sessionId && 
+          (f.classId === 'all' || f.classId === student.classId)
+        );
 
- alert(`Invoices generated successfully for ${ students.length } students.`);
- setShowGenerateInvoice(false);
- } catch (err) {
- handleFirestoreError(err, OperationType.CREATE,`schools/${ school.id }/invoices`);
- }
- };
+        if (studentFees.length === 0) {
+          skippedCount++;
+          continue;
+        }
+
+        const totalAmount = studentFees.reduce((sum, fee) => sum + fee.amount, 0);
+        const items = studentFees.map(f => ({ name: f.name, amount: f.amount }));
+
+        const qExisting = query(
+          collection(db, `schools/${school.id}/invoices`), 
+          where('studentId', '==', student.uid),
+          where('termId', '==', termId),
+          where('sessionId', '==', sessionId)
+        );
+        const existingSnap = await getDocs(qExisting);
+        
+        if (existingSnap.empty) {
+          // Format due date as YYYY-MM-DD for Supabase
+          const dueDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+          
+          await addDoc(collection(db, `schools/${school.id}/invoices`), {
+            schoolId: school.id,
+            studentId: student.uid,
+            classId: student.classId || '',
+            termId,
+            sessionId,
+            amount: totalAmount,
+            amountPaid: 0,
+            status: 'unpaid',
+            dueDate,
+            items,
+            createdAt: new Date().toISOString()
+          });
+          generatedCount++;
+        } else {
+          skippedCount++;
+        }
+      }
+
+      if (generatedCount === 0) {
+        alert("No new invoices were generated. Students may already have invoices or no fees were found for them.");
+      } else {
+        alert(`Invoices generated successfully for ${generatedCount} students.${skippedCount > 0 ? ` (${skippedCount} skipped)` : ''}`);
+      }
+      setShowGenerateInvoice(false);
+    } catch (err: any) {
+      console.error("Error generating invoices:", err);
+      alert(`Failed to generate invoices: ${err.message}`);
+      handleFirestoreError(err, OperationType.CREATE, `schools/${school.id}/invoices`);
+    }
+  };
 
  if (loading) return <div>Loading finance data...</div>;
 

@@ -1198,7 +1198,7 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  staff: 0,
  feesAwaiting: { count: 0, total: 1 },
  monthlyFees: 0,
- paymentStatus: { unpaid: 0, partial: 0, paid: 0 },
+ paymentStatus: { unpaid: 0, partial: 0, paid: 0, overdue: 0 },
  incomeCategories: [] as { name: string; amount: number }[],
  monthlyHistory: [4.2, 3.8, 4.5, 3.2, 4.8, 5.2, 4.9, 4.2, 5.1, 4.8, 5.5, 3.2] // Simulated velocity
  });
@@ -1225,14 +1225,19 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  collection(db,`schools/${ school.id }/invoices`),
  (snap) => {
  const invoices = snap.docs.map(d => d.data() as Invoice);
- const status = { unpaid: 0, partial: 0, paid: 0 };
+ const status = { unpaid: 0, partial: 0, paid: 0, overdue: 0 };
  let awaitingCount = 0;
  const categories: Record<string, number> = {};
 
  invoices.forEach(inv => {
- if (inv.status  === 'paid') status.paid++;
- else if (inv.status  === 'partial') {
+ if (inv.status === 'paid') {
+ status.paid++;
+ } else if (inv.status === 'partially_paid' || inv.status === 'partial') {
  status.partial++;
+ awaitingCount++;
+ } else if (inv.status === 'overdue') {
+ status.overdue++;
+ status.unpaid++; // Group overdue with unpaid for general display
  awaitingCount++;
  } else {
  status.unpaid++;

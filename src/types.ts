@@ -296,7 +296,7 @@ export interface Invoice {
   sessionId: string;
   amount: number;
   amountPaid: number;
-  status: 'pending' | 'partial' | 'paid';
+  status: 'unpaid' | 'partially_paid' | 'paid' | 'overdue';
   dueDate: string;
   items: { name: string; amount: number }[];
   createdAt: string;

@@ -33,9 +33,10 @@ For every student matching the filter, the following logic is applied in real-ti
 3.  **Calculate Reconciliation Metrics**:
     *   `Balance Due = Expected Debt - Paid Amount`.
     *   `Status`:
-        *   **Fully Paid**: Paid Amount >= Expected Debt.
-        *   **Partial**: Paid Amount > 0 AND Paid Amount < Expected Debt.
+        *   **Paid**: Paid Amount >= Expected Debt.
+        *   **Partially Paid**: Paid Amount > 0 AND Paid Amount < Expected Debt.
         *   **Unpaid**: Paid Amount == 0 AND Expected Debt > 0.
+        *   **Overdue**: (Unpaid or Partially Paid) AND (Current Date > 1 month post-resumption).
         *   **No Fee**: Expected Debt == 0.
 
 4.  **Identify Administrative Gaps**:
@@ -59,6 +60,6 @@ The logic is implemented using the `useMemo` hook to ensure performance.
       totalFee: number,      // Derived from FeeStructure
       amountPaid: number,    // Derived from Invoices/Payments
       balance: number,       // totalFee - amountPaid
-      status: 'Paid' | 'Partial' | 'Unpaid' | 'Uninvoiced'
+      status: 'Paid' | 'Partially Paid' | 'Unpaid' | 'Overdue' | 'Uninvoiced'
     }
     ```
