@@ -42,54 +42,35 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // 2. Filter Logic
+  // 2. Filter Logic (Internal helper for generic term matching)
+  const isMatchingTerm = React.useCallback((invSessionId: string, invTermId: string) => {
+    const matchTerm = selectedTerm === 'all';
+    if (matchTerm) return true;
+    
+    if (invTermId === selectedTerm) return true;
+    
+    if (selectedSession === 'all' && ['1st_term', '2nd_term', '3rd_term'].includes(selectedTerm)) {
+      // Generic term match across sessions
+      const termName = termsMap[invSessionId]?.[invTermId]?.name || '';
+      const genericTermPrefix = selectedTerm.split('_')[0]; // e.g., '1st'
+      return termName.toLowerCase().includes(genericTermPrefix.toLowerCase());
+    }
+    
+    return false;
+  }, [selectedTerm, selectedSession, termsMap]);
+
   const filteredInvoices = useMemo(() => {
     return invoices.filter(inv => {
       const student = students.find(s => s.uid === inv.studentId);
       const matchClass = selectedClass === 'all' || student?.classId === selectedClass;
       const matchSession = selectedSession === 'all' || inv.sessionId === selectedSession;
-      
-      let matchTerm = selectedTerm === 'all';
-      if (!matchTerm) {
-        if (inv.termId === selectedTerm) {
-          matchTerm = true;
-        } else if (selectedSession === 'all' && ['1st_term', '2nd_term', '3rd_term'].includes(selectedTerm)) {
-          // Generic term match across sessions
-          const termName = termsMap[inv.sessionId]?.[inv.termId]?.name || '';
-          const genericTermPrefix = selectedTerm.split('_')[0]; // e.g., '1st'
-          matchTerm = termName.toLowerCase().includes(genericTermPrefix);
-        }
-      }
+      const matchTerm = isMatchingTerm(inv.sessionId, inv.termId);
 
       return matchClass && matchSession && matchTerm;
     });
   }, [invoices, selectedClass, selectedSession, selectedTerm, students, termsMap]);
 
-  // 3. Analytics Aggregation (Respecting Filters)
-  const stats = useMemo(() => {
-    const totalRevenue = filteredInvoices.reduce((sum, inv) => sum + inv.amountPaid, 0);
-    
-    const calculateCategoryTotal = (category: string) => {
-      return filteredInvoices.reduce((sum, inv) => {
-        const items = inv.items?.filter(item => {
-          const structure = feeStructures.find(f => f.name === item.name);
-          if (category === 'miscellaneous') {
-            return structure?.category === 'miscellaneous' || !['tuition', 'activities'].includes(structure?.category || '');
-          }
-          return structure?.category === category;
-        }) || [];
-        return sum + items.reduce((s, i) => s + i.amount, 0);
-      }, 0);
-    };
-
-    const tuitionTotal = calculateCategoryTotal('tuition');
-    const activitiesTotal = calculateCategoryTotal('activities');
-    const miscTotal = calculateCategoryTotal('miscellaneous');
-
-    return { totalRevenue, tuitionTotal, activitiesTotal, miscTotal };
-  }, [filteredInvoices, feeStructures]);
-
-  // 4. Student Data for Breakdown Table
+  // 4. Student Data for Breakdown Table (Reconciliation Logic)
   const studentFeeData = useMemo(() => {
     return students
       .filter(s => {
@@ -100,27 +81,25 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
         return matchesClass && matchesSearch;
       })
       .map(student => {
+        // A. Calculate EXPECTED fee from structures
+        const applicableStructures = feeStructures.filter(fs => {
+          const matchClass = fs.classId === 'all' || fs.classId === student.classId;
+          const matchSession = selectedSession === 'all' || fs.sessionId === selectedSession;
+          const matchTerm = isMatchingTerm(fs.sessionId, fs.termId);
+          return matchClass && matchSession && matchTerm;
+        });
+
+        const totalFee = applicableStructures.reduce((sum, fs) => sum + fs.amount, 0);
+
+        // B. Calculate ACTUAL paid from invoices
         const studentInvoices = invoices.filter(inv => {
           const isStudent = inv.studentId === student.uid;
           if (!isStudent) return false;
-
           const matchSession = selectedSession === 'all' || inv.sessionId === selectedSession;
-          
-          let matchTerm = selectedTerm === 'all';
-          if (!matchTerm) {
-            if (inv.termId === selectedTerm) {
-              matchTerm = true;
-            } else if (selectedSession === 'all' && ['1st_term', '2nd_term', '3rd_term'].includes(selectedTerm)) {
-              const termName = termsMap[inv.sessionId]?.[inv.termId]?.name || '';
-              const genericTermPrefix = selectedTerm.split('_')[0];
-              matchTerm = termName.toLowerCase().includes(genericTermPrefix);
-            }
-          }
-
+          const matchTerm = isMatchingTerm(inv.sessionId, inv.termId);
           return matchSession && matchTerm;
         });
 
-        const totalFee = studentInvoices.reduce((sum, inv) => sum + inv.amount, 0);
         const paid = studentInvoices.reduce((sum, inv) => sum + inv.amountPaid, 0);
         const balance = totalFee - paid;
         
@@ -147,7 +126,46 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
         };
       })
       .sort((a, b) => b.balance - a.balance); // Sort by balance descending
-  }, [students, invoices, selectedClass, selectedSession, selectedTerm, searchQuery, termsMap]);
+  }, [students, invoices, feeStructures, selectedClass, selectedSession, selectedTerm, searchQuery, termsMap, isMatchingTerm]);
+
+  // 5. Analytics Aggregation (Updated to reflect reconciliation)
+  const stats = useMemo(() => {
+    const totalRevenue = studentFeeData.reduce((sum, d) => sum + d.paid, 0);
+    const totalExpected = studentFeeData.reduce((sum, d) => sum + d.totalFee, 0);
+    
+    // Category totals from structures across all filtered students
+    const tuitionTotal = studentFeeData.reduce((sum, d) => {
+      const studentStructures = feeStructures.filter(fs => 
+        (fs.classId === 'all' || fs.classId === d.student.classId) &&
+        (selectedSession === 'all' || fs.sessionId === selectedSession) &&
+        isMatchingTerm(fs.sessionId, fs.termId) &&
+        fs.category === 'tuition'
+      );
+      return sum + studentStructures.reduce((s, fs) => s + fs.amount, 0);
+    }, 0);
+
+    const activitiesTotal = studentFeeData.reduce((sum, d) => {
+      const studentStructures = feeStructures.filter(fs => 
+        (fs.classId === 'all' || fs.classId === d.student.classId) &&
+        (selectedSession === 'all' || fs.sessionId === selectedSession) &&
+        isMatchingTerm(fs.sessionId, fs.termId) &&
+        fs.category === 'activities'
+      );
+      return sum + studentStructures.reduce((s, fs) => s + fs.amount, 0);
+    }, 0);
+
+    const miscTotal = studentFeeData.reduce((sum, d) => {
+      const studentStructures = feeStructures.filter(fs => 
+        (fs.classId === 'all' || fs.classId === d.student.classId) &&
+        (selectedSession === 'all' || fs.sessionId === selectedSession) &&
+        isMatchingTerm(fs.sessionId, fs.termId) &&
+        (fs.category === 'miscellaneous' || !['tuition', 'activities'].includes(fs.category))
+      );
+      return sum + studentStructures.reduce((s, fs) => s + fs.amount, 0);
+    }, 0);
+
+    return { totalRevenue, totalExpected, tuitionTotal, activitiesTotal, miscTotal };
+  }, [studentFeeData, feeStructures, selectedSession, isMatchingTerm]);
 
   // 2. Chart Data Preparation (Last 6 Months)
   const chartData = useMemo(() => {
@@ -243,6 +261,8 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
           <StatCard 
             title="Total Revenue" 
             value={stats.totalRevenue} 
+            subtitle={`Expected: ${formatCurrency(stats.totalExpected)}`}
+            progress={stats.totalExpected > 0 ? (stats.totalRevenue / stats.totalExpected) * 100 : 0}
             icon={<DollarSign className="text-blue-600" size={18} />}
             color="blue"
           />
@@ -405,14 +425,16 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
                         <span className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider w-fit flex items-center gap-1 ${
-                          !hasInvoices ? 'bg-slate-100 text-slate-400' :
+                          totalFee > 0 && !hasInvoices ? 'bg-amber-100 text-amber-700' :
+                          totalFee === 0 ? 'bg-slate-100 text-slate-400' :
                           isPaid ? 'bg-emerald-50 text-emerald-600' :
                           isPartial ? 'bg-amber-50 text-amber-600' :
                           'bg-rose-50 text-rose-600'
                         }`}>
-                          {!hasInvoices ? 'NO INVOICE' :
+                          {totalFee > 0 && !hasInvoices ? <><Clock size={10} /> UNINVOICED</> :
+                           totalFee === 0 ? 'NO FEE' :
                            isPaid ? <><CheckCircle size={10} /> PAID</> : 
-                           isPartial ? 'PARTIAL' : 'PENDING'}
+                           isPartial ? 'PARTIAL' : 'UNPAID'}
                         </span>
                         {hasOverdue && (
                           <span className="text-[10px] font-black text-rose-500 flex items-center gap-1 animate-pulse">
@@ -439,7 +461,21 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
   );
 };
 
-const StatCard = ({ title, value, icon, color }: { title: string; value: number; icon: React.ReactNode; color: string }) => {
+const StatCard = ({ 
+  title, 
+  value, 
+  subtitle,
+  progress,
+  icon, 
+  color 
+}: { 
+  title: string; 
+  value: number; 
+  subtitle?: string;
+  progress?: number;
+  icon: React.ReactNode; 
+  color: string 
+}) => {
   const colorMap: Record<string, string> = {
     blue: 'bg-blue-50/50 border-blue-100',
     emerald: 'bg-emerald-50/50 border-emerald-100',
@@ -452,11 +488,18 @@ const StatCard = ({ title, value, icon, color }: { title: string; value: number;
       whileHover={{ y: -2 }}
       className={`p-5 rounded-3xl border ${colorMap[color] || 'bg-white border-slate-100'} shadow-sm transition-all`}
     >
-      <div className="flex items-center gap-3 mb-3">
-        <div className="p-2 bg-white rounded-xl shadow-sm border border-slate-50">
-          {icon}
+      <div className="flex justify-between items-start mb-3">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-white rounded-xl shadow-sm border border-slate-50">
+            {icon}
+          </div>
+          <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{title}</span>
         </div>
-        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{title}</span>
+        {progress !== undefined && progress > 0 && (
+          <span className="text-[10px] font-black text-blue-600 bg-blue-100/50 px-2 py-0.5 rounded-full">
+            {Math.round(progress)}%
+          </span>
+        )}
       </div>
       <div className="text-xl font-black text-slate-900 tracking-tight">
         {new Intl.NumberFormat('en-NG', {
@@ -465,6 +508,21 @@ const StatCard = ({ title, value, icon, color }: { title: string; value: number;
           maximumFractionDigits: 0
         }).format(value)}
       </div>
+      {subtitle && (
+        <div className="text-[10px] font-bold text-slate-400 mt-1">
+          {subtitle}
+        </div>
+      )}
+      {progress !== undefined && (
+        <div className="mt-3 h-1 w-full bg-slate-100 rounded-full overflow-hidden">
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: `${Math.min(progress, 100)}%` }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="h-full bg-blue-600 rounded-full"
+          />
+        </div>
+      )}
     </motion.div>
   );
 };
