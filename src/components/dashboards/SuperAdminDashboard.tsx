@@ -80,46 +80,88 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
  const [searchQuery, setSearchQuery] = useState('');
  const [filterStatus, setFilterStatus] = useState<'all'|'active'|'inactive'>('all');
- const [activeTab, setActiveTab] = useState<'overview'|'schools'|'financials'|'logs'|'system'>('overview');
- const [isSidebarOpen, setIsSidebarOpen] = useState(true);
- const [previewSchool, setPreviewSchool] = useState<School | null>(null);
- const tableRef = useRef<HTMLDivElement>(null);
- const schoolToDelete = schools.find(s => s.id === showDeleteConfirm);
+   const [activeTab, setActiveTab] = useState<'overview'|'schools'|'financials'|'logs'|'system'>('overview');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [previewSchool, setPreviewSchool] = useState<School | null>(null);
+  const tableRef = useRef<HTMLDivElement>(null);
+  const schoolToDelete = schools.find(s => s.id === showDeleteConfirm);
 
- useEffect(() => {
- // School listener
- const unsubSchools = onSnapshot(collection(db,'schools'), (snapshot) => {
- const schoolsData = snapshot.docs.map(doc => ({
- id: doc.id,
- ...doc.data()
- })) as School[];
- setSchools(sortByName(schoolsData));
- setLoading(false);
- }, (error) => {
- console.error("Failed to fetch schools:", error);
- setLoading(false);
- });
+  // Live Data States
+  const [systemMetrics, setSystemMetrics] = useState({
+    processor: 42,
+    database: 28,
+    logic: 15,
+    storage: 62
+  });
 
- // Users count listener
- const unsubUsers = onSnapshot(collection(db,'users'), (snapshot) => {
- setTotalUsers(snapshot.size || 0);
- });
+  const [growthData, setGrowthData] = useState<any[]>([]);
 
- // Audit logs listener
- const unsubLogs = onSnapshot(query(collection(db,'audit_logs'), orderBy('createdAt','desc'), limit(10)), (snapshot) => {
- const logsData = snapshot.docs.map(doc => ({
- id: doc.id,
- ...doc.data()
- }));
- setAuditLogs(logsData);
- });
+   useEffect(() => {
+    // School listener
+    const unsubSchools = onSnapshot(collection(db,'schools'), (snapshot) => {
+      const schoolsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as School[];
+      setSchools(sortByName(schoolsData));
+      
+      // Calculate growth data (last 6 months)
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const last6Months = Array.from({length: 6}, (_, i) => {
+        const d = new Date();
+        d.setMonth(d.getMonth() - (5 - i));
+        return {
+          name: months[d.getMonth()],
+          value: 0
+        };
+      });
 
- return () => {
- unsubSchools();
- unsubUsers();
- unsubLogs();
- };
- }, []);
+      schoolsData.forEach(school => {
+        if (school.createdAt) {
+          const date = school.createdAt.toDate ? school.createdAt.toDate() : new Date(school.createdAt);
+          const monthName = months[date.getMonth()];
+          const dataPoint = last6Months.find(m => m.name === monthName);
+          if (dataPoint) dataPoint.value++;
+        }
+      });
+      setGrowthData(last6Months);
+      setLoading(false);
+    }, (error) => {
+      console.error("Failed to fetch schools:", error);
+      setLoading(false);
+    });
+
+    // Users count listener
+    const unsubUsers = onSnapshot(collection(db,'users'), (snapshot) => {
+      setTotalUsers(snapshot.size || 0);
+    });
+
+    // Audit logs listener
+    const unsubLogs = onSnapshot(query(collection(db,'audit_logs'), orderBy('createdAt','desc'), limit(10)), (snapshot) => {
+      const logsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setAuditLogs(logsData);
+    });
+
+    // Simulated Live Metrics Interval
+    const metricsInterval = setInterval(() => {
+      setSystemMetrics(prev => ({
+        processor: Math.min(100, Math.max(5, prev.processor + (Math.random() * 4 - 2))),
+        database: Math.min(100, Math.max(5, prev.database + (Math.random() * 2 - 1))),
+        logic: Math.min(100, Math.max(5, prev.logic + (Math.random() * 2 - 1))),
+        storage: Math.min(100, Math.max(60, prev.storage + (Math.random() * 0.2 - 0.1)))
+      }));
+    }, 3000);
+
+    return () => {
+      unsubSchools();
+      unsubUsers();
+      unsubLogs();
+      clearInterval(metricsInterval);
+    };
+  }, []);
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -488,7 +530,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  </div>
  </div>
  
- <LineChart data={[20, 35, 25, 45, 40, 60]} />
+ <LineChart data={ growthData.length > 0 ? growthData.map(d => d.value) : [20, 35, 25, 45, 40, 60] } />
  </div>
 
  <div className="bg-white border border-slate-200 rounded-3xl p-8 group shadow-sm">
@@ -497,10 +539,10 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <Activity size={ 20 } className="text-emerald-500 animate-pulse"/>
  </div>
  <div className="space-y-8">
- <SystemMeter label="Processor Load"value={ 24 } color="bg-blue-600 shadow-blue-600/20"/>
- <SystemMeter label="Database Activity"value={ 42 } color="bg-emerald-600 shadow-emerald-600/20"/>
- <SystemMeter label="Logic Engine"value={ 18 } color="bg-purple-600 shadow-purple-600/20"/>
- <SystemMeter label="Storage Usage"value={ 65 } color="bg-amber-600 shadow-amber-600/20"/>
+ <SystemMeter label="Processor Load" value={ systemMetrics.processor } color="bg-blue-600 shadow-blue-600/20"/>
+ <SystemMeter label="Database Activity" value={ systemMetrics.database } color="bg-emerald-600 shadow-emerald-600/20"/>
+ <SystemMeter label="Logic Engine" value={ systemMetrics.logic } color="bg-purple-600 shadow-purple-600/20"/>
+ <SystemMeter label="Storage Usage" value={ systemMetrics.storage } color="bg-amber-600 shadow-amber-600/20"/>
  </div>
  </div>
  </div>
