@@ -121,7 +121,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  addDoc(collection(db,'schools', school.id,'subjects'), {
  name: subjectName,
  classId: showAddSubject,
- teacherId: newSubjectTeacher,
+ teacherId: newSubjectTeacher || null,
  schoolId: school.id,
  createdAt: new Date().toISOString()
  })
@@ -176,7 +176,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  try {
  await updateDoc(doc(db,'schools', school.id,'subjects', subjectToEdit.id), {
  name: editSubjectName,
- teacherId: editSubjectTeacher
+ teacherId: editSubjectTeacher || null
  });
  setSubjectToEdit(null);
  setEditSubjectName('');
@@ -250,7 +250,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  <div key={ c.id } className="bg-white rounded-2xl border border-slate-300 shadow-sm overflow-hidden transition-all hover:shadow-md group">
  <div className="p-4 flex justify-between items-center bg-white relative overflow-hidden">
  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-orange-400 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
- <div className="flex items-center gap-4 cursor-pointer flex-1 relative z-10"onClick={() => setExpandedClass(isExpanded ? null : c.id)}>
+ <div className="flex items-center gap-4 cursor-pointer flex-1 relative z-10" onClick={() => setExpandedClass(isExpanded ? null : c.id)}>
  <div className="w-10 h-10 bg-gradient-to-br from-orange-50 to-red-50 text-orange-500 rounded-2xl flex items-center justify-center shrink-0 shadow-sm border border-orange-100/50 group-hover:scale-110 transition-transform">
  <BookOpen size={ 20 } />
  </div>

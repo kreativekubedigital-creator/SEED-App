@@ -138,7 +138,7 @@ const PageWrapper = ({ children }: { children: React.ReactNode }) => (
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // window.scrollTo(0, 0); // Removed to prevent dashboard scroll jumping on user update
   }, [pathname]);
   return null;
 };
@@ -1408,11 +1408,13 @@ export default function App() {
  setUser(null);
  };
 
+ /* 
  useEffect(() => {
  if (user) {
  window.scrollTo(0, 0);
  }
  }, [user]);
+ */
 
  const [tenantSchool, setTenantSchool] = useState<School | null>(null);
  const [subdomainNotFound, setSubdomainNotFound] = useState(false);
@@ -1491,7 +1493,7 @@ export default function App() {
     />
   )}
   {!isDashboardView && !tenantSchool && !['/login', '/super-admin'].includes(location.pathname) && <Navbar user={ user } onLogout={ handleLogout } tenantSchool={ tenantSchool } logoVariant={ logoVariant } />}
- <main className={ cn("flex-grow", isDashboardView &&"pt-0 overflow-hidden")}>
+ <main className={ cn("flex-grow", isDashboardView && "pt-0") }>
  <AnimatePresence mode="wait">
  <Routes location={ location } key={ location.pathname }>
  <Route path="/" element={ tenantSchool ? <Navigate to="/login" /> : <PageWrapper><LandingPage /></PageWrapper> } />

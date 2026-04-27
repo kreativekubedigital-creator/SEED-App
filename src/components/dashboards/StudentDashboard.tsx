@@ -102,23 +102,10 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
     });
 
     const qChallenges = query(collection(db, 'schools', user.schoolId, 'challenges'), where('endDate', '>', new Date().toISOString()));
-    const unsubChallenges = onSnapshot(qChallenges, async (snap) => {
+    const unsubChallenges = onSnapshot(qChallenges, (snap) => {
       const challengesData = snap.docs.map(d => ({ id: d.id, ...d.data() } as Challenge));
       challengesData.sort((a, b) => a.title.localeCompare(b.title));
       setChallenges(challengesData);
-      
-      const progressMap: Record<string, number> = {};
-      for (const challenge of challengesData) {
-        const activitiesRef = collection(db, 'user_activities');
-        const qAct = query(
-          activitiesRef, 
-          where('userId', '==', user.uid),
-          where('type', '==', challenge.targetType === 'quiz' ? 'quiz_pass' : challenge.targetType === 'lesson' ? 'lesson_complete' : 'game_win')
-        );
-        const activitySnap = await getDocs(qAct);
-        progressMap[challenge.id] = activitySnap.size;
-      }
-      setChallengeProgress(progressMap);
     });
 
     return () => {
@@ -130,6 +117,32 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
       unsubChallenges();
     };
   }, [user.schoolId, user.classId, user.uid]);
+
+  // Separate effect for challenge progress to ensure it updates when challenges or user activities change
+  useEffect(() => {
+    const fetchProgress = async () => {
+      if (!challenges || challenges.length === 0) return;
+      const progressMap: Record<string, number> = {};
+      
+      try {
+        const activitiesRef = collection(db, 'user_activities');
+        for (const challenge of challenges) {
+          const qAct = query(
+            activitiesRef, 
+            where('userId', '==', user.uid),
+            where('type', '==', challenge.targetType === 'quiz' ? 'quiz_pass' : challenge.targetType === 'lesson' ? 'lesson_complete' : 'game_win')
+          );
+          const activitySnap = await getDocs(qAct);
+          progressMap[challenge.id] = activitySnap.size;
+        }
+        setChallengeProgress(progressMap);
+      } catch (error) {
+        console.error("Error fetching challenge progress:", error);
+      }
+    };
+
+    fetchProgress();
+  }, [challenges, user.uid]);
 
   const getSubjectName = (subjectId: string) => subjects.find(s => s.id === subjectId)?.name || 'Unknown Subject';
 
@@ -492,5 +505,8 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
         </AnimatePresence>
       </div>
     </div>
+  </div>
   );
 };
+
+export default StudentDashboard;

@@ -1219,7 +1219,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  initial={{ y: 50, opacity: 0 }}
  animate={{ y: 0, opacity: 1 }}
  exit={{ y: 50, opacity: 0 }}
- className="fixed bottom-10 right-10 bg-gray-900 text-slate-900 px-4 py-2 rounded-lg shadow-2xl z-[110] flex items-center gap-3 border border-gray-800"
+ className="fixed bottom-10 right-10 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-2xl z-[110] flex items-center gap-3 border border-gray-800"
  >
  <div className="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
  <CheckCircle size={ 14 } className="text-slate-900"/>
