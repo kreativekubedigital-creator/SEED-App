@@ -29,9 +29,13 @@ export const SchoolFinance = ({ school }: { school: School }) => {
     return sessions.reduce((acc, s) => ({ ...acc, [s.id]: s }), {} as Record<string, any>);
   }, [sessions]);
 
- // Modals
- const [showAddFee, setShowAddFee] = useState(false);
- const [showGenerateInvoice, setShowGenerateInvoice] = useState(false);
+  const [showAddFee, setShowAddFee] = useState(false);
+  const [showGenerateInvoice, setShowGenerateInvoice] = useState(false);
+  const [showRecordPayment, setShowRecordPayment] = useState(false);
+  const [paymentInvoiceId, setPaymentInvoiceId] = useState('');
+  const [paymentAmount, setPaymentAmount] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'transfer' | 'online'>('cash');
+  const [paymentReference, setPaymentReference] = useState('');
 
   // Form states
   const [newFee, setNewFee] = useState<Partial<FeeStructure>>({ 
@@ -266,6 +270,63 @@ export const SchoolFinance = ({ school }: { school: School }) => {
     }
   };
 
+  const handleRecordPayment = async () => {
+    if (!paymentInvoiceId || paymentAmount <= 0) {
+      alert("Please select an invoice and enter a valid amount.");
+      return;
+    }
+
+    const invoice = invoices.find(inv => inv.id === paymentInvoiceId);
+    if (!invoice) {
+      alert("Selected invoice not found.");
+      return;
+    }
+
+    const balance = invoice.amount - invoice.amountPaid;
+    if (paymentAmount > balance) {
+      alert(`Payment amount (₦${paymentAmount.toLocaleString()}) exceeds outstanding balance (₦${balance.toLocaleString()}).`);
+      return;
+    }
+
+    try {
+      const reference = paymentReference || `MANUAL_${Date.now()}`;
+
+      // Record payment document
+      await addDoc(collection(db, `schools/${school.id}/payments`), {
+        schoolId: school.id,
+        invoiceId: invoice.id,
+        studentId: invoice.studentId,
+        parentId: '',
+        amount: paymentAmount,
+        method: paymentMethod,
+        reference,
+        status: 'success',
+        date: new Date().toISOString()
+      });
+
+      // Update invoice
+      const newAmountPaid = invoice.amountPaid + paymentAmount;
+      const newStatus = newAmountPaid >= invoice.amount ? 'paid' : 'partially_paid';
+
+      await updateDoc(doc(db, 'schools', school.id, 'invoices', invoice.id), {
+        amountPaid: newAmountPaid,
+        status: newStatus,
+        updatedAt: new Date().toISOString()
+      });
+
+      alert(`Payment of ₦${paymentAmount.toLocaleString()} recorded successfully.`);
+      setShowRecordPayment(false);
+      setPaymentInvoiceId('');
+      setPaymentAmount(0);
+      setPaymentMethod('cash');
+      setPaymentReference('');
+    } catch (err: any) {
+      console.error("Error recording payment:", err);
+      alert(`Failed to record payment: ${err.message}`);
+      handleFirestoreError(err, OperationType.CREATE, `schools/${school.id}/payments`);
+    }
+  };
+
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
       <div className="w-12 h-12 border-4 border-blue-500/10 border-t-blue-600 rounded-full animate-spin shadow-lg shadow-blue-600/10" />
@@ -289,7 +350,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
               <CheckCircle size={18} />
             </div>
             <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Schools</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Revenue</p>
               <p className="text-lg font-black text-slate-900 tracking-tight">₦{payments.reduce((acc, p) => p.status === 'success' ? acc + p.amount : acc, 0).toLocaleString()}</p>
             </div>
           </div>
@@ -508,7 +569,15 @@ export const SchoolFinance = ({ school }: { school: School }) => {
 
           { activeTab  === 'payments'&& (
             <div className="space-y-6">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Payment History</h3>
+              <div className="flex justify-between items-center">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Payment History</h3>
+                <button 
+                  onClick={() => setShowRecordPayment(true)} 
+                  className="bg-blue-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-blue-600/20"
+                >
+                  <Plus size={ 16 } strokeWidth={3} /> Record Payment
+                </button>
+              </div>
               <div className="bg-white rounded-3xl border border-slate-200/60 shadow-xl shadow-slate-200/30 overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm">
@@ -554,7 +623,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                       ))}
                       { payments.length === 0 && (
                         <tr>
-                          <td colSpan={ 6 } className="p-16 text-center text-slate-400 font-black uppercase tracking-widest text-[10px]">
+                          <td colSpan={ 5 } className="p-16 text-center text-slate-400 font-black uppercase tracking-widest text-[10px]">
                             No payments found.
                           </td>
                         </tr>
@@ -794,6 +863,149 @@ export const SchoolFinance = ({ school }: { school: School }) => {
               className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 disabled:opacity-50 disabled:shadow-none mt-4 active:scale-95"
             >
               Generate Invoices
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    )}
+  </AnimatePresence>
+
+  {/* Record Payment Modal */}
+  <AnimatePresence>
+    { showRecordPayment && (
+      <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-3xl w-full max-w-lg shadow-2xl border border-slate-200/60 relative flex flex-col max-h-[90vh] overflow-hidden">
+          <div className="flex justify-between items-center p-8 border-b border-slate-100 shrink-0">
+            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900">Record Manual Payment</h3>
+            <button 
+              onClick={() => {
+                setShowRecordPayment(false);
+                setPaymentInvoiceId('');
+                setPaymentAmount(0);
+                setPaymentMethod('cash');
+                setPaymentReference('');
+              }} 
+              className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-colors"
+            >
+              <X size={ 20 } />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-8 space-y-6">
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Select Invoice</label>
+              <div className="relative">
+                <select 
+                  value={paymentInvoiceId}
+                  onChange={e => {
+                    setPaymentInvoiceId(e.target.value);
+                    const inv = invoices.find(i => i.id === e.target.value);
+                    if (inv) setPaymentAmount(inv.amount - inv.amountPaid);
+                  }}
+                  className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-900 text-sm appearance-none cursor-pointer"
+                >
+                  <option value="">Select an invoice...</option>
+                  {invoices.filter(inv => inv.status !== 'paid' && inv.amountPaid < inv.amount).map(inv => {
+                    const student = studentMap[inv.studentId];
+                    const balance = inv.amount - inv.amountPaid;
+                    return (
+                      <option key={inv.id} value={inv.id}>
+                        {student ? `${student.firstName} ${student.lastName}` : inv.studentId} — ₦{balance.toLocaleString()} outstanding
+                      </option>
+                    );
+                  })}
+                </select>
+                <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              </div>
+            </div>
+
+            {paymentInvoiceId && (() => {
+              const inv = invoices.find(i => i.id === paymentInvoiceId);
+              if (!inv) return null;
+              const student = studentMap[inv.studentId];
+              const balance = inv.amount - inv.amountPaid;
+              return (
+                <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-2">
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500">
+                    <span>Student</span>
+                    <span className="text-slate-900">{student ? `${formatDisplayString(student.firstName)} ${formatDisplayString(student.lastName)}` : inv.studentId}</span>
+                  </div>
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500">
+                    <span>Total Invoice</span>
+                    <span className="text-slate-900">₦{inv.amount.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500">
+                    <span>Already Paid</span>
+                    <span className="text-emerald-600">₦{inv.amountPaid.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500 pt-2 border-t border-slate-200">
+                    <span>Outstanding Balance</span>
+                    <span className="text-rose-600 text-sm font-black">₦{balance.toLocaleString()}</span>
+                  </div>
+                </div>
+              );
+            })()}
+
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Amount (₦)</label>
+                <input 
+                  type="number"
+                  min="0"
+                  value={paymentAmount}
+                  onChange={e => setPaymentAmount(Number(e.target.value))}
+                  className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-900 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Payment Method</label>
+                <div className="relative">
+                  <select 
+                    value={paymentMethod}
+                    onChange={e => setPaymentMethod(e.target.value as any)}
+                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
+                  >
+                    <option value="cash">Cash</option>
+                    <option value="transfer">Bank Transfer</option>
+                    <option value="online">Online</option>
+                  </select>
+                  <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Reference / Receipt No. (Optional)</label>
+              <input 
+                type="text"
+                value={paymentReference}
+                onChange={e => setPaymentReference(e.target.value)}
+                placeholder="e.g. Bank teller number, receipt ID"
+                className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-900 text-sm"
+              />
+            </div>
+          </div>
+
+          <div className="p-8 border-t border-slate-100 bg-slate-50 shrink-0 flex gap-4">
+            <button 
+              type="button"
+              onClick={() => {
+                setShowRecordPayment(false);
+                setPaymentInvoiceId('');
+                setPaymentAmount(0);
+                setPaymentMethod('cash');
+                setPaymentReference('');
+              }}
+              className="flex-1 px-6 py-3.5 rounded-xl border border-slate-200 text-slate-600 font-black uppercase tracking-widest text-[10px] hover:bg-white transition-colors"
+            >
+              Cancel
+            </button>
+            <button 
+              onClick={handleRecordPayment}
+              disabled={!paymentInvoiceId || paymentAmount <= 0}
+              className="flex-[2] bg-blue-600 text-white py-3.5 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 disabled:opacity-50 disabled:shadow-none active:scale-95"
+            >
+              Record Payment
             </button>
           </div>
         </motion.div>

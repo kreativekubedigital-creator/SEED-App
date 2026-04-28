@@ -266,7 +266,7 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
                   fillOpacity={1} 
                   fill="url(#colorAmount)" 
                   animationDuration={2000}
-                  activeDot={{ r: 6, strokeWidth: 0, fill: '#3b82f6 shadow-lg shadow-blue-500/50' }}
+                  activeDot={{ r: 6, strokeWidth: 0, fill: '#3b82f6' }}
                 />
               </AreaChart>
             </ResponsiveContainer>

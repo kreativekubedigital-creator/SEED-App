@@ -17,25 +17,32 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
   useEffect(() => {
     if (!user.schoolId || !studentId) return;
 
-    // Fetch sessions
+    // Fetch sessions and then terms nested under each session
+    const termUnsubs: Record<string, () => void> = {};
     const unsubSessions = onSnapshot(collection(db, `schools/${user.schoolId}/sessions`), (snap) => {
       const sessData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       setSessions(sessData);
-    });
 
-    // Fetch all terms for the school to avoid nested listeners
-    // We'll organize them by sessionId in the local state
-    const unsubTerms = onSnapshot(collection(db, `schools/${user.schoolId}/terms`), (snap) => {
-      const allTerms = snap.docs.map(d => ({ id: d.id, ...d.data() } as Term));
-      const newTermsMap: Record<string, Record<string, Term>> = {};
-      
-      allTerms.forEach(t => {
-        if (!t.sessionId) return;
-        if (!newTermsMap[t.sessionId]) newTermsMap[t.sessionId] = {};
-        newTermsMap[t.sessionId][t.id] = t;
+      // Clean up old term listeners for sessions that no longer exist
+      Object.keys(termUnsubs).forEach(id => {
+        if (!sessData.find(s => s.id === id)) {
+          termUnsubs[id]();
+          delete termUnsubs[id];
+        }
       });
-      
-      setTermsMap(newTermsMap);
+
+      // Attach new term listeners for each session
+      sessData.forEach(sess => {
+        if (!termUnsubs[sess.id]) {
+          termUnsubs[sess.id] = onSnapshot(collection(db, `schools/${user.schoolId}/sessions/${sess.id}/terms`), (termSnap) => {
+            const terms = termSnap.docs.map(d => ({ id: d.id, ...d.data() } as Term));
+            setTermsMap(prev => ({
+              ...prev,
+              [sess.id]: terms.reduce((acc, t) => ({ ...acc, [t.id]: t }), {} as Record<string, Term>)
+            }));
+          });
+        }
+      });
     });
 
     const qInvoices = query(collection(db, `schools/${user.schoolId}/invoices`), where('studentId', '==', studentId));
@@ -51,7 +58,7 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
 
     return () => { 
       unsubSessions();
-      unsubTerms();
+      Object.values(termUnsubs).forEach(unsub => unsub());
       unsubInvoices(); 
       unsubPayments(); 
     };
@@ -211,7 +218,7 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
                   <div>
                     <div className="flex items-center gap-3 mb-3">
                       <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">
-                        {formatDisplayString(inv.termId)} Fees
+                        {formatDisplayString(termsMap[inv.sessionId]?.[inv.termId]?.name || inv.termId)} Fees
                       </span>
                       {paid ? (
                         <span className="bg-emerald-50 text-emerald-600 text-[8px] font-black px-4 py-1.5 rounded-full border border-emerald-100 shadow-sm uppercase tracking-widest">Settled</span>
