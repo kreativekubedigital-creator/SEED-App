@@ -22,7 +22,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { sortByName } from '../../lib/utils';
+import { sortByName, formatDisplayString } from '../../lib/utils';
 import { StudentQuizzes } from './StudentQuizzes';
 import { StudentGames } from './StudentGames';
 import { AIStudyBuddy } from './AIStudyBuddy';
@@ -58,7 +58,7 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
     const unsubClass = onSnapshot(doc(db, 'schools', user.schoolId, 'classes', user.classId), (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
-        setClassLevel(data.name || data.level || 'Unknown Class');
+        setClassLevel(formatDisplayString(data.name || data.level || 'Unknown Class'));
       } else {
         setClassLevel('Unassigned');
       }
@@ -144,7 +144,10 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
     fetchProgress();
   }, [challenges, user.uid]);
 
-  const getSubjectName = (subjectId: string) => subjects.find(s => s.id === subjectId)?.name || 'Unknown Subject';
+  const getSubjectName = (subjectId: string) => {
+    const s = subjects.find(s => s.id === subjectId);
+    return s ? formatDisplayString(s.name) : 'Unknown Subject';
+  };
 
   if (loading) {
     return (
@@ -175,7 +178,7 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
           ) : (
             <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center font-black text-white text-xs shadow-lg">S</div>
           )}
-          <span className="font-black uppercase tracking-widest text-[10px] text-slate-900 truncate max-w-[150px]">{school?.name || 'SEEDD'}</span>
+          <span className="font-black uppercase tracking-widest text-[10px] text-slate-900 truncate max-w-[150px]">{formatDisplayString(school?.name || 'SEEDD')}</span>
         </div>
         <button onClick={onLogout} className="p-3 bg-red-50 text-red-500 rounded-xl transition-all active:scale-95"><LogOut size={20} /></button>
       </div>
@@ -186,7 +189,7 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
           <div className="flex items-center gap-6">
             <Link to="/profile" id="student_profile_link" className="relative group cursor-pointer">
               <div className="w-20 h-20 rounded-[2rem] bg-slate-900 flex items-center justify-center text-3xl font-black text-white shadow-2xl border-4 border-white group-hover:scale-105 transition-all">
-                {user.firstName[0]}
+                {formatDisplayString(user.firstName).charAt(0)}
               </div>
               <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-emerald-500 rounded-full border-4 border-white flex items-center justify-center shadow-lg">
                 <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
@@ -195,7 +198,7 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
             <div>
               <div className="flex items-center gap-3">
                 <h1 className="text-4xl font-black uppercase tracking-tighter text-slate-900 leading-none">
-                  Hello, {user.firstName}!
+                  Hello, {formatDisplayString(user.firstName)}!
                 </h1>
                 {school?.logoUrl && (
                   <img src={school.logoUrl} alt={school.name} className="w-8 h-8 rounded-lg object-cover opacity-20 grayscale" />
@@ -366,7 +369,7 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
                           </div>
                           <div className="overflow-hidden">
                             <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1 truncate">{getSubjectName(assignment.subjectId)}</p>
-                            <p className="text-sm font-black uppercase tracking-tighter text-slate-900 line-clamp-1">{assignment.title}</p>
+                            <p className="text-sm font-black uppercase tracking-tighter text-slate-900 line-clamp-1">{formatDisplayString(assignment.title)}</p>
                           </div>
                         </div>
                         <ChevronRight size={20} className="text-slate-200 group-hover:text-slate-900 transition-all shrink-0" />
@@ -398,7 +401,7 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
                         return (
                           <div key={challenge.id} className="group">
                             <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-3">
-                              <span className="text-slate-900 truncate max-w-[70%]">{challenge.title}</span>
+                              <span className="text-slate-900 truncate max-w-[70%]">{formatDisplayString(challenge.title)}</span>
                               <span className="text-orange-600">{progress}%</span>
                             </div>
                             <div className="h-3 bg-slate-50 rounded-full overflow-hidden p-0.5 border border-slate-100">
@@ -443,7 +446,7 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
                               <Clock size={10} /> {new Date(announcement.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
                             </span>
                           </div>
-                          <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-widest mb-2 line-clamp-1">{announcement.title}</h4>
+                          <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-widest mb-2 line-clamp-1">{formatDisplayString(announcement.title)}</h4>
                           <p className="text-[10px] text-slate-500 font-medium line-clamp-2 leading-relaxed opacity-70">
                             {announcement.content.replace(/<[^>]*>?/gm, '')}
                           </p>

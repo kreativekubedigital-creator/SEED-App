@@ -5,14 +5,14 @@ import { motion } from 'motion/react';
 import { GoogleGenAI } from '@google/genai';
 import ReactMarkdown from 'react-markdown';
 import { addXP } from '../../services/gamificationService';
-import { cn } from '../../lib/utils';
+import { cn, formatDisplayString } from '../../lib/utils';
 
 export const AIStudyBuddy = ({ user, subjects = [], classLevel }: { user: UserProfile, subjects?: Subject[], classLevel?: string }) => {
   const containerClass = "backdrop-blur-md rounded-2xl border border-slate-200 bg-white/95 shadow-xl shadow-slate-200/20 overflow-hidden flex flex-col h-[600px]";
   const headerClass = "p-4 border-b border-slate-100 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 flex items-center gap-4";
 
   const [messages, setMessages] = useState<{ role: 'user' | 'model', text: string }[]>([
-    { role: 'model', text: `Hi ${user.firstName}! I'm your AI study buddy. I can help you understand your subjects like ${subjects.slice(0, 3).map(s => s.name).join(', ')}${subjects.length > 3 ? ' and more' : ''}, clarify homework, or answer general questions. How can I help you learn today?` }
+    { role: 'model', text: `Hi ${formatDisplayString(user.firstName)}! I'm your AI study buddy. I can help you understand your subjects like ${subjects.slice(0, 3).map(s => s.name).join(', ')}${subjects.length > 3 ? ' and more' : ''}, clarify homework, or answer general questions. How can I help you learn today?` }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -52,7 +52,7 @@ export const AIStudyBuddy = ({ user, subjects = [], classLevel }: { user: UserPr
       }));
 
       const subjectList = subjects.map(s => s.name).join(', ');
-      const systemInstruction = `You are a friendly, encouraging, and safe AI tutor for a school student named ${user.firstName}. 
+      const systemInstruction = `You are a friendly, encouraging, and safe AI tutor for a school student named ${formatDisplayString(user.firstName)}. 
 The student is currently in ${classLevel || 'school'} level and enrolled in the following subjects: ${subjectList}.
 They are currently at Level ${user.level || 1} with a ${user.streakCount || 0}-day streak. 
 Occasionally acknowledge their progress and encourage them to keep going.

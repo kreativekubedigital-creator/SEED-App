@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { Trophy, RefreshCw, ArrowLeft, Clock, Move, ChevronRight, Eye } from "lucide-react";
 import { addXP, saveMemoryFlipScore, getMemoryFlipLeaderboard } from "../../services/gamificationService";
 import { UserProfile } from "../../types";
+import { formatDisplayString } from "../../lib/utils";
 
 const modes = {
   easy: { pairs: [3,4,5,6,6,7,7,8,8,9] },
@@ -343,7 +344,7 @@ export const MemoryFlipGame: React.FC<MemoryFlipGameProps> = ({ user, onExit }) 
                     #{i + 1}
                   </span>
                   <span className="font-medium text-gray-800">
-                    {s.firstName} {s.lastName} <span className="text-gray-800 font-medium text-xs ml-1">Lvl {s.level} ({s.mode})</span>
+                    {formatDisplayString(s.firstName)} {formatDisplayString(s.lastName)} <span className="text-gray-800 font-medium text-xs ml-1">Lvl {s.level} ({s.mode})</span>
                   </span>
                 </div>
                 <div className="flex items-center gap-4 text-gray-800 font-medium text-xs">

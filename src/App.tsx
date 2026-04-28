@@ -7,7 +7,7 @@ import { useTheme } from'./components/ThemeProvider';
 import {  LogIn, LogOut, LayoutDashboard, User, Users, BookOpen, Bell, Settings, CreditCard, Menu, X, Home, Sparkles, Info, Mail, Clock, CheckCircle2, CheckCircle, Eye, EyeOff, Search, ChevronDown, Check, Shield, School as SchoolIcon, Lock, AlertTriangle, ArrowLeft
 } from'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform } from'motion/react';
-import { cn } from'./lib/utils';
+import { cn, formatDisplayString } from'./lib/utils';
 
 
 // Dashboards
@@ -263,9 +263,6 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
           >
             System Login
           </Link>
-          <a href="#onboarding" className="bg-blue-600 text-white px-8 py-3 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95 font-space">
-            Onboard School
-          </a>
         </>
       )}
     </div>
@@ -327,14 +324,6 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
  </div>
  <span className="text-gray-800">System Login</span>
  </Link>
- 
- <a
- href="#onboarding"
- onClick={() => setIsOpen(false)}
- className="w-full h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold shadow-lg shadow-blue-500/25 active:scale-95 transition-transform"
- >
- Onboard School
- </a>
  </div>
  )}
  </div>
@@ -348,16 +337,6 @@ const Navbar = ({ user, onLogout, tenantSchool, logoVariant }: { user: UserProfi
 
 const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { onLogin: (user: UserProfile) => void, tenantSchool: School | null, subdomainNotFound: boolean, logoVariant: 'white' | 'black' }) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const step = (searchParams.get('step') as 'role' | 'credentials') || 'role';
-  
-  const setStep = (newStep: string) => {
-    setSearchParams(prev => {
-      prev.set('step', newStep);
-      return prev;
-    });
-  };
-
-  const [selectedRole, setSelectedRole] = useState<UserRole | ''>('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -368,7 +347,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password || !selectedRole || !tenantSchool) return;
+    if (!email || !password || !tenantSchool) return;
 
     setLoading(true);
     setError(null);
@@ -385,10 +364,9 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
         // Super Admins can log in anywhere
         const isSuperAdmin = userData.role === 'super_admin' || SUPER_ADMIN_EMAILS.includes(trimmedEmail);
         const isCorrectSchool = userData.schoolId === tenantSchool.id;
-        const isCorrectRole = userData.role === selectedRole;
 
-        // Platform Admins (Super Admins) bypass school/role checks
-        if (isSuperAdmin || (isCorrectSchool && isCorrectRole)) {
+        // Platform Admins (Super Admins) bypass school checks
+        if (isSuperAdmin || isCorrectSchool) {
           // Check for forced password change
           if (userData.forcePasswordChange) {
             setShowPasswordChange(userData);
@@ -485,114 +463,38 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
         {/* Top Glow Edge */}
         <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
         
-        <AnimatePresence mode="wait">
-          {step === 'role' ? (
-            <motion.div
-              key="role-selection"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="flex flex-col items-center"
+        <div className="w-full">
+          <div className="mb-8 text-center">
+            <button 
+              onClick={() => navigate('/')}
+              className="mb-8 text-blue-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2 mx-auto hover:text-blue-300 transition-colors"
             >
-              <div className="mb-8 text-center w-full">
-                <motion.div 
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="mb-8 relative inline-block"
-                >
-                  <div className="absolute inset-0 bg-blue-600/20 blur-2xl rounded-full" />
-                  {tenantSchool.logoUrl ? (
-                    <img src={tenantSchool.logoUrl} alt={tenantSchool.name} className="h-20 w-auto relative z-10 object-contain drop-shadow-2xl" />
-                  ) : (
-                    <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl flex items-center justify-center text-white relative z-10 shadow-2xl">
-                      <SchoolIcon size={40} strokeWidth={1.5} />
-                    </div>
-                  )}
-                </motion.div>
-                <h2 className="text-3xl font-bold text-white mb-3 font-space tracking-tight">Select your role</h2>
-                <p className="text-slate-400 text-sm font-medium">To continue to <span className="text-blue-400 font-bold">{tenantSchool.name}</span></p>
+              <ArrowLeft size={14} /> Back to Portal
+            </button>
+            
+             {tenantSchool.logoUrl ? (
+              <img src={tenantSchool.logoUrl} alt={tenantSchool.name} className="h-14 w-auto mb-6 mx-auto object-contain" />
+            ) : (
+              <div className="w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center text-blue-400 mx-auto mb-6 border border-blue-500/20">
+                <SchoolIcon size={32} strokeWidth={1.5} />
               </div>
-              
-              <div className="grid grid-cols-2 gap-4 w-full mb-8">
-                {roles.map((role) => (
-                  <motion.button
-                    key={role.id}
-                    whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setSelectedRole(role.id)}
-                    className={cn(
-                      "group h-20 flex flex-col items-center justify-center gap-2 px-4 rounded-3xl border transition-all duration-300",
-                      selectedRole === role.id 
-                        ? "bg-blue-600 border-blue-500 text-white shadow-[0_0_30px_-5px_rgba(37,99,235,0.5)]" 
-                        : "border-white/10 bg-white/5 text-slate-400 hover:border-white/20"
-                    )}
-                  >
-                    <role.icon size={24} className={cn("transition-colors", selectedRole === role.id ? "text-white" : "text-slate-500 group-hover:text-blue-400")} strokeWidth={1.5} />
-                    <span className="font-bold text-xs uppercase tracking-widest">{role.label}</span>
-                  </motion.button>
-                ))}
-              </div>
+            )}
+            <h2 className="text-3xl font-bold text-white mb-2 font-space tracking-tight">Welcome Back</h2>
+            <p className="text-slate-400 font-medium text-sm">
+              Securely access <span className="text-blue-400 font-bold">{tenantSchool.name}</span>
+            </p>
+          </div>
 
-              <div className="flex gap-4 w-full">
-                <button
-                  onClick={() => navigate('/')}
-                  className="flex-1 h-14 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all active:scale-95 flex items-center justify-center"
-                >
-                  Home
-                </button>
-                <button
-                  disabled={!selectedRole}
-                  onClick={() => setStep('credentials')}
-                  className="flex-1 h-14 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-500 transition-all active:scale-95 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed shadow-xl shadow-blue-600/20"
-                >
-                  Continue
-                </button>
-              </div>
-
-              <p className="mt-10 text-[10px] text-slate-600 font-black text-center leading-relaxed uppercase tracking-[0.4em]">
-                Secure Portal <span className="text-white/20 mx-2">|</span> SEEDD
-              </p>
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8 p-5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-2xl text-xs font-bold text-center flex items-center justify-center gap-3"
+            >
+              <AlertTriangle size={16} />
+              {error}
             </motion.div>
-          ) : (
-            <motion.div
-              key="credentials-form"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="w-full"
-            >
-              <div className="mb-8 text-center">
-                <motion.button 
-                  onClick={() => setStep('role')}
-                  whileHover={{ x: -4 }}
-                  className="mb-8 text-blue-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2 mx-auto hover:text-blue-300 transition-colors"
-                >
-                  <ArrowLeft size={14} /> Change Role
-                </motion.button>
-                
-                 {tenantSchool.logoUrl ? (
-                  <img src={tenantSchool.logoUrl} alt={tenantSchool.name} className="h-14 w-auto mb-6 mx-auto object-contain" />
-                ) : (
-                  <div className="w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center text-blue-400 mx-auto mb-6 border border-blue-500/20">
-                    <SchoolIcon size={32} strokeWidth={1.5} />
-                  </div>
-                )}
-                <h2 className="text-3xl font-bold text-white mb-2 font-space tracking-tight">Welcome Back</h2>
-                <p className="text-slate-400 font-medium text-sm">
-                  Accessing as <span className="text-blue-400 font-bold uppercase tracking-wider">{selectedRole.replace('_', ' ')}</span>
-                </p>
-              </div>
-
-              {error && (
-                <motion.div 
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mb-8 p-5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-2xl text-xs font-bold text-center flex items-center justify-center gap-3"
-                >
-                  <AlertTriangle size={16} />
-                  {error}
-                </motion.div>
-              )}
+          )}
 
               <form onSubmit={handleEmailAuth} className="space-y-5">
                 <div className="space-y-2">
@@ -643,10 +545,8 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
                   ) : "Sign In Account"}
                 </button>
               </form>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+            </div>
+          </motion.div>
 
       {/* Decorative Brand Text */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-4 opacity-30 pointer-events-none">
@@ -661,128 +561,73 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
   if (tenantSchool && !subdomainNotFound) {
     return <SchoolLoginPage onLogin={ onLogin } tenantSchool={ tenantSchool } subdomainNotFound={ subdomainNotFound } logoVariant={ logoVariant } />;
   }
- const [searchParams, setSearchParams] = useSearchParams();
- const step = (searchParams.get('step') as'school'|'role'|'credentials') ||'school';
- const isSignUp = searchParams.get('signup')  === 'true';
- 
- const setStepAndSignUp = (newStep: string, signUp: boolean) => {
- setSearchParams(prev => {
- prev.set('step', newStep);
- if (signUp) prev.set('signup','true');
- else prev.delete('signup');
- return prev;
- });
- };
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const navigate = useNavigate();
 
- useEffect(() => {
- const roleParam = searchParams.get('role');
- const isSuperAdminPath = window.location.pathname  === '/super-admin';
- 
- if ((roleParam  === 'super_admin'|| isSuperAdminPath) && step  === 'school') {
- setSelectedRole('super_admin');
- setStep('credentials');
- }
- }, [searchParams, step]);
 
- const setStep = (newStep: string) => setStepAndSignUp(newStep, isSignUp);
- const setIsSignUp = (val: boolean) => setStepAndSignUp(step, val);
 
- const [schools, setSchools] = useState<School[]>([]);
- const [selectedSchool, setSelectedSchool] = useState<string>('');
- const [schoolSearchQuery, setSchoolSearchQuery] = useState('');
- const [isSchoolDropdownOpen, setIsSchoolDropdownOpen] = useState(false);
- const [selectedRole, setSelectedRole] = useState<UserRole |''>('');
- const [email, setEmail] = useState('');
- const [password, setPassword] = useState('');
- const [showPassword, setShowPassword] = useState(false);
- const [loading, setLoading] = useState(false);
- const [error, setError] = useState<string | null>(null);
- const [success, setSuccess] = useState<string | null>(null);
- const navigate = useNavigate();
+  const handleEmailAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) return;
 
- useEffect(() => {
- const fetchSchools = async () => {
- const q = query(collection(db,'schools'));
- const snap = await getDocs(q);
- const fetchedSchools = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as School));
- setSchools(fetchedSchools);
-
- if (tenantSchool) {
- setSelectedSchool(tenantSchool.id);
- if (step  === 'school'&& !searchParams.has('step')) {
- setStep('role');
- }
- }
- };
- fetchSchools();
- }, [step, searchParams, tenantSchool]);
-
- const filteredSchools = schools.filter(s => s.name.toLowerCase().includes(schoolSearchQuery.toLowerCase()));
-
- const handleEmailAuth = async (e: React.FormEvent) => {
- e.preventDefault();
- if (!email || !password || (!isSignUp && (!selectedSchool && selectedRole !=='super_admin')) || !selectedRole) return;
-
- setLoading(true);
- setError(null);
- try {
- let user;
- const trimmedEmail = email.trim().toLowerCase();
- if (isSignUp) {
- // Only allow super admin sign up for the specific email
- if (!SUPER_ADMIN_EMAILS.includes(trimmedEmail.toLowerCase())) {
- throw new Error("Only the platform owner can use the one-time setup.");
- }
- const result = await createUserWithEmailAndPassword(auth, trimmedEmail, password);
- user = result.user;
-
- const superAdminProfile: UserProfile = {
- uid: user.uid,
- email: user.email ||'',
- firstName:'Platform',
- lastName:'Owner',
- role:'super_admin',
- createdAt: new Date().toISOString()
- };
- await setDoc(doc(db,'users', user.uid), superAdminProfile);
- onLogin(superAdminProfile);
- navigate('/dashboard');
- return;
- } else {
- const result = await signInWithEmailAndPassword(auth, trimmedEmail, password);
- user = result.user;
- }
- 
- const userDoc = await getDoc(doc(db,'users', user.uid));
- 
- if (userDoc.exists()) {
- const userData = userDoc.data() as UserProfile;
- 
- // Verify school and role match
- const isSuperAdminMatch = (userData.role  === 'super_admin' || SUPER_ADMIN_EMAILS.includes(trimmedEmail.toLowerCase())) && selectedRole  === 'super_admin';
- const isSchoolRoleMatch = userData.schoolId === selectedSchool && userData.role === selectedRole;
-
- if (isSuperAdminMatch || isSchoolRoleMatch) {
- onLogin(userData);
- } else {
- setError("Invalid credentials for the selected school or role.");
- await signOut(auth);
- }
- } else {
- setError("User profile not found. Please contact your school administrator.");
- await signOut(auth);
- }
- } catch (err: any) {
- console.error("Auth failed:", err);
- if (err.code  === 'auth/invalid-credential') {
- setError("Invalid email or password. Please check your credentials and try again.");
- } else {
- setError(err.message ||"Authentication failed. Please check your credentials.");
- }
- } finally {
- setLoading(false);
- }
- };
+    setLoading(true);
+    setError(null);
+    try {
+      const trimmedEmail = email.trim().toLowerCase();
+      const result = await signInWithEmailAndPassword(auth, trimmedEmail, password);
+      const user = result.user;
+      
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      
+      if (userDoc.exists()) {
+        const userData = userDoc.data() as UserProfile;
+        
+        // Log login activity
+        await logAuditAction(
+          'login',
+          `User logged in via global portal`,
+          user.uid,
+          'user'
+        );
+        onLogin(userData);
+      } else {
+        // If user exists in Auth but not in Firestore, we still allow login 
+        // to handle cases like super admins or auto-profile creation
+        const isOwner = SUPER_ADMIN_EMAILS.includes(trimmedEmail);
+        if (isOwner) {
+           const superAdminProfile: UserProfile = {
+             uid: user.uid,
+             email: user.email || '',
+             firstName: 'Platform',
+             lastName: 'Owner',
+             role: 'super_admin',
+             createdAt: new Date().toISOString()
+           };
+           await setDoc(doc(db, 'users', user.uid), superAdminProfile);
+           onLogin(superAdminProfile);
+        } else {
+          setError("User profile not found. Please contact support.");
+          await signOut(auth);
+        }
+      }
+    } catch (err: any) {
+      console.error("Auth failed:", err);
+      let message = "Authentication failed.";
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+        message = "Invalid email or password.";
+      } else if (err.message) {
+        message = err.message;
+      }
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
  const handleGoogleLogin = async () => {
  setLoading(true);
@@ -804,27 +649,28 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
  
  const userDoc = await getDoc(doc(db,'users', user.uid));
  
- if (userDoc.exists()) {
- onLogin(userDoc.data() as UserProfile);
- navigate('/dashboard');
- } else {
- const superAdminWhitelist = ['kreativekubesolutions@gmail.com', 'seedd.ng@gmail.com', 'abahjohnakor@gmail.com'];
-          if (superAdminWhitelist.includes(user.email || '')) {
- const superAdminProfile: UserProfile = {
- uid: user.uid,
- email: user.email ||'',
- firstName: (user.displayName ||'Platform Owner').split('')[0],
- lastName: (user.displayName ||'Platform Owner').split('').slice(1).join('') ||'',
- role:'super_admin',
- createdAt: new Date().toISOString()
- };
- await setDoc(doc(db,'users', user.uid), superAdminProfile);
- onLogin(superAdminProfile);
- navigate('/dashboard');
- } else {
- navigate('/onboarding');
- }
- }
+  if (userDoc.exists()) {
+    onLogin(userDoc.data() as UserProfile);
+    navigate('/dashboard');
+  } else {
+    const isOwner = ['kreativekubesolutions@gmail.com', 'seedd.ng@gmail.com', 'abahjohnakor@gmail.com'].includes(user.email || '');
+    if (isOwner) {
+      const nameParts = (user.displayName || 'Platform Owner').split(' ');
+      const superAdminProfile: UserProfile = {
+        uid: user.uid,
+        email: user.email || '',
+        firstName: nameParts[0] || '',
+        lastName: nameParts.slice(1).join(' ') || '',
+        role: 'super_admin',
+        createdAt: new Date().toISOString()
+      };
+      await setDoc(doc(db, 'users', user.uid), superAdminProfile);
+      onLogin(superAdminProfile);
+      navigate('/dashboard');
+    } else {
+      navigate('/dashboard');
+    }
+  }
  } catch (err: any) {
  console.error("Google login failed:", err);
  if (err.code  === 'auth/popup-blocked') {
@@ -837,14 +683,10 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
  }
  };
 
- const roles: { id: UserRole; label: string }[] = [
- { id:'school_admin', label:'School Admin'},
- { id:'teacher', label:'Teacher'},
- { id:'student', label:'Student'},
- { id:'parent', label:'Parent'},
- ];
 
-  if (selectedRole === 'super_admin' && !isSignUp) {
+
+  const isSuperAdminPath = window.location.pathname === '/super-admin';
+  if (isSuperAdminPath && !loading) {
     return (
       <div className="min-h-screen bg-[#050811] flex flex-col items-center justify-center p-6 relative overflow-hidden font-inter selection:bg-blue-500/30">
         {/* Background Luminous Effects */}
@@ -956,14 +798,10 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
 
           <div className="mt-8 text-center">
             <button
-              onClick={() => {
-                setSelectedRole('');
-                setStep('school');
-                setSearchParams({});
-              }}
+              onClick={() => navigate('/')}
               className="text-[10px] font-black text-slate-500 hover:text-blue-400 uppercase tracking-[0.4em] transition-colors"
             >
-              Return to Public Grid
+              Return to Portal
             </button>
           </div>
         </motion.div>
@@ -983,36 +821,11 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
       {/* Top Glow Edge */}
       <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
       
-      <div className="text-center mb-8">
-        {tenantSchool ? (
-          <div className="space-y-6">
-            <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="relative inline-block"
-            >
-              <div className="absolute inset-0 bg-blue-600/20 blur-2xl rounded-full" />
-              {tenantSchool.logoUrl ? (
-                <img src={tenantSchool.logoUrl} alt={tenantSchool.name} className="h-20 w-auto relative z-10 object-contain drop-shadow-2xl mx-auto" />
-              ) : (
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl flex items-center justify-center text-white relative z-10 shadow-2xl mx-auto">
-                  <SchoolIcon size={40} strokeWidth={1.5} />
-                </div>
-              )}
-            </motion.div>
-            <div>
-              <h1 className="text-2xl font-bold text-white font-space tracking-tight">{tenantSchool.name}</h1>
-              <p className="text-blue-400 font-bold text-[10px] tracking-[0.4em] uppercase mt-2">Verified Institution</p>
-            </div>
-          </div>
-        ) : (
-          <>
-            <Logo variant="white" size="md" className="mx-auto mb-4 h-8 md:h-10 relative z-10" />
-            <h2 className="text-2xl font-bold text-white tracking-tight font-space">{isSignUp ? 'Platform Setup' : 'Login Portal'}</h2>
-            <p className="text-slate-400 text-sm mt-3 font-medium">Access your educational ecosystem</p>
-          </>
-        )}
-      </div>
+        <div className="text-center mb-8">
+          <Logo variant="white" size="md" className="mx-auto mb-4 h-8 md:h-10 relative z-10" />
+          <h2 className="text-2xl font-bold text-white tracking-tight font-space">System Login</h2>
+          <p className="text-slate-400 text-sm mt-3 font-medium">Access your educational ecosystem</p>
+        </div>
 
       {error && (
         <motion.div 
@@ -1041,246 +854,90 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
           </div>
         </div>
       ) : (
-        <AnimatePresence mode="wait">
-          {step === 'school' && !isSignUp && (
-            <motion.div
-              key="school"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="space-y-6"
-            >
-              <div className="space-y-3">
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] ml-1">Identity Provider</p>
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setIsSchoolDropdownOpen(!isSchoolDropdownOpen)}
-                    className="w-full h-14 px-6 rounded-2xl border border-white/10 bg-white/5 hover:border-white/20 focus:outline-none focus:ring-4 focus:ring-blue-500/5 transition-all font-medium text-white flex items-center justify-between group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <SchoolIcon size={20} className="text-slate-500 group-hover:text-blue-400 transition-colors" />
-                      <span className={selectedSchool ? "text-white" : "text-slate-500"}>
-                        {selectedSchool ? schools.find(s => s.id === selectedSchool)?.name : "Choose your school"}
-                      </span>
-                    </div>
-                    <ChevronDown size={18} className={cn("text-slate-500 transition-transform", isSchoolDropdownOpen ? "rotate-180" : "")} />
-                  </button>
-
-                  <AnimatePresence>
-                    {isSchoolDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="absolute z-50 w-full mt-3 bg-[#0A0F1D] rounded-2xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden backdrop-blur-xl"
-                      >
-                        <div className="p-4 border-b border-white/5 sticky top-0 bg-[#0A0F1D]/80 backdrop-blur-md">
-                          <div className="relative group">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={16} />
-                            <input
-                              type="text"
-                              autoFocus
-                              placeholder="Search schools..."
-                              value={schoolSearchQuery}
-                              onChange={(e) => setSchoolSearchQuery(e.target.value)}
-                              className="w-full pl-12 pr-4 h-12 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500 transition-all placeholder:text-slate-600"
-                            />
-                          </div>
-                        </div>
-                        <div className="max-h-64 overflow-y-auto p-2">
-                          {filteredSchools.length === 0 ? (
-                            <div className="p-8 text-center text-sm text-slate-500">No schools found</div>
-                          ) : (
-                            filteredSchools.map(school => (
-                              <button
-                                key={school.id}
-                                type="button"
-                                onClick={() => {
-                                  const hostname = window.location.hostname;
-                                  if (school.slug && (hostname === 'seedify.name.ng' || hostname === 'www.seedify.name.ng')) {
-                                    window.location.href = `${window.location.protocol}//${school.slug}.seedify.name.ng/login`;
-                                    return;
-                                  }
-                                  setSelectedSchool(school.id);
-                                  setIsSchoolDropdownOpen(false);
-                                  setSchoolSearchQuery('');
-                                }}
-                                className={cn(
-                                  "w-full text-left px-4 py-4 rounded-xl text-sm flex items-center justify-between transition-all group",
-                                  selectedSchool === school.id ? "bg-blue-600/20 text-blue-400 border border-blue-500/20" : "text-slate-400 hover:bg-white/5 hover:text-white"
-                                )}
-                              >
-                                <div className="flex items-center gap-3">
-                                  <div className={cn("w-2 h-2 rounded-full", selectedSchool === school.id ? "bg-blue-400 animate-pulse" : "bg-slate-700")} />
-                                  <span className="font-bold tracking-tight">{school.name}</span>
-                                </div>
-                                {selectedSchool === school.id && <Check size={16} className="text-blue-400" />}
-                              </button>
-                            ))
-                          )}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
-              <button 
-                onClick={() => setStep('role')}
-                disabled={!selectedSchool}
-                className="w-full h-14 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed transition-all text-base mt-4"
-              >
-                Continue to Roles
-              </button>
-            </motion.div>
-          )}
-
-          {step === 'role' && (
-            <motion.div
-              key="role"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="space-y-8"
-            >
-              <div className="grid grid-cols-2 gap-4">
-                {roles.map(r => (
-                  <motion.button
-                    key={r.id}
-                    whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setSelectedRole(r.id)}
-                    className={cn(
-                      "h-20 p-4 rounded-3xl border text-xs font-black uppercase tracking-widest transition-all text-center flex flex-col items-center justify-center gap-2",
-                      selectedRole === r.id 
-                        ? "bg-blue-600 border-blue-500 text-white shadow-[0_0_30px_-5px_rgba(37,99,235,0.5)]" 
-                        : "border-white/10 bg-white/5 text-slate-500 hover:border-white/20"
-                    )}
-                  >
-                    <span className="text-sm font-space">{r.label}</span>
-                  </motion.button>
-                ))}
-              </div>
-              <div className="flex gap-4">
-                <button 
-                  onClick={() => setStep('school')}
-                  className="flex-1 h-14 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all active:scale-[0.98]"
-                >
-                  Back
-                </button>
-                <button 
-                  onClick={() => setStep('credentials')}
-                  disabled={!selectedRole}
-                  className="flex-[2] h-14 bg-blue-600 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 hover:bg-blue-500 transition-all active:scale-[0.98] disabled:opacity-30"
-                >
-                  Next Step
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {(step === 'credentials' || isSignUp) && (
-            <motion.div
-              key="credentials"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="space-y-6"
-            >
-              <form onSubmit={handleEmailAuth} className="space-y-5">
-                <div className="relative group">
-                  <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={20} strokeWidth={1.5} />
-                  <input 
-                    type="email"
-                    placeholder="Email Address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full h-14 pl-14 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition-all font-medium"
-                  />
-                </div>
-                
-                <div className="relative group">
-                  <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={20} strokeWidth={1.5} />
-                  <input 
-                    type={showPassword ? "text" : "password"} 
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="w-full h-14 pl-14 pr-16 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition-all font-medium"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
-                  >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
-
-                {!isSignUp && (
-                  <div className="flex justify-end px-1">
-                    <button 
-                      type="button"
-                      onClick={async () => {
-                        if (!email) {
-                          setError("Please enter your email address first.");
-                          return;
-                        }
-                        try {
-                          setLoading(true);
-                          await sendPasswordResetEmail(auth, email.trim());
-                          setError(null);
-                          setSuccess(`Password reset email sent to ${email}`);
-                          setTimeout(() => setSuccess(null), 5000);
-                        } catch (err: any) {
-                          setError(err.message || "Failed to send password reset email.");
-                        } finally {
-                          setLoading(false);
-                        }
-                      }}
-                      className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors uppercase tracking-widest"
-                    >
-                      Reset Security Token
-                    </button>
-                  </div>
-                )}
-
-                <div className="flex gap-4 pt-4">
-                  <button 
-                    type="button"
-                    onClick={() => setStep('role')}
-                    className="flex-1 h-14 rounded-2xl border border-white/10 bg-white/5 text-white font-bold hover:bg-white/10 transition-all active:scale-[0.98]"
-                  >
-                    Back
-                  </button>
-                  <button 
-                    type="submit"
-                    disabled={loading}
-                    className="flex-[2] h-14 bg-blue-600 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 hover:bg-blue-500 transition-all active:scale-[0.98] disabled:opacity-50"
-                  >
-                    {loading ? (isSignUp ? 'Setting up...' : 'Verifying...') : (isSignUp ? 'Initialize' : 'Sign In')}
-                  </button>
-                </div>
-              </form>
-
-              <div className="relative py-6">
-                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
-                <div className="relative flex justify-center text-[10px] uppercase font-black tracking-[0.4em]"><span className="bg-[#050811] px-6 text-slate-500">SSO Logic</span></div>
-              </div>
-
+        <div className="space-y-6">
+          <form onSubmit={handleEmailAuth} className="space-y-5">
+            <div className="relative group">
+              <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={20} strokeWidth={1.5} />
+              <input 
+                type="email"
+                placeholder="Email Address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full h-14 pl-14 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition-all font-medium"
+              />
+            </div>
+            
+            <div className="relative group">
+              <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={20} strokeWidth={1.5} />
+              <input 
+                type={showPassword ? "text" : "password"} 
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full h-14 pl-14 pr-16 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition-all font-medium"
+              />
               <button
-                onClick={handleGoogleLogin}
-                disabled={loading}
-                className="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] disabled:opacity-50 group"
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
               >
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-6 h-6" />
-                <span className="font-bold text-xs uppercase tracking-widest">Connect Identity</span>
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
+
+            <div className="flex justify-end px-1">
+              <button 
+                type="button"
+                onClick={async () => {
+                  if (!email) {
+                    setError("Please enter your email address first.");
+                    return;
+                  }
+                  try {
+                    setLoading(true);
+                    await sendPasswordResetEmail(auth, email.trim());
+                    setError(null);
+                    setSuccess(`Password reset email sent to ${email}`);
+                    setTimeout(() => setSuccess(null), 5000);
+                  } catch (err: any) {
+                    setError(err.message || "Failed to send password reset email.");
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
+                className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors uppercase tracking-widest"
+              >
+                Reset Security Token
+              </button>
+            </div>
+
+            <div className="pt-4">
+              <button 
+                type="submit"
+                disabled={loading}
+                className="w-full h-14 bg-blue-600 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 hover:bg-blue-500 transition-all active:scale-[0.98] disabled:opacity-50"
+              >
+                {loading ? 'Verifying...' : 'Sign In'}
+              </button>
+            </div>
+          </form>
+
+          <div className="relative py-6">
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
+            <div className="relative flex justify-center text-[10px] uppercase font-black tracking-[0.4em]"><span className="bg-[#050811] px-6 text-slate-500">SSO Logic</span></div>
+          </div>
+
+          <button
+            onClick={handleGoogleLogin}
+            disabled={loading}
+            className="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] disabled:opacity-50 group"
+          >
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-6 h-6" />
+            <span className="font-bold text-xs uppercase tracking-widest">Connect Identity</span>
+          </button>
+        </div>
       )}
 
       <div className="mt-8 text-center flex flex-col gap-4">
@@ -1295,7 +952,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
           </button>
         )}
         <p className="text-[9px] text-slate-600 font-medium leading-relaxed max-w-[200px] mx-auto uppercase tracking-wider">
-          By accessing SEEDD, you agree to our terms of digital engagement.
+          Authorized personnel only. Access is monitored and logged.
         </p>
       </div>
     </motion.div>
@@ -1332,20 +989,16 @@ export default function App() {
 
     const unsubscribeAuth = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
-        // Clean up previous profile subscription if it exists
         if (unsubscribeProfile) {
           unsubscribeProfile();
           unsubscribeProfile = null;
         }
 
         try {
-          // 1. First attempt to get the document once to set initial state quickly
           const userDoc = await getDoc(doc(db, 'users', authUser.uid));
           
           if (userDoc.exists()) {
             let userData = userDoc.data() as UserProfile;
-            
-            // Ensure platform owner always has super_admin role
             const isOwner = ['kreativekubesolutions@gmail.com', 'seedd.ng@gmail.com', 'abahjohnakor@gmail.com'].includes(authUser.email || '');
             if (isOwner && userData.role !== 'super_admin') {
               userData = { ...userData, role: 'super_admin' };
@@ -1353,7 +1006,6 @@ export default function App() {
             }
             setUser(userData);
           } else {
-            // User exists in Auth but not in Firestore (incomplete onboarding)
             const isOwner = ['kreativekubesolutions@gmail.com', 'seedd.ng@gmail.com', 'abahjohnakor@gmail.com'].includes(authUser.email || '');
             const nameParts = (authUser.displayName || (isOwner ? 'Platform Owner' : '')).split(' ');
             
@@ -1366,13 +1018,17 @@ export default function App() {
               createdAt: new Date().toISOString()
             };
 
-            if (isOwner) {
+            // If we're on a subdomain, associate the user with this school immediately
+            if (tenantSchool?.id) {
+              partialProfile.schoolId = tenantSchool.id;
+              await setDoc(doc(db, 'users', authUser.uid), partialProfile);
+            } else if (isOwner) {
               await setDoc(doc(db, 'users', authUser.uid), partialProfile);
             }
+            
             setUser(partialProfile);
           }
           
-          // 2. Then set up the real-time listener for updates
           unsubscribeProfile = onSnapshot(doc(db, 'users', authUser.uid), (snap) => {
             if (snap.exists()) {
               const updatedData = snap.data() as UserProfile;
@@ -1497,11 +1153,10 @@ export default function App() {
  <AnimatePresence mode="wait">
  <Routes location={ location } key={ location.pathname }>
  <Route path="/" element={ tenantSchool ? <Navigate to="/login" /> : <PageWrapper><LandingPage /></PageWrapper> } />
- <Route path="/login" element={ user ? <Navigate to="/dashboard" /> : <PageWrapper><LoginPage onLogin={ setUser } tenantSchool={ tenantSchool } subdomainNotFound={ subdomainNotFound } logoVariant={ logoVariant } /></PageWrapper> } />
+ <Route path="/login" element={ (user?.schoolId || user?.role === 'super_admin') ? <Navigate to="/dashboard" /> : <PageWrapper><LoginPage onLogin={ setUser } tenantSchool={ tenantSchool } subdomainNotFound={ subdomainNotFound } logoVariant={ logoVariant } /></PageWrapper> } />
  <Route path="/super-admin"element={ user ? <Navigate to="/dashboard"/> : <PageWrapper><LoginPage onLogin={ setUser } tenantSchool={ tenantSchool } subdomainNotFound={ subdomainNotFound } logoVariant={ logoVariant } /></PageWrapper>} />
- <Route path="/dashboard/*"element={ user?.schoolId || user?.role  === 'super_admin'? <PageWrapper><DashboardRouter user={ user } onLogout={ handleLogout } /></PageWrapper> : <Navigate to="/onboarding"/>} />
+ <Route path="/dashboard/*"element={ user?.schoolId || user?.role  === 'super_admin'? <PageWrapper><DashboardRouter user={ user } onLogout={ handleLogout } /></PageWrapper> : <Navigate to="/login"/>} />
  <Route path="/announcements"element={ user ? <PageWrapper><AnnouncementsPage user={ user } /></PageWrapper> : <Navigate to="/login"/>} />
- <Route path="/onboarding"element={ user ? <PageWrapper><OnboardingPage user={ user } onComplete={ setUser } /></PageWrapper> : <Navigate to="/login"/>} />
  <Route path="/profile"element={ user ? <PageWrapper><UserProfileComponent user={ user } onUpdate={ setUser } /></PageWrapper> : <Navigate to="/login"/>} />
  <Route path="*"element={<Navigate to="/"/>} />
  </Routes>
@@ -1587,8 +1242,7 @@ const AnnouncementsPage = ({ user }: { user: UserProfile }) => {
  return;
  }
  const q = query(
- collection(db,'announcements'),
- where('schoolId','==', user.schoolId)
+ collection(db,'schools', user.schoolId,'announcements')
  );
  const unsub = onSnapshot(q, (snap) => {
  const all = snap.docs.map(d => ({ id: d.id, ...d.data() } as Announcement));
@@ -1648,103 +1302,4 @@ const AnnouncementsPage = ({ user }: { user: UserProfile }) => {
  );
 };
 
-const OnboardingPage = ({ user, onComplete }: { user: UserProfile, onComplete: (user: UserProfile) => void }) => {
- const [schools, setSchools] = useState<School[]>([]);
- const [selectedSchool, setSelectedSchool] = useState<string>('');
- const [role, setRole] = useState<UserRole>('student');
- const [loading, setLoading] = useState(false);
- const navigate = useNavigate();
 
- useEffect(() => {
- const fetchSchools = async () => {
- const q = query(collection(db,'schools'));
- const snap = await getDocs(q);
- setSchools(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as School)));
- };
- fetchSchools();
- }, []);
-
- const handleComplete = async () => {
- if (!role) return;
- if (role !=='super_admin'&& !selectedSchool) return;
-
- setLoading(true);
- try {
- const updatedUser: UserProfile = {
- ...user,
- role,
- schoolId: selectedSchool || undefined
- };
- await setDoc(doc(db,'users', user.uid), updatedUser);
- onComplete(updatedUser);
- navigate('/dashboard');
- } catch (error) {
- console.error("Onboarding failed:", error);
- } finally {
- setLoading(false);
- }
- };
-
- return (
- <div className="max-w-md mx-auto px-4 pt-32 pb-20">
- <motion.div
- initial={{ opacity: 0, y: 20 }}
- animate={{ opacity: 1, y: 0 }}
- className="bg-white p-4 rounded-2xl border border-black/5 shadow-xl"
- >
- <Logo variant="black" size="lg"className="mx-auto mb-4"/>
- <h2 className="text-3xl font-serif font-medium mb-2 text-center">Welcome to SEEDD</h2>
- <p className="text-gray-800 text-center mb-8">Select your role and school to get started.</p>
- 
- <div className="space-y-6">
- <div>
- <label className="block text-sm font-medium mb-2">I am a...</label>
- <div className="grid grid-cols-2 gap-3">
- {['school_admin','teacher','student','parent'].map(r => (
- <button
- key={ r }
- onClick={() => setRole(r as UserRole)}
- className={ cn(
-"p-3 rounded-xl border text-sm font-medium transition-all capitalize",
- role === r ?"bg-[#2563EB] text-slate-900 border-[#2563EB]":"border-black/10 hover:bg-gray-50"
- )}
- >
- { r.replace('_','')}
- </button>
- ))}
- </div>
- </div>
-
- { role !=='super_admin'&& (
- <div>
- <label className="block text-sm font-medium mb-2">Select School</label>
- <select
- value={ selectedSchool }
- onChange={ e => setSelectedSchool(e.target.value)}
- className="w-full p-4 rounded-xl border border-black/10 focus:border-[#2563EB] outline-none bg-gray-50"
- >
- <option value="">Choose a school</option>
- { schools.map(s => (
- <option key={ s.id } value={ s.id }>{ s.name }</option>
- ))}
- </select>
- { schools.length === 0 && <p className="text-xs text-red-500 mt-2">No schools found. Please contact the platform owner.</p>}
- </div>
- )}
-
- <button
- onClick={ handleComplete }
- disabled={ loading || (role !=='super_admin'&& !selectedSchool)}
- className="w-full bg-[#2563EB] text-slate-900 p-4 rounded-2xl font-medium hover:bg-opacity-90 transition-all disabled:opacity-50 mt-4"
- >
- { loading ?'Setting up...':'Complete Setup'}
- </button>
- 
- <p className="text-xs text-center text-gray-800">
- Wait! If you're the first admin, you'll need to be onboarded by the platform owner.
- </p>
- </div>
- </motion.div>
- </div>
- );
-};

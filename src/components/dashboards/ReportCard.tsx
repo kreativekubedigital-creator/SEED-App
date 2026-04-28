@@ -1,5 +1,6 @@
 import React from 'react';
 import { UserProfile, School, Session, Term, Class, Result, Subject, GradeScale } from '../../types';
+import { formatDisplayString } from '../../lib/utils';
 
 interface ReportCardProps {
   student: UserProfile;
@@ -26,7 +27,10 @@ export const ReportCard: React.FC<ReportCardProps> = ({
   const totalCaMax = caConfig.cas.reduce((sum, ca) => sum + ca.maxScore, 0);
   const totalMaxScore = totalCaMax + caConfig.maxExamScore;
 
-  const getSubjectName = (id: string) => subjects.find(s => s.id === id)?.name || 'Unknown Subject';
+  const getSubjectName = (id: string) => {
+    const name = subjects.find(s => s.id === id)?.name;
+    return name ? formatDisplayString(name) : 'Unknown Subject';
+  };
 
   const totalScore = results.reduce((acc, curr) => acc + (curr.finalScore || 0), 0);
   const averageScore = results.length > 0 ? totalScore / results.length : 0;
@@ -60,7 +64,7 @@ export const ReportCard: React.FC<ReportCardProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-4 mb-8">
         <div className="flex border-b border-gray-300 pb-1">
           <span className="font-medium text-slate-900 w-32">Name:</span>
-          <span className="text-slate-900 uppercase font-medium">{student.firstName} {student.lastName}</span>
+          <span className="text-slate-900 uppercase font-medium">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</span>
         </div>
         <div className="flex border-b border-gray-300 pb-1">
           <span className="font-medium text-slate-900 w-32">Reg Number:</span>
@@ -68,15 +72,15 @@ export const ReportCard: React.FC<ReportCardProps> = ({
         </div>
         <div className="flex border-b border-gray-300 pb-1">
           <span className="font-medium text-slate-900 w-32">Class:</span>
-          <span className="text-slate-900 font-medium">{studentClass?.name || 'N/A'}</span>
+          <span className="text-slate-900 font-medium">{studentClass?.name ? formatDisplayString(studentClass.name) : 'N/A'}</span>
         </div>
         <div className="flex border-b border-gray-300 pb-1">
           <span className="font-medium text-slate-900 w-32">Session:</span>
-          <span className="text-slate-900 font-medium">{session?.name || 'N/A'}</span>
+          <span className="text-slate-900 font-medium">{session?.name ? formatDisplayString(session.name) : 'N/A'}</span>
         </div>
         <div className="flex border-b border-gray-300 pb-1">
           <span className="font-medium text-slate-900 w-32">Term:</span>
-          <span className="text-slate-900 font-medium">{term?.name || 'N/A'}</span>
+          <span className="text-slate-900 font-medium">{term?.name ? formatDisplayString(term.name) : 'N/A'}</span>
         </div>
       </div>
 
@@ -118,7 +122,7 @@ export const ReportCard: React.FC<ReportCardProps> = ({
                 <td className="border border-gray-800 px-2 py-2 text-center text-sm text-slate-900">{result.exam !== null && result.exam !== undefined ? result.exam : '-'}</td>
                 <td className="border border-gray-800 px-2 py-2 text-center text-sm font-medium text-slate-900 bg-slate-50">{result.finalScore || 0}</td>
                 <td className="border border-gray-800 px-2 py-2 text-center text-sm font-medium text-slate-900">{result.grade || '-'}</td>
-                <td className="border border-gray-800 px-3 py-2 text-xs text-slate-900 uppercase">{result.remark || '-'}</td>
+                <td className="border border-gray-800 px-3 py-2 text-xs text-slate-900 uppercase">{formatDisplayString(result.remark) || '-'}</td>
               </tr>
             ))}
             {results.length === 0 && (

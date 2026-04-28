@@ -3,7 +3,7 @@ import { db, collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot, query, w
 import { Class, School, Subject, UserProfile } from'../../types';
 import { BookOpen, Plus, Trash2, X, ChevronDown, ChevronUp } from'lucide-react';
 import { motion, AnimatePresence } from'motion/react';
-import { sortByName, sortByFullName } from'../../lib/utils';
+import { sortByName, sortByFullName, formatDisplayString } from'../../lib/utils';
 
 const PRIMARY_SUBJECTS = [
 "English Language",
@@ -255,7 +255,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  <BookOpen size={ 20 } />
  </div>
  <div>
- <p className="font-medium text-xl text-slate-900 group-hover:text-orange-600 transition-colors">{ c.name }</p>
+ <p className="font-medium text-xl text-slate-900 group-hover:text-orange-600 transition-colors">{ formatDisplayString(c.name) }</p>
  <p className="text-sm text-slate-900 font-medium mt-1 bg-slate-50 px-2.5 py-0.5 rounded-full inline-block border border-slate-100">{ classSubjects.length } Subjects</p>
  </div>
  </div>
@@ -304,11 +304,11 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  return (
  <div key={ s.id } className="flex justify-between items-center p-4 rounded-2xl bg-white border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all group/subject">
  <div>
- <p className="font-medium text-slate-900 text-lg group-hover/subject:text-blue-600 transition-colors">{ s.name }</p>
+ <p className="font-medium text-slate-900 text-lg group-hover/subject:text-blue-600 transition-colors">{ formatDisplayString(s.name) }</p>
  <p className="text-sm text-slate-900 font-medium mt-1 flex items-center gap-2">
  Teacher: 
  <span className="text-slate-900 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100">
- { teacher ?`${ teacher.firstName } ${ teacher.lastName }`:'Unassigned'}
+ { teacher ? `${formatDisplayString(teacher.firstName)} ${formatDisplayString(teacher.lastName)}` : 'Unassigned'}
  </span>
  </p>
  </div>
@@ -491,7 +491,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  <div>
  <label className="block text-sm font-medium text-slate-900 mb-3">Preloaded Subjects</label>
  <div className="space-y-2 max-h-48 overflow-y-auto p-4 border border-gray-200/50 rounded-2xl bg-white custom-scrollbar">
- {([...(classes.find(c => c.id === showAddSubject)?.level  === 'secondary'? SECONDARY_SUBJECTS : PRIMARY_SUBJECTS)].sort((a, b) => a.localeCompare(b))).map(subject => (
+ {([...(classes.find(c => c.id === showAddSubject)?.level === 'secondary' ? SECONDARY_SUBJECTS : PRIMARY_SUBJECTS)].sort((a, b) => a.localeCompare(b))).map(subject => (
  <label key={ subject } className="flex items-center gap-3 cursor-pointer p-3 hover:bg-white rounded-xl transition-colors border border-transparent hover:border-slate-100 hover:shadow-sm">
  <input
  type="checkbox"
@@ -530,7 +530,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  >
  <option value="">Select a teacher...</option>
  { teachers.map(t => (
- <option key={ t.uid } value={ t.uid }>{`${ t.firstName } ${ t.lastName }`}</option>
+ <option key={ t.uid } value={ t.uid }>{`${formatDisplayString(t.firstName)} ${formatDisplayString(t.lastName)}`}</option>
  ))}
  </select>
  </div>
@@ -591,7 +591,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  >
  <option value="">Unassigned (No Teacher)</option>
  { teachers.map(t => (
- <option key={ t.uid } value={ t.uid }>{`${ t.firstName } ${ t.lastName }`}</option>
+ <option key={ t.uid } value={ t.uid }>{`${formatDisplayString(t.firstName)} ${formatDisplayString(t.lastName)}`}</option>
  ))}
  </select>
  </div>

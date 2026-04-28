@@ -4,6 +4,7 @@ import { School, Invoice, Payment, FeeStructure, Class, UserProfile, Session } f
 import { CheckCircle, Clock, TrendingUp, DollarSign, Wallet, CreditCard, ArrowUpRight, Filter, ChevronDown, Search, BarChart3 } from 'lucide-react';
 import { format, parseISO, eachMonthOfInterval, isSameMonth, subMonths } from 'date-fns';
 import { motion, AnimatePresence } from 'motion/react';
+import { formatDisplayString, cn } from '../../lib/utils';
 
 interface FeeAnalyticsProps {
   school: School;
@@ -44,20 +45,28 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
 
   // 2. Filter Logic (Internal helper for generic term matching)
   const isMatchingTerm = React.useCallback((invSessionId: string, invTermId: string) => {
-    const matchTerm = selectedTerm === 'all';
-    if (matchTerm) return true;
-    
+    if (selectedTerm === 'all') return true;
     if (invTermId === selectedTerm) return true;
     
     if (selectedSession === 'all' && ['1st_term', '2nd_term', '3rd_term'].includes(selectedTerm)) {
-      // Generic term match across sessions
       const termName = termsMap[invSessionId]?.[invTermId]?.name || '';
-      const genericTermPrefix = selectedTerm.split('_')[0]; // e.g., '1st'
+      const genericTermPrefix = selectedTerm.split('_')[0];
       return termName.toLowerCase().includes(genericTermPrefix.toLowerCase());
     }
-    
     return false;
   }, [selectedTerm, selectedSession, termsMap]);
+
+  const studentMap = useMemo(() => {
+    return students.reduce((acc, s) => ({ ...acc, [s.uid]: s }), {} as Record<string, UserProfile>);
+  }, [students]);
+
+  const classLookup = useMemo(() => {
+    return classes.reduce((acc, c) => ({ ...acc, [c.id]: c }), {} as Record<string, Class>);
+  }, [classes]);
+
+  const sessionLookup = useMemo(() => {
+    return sessions.reduce((acc, s) => ({ ...acc, [s.id]: s }), {} as Record<string, Session>);
+  }, [sessions]);
 
   const filteredInvoices = useMemo(() => {
     return invoices.filter(inv => {
@@ -72,6 +81,13 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
 
   // 4. Student Data for Breakdown Table (Reconciliation Logic)
   const studentFeeData = useMemo(() => {
+    // Group invoices by student for faster lookup
+    const invoicesByStudent = invoices.reduce((acc, inv) => {
+      if (!acc[inv.studentId]) acc[inv.studentId] = [];
+      acc[inv.studentId].push(inv);
+      return acc;
+    }, {} as Record<string, Invoice[]>);
+
     return students
       .filter(s => {
         const matchesClass = selectedClass === 'all' || s.classId === selectedClass;
@@ -92,9 +108,7 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
         const totalFee = applicableStructures.reduce((sum, fs) => sum + fs.amount, 0);
 
         // B. Calculate ACTUAL paid from invoices
-        const studentInvoices = invoices.filter(inv => {
-          const isStudent = inv.studentId === student.uid;
-          if (!isStudent) return false;
+        const studentInvoices = (invoicesByStudent[student.uid] || []).filter(inv => {
           const matchSession = selectedSession === 'all' || inv.sessionId === selectedSession;
           const matchTerm = isMatchingTerm(inv.sessionId, inv.termId);
           return matchSession && matchTerm;
@@ -103,7 +117,6 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
         const paid = studentInvoices.reduce((sum, inv) => sum + inv.amountPaid, 0);
         const balance = totalFee - paid;
         
-        // Find if any invoice is overdue
         const hasOverdue = studentInvoices.some(inv => {
           if (inv.status === 'paid' || inv.amountPaid >= inv.amount) return false;
           const term = termsMap[inv.sessionId]?.[inv.termId];
@@ -125,7 +138,7 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
           hasInvoices: studentInvoices.length > 0
         };
       })
-      .sort((a, b) => b.balance - a.balance); // Sort by balance descending
+      .sort((a, b) => b.balance - a.balance);
   }, [students, invoices, feeStructures, selectedClass, selectedSession, selectedTerm, searchQuery, termsMap, isMatchingTerm]);
 
   // 5. Analytics Aggregation (Updated to reflect reconciliation)
@@ -209,47 +222,51 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
             </div>
           </div>
           
-          <div className="h-[240px] w-full">
+          <div className="h-[240px] w-full mt-4">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.1}/>
-                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.15}/>
+                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.01}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#f1f5f9" />
                 <XAxis 
                   dataKey="month" 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{ fontSize: 10, fill: '#64748b', fontWeight: 600 }}
+                  tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 900 }}
                   dy={10}
                 />
                 <YAxis 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{ fontSize: 10, fill: '#64748b', fontWeight: 600 }}
+                  tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 900 }}
                   tickFormatter={(value) => `₦${value/1000}k`}
                 />
                 <Tooltip 
+                  cursor={{ stroke: '#3b82f6', strokeWidth: 1, strokeDasharray: '4 4' }}
                   contentStyle={{ 
-                    borderRadius: '16px', 
-                    border: 'none', 
-                    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
-                    fontSize: '12px',
-                    fontWeight: '600'
+                    borderRadius: '20px', 
+                    border: '1px solid #f1f5f9', 
+                    boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.05)',
+                    fontSize: '11px',
+                    fontWeight: '900',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
                   }}
-                  formatter={(value: number) => [formatCurrency(value), 'Amount']}
+                  formatter={(value: number) => [formatCurrency(value), 'COLLECTED']}
                 />
                 <Area 
                   type="monotone" 
                   dataKey="amount" 
-                  stroke="#2563eb" 
-                  strokeWidth={3}
+                  stroke="#3b82f6" 
+                  strokeWidth={4}
                   fillOpacity={1} 
                   fill="url(#colorAmount)" 
-                  animationDuration={1500}
+                  animationDuration={2000}
+                  activeDot={{ r: 6, strokeWidth: 0, fill: '#3b82f6 shadow-lg shadow-blue-500/50' }}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -333,7 +350,7 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
                         className="w-full pl-3 pr-8 py-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold text-slate-700 outline-none appearance-none focus:ring-2 focus:ring-blue-100 transition-all"
                       >
                         <option value="all">All Classes</option>
-                        {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                        {classes.map(c => <option key={c.id} value={c.id}>{formatDisplayString(c.name)}</option>)}
                       </select>
                       <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                     </div>
@@ -347,7 +364,7 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
                         className="w-full pl-3 pr-8 py-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold text-slate-700 outline-none appearance-none focus:ring-2 focus:ring-blue-100 transition-all"
                       >
                         <option value="all">All Sessions</option>
-                        {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                        {sessions.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
                       </select>
                       <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                     </div>
@@ -362,7 +379,7 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
                       >
                         <option value="all">All Terms</option>
                         {selectedSession !== 'all' && termsMap[selectedSession] && Object.values(termsMap[selectedSession]).map((t: any) => (
-                          <option key={t.id} value={t.id}>{t.name}</option>
+                          <option key={t.id} value={t.id}>{formatDisplayString(t.name)}</option>
                         ))}
                         {selectedSession === 'all' && (
                           <>
@@ -393,59 +410,66 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {studentFeeData.map(({ student, totalFee, paid, balance, hasOverdue, hasInvoices }) => {
-                const isPaid = totalFee > 0 && balance <= 0;
-                const isPartial = paid > 0 && balance > 0;
-                const className = classes.find(c => c.id === student.classId)?.name || 'Unassigned';
+              {studentFeeData.map(({ student, totalFee, paid, balance, hasOverdue, hasInvoices }, idx) => {
+                  const isPaid = totalFee > 0 && balance <= 0;
+                  const isPartial = paid > 0 && balance > 0;
+                  const className = classes.find(c => c.id === student.classId)?.name || 'Unassigned';
 
-                return (
-                  <tr key={student.uid} className="hover:bg-slate-50/50 transition-colors group">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-500">
-                          {student.firstName[0]}{student.lastName[0]}
+                  return (
+                    <motion.tr 
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.03 }}
+                      key={student.uid} 
+                      className="hover:bg-slate-50/50 transition-colors group cursor-default"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-2xl bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-500 border border-slate-200 group-hover:scale-110 transition-transform">
+                            {formatDisplayString(student.firstName)[0]}{formatDisplayString(student.lastName)[0]}
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-black text-[13px] text-slate-900 leading-tight tracking-tight uppercase">
+                              {formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}
+                            </span>
+                            <span className="text-[9px] text-slate-400 uppercase font-black tracking-widest">{className}</span>
+                          </div>
                         </div>
-                        <div className="flex flex-col">
-                          <span className="font-bold text-slate-900 leading-tight">
-                            {student.firstName} {student.lastName}
+                      </td>
+                      <td className="px-6 py-4 text-right font-black text-xs text-slate-500">
+                        {formatCurrency(totalFee)}
+                      </td>
+                      <td className="px-6 py-4 text-right font-black text-xs text-emerald-600">
+                        {formatCurrency(paid)}
+                      </td>
+                      <td className="px-6 py-4 text-right font-black text-[13px] text-slate-900">
+                        {formatCurrency(balance)}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col gap-1.5 items-end lg:items-start">
+                          <span className={cn(
+                            "px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border flex items-center gap-1.5",
+                            totalFee > 0 && !hasInvoices ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                            totalFee === 0 ? 'bg-slate-50 text-slate-400 border-slate-200' :
+                            isPaid ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                            isPartial ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                            'bg-rose-50 text-rose-600 border-rose-100'
+                          )}>
+                            {totalFee > 0 && !hasInvoices ? <><Clock size={10} strokeWidth={3} /> UNINVOICED</> :
+                             totalFee === 0 ? 'NO FEE' :
+                             isPaid ? <><CheckCircle size={10} strokeWidth={3} /> FULLY PAID</> : 
+                             isPartial ? <><BarChart3 size={10} strokeWidth={3} /> PARTIAL</> : <><Clock size={10} strokeWidth={3} /> UNPAID</>}
                           </span>
-                          <span className="text-[10px] text-slate-400 uppercase font-bold">{className}</span>
+                          {hasOverdue && (
+                            <span className="text-[8px] font-black text-rose-500 flex items-center gap-1 animate-pulse tracking-widest ml-2">
+                              <Clock size={10} strokeWidth={3} /> OVERDUE
+                            </span>
+                          )}
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-right font-medium text-slate-600">
-                      {formatCurrency(totalFee)}
-                    </td>
-                    <td className="px-6 py-4 text-right font-medium text-emerald-600">
-                      {formatCurrency(paid)}
-                    </td>
-                    <td className="px-6 py-4 text-right font-black text-slate-900">
-                      {formatCurrency(balance)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col gap-1">
-                        <span className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider w-fit flex items-center gap-1 ${
-                          totalFee > 0 && !hasInvoices ? 'bg-amber-100 text-amber-700' :
-                          totalFee === 0 ? 'bg-slate-100 text-slate-400' :
-                          isPaid ? 'bg-emerald-50 text-emerald-600' :
-                          isPartial ? 'bg-amber-50 text-amber-600' :
-                          'bg-rose-50 text-rose-600'
-                        }`}>
-                          {totalFee > 0 && !hasInvoices ? <><Clock size={10} /> UNINVOICED</> :
-                           totalFee === 0 ? 'NO FEE' :
-                           isPaid ? <><CheckCircle size={10} /> PAID</> : 
-                           isPartial ? 'PARTIAL' : 'UNPAID'}
-                        </span>
-                        {hasOverdue && (
-                          <span className="text-[10px] font-black text-rose-500 flex items-center gap-1 animate-pulse">
-                            <Clock size={10} /> OVERDUE
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+                      </td>
+                    </motion.tr>
+                  );
+                })}
               {studentFeeData.length === 0 && (
                 <tr>
                   <td colSpan={5} className="px-6 py-12 text-center text-slate-400 font-medium">

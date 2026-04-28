@@ -6,6 +6,7 @@ import { ENGLISH_LESSONS, MATH_LESSONS, SCIENCE_LESSONS, SOCIAL_LESSONS, ICT_LES
 import { getQuestionPool } from '../../constants/questionPools';
 import { addXP, updateStreak } from '../../services/gamificationService';
 import { db, collection, addDoc, serverTimestamp } from '../../lib/compatibility';
+import { formatDisplayString } from '../../lib/utils';
 
 export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classLevel?: string }) => {
   const [selectedSubject, setSelectedSubject] = useState<'English' | 'Math' | 'Science' | 'Social Studies' | 'ICT' | 'Civic Education' | null>(null);
@@ -180,8 +181,8 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
           
           <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 relative z-10">
             <div>
-              <h3 className="text-lg font-black uppercase tracking-tighter text-slate-900">{selectedLesson.title}</h3>
-              <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest mt-1">{selectedSubject} • {selectedLesson.level}</p>
+              <h3 className="text-lg font-black uppercase tracking-tighter text-slate-900">{formatDisplayString(selectedLesson.title)}</h3>
+              <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest mt-1">{formatDisplayString(selectedSubject)} • {formatDisplayString(selectedLesson.level)}</p>
             </div>
             <button 
               onClick={() => setSelectedLesson(null)}
@@ -623,12 +624,12 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                      className={`${colorClass} p-8 rounded-[2.5rem] border shadow-sm transition-all group flex flex-col relative overflow-hidden`}
                    >
                      <div className="flex justify-between items-start mb-6 relative z-10">
-                       <span className="text-[10px] font-black text-slate-900 bg-white/80 px-4 py-1.5 rounded-full uppercase tracking-widest border border-white/50 shadow-sm">{lesson.level}</span>
+                       <span className="text-[10px] font-black text-slate-900 bg-white/80 px-4 py-1.5 rounded-full uppercase tracking-widest border border-white/50 shadow-sm">{formatDisplayString(lesson.level)}</span>
                        <div className="p-2 bg-white/80 text-slate-900 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity scale-90 group-hover:scale-100 border border-white/50 shadow-sm">
                          <Play size={16} fill="currentColor" />
                        </div>
                      </div>
-                     <h4 className="text-xl font-black uppercase tracking-tighter mb-2 text-slate-900 leading-tight relative z-10">{lesson.title}</h4>
+                     <h4 className="text-xl font-black uppercase tracking-tighter mb-2 text-slate-900 leading-tight relative z-10">{formatDisplayString(lesson.title)}</h4>
                      <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest mb-8 line-clamp-2 flex-grow relative z-10">{lesson.content}</p>
                      <motion.button 
                        id={`btn_lesson_start_${lesson.id || idx}`}

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from'react';
 import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, where, onSnapshot, OperationType, handleFirestoreError } from '../../lib/compatibility';
 import { School, FeeStructure, Invoice, Payment, Class, UserProfile } from '../../types';
-import { Plus, Edit2, Trash2, FileText, CheckCircle, Clock, Search, X, BarChart2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, FileText, CheckCircle, Clock, Search, X, BarChart2, ChevronDown, Users, CreditCard } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { cn, formatDisplayString } from '../../lib/utils';
 import { FeeAnalytics } from './FeeAnalytics';
 
 export const SchoolFinance = ({ school }: { school: School }) => {
@@ -13,8 +14,20 @@ export const SchoolFinance = ({ school }: { school: School }) => {
   const [classes, setClasses] = useState<Class[]>([]);
   const [students, setStudents] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
- const [sessions, setSessions] = useState<any[]>([]);
- const [termsMap, setTermsMap] = useState<Record<string, Record<string, any>>>({});
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [termsMap, setTermsMap] = useState<Record<string, Record<string, any>>>({});
+
+  const studentMap = React.useMemo(() => {
+    return students.reduce((acc, s) => ({ ...acc, [s.uid]: s }), {} as Record<string, UserProfile>);
+  }, [students]);
+
+  const classMap = React.useMemo(() => {
+    return classes.reduce((acc, c) => ({ ...acc, [c.id]: c }), {} as Record<string, Class>);
+  }, [classes]);
+
+  const sessionMap = React.useMemo(() => {
+    return sessions.reduce((acc, s) => ({ ...acc, [s.id]: s }), {} as Record<string, any>);
+  }, [sessions]);
 
  // Modals
  const [showAddFee, setShowAddFee] = useState(false);
@@ -35,41 +48,61 @@ export const SchoolFinance = ({ school }: { school: School }) => {
   const [genTermId, setGenTermId] = useState('');
   const [genClassId, setGenClassId] = useState('all');
 
- useEffect(() => {
-  const unsubFees = onSnapshot(collection(db,`schools/${ school.id }/feeStructures`), (snap) => {
-  setFeeStructures(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as FeeStructure)));
-  });
-  const unsubInvoices = onSnapshot(collection(db,`schools/${ school.id }/invoices`), (snap) => {
-  setInvoices(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Invoice)));
-  });
-  const unsubPayments = onSnapshot(collection(db,`schools/${ school.id }/payments`), (snap) => {
-  setPayments(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Payment)));
-  });
-  const unsubClasses = onSnapshot(collection(db,`schools/${ school.id }/classes`), (snap) => {
-    setClasses(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Class)));
-  });
-  const unsubStudents = onSnapshot(query(collection(db, 'users'), where('schoolId', '==', school.id), where('role', '==', 'student')), (snap) => {
-    setStudents(snap.docs.map(doc => ({ uid: doc.id, ...doc.data() } as UserProfile)));
-  });
-
-  // Fetch sessions to get terms and resumption dates
-  const unsubSessions = onSnapshot(collection(db, `schools/${school.id}/sessions`), (snap) => {
-    const sessData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    setSessions(sessData);
-    
-    sessData.forEach(sess => {
-      onSnapshot(collection(db, `schools/${school.id}/sessions/${sess.id}/terms`), (termSnap) => {
-        const terms = termSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-        setTermsMap(prev => ({
-          ...prev,
-          [sess.id]: terms.reduce((acc, t) => ({ ...acc, [t.id]: t }), {})
-        }));
-      });
+  useEffect(() => {
+    const unsubFees = onSnapshot(collection(db, `schools/${school.id}/feeStructures`), (snap) => {
+      setFeeStructures(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as FeeStructure)));
     });
-    setLoading(false);
-  });
+    const unsubInvoices = onSnapshot(collection(db, `schools/${school.id}/invoices`), (snap) => {
+      setInvoices(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Invoice)));
+    });
+    const unsubPayments = onSnapshot(collection(db, `schools/${school.id}/payments`), (snap) => {
+      setPayments(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Payment)));
+    });
+    const unsubClasses = onSnapshot(collection(db, `schools/${school.id}/classes`), (snap) => {
+      setClasses(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Class)));
+    });
+    const unsubStudents = onSnapshot(query(collection(db, 'users'), where('schoolId', '==', school.id), where('role', '==', 'student')), (snap) => {
+      setStudents(snap.docs.map(doc => ({ uid: doc.id, ...doc.data() } as UserProfile)));
+    });
 
-    return () => { unsubFees(); unsubInvoices(); unsubPayments(); unsubClasses(); unsubStudents(); unsubSessions(); };
+    // Handle session and term listeners cleanly
+    const termUnsubs: Record<string, () => void> = {};
+    const unsubSessions = onSnapshot(collection(db, `schools/${school.id}/sessions`), (snap) => {
+      const sessData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      setSessions(sessData);
+      
+      // Clear old term unsubs that are no longer in sessData
+      Object.keys(termUnsubs).forEach(id => {
+        if (!sessData.find(s => s.id === id)) {
+          termUnsubs[id]();
+          delete termUnsubs[id];
+        }
+      });
+
+      // Add new ones
+      sessData.forEach(sess => {
+        if (!termUnsubs[sess.id]) {
+          termUnsubs[sess.id] = onSnapshot(collection(db, `schools/${school.id}/sessions/${sess.id}/terms`), (termSnap) => {
+            const terms = termSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+            setTermsMap(prev => ({
+              ...prev,
+              [sess.id]: terms.reduce((acc, t) => ({ ...acc, [t.id]: t }), {})
+            }));
+          });
+        }
+      });
+      setLoading(false);
+    });
+
+    return () => { 
+      unsubFees(); 
+      unsubInvoices(); 
+      unsubPayments(); 
+      unsubClasses(); 
+      unsubStudents(); 
+      unsubSessions(); 
+      Object.values(termUnsubs).forEach(unsub => unsub());
+    };
   }, [school.id]);
 
   // Handle pre-selection of session and term for invoice generation
@@ -233,342 +266,540 @@ export const SchoolFinance = ({ school }: { school: School }) => {
     }
   };
 
- if (loading) return <div>Loading finance data...</div>;
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+      <div className="w-12 h-12 border-4 border-blue-500/10 border-t-blue-600 rounded-full animate-spin shadow-lg shadow-blue-600/10" />
+      <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] animate-pulse">Initializing Finance Modules</p>
+    </div>
+  );
 
- return (
- <div className="space-y-6">
-  {/* Tabs */}
-  <div className="flex gap-4 border-b border-gray-100 mb-6">
-    <button onClick={() => setActiveTab('feeAnalytics')} className={`pb-3 px-1 font-black text-[10px] uppercase tracking-widest transition-all ${ activeTab === 'feeAnalytics' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-400 hover:text-slate-900'}`}>
-      <div className="flex items-center gap-2">
-        <BarChart2 size={12} />
-        Fee Analytics
-      </div>
-    </button>
-    <button onClick={() => setActiveTab('feeStructures')} className={`pb-3 px-1 font-black text-[10px] uppercase tracking-widest transition-all ${ activeTab === 'feeStructures' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-400 hover:text-slate-900'}`}>Fee Structures</button>
-    <button onClick={() => setActiveTab('invoices')} className={`pb-3 px-1 font-black text-[10px] uppercase tracking-widest transition-all ${ activeTab === 'invoices' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-400 hover:text-slate-900'}`}>Invoices</button>
-    <button onClick={() => setActiveTab('payments')} className={`pb-3 px-1 font-black text-[10px] uppercase tracking-widest transition-all ${ activeTab === 'payments' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-400 hover:text-slate-900'}`}>Payments</button>
-  </div>
-
-  { activeTab === 'feeAnalytics' && (
-      <FeeAnalytics 
-        school={school} 
-        invoices={invoices} 
-        payments={payments} 
-        feeStructures={feeStructures} 
-        classes={classes}
-        termsMap={termsMap}
-        students={students}
-        sessions={sessions}
-      />
-  )}
-
- { activeTab  === 'feeStructures'&& (
- <div className="space-y-4">
- <div className="flex justify-between items-center">
- <h3 className="text-lg font-medium">Fee Structures</h3>
- <button onClick={() => setShowAddFee(true)} className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-blue-700">
- <Plus size={ 16 } /> Add Fee
- </button>
- </div>
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
- { feeStructures.map(fee => (
- <div key={ fee.id } className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm group relative">
- <div className="flex justify-between items-start mb-2">
-  <div>
-    <h4 className="font-medium text-slate-900">{ fee.name }</h4>
-    <p className="text-[10px] text-slate-400 uppercase tracking-wider font-medium">
-      {termsMap[fee.sessionId]?.[fee.termId]?.name || 'Unknown Term'}
-    </p>
-  </div>
-  <div className="flex items-center gap-2">
-    <button 
-      onClick={() => handleEditFee(fee)}
-      className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-blue-600 transition-all opacity-0 group-hover:opacity-100"
-    >
-      <Edit2 size={14} />
-    </button>
-    <button 
-      onClick={() => handleDeleteFee(fee.id)}
-      className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-red-600 transition-all opacity-0 group-hover:opacity-100"
-    >
-      <Trash2 size={14} />
-    </button>
-    <span className="text-sm font-medium text-blue-600">₦{ fee.amount.toLocaleString()}</span>
-  </div>
- </div>
- <p className="text-xs text-slate-900 mb-4">Class: { fee.classId  === 'all'?'All Classes': classes.find(c => c.id === fee.classId)?.name || fee.classId }</p>
- <div className="flex gap-2">
- <span className="text-[10px] bg-gray-100 px-2 py-1 rounded-md text-slate-900 uppercase tracking-wider">{ fee.isMandatory ?'Mandatory':'Optional'}</span>
- </div>
- </div>
- ))}
- { feeStructures.length === 0 && <p className="text-slate-900 text-sm col-span-full">No fee structures defined yet.</p>}
- </div>
- </div>
- )}
-
- { activeTab  === 'invoices'&& (
- <div className="space-y-4">
- <div className="flex justify-between items-center">
- <h3 className="text-lg font-medium">Student Invoices</h3>
- <button onClick={() => setShowGenerateInvoice(true)} className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-blue-700">
- <FileText size={ 16 } /> Generate Invoices
- </button>
- </div>
- <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
- <table className="w-full text-left text-sm">
- <thead className="bg-slate-50 text-slate-900 uppercase tracking-wider text-[10px] font-medium">
- <tr>
- <th className="p-4">Student ID</th>
- <th className="p-4">Amount</th>
- <th className="p-4">Paid</th>
- <th className="p-4">Status</th>
- <th className="p-4">Due Date</th>
- </tr>
- </thead>
- <tbody className="divide-y divide-slate-100">
- { invoices.map(inv => {
-    const paid = inv.status === 'paid' || inv.amountPaid >= inv.amount;
-    const overdue = isOverdue(inv);
-    const balance = inv.amount - inv.amountPaid;
-
-    return (
-      <tr key={ inv.id } className="hover:bg-slate-50 transition-colors">
-      <td className="p-4">
-        <div className="flex flex-col">
-          <span className="font-bold text-slate-900">{ students.find(s => s.uid === inv.studentId)?.firstName } { students.find(s => s.uid === inv.studentId)?.lastName }</span>
-          <span className="text-[10px] text-slate-400 uppercase font-medium">
-            { sessions.find(s => s.id === inv.sessionId)?.name } • { termsMap[inv.sessionId]?.[inv.termId]?.name || 'Unknown Term' }
-          </span>
+  return (
+    <div className="space-y-8 min-h-screen bg-[#F8FAFC]/30 p-4 lg:p-8 selection:bg-blue-100 selection:text-blue-900">
+      {/* Header with quick stats */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-2">
+        <div>
+          <h2 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+            Financial Management
+          </h2>
+          <p className="text-sm font-medium text-slate-500 mt-1">Manage structures, invoices, and track revenue collection.</p>
         </div>
-      </td>
-      <td className="p-4 font-medium">₦{ inv.amount.toLocaleString()}</td>
-      <td className="p-4 font-medium text-emerald-600">₦{ inv.amountPaid.toLocaleString()}</td>
-      <td className="p-4">
-      <div className="flex flex-col gap-1">
-        <span className={`px-2 py-1 rounded-md text-[10px] uppercase tracking-wider font-black w-fit flex items-center gap-1 ${
-        paid ? 'bg-emerald-100 text-emerald-700' :
-        inv.amountPaid > 0 ? 'bg-amber-100 text-amber-700' :
-        'bg-rose-100 text-rose-700'
-        }`}>
-        { paid ? <><CheckCircle size={10} /> FULLY PAID</> : inv.amountPaid > 0 ? 'PARTIAL' : 'UNPAID' }
-        </span>
-        {overdue && !paid && (
-          <span className="text-[10px] font-black text-rose-600 flex items-center gap-1">
-            <Clock size={10} /> OVERDUE
-          </span>
-        )}
+        <div className="flex gap-4">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm flex items-center gap-4">
+            <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl">
+              <CheckCircle size={18} />
+            </div>
+            <div>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Schools</p>
+              <p className="text-lg font-black text-slate-900 tracking-tight">₦{payments.reduce((acc, p) => p.status === 'success' ? acc + p.amount : acc, 0).toLocaleString()}</p>
+            </div>
+          </div>
+        </div>
       </div>
-      </td>
-      <td className="p-4 text-slate-900">
-        <div className="font-medium">{ new Date(inv.dueDate).toLocaleDateString()}</div>
-        {balance > 0 && <div className="text-[10px] text-amber-600 font-black">BALANCE: ₦{balance.toLocaleString()}</div>}
-      </td>
-      </tr>
-    );
-  })}
- { invoices.length === 0 && <tr><td colSpan={ 5 } className="p-4 text-center text-slate-900">No invoices found.</td></tr>}
- </tbody>
- </table>
- </div>
- </div>
- )}
+      {/* Tabs */}
+      <div className="flex gap-2 p-1.5 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200/60 mb-8 overflow-x-auto no-scrollbar shadow-sm sticky top-0 z-30">
+        {[
+          { id: 'feeAnalytics', label: 'Fee Analytics', icon: BarChart2 },
+          { id: 'feeStructures', label: 'Fee Structures', icon: Plus },
+          { id: 'invoices', label: 'Invoices', icon: FileText },
+          { id: 'payments', label: 'Payments', icon: CreditCard },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as any)}
+            className={cn(
+              "flex-1 min-w-[120px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
+              activeTab === tab.id
+                ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+                : "text-slate-500 hover:text-slate-900 hover:bg-slate-50 border border-transparent"
+            )}
+          >
+            <tab.icon size={14} />
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
- { activeTab  === 'payments'&& (
- <div className="space-y-4">
- <h3 className="text-lg font-medium">Payment History</h3>
- <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
- <table className="w-full text-left text-sm">
- <thead className="bg-slate-50 text-slate-900 uppercase tracking-wider text-[10px] font-medium">
- <tr>
- <th className="p-4">Date</th>
- <th className="p-4">Student ID</th>
- <th className="p-4">Amount</th>
- <th className="p-4">Method</th>
- <th className="p-4">Reference</th>
- <th className="p-4">Status</th>
- </tr>
- </thead>
- <tbody className="divide-y divide-slate-100">
- { payments.map(pay => (
- <tr key={ pay.id } className="hover:bg-slate-50">
- <td className="p-4 text-slate-900">{ new Date(pay.date).toLocaleString()}</td>
-  <td className="p-4">
-    <div className="flex flex-col">
-      <span className="font-bold text-slate-900">{ students.find(s => s.uid === pay.studentId)?.firstName } { students.find(s => s.uid === pay.studentId)?.lastName }</span>
-      <span className="text-[10px] text-slate-400 uppercase font-medium">REF: { pay.reference }</span>
-    </div>
-  </td>
- <td className="p-4">₦{ pay.amount.toLocaleString()}</td>
-  <td className="p-4 text-xs font-mono text-slate-900 uppercase">{ pay.method }</td>
- <td className="p-4">
- <span className={`px-2 py-1 rounded-md text-[10px] uppercase tracking-wider font-medium ${
- pay.status  === 'success'?'bg-green-100 text-green-700':
- pay.status  === 'pending'?'bg-yellow-100 text-yellow-700':
-'bg-red-100 text-red-700'
- }`}>
- { pay.status }
- </span>
- </td>
- </tr>
- ))}
- { payments.length === 0 && <tr><td colSpan={ 6 } className="p-4 text-center text-slate-900">No payments found.</td></tr>}
- </tbody>
- </table>
- </div>
- </div>
- )}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.3 }}
+        >
+          { activeTab === 'feeAnalytics' && (
+            <FeeAnalytics 
+              school={school} 
+              invoices={invoices} 
+              payments={payments} 
+              feeStructures={feeStructures} 
+              classes={classes}
+              termsMap={termsMap}
+              students={students}
+              sessions={sessions}
+            />
+          )}
 
- {/* Add Fee Modal */}
- <AnimatePresence>
- { showAddFee && (
- <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
- <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-3xl p-6 w-full max-w-md shadow-xl">
- <div className="flex justify-between items-center mb-6">
- <h3 className="text-xl font-medium">{editingFee ? 'Edit Fee Structure' : 'Add Fee Structure'}</h3>
- <button onClick={() => {
-   setShowAddFee(false);
-   setEditingFee(null);
-   setNewFee({ name: '', amount: 0, classId: 'all', isMandatory: true, termId: '', sessionId: '', category: 'tuition' });
- }} className="text-slate-900 hover:text-slate-900"><X size={ 24 } /></button>
- </div>
- <form onSubmit={ handleSaveFee } className="space-y-4">
- <div>
- <label className="block text-xs font-medium text-slate-900 mb-1">Fee Name</label>
- <input required type="text"value={ newFee.name } onChange={ e => setNewFee({...newFee, name: e.target.value })} className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none"placeholder="e.g. Tuition Fee"/>
- </div>
- <div>
- <label className="block text-xs font-medium text-slate-900 mb-1">Amount (₦)</label>
- <input required type="number"min="0"value={ newFee.amount } onChange={ e => setNewFee({...newFee, amount: Number(e.target.value)})} className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none"/>
- </div>
- <div>
-  <label className="block text-xs font-medium text-slate-900 mb-1">Category</label>
-  <select required value={ newFee.category } onChange={ e => setNewFee({...newFee, category: e.target.value as any })} className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none">
-    <option value="tuition">Tuition Fee</option>
-    <option value="activities">Activities Fee</option>
-    <option value="miscellaneous">Miscellaneous Fee</option>
-  </select>
-  </div>
- <div>
- <label className="block text-xs font-medium text-slate-900 mb-1">Applicable Class</label>
- <select value={ newFee.classId } onChange={ e => setNewFee({...newFee, classId: e.target.value })} className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none">
- <option value="all">All Classes</option>
- { classes.map(c => <option key={ c.id } value={ c.id }>{ c.name }</option>)}
- </select>
- </div>
-  <div className="grid grid-cols-2 gap-4">
-    <div>
-    <label className="block text-xs font-medium text-slate-900 mb-1">Session</label>
-    <select required value={ newFee.sessionId } onChange={ e => setNewFee({...newFee, sessionId: e.target.value, termId: '' })} className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none">
-    <option value="">Select Session</option>
-    { sessions.map(s => <option key={ s.id } value={ s.id }>{ s.name }</option>)}
-    </select>
-    </div>
-    <div>
-    <label className="block text-xs font-medium text-slate-900 mb-1">Term</label>
-    <select required value={ newFee.termId } onChange={ e => setNewFee({...newFee, termId: e.target.value })} className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none">
-    <option value="">Select Term</option>
-    { newFee.sessionId && Object.values(termsMap[newFee.sessionId] || {}).map((t: any) => (
-      <option key={ t.id } value={ t.id }>{ t.name }</option>
-    ))}
-    </select>
-    </div>
-  </div>
-  <div className="flex items-center gap-2">
-  <input type="checkbox"id="isMandatory"checked={ newFee.isMandatory } onChange={ e => setNewFee({...newFee, isMandatory: e.target.checked })} className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"/>
-  <label htmlFor="isMandatory"className="text-sm text-slate-900">Mandatory Fee</label>
-  </div>
- <div className="flex gap-3">
-  <button 
-    type="button"
-    onClick={() => {
-      setShowAddFee(false);
-      setEditingFee(null);
-      setNewFee({ name: '', amount: 0, classId: 'all', isMandatory: true, termId: '', sessionId: '', category: 'tuition' });
-    }}
-    className="flex-1 px-4 py-3 rounded-xl border border-gray-200 text-slate-900 font-medium hover:bg-gray-50 transition-colors"
-  >
-    Cancel
-  </button>
-  <button type="submit"className="flex-[2] bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">
-    {editingFee ? 'Update Fee' : 'Save Fee'}
-  </button>
- </div>
- </form>
- </motion.div>
- </div>
- )}
- </AnimatePresence>
+          { activeTab  === 'feeStructures'&& (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Fee Structures</h3>
+                <button 
+                  onClick={() => setShowAddFee(true)} 
+                  className="bg-blue-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-blue-600/20"
+                >
+                  <Plus size={ 16 } strokeWidth={3} /> Add Fee
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                { feeStructures.map(fee => (
+                  <div key={ fee.id } className="bg-white p-6 rounded-3xl border border-slate-200/60 shadow-sm group relative overflow-hidden transition-all hover:border-blue-500/30 hover:shadow-xl hover:shadow-blue-500/5">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50/50 rounded-full -mr-12 -mt-12 group-hover:scale-110 transition-transform"></div>
+                    
+                    <div className="flex justify-between items-start mb-6 relative z-10">
+                      <div>
+                        <h4 className="font-black text-[13px] uppercase tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">{ fee.name }</h4>
+                        <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mt-1">
+                          {formatDisplayString(termsMap[fee.sessionId]?.[fee.termId]?.name || 'Unknown Term')}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <button 
+                          onClick={() => handleEditFee(fee)}
+                          className="p-2 bg-slate-50 hover:bg-blue-50 rounded-xl text-slate-400 hover:text-blue-600 transition-all border border-slate-100"
+                        >
+                          <Edit2 size={13} strokeWidth={2.5} />
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteFee(fee.id)}
+                          className="p-2 bg-slate-50 hover:bg-rose-50 rounded-xl text-slate-400 hover:text-rose-600 transition-all border border-slate-100"
+                        >
+                          <Trash2 size={13} strokeWidth={2.5} />
+                        </button>
+                      </div>
+                    </div>
 
- {/* Generate Invoice Modal */}
- <AnimatePresence>
- { showGenerateInvoice && (
- <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
- <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-3xl p-6 w-full max-w-md shadow-xl">
- <div className="flex justify-between items-center mb-6">
- <h3 className="text-xl font-medium">Generate Invoices</h3>
- <button onClick={() => setShowGenerateInvoice(false)} className="text-slate-900 hover:text-slate-900"><X size={ 24 } /></button>
- </div>
-  <div className="space-y-4">
-  <p className="text-sm text-slate-500 leading-relaxed">Generate invoices for students based on active fee structures for the selected session and term.</p>
-  
-  <div className="space-y-4">
-    <div>
-    <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-widest mb-1">Session</label>
-    <select 
-      value={genSessionId}
-      onChange={e => {
-        setGenSessionId(e.target.value);
-        setGenTermId('');
-      }}
-      className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-slate-50 font-medium"
-    >
-      <option value="">Select Session</option>
-      { sessions.map(s => <option key={ s.id } value={ s.id }>{ s.name } {s.isCurrent ? '(Current)' : ''}</option>)}
-    </select>
-    </div>
+                    <div className="flex items-end justify-between relative z-10">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2">
+                          <Users size={12} className="text-blue-500" />
+                          <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">
+                            { fee.classId  === 'all' ? 'All Classes' : classMap[fee.classId]?.name || fee.classId }
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <span className={cn(
+                            "text-[8px] px-2.5 py-1 rounded-lg font-black uppercase tracking-widest border",
+                            fee.isMandatory 
+                              ? "bg-rose-50 text-rose-600 border-rose-100 shadow-sm shadow-rose-100/50"
+                              : "bg-emerald-50 text-emerald-600 border-emerald-100 shadow-sm shadow-emerald-100/50"
+                          )}>
+                            { fee.isMandatory ? 'Mandatory' : 'Optional' }
+                          </span>
+                          <span className="text-[8px] bg-slate-50 text-slate-500 px-2.5 py-1 rounded-lg font-black uppercase tracking-widest border border-slate-200/60 shadow-sm">
+                            { formatDisplayString(fee.category) }
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Structure Amount</p>
+                        <span className="text-2xl font-black text-slate-900 tracking-tighter">₦{ fee.amount.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                { feeStructures.length === 0 && (
+                  <div className="col-span-full py-16 text-center bg-white rounded-3xl border border-slate-200 border-dashed">
+                    <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest">No fee structures defined yet.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
-    <div>
-    <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-widest mb-1">Term</label>
-    <select 
-      disabled={!genSessionId}
-      value={genTermId}
-      onChange={e => setGenTermId(e.target.value)}
-      className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-slate-50 font-medium disabled:opacity-50"
-    >
-      <option value="">Select Term</option>
-      { genSessionId && Object.values(termsMap[genSessionId] || {}).map((t: any) => (
-        <option key={ t.id } value={ t.id }>{ t.name } {t.isCurrent ? '(Current)' : ''}</option>
-      ))}
-    </select>
-    </div>
+          { activeTab  === 'invoices'&& (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Student Invoices</h3>
+                <button 
+                  onClick={() => setShowGenerateInvoice(true)} 
+                  className="bg-blue-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-blue-600/20"
+                >
+                  <FileText size={ 16 } strokeWidth={3} /> Generate Invoices
+                </button>
+              </div>
+              
+              <div className="bg-white rounded-3xl border border-slate-200/60 shadow-xl shadow-slate-200/30 overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="bg-slate-50 text-slate-500 uppercase tracking-widest text-[10px] font-black border-b border-slate-200/60">
+                        <th className="p-6">Student</th>
+                        <th className="p-6">Amount</th>
+                        <th className="p-6">Paid</th>
+                        <th className="p-6 text-center">Status</th>
+                        <th className="p-6">Due Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      { invoices.map(inv => {
+                        const paid = inv.status === 'paid' || inv.amountPaid >= inv.amount;
+                        const overdue = isOverdue(inv);
+                        const balance = inv.amount - inv.amountPaid;
 
-    <div>
-    <label className="block text-[10px] font-bold text-slate-900 uppercase tracking-widest mb-1">Class</label>
-    <select 
-      value={genClassId}
-      onChange={e => setGenClassId(e.target.value)}
-      className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none bg-slate-50 font-medium"
-    >
-    <option value="all">All Classes</option>
-    { classes.map(c => <option key={ c.id } value={ c.id }>{ c.name }</option>)}
-    </select>
-    </div>
-  </div>
+                        return (
+                          <tr key={ inv.id } className="hover:bg-slate-50/50 transition-colors group cursor-default">
+                            <td className="p-6">
+                              <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-500 border border-slate-200 group-hover:scale-110 transition-transform">
+                                  {studentMap[inv.studentId]?.firstName?.[0]}{studentMap[inv.studentId]?.lastName?.[0]}
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                  <span className="font-black text-[13px] uppercase tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">
+                                    { formatDisplayString(studentMap[inv.studentId]?.firstName || '') } { formatDisplayString(studentMap[inv.studentId]?.lastName || '') }
+                                  </span>
+                                  <span className="text-[9px] text-slate-400 font-black uppercase tracking-widest">
+                                    { formatDisplayString(sessionMap[inv.sessionId]?.name || '') } • { formatDisplayString(termsMap[inv.sessionId]?.[inv.termId]?.name || 'Unknown Term') }
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="p-6 font-black text-slate-900">₦{ inv.amount.toLocaleString()}</td>
+                            <td className="p-6 font-black text-emerald-600">₦{ inv.amountPaid.toLocaleString()}</td>
+                            <td className="p-6">
+                              <div className="flex flex-col items-center gap-1.5">
+                                <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                                  paid ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                                  inv.amountPaid > 0 ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                                  'bg-rose-50 text-rose-600 border-rose-100'
+                                }`}>
+                                  { paid ? <span className="flex items-center gap-1"><CheckCircle size={10} strokeWidth={3} /> FULLY PAID</span> : inv.amountPaid > 0 ? 'PARTIAL' : 'UNPAID' }
+                                </span>
+                                {overdue && !paid && (
+                                  <span className="text-[9px] font-black text-rose-500 flex items-center gap-1 animate-pulse">
+                                    <Clock size={10} strokeWidth={3} /> OVERDUE
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="p-6">
+                              <div className="flex flex-col gap-1">
+                                <span className="font-black text-slate-700 text-[11px]">{ new Date(inv.dueDate).toLocaleDateString()}</span>
+                                {balance > 0 && <span className="text-[9px] text-amber-600 font-black uppercase tracking-widest">BAL: ₦{balance.toLocaleString()}</span>}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                      { invoices.length === 0 && (
+                        <tr>
+                          <td colSpan={ 5 } className="p-16 text-center text-slate-400 font-black uppercase tracking-widest text-[10px]">
+                            No invoices found.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
 
-  <button 
-    onClick={() => handleGenerateInvoices(genClassId, genTermId, genSessionId)} 
-    disabled={!genSessionId || !genTermId}
-    className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 disabled:opacity-50 disabled:shadow-none mt-4"
-  >
-    Generate Invoices
-  </button>
-  </div>
- </motion.div>
- </div>
- )}
- </AnimatePresence>
+          { activeTab  === 'payments'&& (
+            <div className="space-y-6">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Payment History</h3>
+              <div className="bg-white rounded-3xl border border-slate-200/60 shadow-xl shadow-slate-200/30 overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="bg-slate-50 text-slate-500 uppercase tracking-widest text-[10px] font-black border-b border-slate-200/60">
+                        <th className="p-6">Date</th>
+                        <th className="p-6">Student</th>
+                        <th className="p-6">Amount</th>
+                        <th className="p-6">Method</th>
+                        <th className="p-6 text-center">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      { payments.map(pay => (
+                        <tr key={ pay.id } className="hover:bg-slate-50/50 transition-colors group">
+                          <td className="p-6 text-slate-500 font-medium text-xs">{ new Date(pay.date).toLocaleString()}</td>
+                          <td className="p-6">
+                            <div className="flex flex-col gap-1">
+                              <span className="font-black text-[13px] uppercase tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">
+                                { formatDisplayString(studentMap[pay.studentId]?.firstName || '') } { formatDisplayString(studentMap[pay.studentId]?.lastName || '') }
+                              </span>
+                              <span className="text-[9px] text-slate-400 font-black uppercase tracking-widest font-mono">REF: { pay.reference }</span>
+                            </div>
+                          </td>
+                          <td className="p-6 font-black text-slate-900">₦{ pay.amount.toLocaleString()}</td>
+                          <td className="p-6">
+                            <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg uppercase tracking-widest border border-blue-100">
+                              { formatDisplayString(pay.method) }
+                            </span>
+                          </td>
+                          <td className="p-6">
+                            <div className="flex justify-center">
+                              <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                                pay.status  === 'success' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                                pay.status  === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                                'bg-rose-50 text-rose-600 border-rose-100'
+                              }`}>
+                                { formatDisplayString(pay.status) }
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                      { payments.length === 0 && (
+                        <tr>
+                          <td colSpan={ 6 } className="p-16 text-center text-slate-400 font-black uppercase tracking-widest text-[10px]">
+                            No payments found.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
+
+  {/* Add Fee Modal */}
+  <AnimatePresence>
+    { showAddFee && (
+      <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.95, opacity: 0, y: 20 }}
+          className="bg-white rounded-3xl w-full max-w-lg shadow-2xl border border-slate-200/60 relative flex flex-col max-h-[90vh] overflow-hidden"
+        >
+          <div className="flex justify-between items-center p-8 border-b border-slate-100 relative z-10 shrink-0">
+            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900">{editingFee ? 'Edit Fee Structure' : 'Add Fee Structure'}</h3>
+            <button 
+              onClick={() => {
+                setShowAddFee(false);
+                setEditingFee(null);
+                setNewFee({ name: '', amount: 0, classId: 'all', isMandatory: true, termId: '', sessionId: '', category: 'tuition' });
+              }} 
+              className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-colors"
+            >
+              <X size={ 20 } />
+            </button>
+          </div>
+
+          <form onSubmit={ handleSaveFee } className="flex flex-col flex-1 overflow-hidden">
+            <div className="flex-1 overflow-y-auto p-8 space-y-6">
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Fee Name</label>
+                <input 
+                  required 
+                  type="text"
+                  value={ newFee.name } 
+                  onChange={ e => setNewFee({...newFee, name: e.target.value })} 
+                  className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-900 text-sm"
+                  placeholder="e.g. Tuition Fee"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Amount (₦)</label>
+                  <input 
+                    required 
+                    type="number"
+                    min="0"
+                    value={ newFee.amount } 
+                    onChange={ e => setNewFee({...newFee, amount: Number(e.target.value)})} 
+                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-900 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Category</label>
+                  <div className="relative">
+                    <select 
+                      required 
+                      value={ newFee.category } 
+                      onChange={ e => setNewFee({...newFee, category: e.target.value as any })} 
+                      className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
+                    >
+                      <option value="tuition">Tuition Fee</option>
+                      <option value="activities">Activities Fee</option>
+                      <option value="miscellaneous">Miscellaneous Fee</option>
+                    </select>
+                    <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Applicable Class</label>
+                <div className="relative">
+                  <select 
+                    value={ newFee.classId } 
+                    onChange={ e => setNewFee({...newFee, classId: e.target.value })} 
+                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
+                  >
+                    <option value="all">All Classes</option>
+                    { classes.map(c => <option key={ c.id } value={ c.id }>{ formatDisplayString(c.name) }</option>)}
+                  </select>
+                  <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Session</label>
+                  <div className="relative">
+                    <select 
+                      required 
+                      value={ newFee.sessionId } 
+                      onChange={ e => setNewFee({...newFee, sessionId: e.target.value, termId: '' })} 
+                      className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
+                    >
+                      <option value="">Select Session</option>
+                      { sessions.map(s => <option key={ s.id } value={ s.id }>{ formatDisplayString(s.name) }</option>)}
+                    </select>
+                    <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Term</label>
+                  <div className="relative">
+                    <select 
+                      required 
+                      value={ newFee.termId } 
+                      onChange={ e => setNewFee({...newFee, termId: e.target.value })} 
+                      className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
+                    >
+                      <option value="">Select Term</option>
+                      { newFee.sessionId && Object.values(termsMap[newFee.sessionId] || {}).map((t: any) => (
+                        <option key={ t.id } value={ t.id }>{ formatDisplayString(t.name) }</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100 transition-all hover:bg-white hover:border-blue-100 group">
+                <input 
+                  type="checkbox"
+                  id="isMandatory"
+                  checked={ newFee.isMandatory } 
+                  onChange={ e => setNewFee({...newFee, isMandatory: e.target.checked })} 
+                  className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 focus:ring-offset-0 transition-all cursor-pointer"
+                />
+                <label htmlFor="isMandatory" className="text-[10px] font-black uppercase tracking-widest text-slate-600 cursor-pointer group-hover:text-slate-900">Mandatory Fee</label>
+              </div>
+            </div>
+
+            <div className="p-8 border-t border-slate-100 bg-slate-50 shrink-0 flex gap-4">
+              <button 
+                type="button"
+                onClick={() => {
+                  setShowAddFee(false);
+                  setEditingFee(null);
+                  setNewFee({ name: '', amount: 0, classId: 'all', isMandatory: true, termId: '', sessionId: '', category: 'tuition' });
+                }}
+                className="flex-1 px-6 py-3.5 rounded-xl border border-slate-200 text-slate-600 font-black uppercase tracking-widest text-[10px] hover:bg-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                type="submit"
+                className="flex-[2] bg-blue-600 text-white py-3.5 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 active:scale-95"
+              >
+                {editingFee ? 'Update Fee Structure' : 'Save Fee Structure'}
+              </button>
+            </div>
+          </form>
+        </motion.div>
+      </div>
+    )}
+  </AnimatePresence>
+
+  {/* Generate Invoice Modal */}
+  <AnimatePresence>
+    { showGenerateInvoice && (
+      <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl border border-slate-200/60">
+          <div className="flex justify-between items-center mb-8">
+            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900">Generate Invoices</h3>
+            <button onClick={() => setShowGenerateInvoice(false)} className="text-slate-400 hover:text-slate-900 p-2 hover:bg-slate-50 rounded-full transition-colors"><X size={ 20 } /></button>
+          </div>
+          <div className="space-y-6">
+            <p className="text-xs text-slate-500 leading-relaxed font-medium">Generate invoices for students based on active fee structures for the selected session and term.</p>
+            
+            <div className="space-y-5">
+              <div>
+                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Session</label>
+                <div className="relative">
+                  <select 
+                    value={genSessionId}
+                    onChange={e => {
+                      setGenSessionId(e.target.value);
+                      setGenTermId('');
+                    }}
+                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 focus:border-blue-500 outline-none bg-slate-50 font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
+                  >
+                    <option value="">Select Session</option>
+                    { sessions.map(s => <option key={ s.id } value={ s.id }>{ formatDisplayString(s.name) } {s.isCurrent ? '(Current)' : ''}</option>)}
+                  </select>
+                  <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Term</label>
+                <div className="relative">
+                  <select 
+                    disabled={!genSessionId}
+                    value={genTermId}
+                    onChange={e => setGenTermId(e.target.value)}
+                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 focus:border-blue-500 outline-none bg-slate-50 font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer disabled:opacity-50"
+                  >
+                    <option value="">Select Term</option>
+                    { genSessionId && Object.values(termsMap[genSessionId] || {}).map((t: any) => (
+                      <option key={ t.id } value={ t.id }>{ formatDisplayString(t.name) } {t.isCurrent ? '(Current)' : ''}</option>
+                    ))}
+                  </select>
+                  <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Class</label>
+                <div className="relative">
+                  <select 
+                    value={genClassId}
+                    onChange={e => setGenClassId(e.target.value)}
+                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 focus:border-blue-500 outline-none bg-slate-50 font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
+                  >
+                    <option value="all">All Classes</option>
+                    { classes.map(c => <option key={ c.id } value={ c.id }>{ formatDisplayString(c.name) }</option>)}
+                  </select>
+                  <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
+            </div>
+
+            <button 
+              onClick={() => handleGenerateInvoices(genClassId, genTermId, genSessionId)} 
+              disabled={!genSessionId || !genTermId}
+              className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 disabled:opacity-50 disabled:shadow-none mt-4 active:scale-95"
+            >
+              Generate Invoices
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    )}
+  </AnimatePresence>
  </div>
  );
 };

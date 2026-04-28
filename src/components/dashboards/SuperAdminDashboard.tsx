@@ -5,7 +5,7 @@ import { DEFAULT_PLANS } from'../../constants';
 import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, OperationType, handleFirestoreError, query, where, onSnapshot, secondaryAuth, createUserWithEmailAndPassword, setDoc, logAuditAction, limit, orderBy } from'../../lib/compatibility';
 import { LogOut, Plus, Shield, CreditCard, Users, School as SchoolIcon, Trash2, CheckCircle, Settings, Search, MoreVertical, ExternalLink, ArrowRight, LayoutDashboard, X, Activity, History, Database, Globe, DollarSign, Menu, Eye, Upload } from'lucide-react';
 import { SchoolManagement } from'./SchoolManagement';
-import { sortByName, cn } from'../../lib/utils';
+import { sortByName, cn, formatDisplayString } from'../../lib/utils';
 import { StorageService } from '../../services/storageService';
 
 const LineChart = ({ data }: { data: number[] }) => {
@@ -118,7 +118,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 
       schoolsData.forEach(school => {
         if (school.createdAt) {
-          const date = school.createdAt.toDate ? school.createdAt.toDate() : new Date(school.createdAt);
+          const date = (school.createdAt as any)?.toDate ? (school.createdAt as any).toDate() : new Date(school.createdAt || '');
           const monthName = months[date.getMonth()];
           const dataPoint = last6Months.find(m => m.name === monthName);
           if (dataPoint) dataPoint.value++;
@@ -452,12 +452,12 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 
  <div className="flex items-center gap-6">
  <div className="hidden md:flex flex-col items-end">
- <span className="text-xs font-bold text-slate-900">{ user.firstName } { user.lastName }</span>
+ <span className="text-xs font-bold text-slate-900">{ formatDisplayString(user.firstName) } { formatDisplayString(user.lastName) }</span>
  <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Full Admin Access</span>
  </div>
  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 p-0.5">
  <div className="w-full h-full rounded-[10px] bg-white flex items-center justify-center font-bold text-slate-900 text-xs">
- { user.firstName?.charAt(0)}
+ { formatDisplayString(user.firstName)?.charAt(0)}
  </div>
  </div>
  </div>
@@ -559,9 +559,9 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <Activity size={ 18 } />
  </div>
  <div className="min-w-0">
- <p className="text-sm font-bold text-slate-900 truncate">{ log.action }</p>
+ <p className="text-sm font-bold text-slate-900 truncate">{ formatDisplayString(log.action) }</p>
  <p className="text-xs text-slate-600 font-medium truncate">
- { log.details } • { log.createdAt ? new Date(log.createdAt).toLocaleTimeString() :'Recent'}
+ { formatDisplayString(log.details) } • { log.createdAt ? new Date(log.createdAt).toLocaleTimeString() :'Recent'}
  </p>
  </div>
  </div>
@@ -615,7 +615,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <h3 className="text-xl font-bold text-slate-900">Manage Schools</h3>
  { filterStatus !=='all'&& (
  <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
- { filterStatus }
+ { formatDisplayString(filterStatus) }
  <button onClick={() => setFilterStatus('all')} className="hover:text-blue-800"><X size={ 14 } /></button>
  </span>
  )}
@@ -635,12 +635,12 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  {/* Table content from existing implementation, updated with dark theme classes */}
  <div className="overflow-x-auto">
  <table className="w-full text-left">
- <thead className="bg-slate-50 text-[10px] uppercase text-slate-600 font-bold tracking-[0.2em] border-b border-slate-200">
+ <thead className="bg-slate-50 text-[10px] uppercase text-slate-500 font-black tracking-widest border-b border-slate-100">
  <tr>
- <th className="pl-8 pr-4 py-5 font-bold">School Name</th>
- <th className="px-4 py-5 font-bold">Details</th>
- <th className="px-4 py-5 font-bold">Status</th>
- <th className="px-4 py-5 text-right font-bold pr-8">Actions</th>
+ <th className="pl-8 pr-4 py-5">School Entity</th>
+ <th className="px-4 py-5">Platform Access</th>
+ <th className="px-4 py-5">Subscription Status</th>
+ <th className="px-4 py-5 text-right pr-8">Operations</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-slate-100">
@@ -656,13 +656,13 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="flex items-center gap-4">
  <div className="w-12 h-12 rounded-2xl bg-blue-600/10 flex items-center justify-center text-blue-400 font-bold text-xl shadow-inner border border-slate-100 group-hover:scale-110 transition-transform overflow-hidden">
  { school.logoUrl ? (
- <img src={ school.logoUrl } alt={ school.name } className="w-full h-full object-cover"/>
+ <img src={ school.logoUrl } alt={ formatDisplayString(school.name) } className="w-full h-full object-cover"/>
  ) : (
- school.name?.charAt(0) ||'?'
+ school.name ? formatDisplayString(school.name).charAt(0) : '?'
  )}
  </div>
  <div className="min-w-0">
- <p className="font-bold text-sm text-slate-900 group-hover:text-blue-400 transition-colors truncate">{ school.name }</p>
+ <p className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors truncate">{ formatDisplayString(school.name) }</p>
  <p className="text-xs text-slate-600 font-medium truncate">{ school.email }</p>
  </div>
  </div>
@@ -673,18 +673,18 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <Globe size={ 12 } className="text-blue-600"/>
  { school.slug }.seedify.name.ng
  </span>
- <span className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">{ school.planId } Tier</span>
+ <span className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">{ formatDisplayString(school.planId) } Tier</span>
  </div>
  </td>
  <td className="px-4 py-6">
  <span className={ cn(
-"px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest inline-block",
- school.status  === 'active'
- ?"bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
- :"bg-red-500/10 text-red-400 border border-red-500/20"
- )}>
- { school.status }
- </span>
+ "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest inline-block border",
+  school.status  === 'active'
+  ?"bg-emerald-50 text-emerald-600 border-emerald-100 shadow-sm shadow-emerald-100/50"
+  :"bg-rose-50 text-rose-600 border-rose-100 shadow-sm shadow-rose-100/50"
+  )}>
+  { formatDisplayString(school.status) }
+  </span>
  </td>
  <td className="px-4 py-6 pr-8">
  <div className="flex gap-2 justify-end items-center">
@@ -706,13 +706,13 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <MoreVertical size={ 18 } />
  </button>
  <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-2xl p-2 hidden group-hover/actions:block z-50">
- <button onClick={() => toggleSchoolStatus(school)} className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-slate-50 text-xs font-medium text-slate-300 flex items-center gap-2">
+ <button onClick={() => toggleSchoolStatus(school)} className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-slate-50 text-xs font-medium text-slate-600 flex items-center gap-2">
  <Shield size={ 14 } /> { school.status  === 'active'?'Pause Account':'Activate'} School
  </button>
- <button onClick={() => handleEditSchool(school)} className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-slate-50 text-xs font-medium text-slate-300 flex items-center gap-2">
+ <button onClick={() => handleEditSchool(school)} className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-slate-50 text-xs font-medium text-slate-600 flex items-center gap-2">
  <Settings size={ 14 } /> Edit Details
  </button>
- <button onClick={() => setShowDeleteConfirm(school.id)} className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-red-500/10 text-xs font-medium text-red-400 flex items-center gap-2">
+ <button onClick={() => setShowDeleteConfirm(school.id)} className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-rose-50 text-xs font-medium text-rose-600 flex items-center gap-2">
  <Trash2 size={ 14 } /> Delete
  </button>
  </div>
@@ -742,13 +742,13 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
- <div className="lg:col-span-2 bg-slate-50 border border-slate-200 rounded-3xl p-8 relative overflow-hidden">
- <div className="flex justify-between items-center mb-8">
- <h3 className="text-xl font-bold text-slate-900 tracking-tight uppercase tracking-widest text-xs text-slate-600">Revenue Growth (MTD)</h3>
- <div className="text-right">
- <p className="text-2xl font-black text-slate-900">₦{((schools.length * 25000) / 1000).toFixed(0)}k</p>
- <p className="text-[10px] font-bold text-emerald-500 uppercase">Est. Recurring</p>
- </div>
+ <div className="lg:col-span-2 bg-white border border-slate-200/60 rounded-[2.5rem] p-8 relative overflow-hidden shadow-sm">
+  <div className="flex justify-between items-center mb-8">
+  <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Platform Revenue Growth (MTD)</h3>
+  <div className="text-right">
+  <p className="text-3xl font-black text-slate-900 tracking-tighter">₦{((schools.length * 25000) / 1000).toFixed(0)}k</p>
+  <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mt-1">Est. Monthly Recurring</p>
+  </div>
  </div>
  <div className="h-64 flex items-end gap-3">
  {[30, 45, 35, 60, 80, 70, 95].map((h, i) => (
@@ -865,8 +865,8 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 "bg-emerald-500 shadow-emerald-500/50"
  )} />
  <div>
- <p className="text-sm font-bold text-slate-900 group-hover:text-blue-400 transition-colors">{ log.action }</p>
- <p className="text-xs text-slate-600 font-medium mt-0.5">{ log.details }</p>
+ <p className="text-sm font-bold text-slate-900 group-hover:text-blue-400 transition-colors">{ formatDisplayString(log.action) }</p>
+ <p className="text-xs text-slate-600 font-medium mt-0.5">{ formatDisplayString(log.details) }</p>
  </div>
  </div>
  <div className="text-right">
@@ -891,7 +891,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  {/* Modals */}
  <AnimatePresence>
  { showAddSchool && (
- <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-[100] overflow-y-auto">
+ <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xl flex items-center justify-center p-4 z-[100] overflow-y-auto">
  <motion.div
  initial={{ scale: 0.95, opacity: 0, y: 20 }}
  animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -1174,7 +1174,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  )}
 
  { showDeleteConfirm && (
- <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-[100]">
+ <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xl flex items-center justify-center p-4 z-[100]">
  <motion.div
  initial={{ scale: 0.95, opacity: 0 }}
  animate={{ scale: 1, opacity: 1 }}
@@ -1219,12 +1219,12 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  initial={{ y: 50, opacity: 0 }}
  animate={{ y: 0, opacity: 1 }}
  exit={{ y: 50, opacity: 0 }}
- className="fixed bottom-10 right-10 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-2xl z-[110] flex items-center gap-3 border border-gray-800"
+ className="fixed bottom-10 right-10 bg-white text-slate-900 px-8 py-5 rounded-[2rem] shadow-2xl z-[110] flex items-center gap-4 border border-white"
  >
- <div className="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
- <CheckCircle size={ 14 } className="text-slate-900"/>
+ <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center border border-emerald-100">
+ <CheckCircle size={ 20 } strokeWidth={3} />
  </div>
- <span className="font-medium text-sm tracking-wide">{ success }</span>
+ <span className="font-black text-[10px] uppercase tracking-widest">{ success }</span>
  </motion.div>
  )}
  </div>
@@ -1347,12 +1347,12 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md p-8 border-b border-slate-100 flex items-center justify-between">
  <div className="flex items-center gap-6">
  <div className="w-16 h-16 rounded-2xl bg-blue-600/5 border border-blue-500/10 flex items-center justify-center text-blue-600 font-bold text-2xl">
- { school.logoUrl ? <img src={ school.logoUrl } className="w-full h-full object-cover"/> : school.name.charAt(0)}
+ { school.logoUrl ? <img src={ school.logoUrl } className="w-full h-full object-cover"/> : formatDisplayString(school.name).charAt(0)}
  </div>
  <div>
- <h2 className="text-2xl font-black text-slate-900 tracking-tight">{ school.name } <span className="text-blue-500 font-medium text-lg ml-2">Quick Statistics</span></h2>
+ <h2 className="text-2xl font-black text-slate-900 tracking-tight">{ formatDisplayString(school.name) } <span className="text-blue-500 font-medium text-lg ml-2">Quick Statistics</span></h2>
  <p className="text-slate-500 font-bold text-xs uppercase tracking-widest flex items-center gap-2 mt-1">
- <Globe size={ 12 } className="text-blue-500"/> { school.slug }.seedify.name.ng • { school.planId.toUpperCase()} TIER
+ <Globe size={ 12 } className="text-blue-500"/> { school.slug }.seedify.name.ng • { formatDisplayString(school.planId).toUpperCase() } TIER
  </p>
  </div>
  </div>
@@ -1583,7 +1583,7 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  />
  );
  })}
- <circle cx="50"cy="50"r="30"fill="#050505"/>
+ <circle cx="50"cy="50"r="30"fill="#ffffff"/>
  </svg>
  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
  <p className="text-[10px] text-slate-600 font-black uppercase tracking-tighter">Total</p>
@@ -1596,7 +1596,7 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  <div key={ cat.name } className="flex items-center justify-between">
  <div className="flex items-center gap-2">
  <div className="w-2 h-2 rounded-full"style={{ backgroundColor: ['#3b82f6','#8b5cf6','#ec4899','#f59e0b','#10b981'][i % 5] }} />
- <span className="text-xs font-bold text-slate-300">{ cat.name }</span>
+ <span className="text-xs font-bold text-slate-300">{ formatDisplayString(cat.name) }</span>
  </div>
  <span className="text-xs font-black text-slate-900">₦{ cat.amount.toLocaleString()}</span>
  </div>

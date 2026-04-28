@@ -3,6 +3,7 @@ import { db, collection, query, where, addDoc, doc, deleteDoc, onSnapshot, updat
 import { UserProfile, Class, Subject, Assignment, AssignmentSubmission } from '../../types';
 import { Plus, Trash2, Calendar, FileText, CheckCircle2, Clock, ChevronRight, X, User, Award, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { formatDisplayString } from '../../lib/utils';
 
 interface TeacherAssignmentsProps {
   user: UserProfile;
@@ -149,8 +150,8 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
     }
   };
 
-  const getClassName = (classId: string) => classes.find(c => c.id === classId)?.name || 'Unknown Class';
-  const getSubjectName = (subjectId: string) => subjects.find(s => s.id === subjectId)?.name || 'Unknown Subject';
+  const getClassName = (classId: string) => formatDisplayString(classes.find(c => c.id === classId)?.name || 'Unknown Class');
+  const getSubjectName = (subjectId: string) => formatDisplayString(subjects.find(s => s.id === subjectId)?.name || 'Unknown Subject');
 
   return (
     <div className="space-y-6">
@@ -189,9 +190,9 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
               </button>
             </div>
             <div className="relative z-10">
-              <h4 className="font-black uppercase tracking-widest text-lg text-slate-900 leading-tight">{assignment.title}</h4>
+              <h4 className="font-black uppercase tracking-widest text-lg text-slate-900 leading-tight">{formatDisplayString(assignment.title)}</h4>
               <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">
-                {getSubjectName(assignment.subjectId)} <span className="mx-1 text-slate-200">•</span> {getClassName(assignment.classId)}
+                {formatDisplayString(getSubjectName(assignment.subjectId))} <span className="mx-1 text-slate-200">•</span> {formatDisplayString(getClassName(assignment.classId))}
               </p>
             </div>
             <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-orange-600 bg-orange-50 px-4 py-2 rounded-full border border-orange-100 w-fit relative z-10 shadow-sm">
@@ -300,7 +301,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                       <div key={q.id} className="p-6 rounded-3xl bg-slate-50 border border-slate-100 flex justify-between items-start group hover:bg-white hover:shadow-md transition-all">
                         <div>
                           <p className="font-black uppercase tracking-widest text-xs text-slate-900">Q{idx + 1}: {q.text}</p>
-                          <p className="text-[8px] text-blue-600 font-black uppercase tracking-widest mt-1.5 px-2 py-0.5 bg-blue-50 rounded w-fit border border-blue-100">{q.type.replace('_', ' ')}</p>
+                          <p className="text-[8px] text-blue-600 font-black uppercase tracking-widest mt-1.5 px-2 py-0.5 bg-blue-50 rounded w-fit border border-blue-100">{formatDisplayString(q.type)}</p>
                           {q.options && (
                             <div className="mt-4 flex flex-wrap gap-2">
                               {q.options.map((opt, i) => (

@@ -3,6 +3,7 @@ import { db, collection, query, where, addDoc, doc, updateDoc, onSnapshot, Opera
 import { UserProfile, Subject, Assignment, AssignmentSubmission } from '../../types';
 import { FileText, Calendar, Clock, CheckCircle2, ChevronRight, X, Send, Award, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { formatDisplayString } from '../../lib/utils';
 
 interface StudentAssignmentsProps {
   user: UserProfile;
@@ -48,7 +49,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
       const submissionData = {
         assignmentId: selectedAssignment.id,
         studentId: user.uid,
-        studentName: `${user.firstName} ${user.lastName}`,
+        studentName: `${formatDisplayString(user.firstName)} ${formatDisplayString(user.lastName)}`,
         answers: Object.entries(answers).map(([questionId, answer]) => ({ questionId, answer })),
         status: 'submitted',
         submittedAt: new Date().toISOString()
@@ -91,7 +92,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
   };
 
   const getSubmission = (assignmentId: string) => submissions.find(s => s.assignmentId === assignmentId);
-  const getSubjectName = (subjectId: string) => subjects.find(s => s.id === subjectId)?.name || 'Unknown Subject';
+  const getSubjectName = (subjectId: string) => formatDisplayString(subjects.find(s => s.id === subjectId)?.name || 'Unknown Subject');
 
   const getAssignmentStatus = (assignment: Assignment) => {
     const submission = getSubmission(assignment.id);
@@ -164,7 +165,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
 
               <div className="flex-1 relative z-10 mb-8">
                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-2">{getSubjectName(assignment.subjectId)}</span>
-                <h4 className="font-black uppercase tracking-tighter text-xl text-slate-900 leading-tight group-hover:text-blue-600 transition-colors">{assignment.title}</h4>
+                <h4 className="font-black uppercase tracking-tighter text-xl text-slate-900 leading-tight group-hover:text-blue-600 transition-colors">{formatDisplayString(assignment.title)}</h4>
                 <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-4 line-clamp-2">{assignment.description}</p>
               </div>
 
@@ -213,7 +214,7 @@ export const StudentAssignments = ({ user, subjects }: StudentAssignmentsProps) 
             >
               <div className="flex justify-between items-center mb-6">
                 <div>
-                  <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900">{isEditing ? 'Edit Submission' : selectedAssignment.title}</h3>
+                  <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900">{isEditing ? 'Edit Submission' : formatDisplayString(selectedAssignment.title)}</h3>
                   <p className="text-[10px] text-slate-900/40 font-black uppercase tracking-widest mt-1">{getSubjectName(selectedAssignment.subjectId)}</p>
                 </div>
                 <button id="btn_assignment_close_modal" onClick={() => setSelectedAssignment(null)} className="p-3 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all"><X size={20} className="text-slate-600" /></button>

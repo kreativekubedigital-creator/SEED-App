@@ -3,7 +3,7 @@ import { db, collection, getDocs, query, where, addDoc, updateDoc, setDoc, doc, 
 import { UserProfile, Class, Subject, Result, Session, Term, GradeScale } from '../../types';
 import { Save, Search, ChevronRight, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { sortByName, sortByFullName } from '../../lib/utils';
+import { sortByName, sortByFullName, formatDisplayString } from '../../lib/utils';
 
 interface ResultManagementProps {
   user: UserProfile;
@@ -288,7 +288,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
               className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
             >
               <option value="">Select Session</option>
-              {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+              {sessions.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
@@ -299,7 +299,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
               className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
             >
               <option value="">Select Term</option>
-              {terms.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+              {terms.map(t => <option key={t.id} value={t.id}>{formatDisplayString(t.name)}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
@@ -312,7 +312,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
               <option value="">Select Class</option>
               {classes
                 .filter(c => user.role !== 'teacher' || teacherSubjects.some(s => s.classId === c.id) || c.id === user.classId)
-                .map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                .map(c => <option key={c.id} value={c.id}>{formatDisplayString(c.name)}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
@@ -323,7 +323,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
               className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
             >
               <option value="">Select Subject</option>
-              {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+              {subjects.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
             </select>
           </div>
         </div>
@@ -382,7 +382,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                         return (
                           <tr key={student.uid} className={`transition-colors ${activeRow === student.uid ? 'bg-blue-50/30' : 'hover:bg-slate-50 dark:bg-slate-800/50'}`} onFocus={() => setActiveRow(student.uid)} onBlur={() => setActiveRow(null)}>
                             <td className="px-6 py-4">
-                              <div className="font-medium text-slate-900 dark:text-slate-100">{student.firstName} {student.lastName}</div>
+                              <div className="font-medium text-slate-900 dark:text-slate-100">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</div>
                               <div className="text-[10px] text-slate-900 dark:text-slate-100 font-medium uppercase tracking-wider">{student.registrationNumber || 'No Reg No'}</div>
                             </td>
                             {caConfig.cas.map((ca, idx) => {
@@ -425,7 +425,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                               </span>
                             </td>
                             <td className="px-6 py-4">
-                              <span className="text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider">{score.remark || '-'}</span>
+                              <span className="text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider">{formatDisplayString(score.remark) || '-'}</span>
                             </td>
                           </tr>
                         );
@@ -445,11 +445,11 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                             <img src={student.photoUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover shadow-sm border border-gray-200 shrink-0" referrerPolicy="no-referrer" />
                           ) : (
                             <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center font-medium text-blue-600 shrink-0">
-                              {student.firstName?.charAt(0) || '?'}
+                              {formatDisplayString(student.firstName)?.charAt(0) || '?'}
                             </div>
                           )}
                           <div>
-                            <p className="font-medium text-sm text-slate-900 dark:text-slate-100">{student.firstName} {student.lastName}</p>
+                            <p className="font-medium text-sm text-slate-900 dark:text-slate-100">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</p>
                             <p className="text-[10px] text-slate-900 dark:text-slate-100 font-medium uppercase tracking-wider">{student.registrationNumber || 'No Reg No'}</p>
                           </div>
                         </div>

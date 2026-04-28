@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db, collection, getDocs, query, where, onSnapshot, OperationType, handleFirestoreError, doc, updateDoc, addDoc } from '../../lib/compatibility';
 import { Invoice, Payment, UserProfile, Term } from '../../types';
 import { CreditCard, CheckCircle, Clock, Construction } from 'lucide-react';
+import { formatDisplayString } from '../../lib/utils';
 // import { usePaystackPayment } from 'react-paystack';
 
 export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentId: string }) => {
@@ -16,21 +17,25 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
   useEffect(() => {
     if (!user.schoolId || !studentId) return;
 
-    // Fetch sessions to get terms and resumption dates
+    // Fetch sessions
     const unsubSessions = onSnapshot(collection(db, `schools/${user.schoolId}/sessions`), (snap) => {
       const sessData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       setSessions(sessData);
+    });
+
+    // Fetch all terms for the school to avoid nested listeners
+    // We'll organize them by sessionId in the local state
+    const unsubTerms = onSnapshot(collection(db, `schools/${user.schoolId}/terms`), (snap) => {
+      const allTerms = snap.docs.map(d => ({ id: d.id, ...d.data() } as Term));
+      const newTermsMap: Record<string, Record<string, Term>> = {};
       
-      // For each session, fetch its terms
-      sessData.forEach(sess => {
-        onSnapshot(collection(db, `schools/${user.schoolId}/sessions/${sess.id}/terms`), (termSnap) => {
-          const terms = termSnap.docs.map(d => ({ id: d.id, ...d.data() } as Term));
-          setTermsMap(prev => ({
-            ...prev,
-            [sess.id]: terms.reduce((acc, t) => ({ ...acc, [t.id]: t }), {})
-          }));
-        });
+      allTerms.forEach(t => {
+        if (!t.sessionId) return;
+        if (!newTermsMap[t.sessionId]) newTermsMap[t.sessionId] = {};
+        newTermsMap[t.sessionId][t.id] = t;
       });
+      
+      setTermsMap(newTermsMap);
     });
 
     const qInvoices = query(collection(db, `schools/${user.schoolId}/invoices`), where('studentId', '==', studentId));
@@ -46,6 +51,7 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
 
     return () => { 
       unsubSessions();
+      unsubTerms();
       unsubInvoices(); 
       unsubPayments(); 
     };
@@ -130,10 +136,10 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
 
   const OfflinePaymentInfo = ({ invoice }: { invoice: Invoice }) => {
     return (
-      <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-800 text-center">
+      <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
         <Construction size={20} className="mx-auto mb-1 text-orange-400" />
-        <p className="text-xs font-medium text-slate-900 dark:text-slate-100">Online Payment Pending</p>
-        <p className="text-[10px] text-slate-900 dark:text-slate-100 mt-1">
+        <p className="text-xs font-medium text-slate-900">Online Payment Pending</p>
+        <p className="text-[10px] text-slate-500 mt-1">
           Please contact the school bursary to make manual payments for ₦{(invoice.amount - invoice.amountPaid).toLocaleString()}.
         </p>
       </div>
@@ -169,13 +175,13 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
             <h4 className="text-4xl font-black tracking-tighter">₦{totalPaid.toLocaleString()}</h4>
           </div>
         </div>
-        <div className="bg-slate-900 p-8 rounded-[2.5rem] relative overflow-hidden shadow-xl shadow-slate-900/10 hidden lg:block">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent pointer-events-none"></div>
+        <div className="bg-white p-8 rounded-[2.5rem] relative overflow-hidden shadow-sm border border-slate-100 hidden lg:block group">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent pointer-events-none transition-opacity group-hover:opacity-100 opacity-0"></div>
           <div className="relative z-10">
-            <p className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-4">Account Status</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Account Status</p>
             <div className="flex items-center gap-3">
-              <div className={`w-3 h-3 rounded-full ${totalOutstanding > 0 ? 'bg-yellow-500 shadow-[0_0_12px_rgba(234,179,8,0.4)]' : 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]'}`}></div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-white">
+              <div className={`w-3.5 h-3.5 rounded-full border-2 border-white ring-2 ${totalOutstanding > 0 ? 'bg-amber-500 ring-amber-100' : 'bg-emerald-500 ring-emerald-100'} shadow-lg`}></div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">
                 {totalOutstanding > 0 ? 'Action Required' : 'All Clear'}
               </span>
             </div>
@@ -199,32 +205,32 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
               <div 
                 id={`btn_invoice_item_${inv.id}`}
                 key={inv.id} 
-                className={`bg-white p-8 rounded-[2.5rem] border transition-all hover:shadow-xl hover:shadow-slate-200/50 group ${paid ? 'border-emerald-100' : overdue ? 'border-red-100' : 'border-slate-100'}`}
+                className={`bg-white p-8 rounded-[2.5rem] border transition-all hover:shadow-xl hover:shadow-blue-500/5 group ${paid ? 'border-emerald-100 shadow-emerald-500/5' : overdue ? 'border-rose-100 shadow-rose-500/5' : 'border-slate-100 shadow-slate-200/30'}`}
               >
                 <div className="flex justify-between items-start mb-8">
                   <div>
                     <div className="flex items-center gap-3 mb-3">
                       <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">
-                        {inv.termId.replace('_', ' ')} Fees
+                        {formatDisplayString(inv.termId)} Fees
                       </span>
                       {paid ? (
-                        <span className="bg-emerald-50 text-emerald-600 text-[8px] font-black px-4 py-1 rounded-full border border-emerald-100 shadow-sm uppercase tracking-widest">Settled</span>
+                        <span className="bg-emerald-50 text-emerald-600 text-[8px] font-black px-4 py-1.5 rounded-full border border-emerald-100 shadow-sm uppercase tracking-widest">Settled</span>
                       ) : overdue ? (
-                        <span className="bg-red-50 text-red-600 text-[8px] font-black px-4 py-1 rounded-full border border-red-100 shadow-sm uppercase tracking-widest animate-pulse">Overdue</span>
+                        <span className="bg-rose-50 text-rose-600 text-[8px] font-black px-4 py-1.5 rounded-full border border-rose-100 shadow-sm uppercase tracking-widest animate-pulse">Overdue</span>
                       ) : (
-                        <span className="bg-blue-50 text-blue-600 text-[8px] font-black px-4 py-1 rounded-full border border-blue-100 shadow-sm uppercase tracking-widest">Pending</span>
+                        <span className="bg-blue-50 text-blue-600 text-[8px] font-black px-4 py-1.5 rounded-full border border-blue-100 shadow-sm uppercase tracking-widest">Pending</span>
                       )}
                     </div>
-                    <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest flex items-center gap-2">
-                      <Clock size={10} />
-                      Due Date: {new Date(inv.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                    <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest flex items-center gap-2">
+                      <Clock size={11} className="text-blue-500" />
+                      Due: {new Date(inv.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className={`text-2xl font-black tracking-tighter ${paid ? 'text-emerald-600' : 'text-slate-900'}`}>
+                    <p className={`text-3xl font-black tracking-tighter ${paid ? 'text-emerald-600' : 'text-slate-900'}`}>
                       ₦{balance.toLocaleString()}
                     </p>
-                    <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest mt-1">Total: ₦{inv.amount.toLocaleString()}</p>
+                    <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mt-1.5">Total: ₦{inv.amount.toLocaleString()}</p>
                   </div>
                 </div>
                 
@@ -238,13 +244,12 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
                 </div>
 
                 {!paid && (
-                  <div className="bg-slate-900 p-6 rounded-3xl border border-slate-800 text-center relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-transparent pointer-events-none"></div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-white relative z-10 flex items-center justify-center gap-3">
+                  <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200/60 border-dashed text-center relative overflow-hidden">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-900 relative z-10 flex items-center justify-center gap-3">
                       <Construction size={16} className="text-amber-500" />
                       Payment Method
                     </p>
-                    <p className="text-[8px] text-white/50 font-black uppercase tracking-widest mt-3 relative z-10">
+                    <p className="text-[8px] text-slate-500 font-black uppercase tracking-widest mt-3 relative z-10">
                       Online gateway is pending. Please visit the school's bursary department for manual settlement.
                     </p>
                   </div>
@@ -292,7 +297,7 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
                         <div className="flex items-center gap-3 mt-1.5">
                           <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest">{new Date(pay.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                           <div className="w-1 h-1 bg-slate-200 rounded-full"></div>
-                          <p className="text-[8px] text-slate-600 font-black uppercase tracking-widest">{pay.method}</p>
+                          <p className="text-[8px] text-slate-600 font-black uppercase tracking-widest">{formatDisplayString(pay.method)}</p>
                         </div>
                       </div>
                     </div>

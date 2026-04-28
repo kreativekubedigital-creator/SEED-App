@@ -16,3 +16,14 @@ export function sortByFullName<T extends { firstName: string; lastName: string }
     return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
   });
 }
+
+export function formatDisplayString(str: string | undefined | null): string {
+  if (!str) return '';
+  return str
+    .replace(/^_+/, '') // Remove leading underscores
+    .replace(/_/g, ' ') // Replace internal underscores with spaces
+    .split(' ')
+    .filter(Boolean)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}

@@ -4,7 +4,7 @@ import { UserProfile, School, Session, Term, Class, Result, Subject, GradeScale 
 import { ReportCard } from'./ReportCard';
 import { Loader2, Printer, Search, Users, X } from'lucide-react';
 import { motion, AnimatePresence } from'motion/react';
-import { sortByName, sortByFullName } from'../../lib/utils';
+import { sortByName, sortByFullName, formatDisplayString } from'../../lib/utils';
 
 interface ClassReportCardsProps {
  school: School;
@@ -151,7 +151,7 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm text-slate-900 cursor-pointer"
  >
  <option value="">Select Session</option>
- { sessions.map(s => <option key={ s.id } value={ s.id }>{ s.name }</option>)}
+ { sessions.map(s => <option key={ s.id } value={ s.id }>{ formatDisplayString(s.name) }</option>)}
  </select>
  </div>
  
@@ -164,7 +164,7 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm text-slate-900 cursor-pointer disabled:opacity-50"
  >
  <option value="">Select Term</option>
- { terms.map(t => <option key={ t.id } value={ t.id }>{ t.name }</option>)}
+ { terms.map(t => <option key={ t.id } value={ t.id }>{ formatDisplayString(t.name) }</option>)}
  </select>
  </div>
 
@@ -176,7 +176,7 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-sm text-slate-900 cursor-pointer"
  >
  <option value="">Select Class</option>
- { classes.map(c => <option key={ c.id } value={ c.id }>{ c.name }</option>)}
+ { classes.map(c => <option key={ c.id } value={ c.id }>{ formatDisplayString(c.name) }</option>)}
  </select>
  </div>
 
@@ -202,7 +202,7 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
  </div>
  <div>
  <h3 className="font-medium text-slate-900">Report Cards Ready</h3>
- <p className="text-xs text-slate-900 font-medium">{ students.length } students found in { classObj?.name }</p>
+ <p className="text-xs text-slate-900 font-medium">{ students.length } students found in { formatDisplayString(classObj?.name) }</p>
  </div>
  </div>
  <div className="flex gap-3 w-full md:w-auto">
@@ -231,11 +231,11 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
  <img src={ student.photoUrl } alt="Profile"className="w-10 h-10 rounded-full object-cover shadow-sm border border-gray-200 shrink-0"referrerPolicy="no-referrer"/>
  ) : (
  <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-900 shrink-0 border border-slate-100">
- { student.firstName.charAt(0)}
+ { formatDisplayString(student.firstName).charAt(0)}
  </div>
  )}
  <div className="overflow-hidden">
- <p className="font-medium text-slate-900 truncate">{ student.firstName } { student.lastName }</p>
+ <p className="font-medium text-slate-900 truncate">{ formatDisplayString(student.firstName) } { formatDisplayString(student.lastName) }</p>
  <p className="text-[10px] text-slate-900 font-medium uppercase tracking-wider truncate">{ student.registrationNumber ||'No Reg No'}</p>
  </div>
  </div>
@@ -263,7 +263,7 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
  className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
  >
  <div className="flex items-center justify-between p-6 border-b border-slate-100">
- <h3 className="text-xl font-medium text-slate-900">Preview: { previewStudent.firstName } { previewStudent.lastName }</h3>
+ <h3 className="text-xl font-medium text-slate-900">Preview: { formatDisplayString(previewStudent.firstName) } { formatDisplayString(previewStudent.lastName) }</h3>
  <div className="flex items-center gap-3">
  <button
  onClick={() => {

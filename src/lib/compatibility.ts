@@ -99,19 +99,89 @@ export const getDoc = async (path: string) => {
   };
 };
 
-export const getDocs = async (queryOrPath: any) => {
-  const path = typeof queryOrPath === 'string' ? queryOrPath : queryOrPath.path;
-  const constraints = typeof queryOrPath === 'string' ? [] : queryOrPath.constraints;
-  
+/**
+ * Helper to extract query metadata (conditions, orderBy, limit, in-filters) from constraints.
+ */
+const extractQueryMeta = (constraints: any[]) => {
   const conditions: Record<string, any> = {};
+  const inFilters: { field: string; values: any[] }[] = [];
+  let sortField: string | null = null;
+  let sortDirection: 'asc' | 'desc' = 'asc';
+  let limitCount: number | null = null;
+
   constraints.forEach((c: any) => {
-    if (c.op === '==') {
+    if (!c) return;
+    if (c.type === 'orderBy') {
+      sortField = c.field;
+      sortDirection = c.direction === 'desc' ? 'desc' : 'asc';
+    } else if (c.type === 'limit') {
+      limitCount = c.value;
+    } else if (c.op === '==') {
       const field = c.field.replace(/[A-Z]/g, (l: string) => `_${l.toLowerCase()}`);
       conditions[field] = c.value;
+    } else if (c.op === 'in') {
+      const field = c.field.replace(/[A-Z]/g, (l: string) => `_${l.toLowerCase()}`);
+      inFilters.push({ field, values: c.value });
     }
   });
 
-  const data = await DatabaseService.getItems(path, conditions);
+  return { conditions, inFilters, sortField, sortDirection, limitCount };
+};
+
+/**
+ * Apply post-fetch sorting, in-filtering, and limiting to data arrays.
+ */
+const applyPostProcessing = (
+  data: any[],
+  inFilters: { field: string; values: any[] }[],
+  sortField: string | null,
+  sortDirection: 'asc' | 'desc',
+  limitCount: number | null
+): any[] => {
+  let result = data;
+
+  // Apply 'in' filters
+  for (const f of inFilters) {
+    const camelField = f.field.replace(/([-_][a-z])/g, group =>
+      group.toUpperCase().replace('-', '').replace('_', '')
+    );
+    result = result.filter(item => f.values.includes(item[camelField]) || f.values.includes(item[f.field]));
+  }
+
+  // Apply sorting
+  if (sortField) {
+    const camelSort = sortField.replace(/([-_][a-z])/g, group =>
+      group.toUpperCase().replace('-', '').replace('_', '')
+    );
+    result.sort((a, b) => {
+      const aVal = a[camelSort] ?? a[sortField!] ?? '';
+      const bVal = b[camelSort] ?? b[sortField!] ?? '';
+      if (typeof aVal === 'number' && typeof bVal === 'number') {
+        return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+      }
+      return sortDirection === 'asc'
+        ? String(aVal).localeCompare(String(bVal))
+        : String(bVal).localeCompare(String(aVal));
+    });
+  }
+
+  // Apply limit
+  if (limitCount !== null && limitCount > 0) {
+    result = result.slice(0, limitCount);
+  }
+
+  return result;
+};
+
+export const getDocs = async (queryOrPath: any) => {
+  const path = typeof queryOrPath === 'string' ? queryOrPath : queryOrPath.path;
+  const constraints = typeof queryOrPath === 'string' ? [] : queryOrPath.constraints;
+
+  const { conditions, inFilters, sortField, sortDirection, limitCount } = extractQueryMeta(constraints);
+
+  let data = await DatabaseService.getItems(path, conditions);
+  data = applyPostProcessing(data, inFilters, sortField, sortDirection, limitCount);
+
   return {
     docs: data.map((item: any) => ({
       id: item.id,
@@ -157,32 +227,33 @@ export const onSnapshot = (queryObj: any, callback: any, errorCallback?: (error:
   const path = typeof queryObj === 'string' ? queryObj : queryObj.path;
   const constraints = typeof queryObj === 'string' ? [] : queryObj.constraints;
   const isDocument = path.split('/').filter(Boolean).length % 2 === 0;
-  
-  const conditions: Record<string, any> = {};
-  constraints.forEach((c: any) => {
-    if (c.op === '==') {
-      const field = c.field.replace(/[A-Z]/g, (l: string) => `_${l.toLowerCase()}`);
-      conditions[field] = c.value;
-    }
-  });
+
+  const { conditions, inFilters, sortField, sortDirection, limitCount } = extractQueryMeta(constraints);
 
   const subscription = DatabaseService.subscribe(path, (data) => {
-    if (isDocument) {
-      const item = data[0] || null;
-      callback({
-        exists: () => !!item,
-        data: () => item as any,
-        id: path.split('/').pop()
-      });
-    } else {
-      callback({
-        docs: data.map((item: any) => ({
-          id: item.id,
-          data: () => item as any
-        })),
-        size: data.length,
-        empty: data.length === 0
-      });
+    try {
+      let processed = applyPostProcessing(data, inFilters, sortField, sortDirection, limitCount);
+
+      if (isDocument) {
+        const item = processed[0] || null;
+        callback({
+          exists: () => !!item,
+          data: () => item as any,
+          id: path.split('/').pop()
+        });
+      } else {
+        callback({
+          docs: processed.map((item: any) => ({
+            id: item.id,
+            data: () => item as any
+          })),
+          size: processed.length,
+          empty: processed.length === 0
+        });
+      }
+    } catch (err) {
+      if (errorCallback) errorCallback(err);
+      else console.error('onSnapshot processing error:', err);
     }
   }, conditions);
 
@@ -264,12 +335,56 @@ export const getRedirectResult = async (_auth: any): Promise<{ user: User } | nu
 };
 export const serverTimestamp = () => ({ __type: 'timestamp' });
 export const increment = (n: number) => ({ __type: 'increment', value: n });
-export const writeBatch = (_db?: any) => ({
-  set: (docRef: any, data: any, options?: any) => { console.log('Batch set', docRef, data, options); },
-  update: (docRef: any, data: any) => { console.log('Batch update', docRef, data); },
-  delete: (docRef: any) => { console.log('Batch delete', docRef); },
-  commit: async () => { console.log('Batch commit'); }
-});
+
+/**
+ * writeBatch — Functional Supabase implementation.
+ * Collects set/update/delete operations and executes them all on commit().
+ */
+export const writeBatch = (_db?: any) => {
+  const operations: Array<{ type: 'set' | 'update' | 'delete'; path: string; data?: any; options?: any }> = [];
+
+  return {
+    set: (docPath: any, data: any, options?: any) => {
+      operations.push({ type: 'set', path: String(docPath), data, options });
+    },
+    update: (docPath: any, data: any) => {
+      operations.push({ type: 'update', path: String(docPath), data });
+    },
+    delete: (docPath: any) => {
+      operations.push({ type: 'delete', path: String(docPath) });
+    },
+    commit: async () => {
+      for (const op of operations) {
+        const parts = op.path.split('/');
+        const isDocument = parts.length % 2 === 0;
+
+        if (op.type === 'set') {
+          if (isDocument) {
+            // Document path: upsert with ID
+            const id = parts.pop()!;
+            const collectionPath = parts.join('/');
+            await DatabaseService.upsertItem(collectionPath, id, op.data);
+          } else {
+            // Collection path: add new item
+            await DatabaseService.addItem(op.path, op.data);
+          }
+        } else if (op.type === 'update') {
+          if (isDocument) {
+            const id = parts.pop()!;
+            const collectionPath = parts.join('/');
+            await DatabaseService.updateItem(collectionPath, id, op.data);
+          }
+        } else if (op.type === 'delete') {
+          if (isDocument) {
+            const id = parts.pop()!;
+            const collectionPath = parts.join('/');
+            await DatabaseService.deleteItem(collectionPath, id);
+          }
+        }
+      }
+    }
+  };
+};
 export const limit = (n: number) => ({ type: 'limit', value: n });
 export const orderBy = (field: string, direction: string = 'asc') => ({ type: 'orderBy', field, direction });
 export const getDocFromServer = getDoc;

@@ -3,7 +3,7 @@ import { db, collection, query, where, addDoc, updateDoc, doc, onSnapshot, Opera
 import { UserProfile, Class, Subject, Result, Session, Term, GradeScale } from '../../types';
 import { Save, Search, ChevronRight, AlertCircle, CheckCircle2, Loader2, Send, RotateCcw, MessageSquare, Copy } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { sortByName, sortByFullName } from '../../lib/utils';
+import { sortByName, sortByFullName, formatDisplayString } from '../../lib/utils';
 
 interface TeacherResultWorkspaceProps {
   user: UserProfile;
@@ -386,7 +386,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
               overallStatus === 'under_review' ? 'bg-yellow-500' : 
               'bg-slate-300'
             }`} />
-            {overallStatus.replace('_', ' ')}
+            {formatDisplayString(overallStatus)}
           </div>
         )}
       </div>
@@ -419,7 +419,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
               className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
             >
               <option value="">Select Session</option>
-              {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+              {sessions.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
             </select>
           </div>
           <div className="space-y-2">
@@ -432,7 +432,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
               className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900 disabled:opacity-50"
             >
               <option value="">Select Term</option>
-              {terms.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+              {terms.map(t => <option key={t.id} value={t.id}>{formatDisplayString(t.name)}</option>)}
             </select>
           </div>
           <div className="space-y-2">
@@ -444,7 +444,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
               className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
             >
               <option value="">Select Class</option>
-              {availableClasses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+               {availableClasses.map(c => <option key={c.id} value={c.id}>{formatDisplayString(c.name)}</option>)}
             </select>
           </div>
           <div className="space-y-2">
@@ -457,7 +457,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
               className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900 disabled:opacity-50"
             >
               <option value="">Select Subject</option>
-              {availableSubjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+               {availableSubjects.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
             </select>
           </div>
         </div>
@@ -599,14 +599,14 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                         <td className="px-8 py-5">
                           <div className="flex items-center gap-4">
                             {student.photoUrl ? (
-                              <img src={student.photoUrl} alt={student.firstName} className="w-10 h-10 rounded-2xl object-cover border-2 border-white shadow-sm" referrerPolicy="no-referrer" />
+                              <img src={student.photoUrl} alt={formatDisplayString(student.firstName)} className="w-10 h-10 rounded-2xl object-cover border-2 border-white shadow-sm" referrerPolicy="no-referrer" />
                             ) : (
                               <div className="w-10 h-10 rounded-2xl bg-blue-50 flex items-center justify-center font-black text-blue-600 shrink-0 border-2 border-white shadow-sm">
-                                {student.firstName?.charAt(0) || '?'}
+                                {formatDisplayString(student.firstName).charAt(0) || '?'}
                               </div>
                             )}
                             <div>
-                              <p className="font-black uppercase tracking-widest text-[10px] text-slate-900">{student.firstName} {student.lastName}</p>
+                              <p className="font-black uppercase tracking-widest text-[10px] text-slate-900">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</p>
                               <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest mt-1">{student.registrationNumber || 'NO ID'}</p>
                             </div>
                           </div>
@@ -674,14 +674,14 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                   <div key={student.uid} className={`bg-white rounded-[2rem] shadow-sm border ${activeRow === student.uid ? 'border-blue-300 ring-4 ring-blue-500/5' : 'border-slate-100'} p-6 flex flex-col gap-6 transition-all duration-200`} onFocus={() => setActiveRow(student.uid)} onBlur={() => setActiveRow(null)}>
                     <div className="flex items-center gap-4">
                       {student.photoUrl ? (
-                        <img src={student.photoUrl} alt={student.firstName} className="w-12 h-12 rounded-2xl object-cover border border-slate-100" referrerPolicy="no-referrer" />
+                        <img src={student.photoUrl} alt={formatDisplayString(student.firstName)} className="w-12 h-12 rounded-2xl object-cover border border-slate-100" referrerPolicy="no-referrer" />
                       ) : (
                         <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center font-black text-blue-600 shrink-0">
-                          {student.firstName?.charAt(0) || '?'}
+                          {formatDisplayString(student.firstName).charAt(0) || '?'}
                         </div>
                       )}
                       <div>
-                        <p className="font-black uppercase tracking-widest text-[10px] text-slate-900">{student.firstName} {student.lastName}</p>
+                        <p className="font-black uppercase tracking-widest text-[10px] text-slate-900">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</p>
                         <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest mt-1">{student.registrationNumber || 'NO ID'}</p>
                       </div>
                     </div>

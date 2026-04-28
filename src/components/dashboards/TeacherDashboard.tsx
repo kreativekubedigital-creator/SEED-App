@@ -3,7 +3,7 @@ import { db, collection, query, where, onSnapshot, OperationType, handleFirestor
 import { UserProfile, Class, Subject, Assignment, School } from '../../types';
 import { Plus, BookOpen, FileText, CheckSquare, Users, Award, X, LogOut, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { sortByName, sortByFullName } from '../../lib/utils';
+import { sortByName, sortByFullName, formatDisplayString } from '../../lib/utils';
 import { TeacherQuizzes } from './TeacherQuizzes';
 import { TeacherResultWorkspace } from './TeacherResultWorkspace';
 import { TeacherAssignments } from './TeacherAssignments';
@@ -84,8 +84,8 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
     return () => unsubStudents();
   }, [user.schoolId, user.classId, subjects]);
 
-  const getClassName = (classId: string) => classes.find(c => c.id === classId)?.name || 'Unknown Class';
-  const getSubjectName = (subjectId: string) => subjects.find(s => s.id === subjectId)?.name || 'Unknown Subject';
+  const getClassName = (classId: string) => formatDisplayString(classes.find(c => c.id === classId)?.name || 'Unknown Class');
+  const getSubjectName = (subjectId: string) => formatDisplayString(subjects.find(s => s.id === subjectId)?.name || 'Unknown Subject');
 
   if (loading) {
     return (
@@ -105,7 +105,7 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
           ) : (
             <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center font-black text-white text-xs shadow-lg">S</div>
           )}
-          <span className="font-black uppercase tracking-widest text-[10px] text-slate-900 truncate max-w-[150px]">{school?.name || 'SEEDD'}</span>
+          <span className="font-black uppercase tracking-widest text-[10px] text-slate-900 truncate max-w-[150px]">{formatDisplayString(school?.name || 'SEEDD')}</span>
         </div>
         <button onClick={onLogout} className="p-3 bg-red-50 text-red-500 rounded-xl transition-all active:scale-95"><LogOut size={20} /></button>
       </div>
@@ -116,7 +116,7 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
           <div className="flex items-center gap-6">
             <Link to="/profile" className="relative group cursor-pointer">
               <div className="w-20 h-20 rounded-[2rem] bg-slate-900 flex items-center justify-center text-3xl font-black text-white shadow-2xl border-4 border-white group-hover:scale-105 transition-all">
-                {user.firstName[0]}
+                {formatDisplayString(user.firstName).charAt(0)}
               </div>
               <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-emerald-500 rounded-full border-4 border-white flex items-center justify-center shadow-lg">
                 <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
@@ -125,10 +125,10 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
             <div>
               <div className="flex items-center gap-3">
                 <h1 className="text-4xl font-black uppercase tracking-tighter text-slate-900 leading-none">
-                  Hello, {user.firstName}!
+                  Hello, {formatDisplayString(user.firstName)}!
                 </h1>
                 {school?.logoUrl && (
-                  <img src={school.logoUrl} alt={school.name} className="w-8 h-8 rounded-lg object-cover opacity-20 grayscale" />
+                  <img src={school.logoUrl} alt={formatDisplayString(school.name)} className="w-8 h-8 rounded-lg object-cover opacity-20 grayscale" />
                 )}
               </div>
               <div className="flex items-center gap-3 mt-3">
@@ -167,7 +167,7 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
                   : 'bg-white text-slate-400 border-white hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
-              {tab}
+              {formatDisplayString(tab)}
             </button>
           ))}
         </div>
@@ -247,7 +247,7 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
                         <FileText size={28} strokeWidth={2.5} />
                       </div>
                       <div className="flex-1 overflow-hidden">
-                        <p className="font-black uppercase tracking-widest text-[11px] text-slate-900 truncate mb-1">{a.title}</p>
+                        <p className="font-black uppercase tracking-widest text-[11px] text-slate-900 truncate mb-1">{formatDisplayString(a.title)}</p>
                         <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest flex items-center gap-2">
                           <BookOpen size={12} /> {getSubjectName(a.subjectId)}
                         </p>
@@ -292,7 +292,7 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
                       <BookOpen size={28} strokeWidth={2.5} />
                     </div>
                     <div>
-                      <h4 className="font-black uppercase tracking-widest text-lg text-slate-900 leading-tight mb-1">{subject.name}</h4>
+                      <h4 className="font-black uppercase tracking-widest text-lg text-slate-900 leading-tight mb-1">{formatDisplayString(subject.name)}</h4>
                       <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{getClassName(subject.classId)}</p>
                     </div>
                   </div>
@@ -361,14 +361,14 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
                   {students.filter(s => s.classId === selectedClassForStudents).map(s => (
                     <div key={s.uid} className="flex items-center gap-6 p-6 rounded-[2rem] bg-slate-50/50 border border-slate-100 hover:bg-white hover:shadow-2xl transition-all group">
                       {s.photoUrl ? (
-                        <img src={s.photoUrl} alt={s.firstName} className="w-16 h-16 rounded-2xl object-cover shadow-md border-2 border-white group-hover:scale-105 transition-transform" referrerPolicy="no-referrer" />
+                        <img src={s.photoUrl} alt={formatDisplayString(s.firstName)} className="w-16 h-16 rounded-2xl object-cover shadow-md border-2 border-white group-hover:scale-105 transition-transform" referrerPolicy="no-referrer" />
                       ) : (
                         <div className="w-16 h-16 rounded-2xl bg-slate-900 flex items-center justify-center font-black text-white text-xl shadow-lg border-2 border-white group-hover:scale-105 transition-transform">
-                          {s.firstName?.charAt(0) || '?'}
+                          {formatDisplayString(s.firstName)?.charAt(0) || '?'}
                         </div>
                       )}
                       <div>
-                        <p className="font-black uppercase tracking-widest text-sm text-slate-900">{s.firstName} {s.lastName}</p>
+                        <p className="font-black uppercase tracking-widest text-sm text-slate-900">{formatDisplayString(s.firstName)} {formatDisplayString(s.lastName)}</p>
                         <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Reg: {s.registrationNumber || 'N/A'}</p>
                       </div>
                     </div>

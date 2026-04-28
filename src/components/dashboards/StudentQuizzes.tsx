@@ -5,6 +5,7 @@ import { CheckCircle2, Circle, Trophy, ArrowRight, ArrowLeft, BookOpen, BrainCir
 import { motion } from 'motion/react';
 import { REVISION_QUIZZES } from '../../constants/quizContent';
 import { addXP } from '../../services/gamificationService';
+import { formatDisplayString } from '../../lib/utils';
 
 export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfile, subjects: Subject[], classLevel?: string }) => {
   const [dbQuizzes, setDbQuizzes] = useState<Quiz[]>([]);
@@ -72,7 +73,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
 
   const displayedQuizzes = quizType === 'revision' ? revisionQuizzes : dbQuizzes;
 
-  const getSubjectName = (subjectId: string) => subjects.find(s => s.id === subjectId)?.name || 'Unknown Subject';
+  const getSubjectName = (subjectId: string) => formatDisplayString(subjects.find(s => s.id === subjectId)?.name || 'Unknown Subject');
 
   const handleStartQuiz = (quiz: Quiz) => {
     setActiveQuiz(quiz);
@@ -165,7 +166,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
               <Trophy size={48} />
             </div>
             <h2 className="text-xl font-black uppercase tracking-tighter text-slate-900 mb-3">Quiz Completed!</h2>
-            <p className="text-slate-900/40 font-black uppercase tracking-widest mb-8 text-[10px]">You have successfully completed {activeQuiz.title}.</p>
+            <p className="text-slate-900/40 font-black uppercase tracking-widest mb-8 text-[10px]">You have successfully completed {formatDisplayString(activeQuiz.title)}.</p>
             
             <div className="text-6xl font-black text-blue-600 mb-10 drop-shadow-sm">
               {score.score} <span className="text-3xl text-slate-900/40 font-black">/ {score.total}</span>
@@ -188,7 +189,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-4 md:p-4 rounded-2xl border border-slate-100 shadow-sm max-w-3xl mx-auto">
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h2 className="text-lg font-medium text-slate-900">{activeQuiz.title}</h2>
+            <h2 className="text-lg font-medium text-slate-900">{formatDisplayString(activeQuiz.title)}</h2>
             <p className="text-slate-900 font-medium mt-1">{getSubjectName(activeQuiz.subjectId)}</p>
           </div>
           <div className="flex items-center gap-4">
@@ -316,7 +317,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
                 <span className={`inline-block px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-full mb-3 border bg-white/60 text-slate-900 border-white/50`}>
                   {getSubjectName(quiz.subjectId)}
                 </span>
-                <h4 className="font-black uppercase tracking-widest text-lg text-slate-900 mb-1 leading-tight">{quiz.title}</h4>
+                <h4 className="font-black uppercase tracking-widest text-lg text-slate-900 mb-1 leading-tight">{formatDisplayString(quiz.title)}</h4>
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-900/50 mb-4">{quiz.questions.length} Questions</p>
               </div>
               {result ? (

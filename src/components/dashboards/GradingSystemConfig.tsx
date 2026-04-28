@@ -3,7 +3,7 @@ import { db, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, Operatio
 import { Session, Term, GradeScale } from '../../types';
 import { Plus, Trash2, Edit2, Save, CheckCircle2, AlertCircle, Loader2, Calendar, Settings, Award } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { sortByName } from '../../lib/utils';
+import { sortByName, formatDisplayString } from '../../lib/utils';
 
 interface GradingSystemConfigProps {
   schoolId: string;
@@ -373,7 +373,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
               {sessions.map(session => (
                 <div key={session.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 group">
                   <div className="flex items-center gap-3">
-                    <span className="font-medium text-slate-900">{session.name}</span>
+                    <span className="font-medium text-slate-900">{formatDisplayString(session.name)}</span>
                     <div className="flex items-center gap-1">
                       <button 
                         onClick={() => handleEditSession(session)}
@@ -419,7 +419,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-pointer"
               >
                 <option value="">Select Session</option>
-                {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                {sessions.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
               </select>
               <div className="flex flex-col gap-3">
                 <div className="flex flex-col sm:flex-row gap-3">
@@ -456,7 +456,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                 <div key={term.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 group">
                   <div className="flex items-center gap-3">
                     <div className="flex flex-col">
-                      <span className="font-medium text-slate-900">{term.name}</span>
+                      <span className="font-medium text-slate-900">{formatDisplayString(term.name)}</span>
                       {term.resumptionDate && (
                         <span className="text-[10px] text-slate-400">Resumes: {new Date(term.resumptionDate).toLocaleDateString()}</span>
                       )}

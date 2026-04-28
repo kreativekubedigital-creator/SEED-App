@@ -168,14 +168,6 @@ export const LandingPage = () => {
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </Button>
               
-              <Link to="/#onboarding" className="w-full sm:w-auto">
-                <Button 
-                  variant="outline"
-                  className="h-14 w-full px-8 bg-white/5 backdrop-blur-2xl border-white/10 text-white hover:bg-white/10 rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all active:scale-95"
-                >
-                  Request A Demo
-                </Button>
-              </Link>
             </motion.div>
 
             {/* Revealed Search Input */}

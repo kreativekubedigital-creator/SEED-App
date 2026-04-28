@@ -45,7 +45,7 @@ import { ClassReportCards } from'./ClassReportCards';
 import ClassTimetable from'./ClassTimetable';
 import { SchoolFinance } from './SchoolFinance';
 import { PromotionManagement } from './PromotionManagement';
-import { sortByName, sortByFullName, cn } from'../../lib/utils';
+import { sortByName, sortByFullName, cn, formatDisplayString } from'../../lib/utils';
 
 interface SchoolManagementProps {
  school: School;
@@ -426,7 +426,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <button onClick={ handleBack } className="p-2 text-slate-900 hover:text-blue-600 transition-colors bg-slate-50 hover:bg-blue-50 rounded-xl">
  <ArrowLeft size={ 20 } />
  </button>
- <span className="font-medium text-lg truncate px-4 text-slate-900">{ school.name }</span>
+ <span className="font-medium text-lg truncate px-4 text-slate-900">{ formatDisplayString(school.name) }</span>
  <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-slate-900 hover:text-blue-600 transition-colors bg-slate-50 hover:bg-blue-50 rounded-xl">
  { isMobileMenuOpen ? <X size={ 20 } /> : <LayoutDashboard size={ 20 } />}
  </button>
@@ -450,8 +450,8 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
       </div>
     )}
     <div className="overflow-hidden">
-      <h3 className="font-bold text-slate-900 truncate text-sm leading-tight">{ school.name }</h3>
-      <p className="text-[10px] text-blue-600 font-black uppercase tracking-widest mt-1">{ school.planId } Plan</p>
+      <h3 className="font-bold text-slate-900 truncate text-sm leading-tight">{ formatDisplayString(school.name) }</h3>
+      <p className="text-[10px] text-blue-600 font-black uppercase tracking-widest mt-1">{ formatDisplayString(school.planId) } Plan</p>
     </div>
   </div>
 
@@ -689,13 +689,13 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white backdrop-blur-md border-b border-slate-100 px-4 flex items-center justify-between z-50">
  <div className="flex items-center gap-3">
  { school.logoUrl ? (
- <img src={ school.logoUrl } alt={ school.name } className="w-8 h-8 rounded-lg object-cover shadow-sm border border-slate-100"referrerPolicy="no-referrer"/>
+ <img src={ school.logoUrl } alt={ formatDisplayString(school.name) } className="w-8 h-8 rounded-lg object-cover shadow-sm border border-slate-100"referrerPolicy="no-referrer"/>
  ) : (
  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-sm font-medium text-sm">
- { school.name?.charAt(0) ||'?'}
+ { formatDisplayString(school.name)?.charAt(0) ||'?'}
  </div>
  )}
- <span className="font-medium text-lg text-slate-900 truncate max-w-[150px]">{ school.name }</span>
+ <span className="font-medium text-lg text-slate-900 truncate max-w-[150px]">{ formatDisplayString(school.name) }</span>
  </div>
  <button 
  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -726,13 +726,13 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <div className="flex items-center justify-between mb-8">
  <div className="flex items-center gap-3">
  { school.logoUrl ? (
- <img src={ school.logoUrl } alt={ school.name } className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-blue-100 border border-slate-100"referrerPolicy="no-referrer"/>
+ <img src={ school.logoUrl } alt={ formatDisplayString(school.name) } className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-blue-100 border border-slate-100"referrerPolicy="no-referrer"/>
  ) : (
  <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200 font-medium text-xl">
- { school.name?.charAt(0) ||'?'}
+ { formatDisplayString(school.name)?.charAt(0) ||'?'}
  </div>
  )}
- <h1 className="font-medium text-xl text-slate-900 truncate max-w-[180px]">{ school.name }</h1>
+ <h1 className="font-medium text-xl text-slate-900 truncate max-w-[180px]">{ formatDisplayString(school.name) }</h1>
  </div>
  <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-slate-900 hover:text-slate-900">
  <X size={ 24 } />
@@ -823,17 +823,17 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
   <p className="text-slate-900 mt-1 md:mt-2 text-sm md:text-base font-medium">Welcome back, { school.name }. Manage your school's operations.</p>
   </div>
   <div className="text-sm font-medium text-blue-600 bg-blue-50 border border-blue-100 rounded-xl px-4 py-2 shadow-sm">
-  { school.planId.toUpperCase()} PLAN
+  { formatDisplayString(school.planId).toUpperCase() } PLAN
   </div>
   </div>
   ) : (
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-4">
  <div>
  <h2 className="text-2xl md:text-xl font-medium text-slate-900 capitalize tracking-tight">
- {`${ activeTab } Management`}
+ {`${ formatDisplayString(activeTab) } Management`}
  </h2>
  <p className="text-slate-900 mt-1 md:mt-2 text-sm md:text-base font-medium">
- {`Add, edit, and manage school ${ activeTab }.`}
+ {`Add, edit, and manage school ${ formatDisplayString(activeTab).toLowerCase() }.`}
  </p>
  </div>
  {['users'].includes(activeTab) && (
@@ -1024,11 +1024,11 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <img src={ u.photoUrl } alt="Profile"className="w-10 h-10 rounded-2xl object-cover shadow-sm border border-gray-200 group-hover:scale-105 transition-transform shrink-0"referrerPolicy="no-referrer"/>
  ) : (
  <div className="w-10 h-10 rounded-2xl bg-blue-50 flex items-center justify-center font-medium text-blue-600 shrink-0 shadow-sm border border-blue-100/50 group-hover:scale-105 transition-transform">
- { u.firstName?.charAt(0) ||'?'}
+ { formatDisplayString(u.firstName).charAt(0) ||'?'}
  </div>
  )}
  <div className="overflow-hidden">
- <p className="font-medium text-sm text-slate-900 truncate">{ u.firstName } { u.lastName }</p>
+ <p className="font-medium text-sm text-slate-900 truncate">{ formatDisplayString(u.firstName) } { formatDisplayString(u.lastName) }</p>
  <p className="text-xs text-slate-900 font-medium truncate mt-0.5">{ u.email }</p>
  </div>
  </div>
@@ -1036,7 +1036,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <td className="px-6 md:px-8 py-4 md:py-6">
  <div className="overflow-hidden">
  <span className="text-[10px] font-medium uppercase tracking-widest text-blue-700 bg-blue-50 border border-blue-100/50 px-3 py-1 rounded-full whitespace-nowrap inline-block mb-1.5 shadow-sm">
- { u.role.replace('_','')}
+ { formatDisplayString(u.role) }
  </span>
  {(u.role  === 'student'|| u.role  === 'teacher') && (
  <p className="text-xs text-slate-900 font-medium mt-1">
@@ -1112,11 +1112,11 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <img src={ u.photoUrl } alt="Profile"className="w-10 h-10 rounded-full object-cover shadow-sm border border-gray-200 shrink-0"referrerPolicy="no-referrer"/>
  ) : (
  <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center font-medium text-blue-600 shrink-0">
- { u.firstName?.charAt(0) ||'?'}
+ { formatDisplayString(u.firstName).charAt(0) ||'?'}
  </div>
  )}
  <div className="overflow-hidden">
- <p className="font-medium text-sm text-slate-900 truncate">{ u.firstName } { u.lastName }</p>
+ <p className="font-medium text-sm text-slate-900 truncate">{ formatDisplayString(u.firstName) } { formatDisplayString(u.lastName) }</p>
  <p className="text-xs text-slate-900 truncate">{ u.email }</p>
  </div>
  </div>
@@ -1125,7 +1125,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <div className="flex justify-between items-center">
  <span className="text-xs text-slate-900">Role</span>
  <span className="text-[10px] font-medium uppercase tracking-widest text-blue-700 bg-blue-50 border border-blue-100/50 px-2 py-0.5 rounded-full">
- { u.role.replace('_','')}
+ { formatDisplayString(u.role) }
  </span>
  </div>
  {(u.role  === 'student'|| u.role  === 'teacher') && (
@@ -1246,11 +1246,11 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <img src={ u.photoUrl } alt="Profile"className="w-10 h-10 rounded-2xl object-cover shadow-sm border border-gray-200 group-hover:scale-105 transition-transform"referrerPolicy="no-referrer"/>
  ) : (
  <div className="w-10 h-10 rounded-2xl bg-blue-50 flex items-center justify-center font-medium text-blue-600 shrink-0 shadow-sm border border-blue-100/50 group-hover:scale-105 transition-transform">
- { u.firstName?.charAt(0) ||'?'}
+ { formatDisplayString(u.firstName).charAt(0) ||'?'}
  </div>
  )}
  <div className="overflow-hidden">
- <p className="font-medium text-sm text-slate-900 truncate">{ u.firstName } { u.lastName }</p>
+ <p className="font-medium text-sm text-slate-900 truncate">{ formatDisplayString(u.firstName) } { formatDisplayString(u.lastName) }</p>
  <p className="text-xs text-slate-900 font-medium truncate mt-0.5">{ u.email }</p>
  </div>
  </div>
@@ -1324,9 +1324,9 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <div className="w-24 h-24 bg-blue-50 rounded-3xl flex items-center justify-center mx-auto mb-8 text-blue-600 shadow-sm border border-blue-100/50 relative z-10">
  <Settings size={ 40 } className="animate-spin-slow"/>
  </div>
- <h2 className="text-xl font-medium text-slate-900 mb-4 capitalize relative z-10">{ activeTab.replace('_','')} Module</h2>
+ <h2 className="text-xl font-medium text-slate-900 mb-4 capitalize relative z-10">{ formatDisplayString(activeTab) } Module</h2>
  <p className="text-slate-900 max-w-md mx-auto font-medium relative z-10">
- We are currently refining the { activeTab.replace('_','')} management experience to match our new design standards.
+ We are currently refining the { formatDisplayString(activeTab).toLowerCase() } management experience to match our new design standards.
  </p>
  </div>
  )}
@@ -1343,7 +1343,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  >
  <div className="flex justify-between items-start mb-6 sm:mb-8 relative z-10">
  <div>
- <h3 className="text-xl font-medium text-slate-900">{ editingUser ?'Edit User':`Add New ${ newUser.role.replace('_','')}`}</h3>
+ <h3 className="text-xl font-medium text-slate-900">{ editingUser ?'Edit User':`Add New ${ formatDisplayString(newUser.role) }`}</h3>
  <p className="text-slate-900 text-sm mt-1 font-medium">Manage school staff and student accounts.</p>
  </div>
  <button onClick={() => setShowAddUser(false)} className="p-2 text-slate-900 hover:text-slate-900 hover:bg-gray-100 rounded-full transition-colors shrink-0">
@@ -1606,12 +1606,12 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <img src={ viewingUser.photoUrl } alt="Profile"className="w-16 h-16 rounded-2xl object-cover shadow-sm border border-gray-200"referrerPolicy="no-referrer"/>
  ) : (
  <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center font-medium text-blue-600 text-2xl shadow-sm border border-blue-100/50">
- { viewingUser.firstName?.charAt(0) ||'?'}
+ { formatDisplayString(viewingUser.firstName).charAt(0) ||'?'}
  </div>
  )}
  <div>
- <h3 className="text-2xl font-medium text-slate-900">{ viewingUser.firstName } { viewingUser.lastName }</h3>
- <p className="text-blue-600 font-medium text-sm uppercase tracking-widest">{ viewingUser.role.replace('_','')} Profile</p>
+ <h3 className="text-2xl font-medium text-slate-900">{ formatDisplayString(viewingUser.firstName) } { formatDisplayString(viewingUser.lastName) }</h3>
+ <p className="text-blue-600 font-medium text-sm uppercase tracking-widest">{ formatDisplayString(viewingUser.role) } Profile</p>
  </div>
  </div>
  <button onClick={() => setViewingUser(null)} className="p-2 text-slate-900 hover:text-slate-900 hover:bg-gray-100 rounded-full transition-colors">
@@ -1657,11 +1657,11 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <img src={ student.photoUrl } alt="Profile"className="w-8 h-8 rounded-lg object-cover border border-gray-200"referrerPolicy="no-referrer"/>
  ) : (
  <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-blue-600 font-medium text-xs border border-gray-200">
- { student?.firstName?.charAt(0) ||'?'}
+ { student ? formatDisplayString(student.firstName).charAt(0) : '?'}
  </div>
  )}
  <div>
- <p className="text-sm font-medium text-slate-900">{ student ?`${ student.firstName } ${ student.lastName }`:'Unknown Student'}</p>
+ <p className="text-sm font-medium text-slate-900">{ student ? `${formatDisplayString(student.firstName)} ${formatDisplayString(student.lastName)}` : 'Unknown Student'}</p>
  <p className="text-[10px] text-slate-900 font-medium">{ sid }</p>
  </div>
  </div>

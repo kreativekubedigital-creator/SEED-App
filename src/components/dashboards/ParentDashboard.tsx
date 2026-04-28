@@ -3,7 +3,7 @@ import { db, collection, query, where, onSnapshot, orderBy, handleFirestoreError
 import { UserProfile, Result, Announcement, Invoice, Term, Session, School } from '../../types';
 import { Bell, TrendingUp, FileText, User, Heart, CreditCard, CheckCircle, Clock, ChevronRight, LogOut, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { sortByName, sortByFullName } from '../../lib/utils';
+import { sortByName, sortByFullName, formatDisplayString } from '../../lib/utils';
 import { StudentResultView } from './StudentResultView';
 import ClassTimetable from './ClassTimetable';
 import { ParentFinance } from './ParentFinance';
@@ -39,11 +39,13 @@ export const ParentDashboard = ({ user, onLogout, school }: { user: UserProfile,
 
   const getClassName = (classId: string) => {
     if (classes.length === 0) return 'Loading...';
-    return classes.find(c => c.id === classId)?.name || 'N/A';
+    const name = classes.find(c => c.id === classId)?.name || 'N/A';
+    return formatDisplayString(name);
   };
 
   const getSubjectName = (subjectId: string) => {
-    return subjects.find(s => s.id === subjectId)?.name || subjectId;
+    const name = subjects.find(s => s.id === subjectId)?.name || subjectId;
+    return formatDisplayString(name);
   };
 
   useEffect(() => {
@@ -192,7 +194,7 @@ export const ParentDashboard = ({ user, onLogout, school }: { user: UserProfile,
                   <img src={user.photoUrl} alt={user.firstName} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                 ) : (
                   <div className="w-full h-full bg-slate-50 flex items-center justify-center">
-                    {user.firstName[0]}
+                    {formatDisplayString(user.firstName).charAt(0)}
                   </div>
                 )}
               </div>
@@ -203,7 +205,7 @@ export const ParentDashboard = ({ user, onLogout, school }: { user: UserProfile,
             <div>
               <div className="flex items-center gap-3">
                 <h1 className="text-4xl font-black uppercase tracking-tighter text-slate-900 leading-none">
-                  Welcome, {user.firstName}!
+                  Welcome, {formatDisplayString(user.firstName)}!
                 </h1>
                 {school?.logoUrl && (
                   <img src={school.logoUrl} alt={school.name} className="w-8 h-8 rounded-lg object-cover opacity-20 grayscale" />
@@ -247,9 +249,9 @@ export const ParentDashboard = ({ user, onLogout, school }: { user: UserProfile,
                 }`}
               >
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs border-2 ${activeStudentId === student.uid ? 'bg-white/10 border-white/20' : 'bg-slate-50 border-slate-100'}`}>
-                  {student.firstName[0]}
+                  {formatDisplayString(student.firstName).charAt(0)}
                 </div>
-                {student.firstName} {student.lastName}
+                {formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}
               </button>
             ))}
           </div>
@@ -271,11 +273,11 @@ export const ParentDashboard = ({ user, onLogout, school }: { user: UserProfile,
                     </div>
                   ) : (
                     <div className="w-40 h-40 bg-slate-50 text-slate-900 rounded-[2.5rem] flex items-center justify-center text-5xl font-black border-4 border-white shadow-2xl shadow-slate-200">
-                      {activeStudent.firstName?.charAt(0) || '?'}
+                      {formatDisplayString(activeStudent.firstName)?.charAt(0) || '?'}
                     </div>
                   )}
                   <div className="text-center md:text-left">
-                    <h3 className="text-5xl font-black uppercase tracking-tighter text-slate-900 mb-4">{activeStudent.firstName} {activeStudent.lastName}</h3>
+                    <h3 className="text-5xl font-black uppercase tracking-tighter text-slate-900 mb-4">{formatDisplayString(activeStudent.firstName)} {formatDisplayString(activeStudent.lastName)}</h3>
                     <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
                       <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-100 px-5 py-2 rounded-full border border-slate-200">Student ID: {activeStudent.studentId || 'N/A'}</span>
                       {activeStudent.classId && (
@@ -461,7 +463,7 @@ export const ParentDashboard = ({ user, onLogout, school }: { user: UserProfile,
                             </span>
                             <span className="text-[8px] text-slate-400 font-black uppercase tracking-widest bg-white px-4 py-2 rounded-full border border-slate-100 shadow-sm">{new Date(note.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}</span>
                           </div>
-                          <h4 className="font-black uppercase tracking-widest text-sm text-slate-900 mb-4 group-hover:text-blue-600 transition-colors">{note.title}</h4>
+                          <h4 className="font-black uppercase tracking-widest text-sm text-slate-900 mb-4 group-hover:text-blue-600 transition-colors">{formatDisplayString(note.title)}</h4>
                           <p className="text-[11px] text-slate-500 font-black uppercase tracking-widest leading-relaxed line-clamp-3 opacity-70">{note.content}</p>
                         </div>
                       ))
@@ -469,33 +471,34 @@ export const ParentDashboard = ({ user, onLogout, school }: { user: UserProfile,
                   </div>
                 </div>
 
-                <div className="bg-slate-900 p-16 rounded-[4rem] relative overflow-hidden flex flex-col min-h-[500px] shadow-2xl shadow-slate-900/20">
-                  <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/[0.03] rounded-full blur-[120px] -mr-32 -mt-32 pointer-events-none"></div>
+                <div className="bg-white p-16 rounded-[4rem] relative overflow-hidden flex flex-col min-h-[500px] shadow-2xl shadow-slate-200/40 border border-white">
+                  <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-50/50 rounded-full blur-[120px] -mr-32 -mt-32 pointer-events-none"></div>
                   <div className="relative z-10 flex flex-col h-full justify-center">
                     <div className="flex items-center gap-10 mb-16">
-                      <div className="w-24 h-24 bg-white/10 backdrop-blur-md rounded-[2rem] flex items-center justify-center text-white shadow-2xl border border-white/10">
-                        <Heart size={48} strokeWidth={2.5} fill="white" />
+                      <div className="w-24 h-24 bg-indigo-50 rounded-[2rem] flex items-center justify-center text-indigo-600 shadow-xl border border-indigo-100">
+                        <Heart size={48} strokeWidth={2.5} fill="currentColor" />
                       </div>
                       <div>
-                        <h3 className="text-3xl font-black uppercase tracking-tighter text-white">AI Companion</h3>
-                        <p className="text-[10px] text-white/40 font-black uppercase tracking-widest mt-3">Machine Learning Intelligence</p>
+                        <h3 className="text-3xl font-black uppercase tracking-tighter text-slate-900">AI Companion</h3>
+                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-3">Machine Learning Intelligence</p>
                       </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-8 mb-16">
-                      <div className="bg-white/5 p-10 rounded-[3rem] border border-white/5 text-center shadow-2xl">
-                        <p className="text-[10px] text-white/30 font-black uppercase tracking-widest mb-4">Mastery Grade</p>
-                        <p className="text-5xl font-black text-white tracking-tighter">Level {activeStudent?.level || 1}</p>
+                      <div className="bg-slate-50/50 p-10 rounded-[3rem] border border-slate-100 text-center shadow-sm">
+                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-4">Mastery Grade</p>
+                        <p className="text-5xl font-black text-slate-900 tracking-tighter">Level {activeStudent?.level || 1}</p>
                       </div>
-                      <div className="bg-white/5 p-10 rounded-[3rem] border border-white/5 text-center shadow-2xl">
-                        <p className="text-[10px] text-white/30 font-black uppercase tracking-widest mb-4">Total XP</p>
-                        <p className="text-5xl font-black text-white tracking-tighter">{activeStudent?.xp || 0}</p>
+                      <div className="bg-slate-50/50 p-10 rounded-[3rem] border border-slate-100 text-center shadow-sm">
+                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-4">Total XP</p>
+                        <p className="text-5xl font-black text-slate-900 tracking-tighter">{activeStudent?.xp || 0}</p>
                       </div>
                     </div>
                     
-                    <div className="bg-white/10 backdrop-blur-md p-10 rounded-[3rem] border border-white/10 relative overflow-hidden">
-                      <p className="text-[11px] text-white font-black uppercase tracking-widest leading-relaxed relative z-10 italic opacity-90">
-                        "{activeStudent?.firstName} continues to show exceptional analytical capacity. Our algorithms recommend additional focus on abstract problem solving to bridge the level gap."
+                    <div className="bg-indigo-600 p-10 rounded-[3rem] border border-indigo-500 relative overflow-hidden shadow-2xl shadow-indigo-200">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-16 -mt-16"></div>
+                      <p className="text-[11px] text-white font-black uppercase tracking-widest leading-relaxed relative z-10 italic">
+                        "{formatDisplayString(activeStudent?.firstName)} continues to show exceptional analytical capacity. Our algorithms recommend additional focus on abstract problem solving to bridge the level gap."
                       </p>
                     </div>
                   </div>

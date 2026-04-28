@@ -3,7 +3,7 @@ import { db, collection, doc, query, where, onSnapshot, OperationType, handleFir
 import { UserProfile, Result, Session, Term, Subject, GradeScale, Class } from '../../types';
 import { Trophy, Target, TrendingUp, TrendingDown, BookOpen, Loader2, Award, Star, Printer, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { sortByName } from '../../lib/utils';
+import { sortByName, formatDisplayString } from '../../lib/utils';
 import { ReportCard } from './ReportCard';
 
 interface StudentResultViewProps {
@@ -102,8 +102,8 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
     return () => unsubResults();
   }, [selectedSession, selectedTerm, user.uid]);
 
-  const getClassName = (id: string) => classes.find(c => c.id === id)?.name || 'Unassigned';
-  const getSubjectName = (id: string) => subjects.find(s => s.id === id)?.name || 'Unknown Subject';
+  const getClassName = (id: string) => formatDisplayString(classes.find(c => c.id === id)?.name || 'Unassigned');
+  const getSubjectName = (id: string) => formatDisplayString(subjects.find(s => s.id === id)?.name || 'Unknown Subject');
 
   const stats = {
     total: results.reduce((acc, curr) => acc + (curr.finalScore || 0), 0),
@@ -129,7 +129,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
         <div className="bg-white/80 backdrop-blur-md p-6 md:p-8 rounded-[2.5rem] border border-white/50 shadow-sm">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
-              <h2 className="text-2xl font-black uppercase tracking-tighter text-slate-900">{user.firstName} {user.lastName}</h2>
+              <h2 className="text-2xl font-black uppercase tracking-tighter text-slate-900">{formatDisplayString(user.firstName)} {formatDisplayString(user.lastName)}</h2>
               <div className="flex flex-wrap items-center gap-3 mt-2">
                 <span className="px-3 py-1 rounded-full bg-slate-900 text-white font-black uppercase tracking-widest text-[8px]">
                   {getClassName(user.classId || '')}
@@ -156,7 +156,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                   onChange={e => setSelectedSession(e.target.value)}
                   className="w-full appearance-none pl-6 pr-12 py-3.5 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black uppercase tracking-widest text-[10px] text-slate-900 cursor-pointer shadow-sm"
                 >
-                  {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  {sessions.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
                 </select>
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                   <TrendingDown size={14} className="rotate-0" />
@@ -267,7 +267,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                                 </span>
                               </td>
                               <td className="pr-8 pl-4 py-6">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">{result.remark || '-'}</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">{formatDisplayString(result.remark || '-')}</span>
                               </td>
                             </tr>
                           ))}
@@ -327,7 +327,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                           
                           <div className="flex justify-between items-center pt-4 border-t border-slate-50">
                             <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Teacher's Remark</span>
-                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">{result.remark || '-'}</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">{formatDisplayString(result.remark || '-')}</span>
                           </div>
                         </div>
                       ))}

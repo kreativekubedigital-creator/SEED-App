@@ -3,7 +3,7 @@ import { db, collection, getDocs, query, where, addDoc, doc, deleteDoc, onSnapsh
 import { UserProfile, Quiz, Subject, Class, Result } from '../../types';
 import { Plus, Trash2, CheckCircle2, Circle, CheckSquare, Eye, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { sortByFullName } from '../../lib/utils';
+import { sortByFullName, formatDisplayString } from '../../lib/utils';
 
 export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile, subjects: Subject[], classes: Class[] }) => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
@@ -148,7 +148,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
         return {
           id: d.id,
           ...data,
-          studentName: student ? `${student.firstName} ${student.lastName}` : 'Unknown Student'
+          studentName: student ? `${formatDisplayString(student.firstName)} ${formatDisplayString(student.lastName)}` : 'Unknown Student'
         };
       });
       resultsData.sort((a, b) => b.score - a.score); // Sort by highest score
@@ -158,8 +158,8 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
     }
   };
 
-  const getSubjectName = (subjectId: string) => subjects.find(s => s.id === subjectId)?.name || 'Unknown Subject';
-  const getClassName = (classId: string) => classes.find(c => c.id === classId)?.name || 'Unknown Class';
+  const getSubjectName = (subjectId: string) => formatDisplayString(subjects.find(s => s.id === subjectId)?.name || 'Unknown Subject');
+  const getClassName = (classId: string) => formatDisplayString(classes.find(c => c.id === classId)?.name || 'Unknown Class');
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">

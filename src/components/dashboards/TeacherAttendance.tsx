@@ -12,7 +12,7 @@ import {
   ChevronRight,
   Loader2 
 } from 'lucide-react';
-import { sortByName, sortByFullName } from '../../lib/utils';
+import { sortByName, sortByFullName, formatDisplayString } from '../../lib/utils';
 
 interface TeacherAttendanceProps {
   user: UserProfile;
@@ -205,10 +205,10 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
                         <td className="px-8 py-5">
                           <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 font-black text-xs shrink-0 border-2 border-white shadow-sm">
-                              {student.firstName?.[0]}{student.lastName?.[0]}
+                              {formatDisplayString(student.firstName)?.[0]}{formatDisplayString(student.lastName)?.[0]}
                             </div>
                             <div>
-                              <p className="font-black uppercase tracking-widest text-[10px] text-slate-900">{student.firstName} {student.lastName}</p>
+                              <p className="font-black uppercase tracking-widest text-[10px] text-slate-900">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</p>
                               <p className="text-[8px] font-black uppercase tracking-widest text-slate-400 mt-1">{student.registrationNumber || 'NO ID'}</p>
                             </div>
                           </div>

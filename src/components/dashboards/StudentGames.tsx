@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Calculator, BookA, Trophy, RefreshCw, Play, Beaker, Star, ArrowLeft, TrendingUp, ShoppingBag, Award, Sparkles, Flame } from 'lucide-react';
 import { addXP, getLeaderboard, purchaseItem } from '../../services/gamificationService';
 import { MemoryFlipGame } from '../games/MemoryFlipGame';
-import { cn } from '../../lib/utils';
+import { cn, formatDisplayString } from '../../lib/utils';
 
 type GameType = 'math' | 'word' | 'science' | 'memory' | null;
 
@@ -604,10 +604,10 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
                   </div>
                   <div className="col-span-7 flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">
-                      {u.firstName?.[0]}{u.lastName?.[0]}
+                      {formatDisplayString(u.firstName)?.[0]}{formatDisplayString(u.lastName)?.[0]}
                     </div>
                     <div>
-                      <p className="font-bold text-slate-900 text-sm">{u.firstName} {u.lastName}</p>
+                      <p className="font-bold text-slate-900 text-sm">{formatDisplayString(u.firstName)} {formatDisplayString(u.lastName)}</p>
                       <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">{u.registrationNumber || 'Student'}</p>
                     </div>
                   </div>
@@ -701,7 +701,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
                   <h4 className="font-bold text-slate-900 text-sm relative z-10">{badge.title}</h4>
                   <p className="text-[10px] text-slate-500 font-medium leading-tight relative z-10">{badge.description}</p>
                   <div className="mt-auto pt-3 text-[8px] text-slate-400 font-black uppercase tracking-widest relative z-10">
-                    Earned {badge.earnedAt?.toDate ? new Date(badge.earnedAt.toDate()).toLocaleDateString() : 'N/A'}
+                    Earned {badge.earnedAt ? (typeof badge.earnedAt.toDate === 'function' ? badge.earnedAt.toDate().toLocaleDateString() : new Date(badge.earnedAt).toLocaleDateString()) : 'N/A'}
                   </div>
                 </motion.div>
               );
