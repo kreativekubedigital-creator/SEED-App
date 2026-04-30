@@ -42,6 +42,7 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
   const [selectedTerm, setSelectedTerm] = useState<string>(defaultTerm);
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [paymentFilter, setPaymentFilter] = useState<'all' | 'paid' | 'unpaid'>('all');
 
   // 2. Filter Logic (Internal helper for generic term matching)
   const isMatchingTerm = React.useCallback((invSessionId: string, invTermId: string) => {
@@ -138,8 +139,13 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
           hasInvoices: studentInvoices.length > 0
         };
       })
+      .filter(({ totalFee, balance }) => {
+        if (paymentFilter === 'paid') return totalFee > 0 && balance <= 0;
+        if (paymentFilter === 'unpaid') return balance > 0;
+        return true;
+      })
       .sort((a, b) => b.balance - a.balance);
-  }, [students, invoices, feeStructures, selectedClass, selectedSession, selectedTerm, searchQuery, termsMap, isMatchingTerm]);
+  }, [students, invoices, feeStructures, selectedClass, selectedSession, selectedTerm, searchQuery, paymentFilter, termsMap, isMatchingTerm]);
 
   // 5. Analytics Aggregation (Updated to reflect reconciliation)
   const stats = useMemo(() => {
@@ -340,7 +346,7 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
                 exit={{ height: 0, opacity: 0 }}
                 className="overflow-hidden"
               >
-                <div className="grid grid-cols-3 gap-4 pt-4 mt-4 border-t border-slate-50">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 mt-4 border-t border-slate-50">
                   <div>
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block">Class</label>
                     <div className="relative">
@@ -388,6 +394,21 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
                             <option value="3rd_term">3rd Term</option>
                           </>
                         )}
+                      </select>
+                      <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block">Payment Status</label>
+                    <div className="relative">
+                      <select
+                        value={paymentFilter}
+                        onChange={(e) => setPaymentFilter(e.target.value as 'all' | 'paid' | 'unpaid')}
+                        className="w-full pl-3 pr-8 py-2.5 bg-slate-50 border-none rounded-xl text-xs font-bold text-slate-700 outline-none appearance-none focus:ring-2 focus:ring-blue-100 transition-all"
+                      >
+                        <option value="all">All</option>
+                        <option value="paid">Paid</option>
+                        <option value="unpaid">Unpaid</option>
                       </select>
                       <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                     </div>
