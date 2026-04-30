@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { GoogleGenAI } from "@google/genai";
 import { db, collection, getDocs, query, where, addDoc } from '../lib/compatibility';
 import { GraduationStudent } from '../types';
+import { formatDisplayString } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Image as ImageIcon, Plus, Loader2, X } from 'lucide-react';
 
@@ -129,11 +130,11 @@ export const GraduationAlbum = () => {
             >
               <img
                 src={student.photoUrl}
-                alt={student.name}
+                alt={formatDisplayString(student.name)}
                 className="w-full aspect-square object-cover rounded-2xl mb-4"
                 referrerPolicy="no-referrer"
               />
-              <h3 className="font-medium text-center text-sm">{student.name}</h3>
+              <h3 className="font-medium text-center text-sm">{formatDisplayString(student.name)}</h3>
             </motion.div>
           ))}
           {students.length === 0 && (

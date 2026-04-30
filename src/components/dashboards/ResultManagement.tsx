@@ -367,7 +367,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                       <tr>
                         <th className="px-6 py-4">Student</th>
                         {caConfig.cas.map((ca, idx) => (
-                          <th key={idx} className="px-4 py-4 w-24 text-center">{ca.name} ({ca.maxScore})</th>
+                          <th key={idx} className="px-4 py-4 w-24 text-center">{formatDisplayString(ca.name)} ({ca.maxScore})</th>
                         ))}
                         <th className="px-4 py-4 w-24 text-center bg-blue-50/50">CA Total ({totalCaMax})</th>
                         <th className="px-4 py-4 w-24 text-center">Exam ({caConfig.maxExamScore})</th>
@@ -459,7 +459,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                             const val = score.cas?.[ca.name] !== undefined ? score.cas[ca.name] : (idx === 0 ? score.ca1 : idx === 1 ? score.ca2 : idx === 2 ? score.ca3 : 0);
                             return (
                               <div key={idx} className="flex flex-col">
-                                <span className="text-[10px] text-slate-900 dark:text-slate-100 text-center mb-1">{ca.name} ({ca.maxScore})</span>
+                                <span className="text-[10px] text-slate-900 dark:text-slate-100 text-center mb-1">{formatDisplayString(ca.name)} ({ca.maxScore})</span>
                                 <input
                                   type="number"
                                   placeholder="-"

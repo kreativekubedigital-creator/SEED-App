@@ -232,7 +232,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                           <tr>
                             <th className="pl-8 pr-4 py-5">Subject Name</th>
                             {caConfig.cas.map((ca, idx) => (
-                              <th key={idx} className="px-4 py-5 text-center">{ca.name}</th>
+                              <th key={idx} className="px-4 py-5 text-center">{formatDisplayString(ca.name)}</th>
                             ))}
                             <th className="px-4 py-5 text-center">CA</th>
                             <th className="px-4 py-5 text-center">Exam</th>
@@ -303,7 +303,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                               const val = result.cas?.[ca.name] !== undefined ? result.cas[ca.name] : (idx === 0 ? result.ca1 : idx === 1 ? result.ca2 : idx === 2 ? result.ca3 : null);
                               return (
                                 <div key={idx} className="flex flex-col">
-                                  <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">{ca.name} Score</span>
+                                  <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">{formatDisplayString(ca.name)} Score</span>
                                   <span className="font-bold text-slate-900">{val !== null && val !== undefined ? val : '-'}</span>
                                 </div>
                               );

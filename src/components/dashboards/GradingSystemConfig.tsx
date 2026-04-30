@@ -519,7 +519,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                   <div key={idx} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                     <input
                       type="text"
-                      value={ca.name}
+                      value={formatDisplayString(ca.name)}
                       onChange={e => updateCaItem(idx, 'name', e.target.value)}
                       placeholder="CA Name (e.g., CA 1)"
                       className="w-full sm:flex-1 px-3 py-2.5 rounded-xl border border-gray-200 bg-white hover:border-gray-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-medium text-slate-900 text-sm"

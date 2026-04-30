@@ -446,7 +446,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                         <div className="flex items-center gap-2">
                           <Users size={12} className="text-blue-500" />
                           <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">
-                            { fee.classId  === 'all' ? 'All Classes' : classMap[fee.classId]?.name || fee.classId }
+                            { fee.classId  === 'all' ? 'All Classes' : classMap[fee.classId]?.name || formatDisplayString(fee.classId) }
                           </p>
                         </div>
                         <div className="flex gap-2">
@@ -910,7 +910,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                     const balance = inv.amount - inv.amountPaid;
                     return (
                       <option key={inv.id} value={inv.id}>
-                        {student ? `${student.firstName} ${student.lastName}` : inv.studentId} — ₦{balance.toLocaleString()} outstanding
+                        {student ? `${formatDisplayString(student.firstName)} ${formatDisplayString(student.lastName)}` : inv.studentId} — ₦{balance.toLocaleString()} outstanding
                       </option>
                     );
                   })}

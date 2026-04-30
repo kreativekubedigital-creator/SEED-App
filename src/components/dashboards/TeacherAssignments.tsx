@@ -266,7 +266,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                     >
                       <option value="">Select Subject</option>
                       {subjects.map(s => (
-                        <option key={s.id} value={s.id}>{s.name} ({getClassName(s.classId)})</option>
+                        <option key={s.id} value={s.id}>{formatDisplayString(s.name)} ({getClassName(s.classId)})</option>
                       ))}
                     </select>
                   </div>

@@ -3,7 +3,7 @@ import { db, collection, onSnapshot, OperationType, handleFirestoreError } from 
 import { Session, GradeScale } from '../../types';
 import { Award, CheckCircle2, Loader2, AlertCircle } from 'lucide-react';
 import { promoteStudents } from '../../lib/promotion';
-import { sortByName } from '../../lib/utils';
+import {  sortByName , formatDisplayString } from '../../lib/utils';
 
 interface PromotionManagementProps {
   schoolId: string;
@@ -56,7 +56,7 @@ export const PromotionManagement = ({ schoolId }: PromotionManagementProps) => {
     const session = sessions.find(s => s.id === selectedSession);
     if (!session) return;
 
-    if (!window.confirm(`Are you sure you want to promote students for the ${session.name} session? This process will move eligible students to their next classes and graduate final year students. This action cannot be easily undone.`)) {
+    if (!window.confirm(`Are you sure you want to promote students for the ${formatDisplayString(session.name)} session? This process will move eligible students to their next classes and graduate final year students. This action cannot be easily undone.`)) {
       return;
     }
 
@@ -121,7 +121,7 @@ export const PromotionManagement = ({ schoolId }: PromotionManagementProps) => {
               <option value="">Select Session</option>
               {sessions.map(s => (
                 <option key={s.id} value={s.id}>
-                  {s.name} {s.isCurrent ? '(Current)' : ''}
+                  {formatDisplayString(s.name)} {s.isCurrent ? '(Current)' : ''}
                 </option>
               ))}
             </select>

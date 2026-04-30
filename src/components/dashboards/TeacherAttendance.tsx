@@ -141,7 +141,7 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
                 className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
               >
                 {classes.map(c => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
+                  <option key={c.id} value={c.id}>{formatDisplayString(c.name)}</option>
                 ))}
               </select>
             </div>

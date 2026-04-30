@@ -92,7 +92,7 @@ export const FeeAnalytics = ({ school, invoices, payments, feeStructures, classe
       .filter(s => {
         const matchesClass = selectedClass === 'all' || s.classId === selectedClass;
         const matchesSearch = !searchQuery || 
-          `${s.firstName} ${s.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          `${formatDisplayString(s.firstName)} ${formatDisplayString(s.lastName)}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
           s.uid.toLowerCase().includes(searchQuery.toLowerCase());
         return matchesClass && matchesSearch;
       })

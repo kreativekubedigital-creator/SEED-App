@@ -820,7 +820,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
   <div>
   <h2 className="text-2xl md:text-xl font-medium text-slate-900 capitalize tracking-tight">Overview</h2>
-  <p className="text-slate-900 mt-1 md:mt-2 text-sm md:text-base font-medium">Welcome back, { school.name }. Manage your school's operations.</p>
+  <p className="text-slate-900 mt-1 md:mt-2 text-sm md:text-base font-medium">Welcome back, { formatDisplayString(school.name) }. Manage your school's operations.</p>
   </div>
   <div className="text-sm font-medium text-blue-600 bg-blue-50 border border-blue-100 rounded-xl px-4 py-2 shadow-sm">
   { formatDisplayString(school.planId).toUpperCase() } PLAN
@@ -970,7 +970,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  >
  <option value="all">All Classes</option>
  { sortedClasses.map(c => (
- <option key={ c.id } value={ c.id }>{ c.name }</option>
+ <option key={ c.id } value={ c.id }>{ formatDisplayString(c.name) }</option>
  ))}
  </select>
  <div className="relative w-full sm:w-64">
@@ -1040,7 +1040,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  </span>
  {(u.role  === 'student'|| u.role  === 'teacher') && (
  <p className="text-xs text-slate-900 font-medium mt-1">
- { u.role  === 'student'? (u.studentId ||'No ID') :'Teacher'} • { classes.find(c => c.id === u.classId)?.name ||'Unassigned'}
+ { u.role  === 'student'? (u.studentId ||'No ID') :'Teacher'} • { formatDisplayString(classes.find(c => c.id === u.classId)?.name ||'Unassigned')}
  </p>
  )}
  </div>
@@ -1132,7 +1132,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <div className="flex justify-between items-center">
  <span className="text-xs text-slate-900">Class/Details</span>
  <span className="text-xs text-slate-900">
- { u.role  === 'student'? (u.studentId ||'No ID') :'Teacher'} • { classes.find(c => c.id === u.classId)?.name ||'Unassigned'}
+ { u.role  === 'student'? (u.studentId ||'No ID') :'Teacher'} • { formatDisplayString(classes.find(c => c.id === u.classId)?.name ||'Unassigned')}
  </span>
  </div>
  )}
@@ -1545,7 +1545,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-text"
  >
  <option value="">Select Class</option>
- { sortedClasses.map(c => <option key={ c.id } value={ c.id }>{ c.name }</option>)}
+ { sortedClasses.map(c => <option key={ c.id } value={ c.id }>{ formatDisplayString(c.name) }</option>)}
  </select>
  </div>
  </div>

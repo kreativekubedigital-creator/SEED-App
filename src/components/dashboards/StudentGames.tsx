@@ -45,7 +45,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
     if (!user.uid) return;
     try {
       await purchaseItem(user.uid, item.id, item.price);
-      alert(`Successfully purchased ${item.name}!`);
+      alert(`Successfully purchased ${formatDisplayString(item.name)}!`);
     } catch (error: any) {
       alert(error.message);
     }
@@ -652,7 +652,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
                     <item.icon size={24} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900">{item.name}</h4>
+                    <h4 className="font-bold text-slate-900">{formatDisplayString(item.name)}</h4>
                     <p className="text-xs text-slate-500 mt-1 font-medium">{item.description}</p>
                   </div>
                   <button 
@@ -698,7 +698,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
                 >
                   <div className="absolute top-0 right-0 w-24 h-24 bg-white/40 rounded-full blur-2xl -mr-8 -mt-8"></div>
                   <div className="text-5xl mb-2 relative z-10">{badge.icon}</div>
-                  <h4 className="font-bold text-slate-900 text-sm relative z-10">{badge.title}</h4>
+                  <h4 className="font-bold text-slate-900 text-sm relative z-10">{formatDisplayString(badge.title)}</h4>
                   <p className="text-[10px] text-slate-500 font-medium leading-tight relative z-10">{badge.description}</p>
                   <div className="mt-auto pt-3 text-[8px] text-slate-400 font-black uppercase tracking-widest relative z-10">
                     Earned {badge.earnedAt ? (typeof badge.earnedAt.toDate === 'function' ? badge.earnedAt.toDate().toLocaleDateString() : new Date(badge.earnedAt).toLocaleDateString()) : 'N/A'}

@@ -244,7 +244,7 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
                 <div className="space-y-3 mb-8 bg-slate-50/50 p-6 rounded-3xl border border-slate-100 border-dashed">
                   {inv.items.map((item, idx) => (
                     <div key={idx} className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500">
-                      <span>{item.name}</span>
+                      <span>{formatDisplayString(item.name)}</span>
                       <span className="text-slate-900">₦{item.amount.toLocaleString()}</span>
                     </div>
                   ))}

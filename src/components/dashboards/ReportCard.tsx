@@ -92,7 +92,7 @@ export const ReportCard: React.FC<ReportCardProps> = ({
               <th className="border border-gray-800 px-3 py-2 text-left font-medium text-slate-900 uppercase text-sm">Subject</th>
               {caConfig.cas.map((ca, idx) => (
                 <th key={idx} className="border border-gray-800 px-2 py-2 text-center font-medium text-slate-900 uppercase text-xs w-16">
-                  {ca.name}<br/><span className="text-[10px] font-medium">({ca.maxScore})</span>
+                  {formatDisplayString(ca.name)}<br/><span className="text-[10px] font-medium">({ca.maxScore})</span>
                 </th>
               ))}
               <th className="border border-gray-800 px-2 py-2 text-center font-medium text-slate-900 uppercase text-xs w-20 bg-gray-200">

@@ -528,7 +528,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                             min="0" max={ca.maxScore}
                             value={bulkCa1}
                             onChange={(e) => setBulkCa1(e.target.value)}
-                            placeholder={`${ca.name} Max:${ca.maxScore}`}
+                            placeholder={`${formatDisplayString(ca.name)} Max:${ca.maxScore}`}
                             className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black uppercase tracking-widest text-[10px] text-slate-900"
                           />
                           <button 
@@ -576,7 +576,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                   <tr>
                     <th className="px-8 py-6 whitespace-nowrap">Student Roster</th>
                     {caConfig.cas.map((ca, idx) => (
-                      <th key={idx} className="px-4 py-6 text-center w-28">{ca.name}<br/><span className="text-[8px] opacity-60">Max:{ca.maxScore}</span></th>
+                      <th key={idx} className="px-4 py-6 text-center w-28">{formatDisplayString(ca.name)}<br/><span className="text-[8px] opacity-60">Max:{ca.maxScore}</span></th>
                     ))}
                     <th className="px-4 py-6 text-center w-28 bg-slate-100/50">CA TOTAL<br/><span className="text-[8px] opacity-60">Max:{totalCaMax}</span></th>
                     <th className="px-4 py-6 text-center w-28">EXAM<br/><span className="text-[8px] opacity-60">Max:{caConfig.maxExamScore}</span></th>
@@ -691,7 +691,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                         const val = score.cas?.[ca.name] !== undefined ? score.cas[ca.name] : (idx === 0 ? score.ca1 : idx === 1 ? score.ca2 : idx === 2 ? score.ca3 : 0);
                         return (
                           <div key={idx} className="flex flex-col gap-2">
-                            <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 ml-1">{ca.name} (Max:{ca.maxScore})</span>
+                            <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 ml-1">{formatDisplayString(ca.name)} (Max:{ca.maxScore})</span>
                             <input
                               id={`input_teacher_result_ca_mobile_${idx}_${student.uid}`}
                               type="number"

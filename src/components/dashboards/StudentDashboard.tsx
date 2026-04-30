@@ -174,7 +174,7 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
       <div className="lg:hidden flex items-center justify-between p-6 bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
         <div className="flex items-center gap-3">
           {school?.logoUrl ? (
-            <img src={school.logoUrl} alt={school.name} className="w-10 h-10 rounded-xl object-cover shadow-sm" />
+            <img src={school.logoUrl} alt={formatDisplayString(school.name)} className="w-10 h-10 rounded-xl object-cover shadow-sm" />
           ) : (
             <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center font-black text-white text-xs shadow-lg">S</div>
           )}
@@ -201,7 +201,7 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
                   Hello, {formatDisplayString(user.firstName)}!
                 </h1>
                 {school?.logoUrl && (
-                  <img src={school.logoUrl} alt={school.name} className="w-8 h-8 rounded-lg object-cover opacity-20 grayscale" />
+                  <img src={school.logoUrl} alt={formatDisplayString(school.name)} className="w-8 h-8 rounded-lg object-cover opacity-20 grayscale" />
                 )}
               </div>
               <div className="flex items-center gap-3 mt-3">

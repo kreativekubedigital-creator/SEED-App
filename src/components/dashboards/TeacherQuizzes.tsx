@@ -181,7 +181,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
               className="w-full appearance-none pl-6 pr-12 py-4 rounded-2xl border border-slate-100 bg-white hover:border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black uppercase tracking-widest text-[10px] text-slate-900 cursor-pointer shadow-sm"
             >
               <option value="">All Classes</option>
-              {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              {classes.map(c => <option key={c.id} value={c.id}>{formatDisplayString(c.name)}</option>)}
             </select>
           </div>
           
@@ -242,7 +242,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
                   >
                     <option value="">Select Subject</option>
                     {subjects.map(s => (
-                      <option key={s.id} value={s.id}>{s.name} ({getClassName(s.classId)})</option>
+                      <option key={s.id} value={s.id}>{formatDisplayString(s.name)} ({getClassName(s.classId)})</option>
                     ))}
                   </select>
                 </div>
@@ -369,7 +369,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
               </div>
 
               <div className="relative z-10">
-                <h4 className="font-black uppercase tracking-widest text-lg text-slate-900 leading-tight mb-1">{quiz.title}</h4>
+                <h4 className="font-black uppercase tracking-widest text-lg text-slate-900 leading-tight mb-1">{formatDisplayString(quiz.title)}</h4>
                 <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">
                   {subject ? getClassName(subject.classId) : 'N/A'}
                 </p>

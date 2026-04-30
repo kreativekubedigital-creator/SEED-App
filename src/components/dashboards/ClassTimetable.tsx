@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db, collection, query, where, getDocs, doc, setDoc, onSnapshot, serverTimestamp, handleFirestoreError, OperationType } from '../../lib/compatibility';
 import { UserProfile, Class, Subject, Timetable, TimetablePeriod } from '../../types';
 import { Clock, Save, Edit2, X, Plus, Trash2 } from 'lucide-react';
-import { sortByName } from '../../lib/utils';
+import {  sortByName , formatDisplayString } from '../../lib/utils';
 
 interface ClassTimetableProps {
   user: UserProfile;
@@ -161,7 +161,7 @@ const ClassTimetable: React.FC<ClassTimetableProps> = ({ user, mode, studentClas
               >
                 <option value="" disabled>Select a class</option>
                 {classes.map(c => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
+                  <option key={c.id} value={c.id}>{formatDisplayString(c.name)}</option>
                 ))}
               </select>
               <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
@@ -239,7 +239,7 @@ const ClassTimetable: React.FC<ClassTimetableProps> = ({ user, mode, studentClas
                                 className="w-full text-[10px] font-black uppercase p-2 border border-slate-100 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500/20 outline-none transition-all cursor-pointer"
                               >
                                 <option value="">Break / Free</option>
-                                {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                                {subjects.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
                               </select>
                               <button 
                                 id={`btn_timetable_delete_${period.id}`}
