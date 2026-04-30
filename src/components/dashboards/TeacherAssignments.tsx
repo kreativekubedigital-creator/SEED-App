@@ -169,53 +169,53 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
         {assignments.map(assignment => (
           <motion.div
             key={assignment.id}
-            whileHover={{ y: -4 }}
-            className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 flex flex-col gap-6 group hover:shadow-md transition-all relative overflow-hidden"
+            whileHover={{ y: -2 }}
+            className="bg-white p-3 rounded-xl shadow-lg shadow-slate-200/20 border border-slate-100 flex flex-col gap-3 group hover:shadow-blue-600/5 transition-all relative overflow-hidden"
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -mr-10 -mt-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-2xl -mr-10 -mt-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div className="flex justify-between items-start relative z-10">
-              <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl border border-blue-100 shadow-sm">
-                <FileText size={24} strokeWidth={2.5} />
+              <div className="p-1.5 bg-blue-50 text-blue-600 rounded-lg border border-blue-100 shadow-sm">
+                <FileText size={14} strokeWidth={2.5} />
               </div>
               <button
                 id={`btn_teacher_assignment_delete_${assignment.id}`}
                 onClick={() => setAssignmentToDelete(assignment.id)}
-                className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
               >
-                <Trash2 size={20} />
+                <Trash2 size={16} />
               </button>
             </div>
             <div className="relative z-10">
-              <h4 className="font-black uppercase tracking-widest text-lg text-slate-900 leading-tight">{formatDisplayString(assignment.title)}</h4>
-              <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">
+              <h4 className="font-black uppercase tracking-widest text-[10px] text-slate-900 leading-tight truncate">{formatDisplayString(assignment.title)}</h4>
+              <p className="text-[7px] text-slate-400 font-black uppercase tracking-widest mt-0.5">
                 {formatDisplayString(getSubjectName(assignment.subjectId))} <span className="mx-1 text-slate-200">•</span> {formatDisplayString(getClassName(assignment.classId))}
               </p>
             </div>
-            <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-orange-600 bg-orange-50 px-4 py-2 rounded-full border border-orange-100 w-fit relative z-10 shadow-sm">
-              <Calendar size={14} strokeWidth={3} />
+            <div className="flex items-center gap-1.5 text-[7px] font-black uppercase tracking-widest text-orange-600 bg-orange-50 px-2 py-1 rounded-lg border border-orange-100 w-fit relative z-10 shadow-sm">
+              <Calendar size={10} strokeWidth={3} />
               Due: {new Date(assignment.dueDate).toLocaleDateString()}
             </div>
-            <div className="pt-6 border-t border-slate-50 relative z-10">
+            <div className="pt-4 border-t border-slate-50 relative z-10">
               <button
                 id={`btn_teacher_assignment_view_submissions_${assignment.id}`}
                 onClick={() => setViewingSubmissions(assignment.id)}
-                className="w-full py-4 rounded-2xl bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 active:scale-[0.98]"
+                className="w-full py-2 rounded-lg bg-blue-600 text-white text-[8px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 active:scale-[0.98]"
               >
-                View Submissions <ChevronRight size={14} strokeWidth={3} />
+                Submissions <ChevronRight size={10} strokeWidth={3} />
               </button>
             </div>
           </motion.div>
         ))}
         {assignments.length === 0 && (
-          <div className="col-span-full py-20 text-center bg-white rounded-[2.5rem] border border-slate-100 border-dashed">
-            <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-200 mx-auto mb-4 border border-slate-100 shadow-sm">
-              <FileText size={40} />
+          <div className="col-span-full py-16 text-center bg-white rounded-xl border border-slate-100 border-dashed">
+            <div className="w-16 h-16 bg-slate-50 rounded-xl flex items-center justify-center text-slate-200 mx-auto mb-4 border border-slate-100 shadow-sm">
+              <FileText size={32} />
             </div>
-            <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">No assignments created yet.</p>
+            <p className="text-slate-400 font-black uppercase tracking-widest text-[8px]">No assignments created yet.</p>
           </div>
         )}
       </div>
