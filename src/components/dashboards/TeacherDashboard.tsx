@@ -155,16 +155,16 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-3 overflow-x-auto pb-6 mb-16 scrollbar-hide no-scrollbar scroll-smooth">
+        <div className="flex items-center gap-2 overflow-x-auto pb-6 mb-10 scrollbar-hide no-scrollbar scroll-smooth pt-4 -mx-2 px-2">
           {(['overview', 'classes', 'assignments', 'quizzes', 'results', 'attendance', 'timetable'] as const).map((tab) => (
             <button
               key={tab}
               id={`tab_teacher_${tab}`}
               onClick={() => setActiveTab(tab)}
-              className={`px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all whitespace-nowrap shrink-0 border shadow-sm ${
+              className={`px-6 py-2.5 rounded-xl font-black uppercase tracking-widest text-[8px] transition-all whitespace-nowrap shrink-0 border shadow-sm ${
                 activeTab === tab
-                  ? 'bg-slate-900 text-white border-slate-900 shadow-2xl shadow-slate-900/20 scale-105 z-10'
-                  : 'bg-white text-slate-400 border-white hover:bg-slate-50 hover:text-slate-900'
+                  ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-600/20 scale-105 z-10'
+                  : 'bg-white text-slate-400 border-white hover:bg-blue-50 hover:text-blue-600 hover:border-blue-100'
               }`}
             >
               {formatDisplayString(tab)}
@@ -176,7 +176,7 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
         {activeTab === 'overview' && (
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
                 { id: 'subjects', label: 'My Subjects', value: subjects.length, icon: BookOpen, color: 'blue', action: 'classes' },
                 { id: 'classes', label: 'My Classes', value: Array.from(new Set([...subjects.map(s => s.classId), ...(user.classId ? [user.classId] : [])])).length, icon: Users, color: 'emerald', action: 'classes' },
@@ -186,18 +186,18 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
                 <motion.div 
                   key={stat.id}
                   id={`stat_teacher_${stat.id}`}
-                  whileHover={{ y: -10, scale: 1.02 }} 
+                  whileHover={{ y: -3, scale: 1.01 }} 
                   onClick={() => setActiveTab(stat.action as any)} 
-                  className="bg-white/80 backdrop-blur-md p-10 rounded-[2.5rem] border border-white cursor-pointer shadow-2xl shadow-slate-200/40 hover:shadow-slate-900/5 transition-all group overflow-hidden relative"
+                  className="bg-white/80 backdrop-blur-md p-4 rounded-[1.5rem] border border-white cursor-pointer shadow-lg shadow-slate-200/30 hover:shadow-blue-600/5 transition-all group overflow-hidden relative"
                 >
-                  <div className={`absolute -right-4 -top-4 w-24 h-24 bg-${stat.color}-500/5 rounded-full blur-2xl group-hover:bg-${stat.color}-500/10 transition-all`} />
-                  <div className="flex items-center gap-5 mb-10 relative z-10">
-                    <div className={`p-5 bg-${stat.color}-50 rounded-[1.5rem] text-${stat.color}-600 border border-${stat.color}-100 group-hover:scale-110 transition-transform`}>
-                      <stat.icon size={28} strokeWidth={2.5} />
+                  <div className={`absolute -right-2 -top-2 w-12 h-12 bg-${stat.color}-500/5 rounded-full blur-xl group-hover:bg-${stat.color}-500/10 transition-all`} />
+                  <div className="flex items-center gap-2.5 mb-3 relative z-10">
+                    <div className={`p-2 bg-${stat.color}-50 rounded-lg text-${stat.color}-600 border border-${stat.color}-100 group-hover:scale-110 transition-transform`}>
+                      <stat.icon size={14} strokeWidth={2.5} />
                     </div>
-                    <span className="text-slate-400 font-black text-[10px] uppercase tracking-widest">{stat.label}</span>
+                    <span className="text-slate-400 font-black text-[7px] uppercase tracking-widest">{stat.label}</span>
                   </div>
-                  <p className="text-5xl font-black uppercase tracking-tighter text-slate-900 leading-none relative z-10">{stat.value}</p>
+                  <p className="text-xl font-black uppercase tracking-tighter text-slate-900 leading-none relative z-10">{stat.value}</p>
                 </motion.div>
               ))}
             </div>
@@ -208,51 +208,51 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
                 <div className="flex justify-between items-center mb-12">
                   <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Quick Actions</h3>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div className="grid grid-cols-2 gap-3">
                   {[
-                    { id: 'new_assign', label: 'New Assignment', desc: 'Upload homework', icon: Plus, color: 'blue', tab: 'assignments' },
-                    { id: 'create_quiz', label: 'Create Quiz', desc: 'Objective test', icon: Plus, color: 'orange', tab: 'quizzes' },
-                    { id: 'enter_results', label: 'Enter Results', desc: 'Assessment', icon: Award, color: 'emerald', tab: 'results' },
-                    { id: 'attendance', label: 'Attendance', desc: 'Daily register', icon: Calendar, color: 'teal', tab: 'attendance' }
+                    { id: 'new_assign', label: 'New Assignment', desc: 'Upload', icon: Plus, color: 'blue', tab: 'assignments' },
+                    { id: 'create_quiz', label: 'Create Quiz', desc: 'Test', icon: Plus, color: 'blue', tab: 'quizzes' },
+                    { id: 'enter_results', label: 'Results', desc: 'Entry', icon: Award, color: 'blue', tab: 'results' },
+                    { id: 'attendance', label: 'Attendance', desc: 'Daily', icon: Calendar, color: 'blue', tab: 'attendance' }
                   ].map((action) => (
                     <motion.button 
                       key={action.id}
                       id={`action_teacher_${action.id}`}
-                      whileHover={{ scale: 1.02, y: -4 }} 
+                      whileHover={{ scale: 1.02, y: -2 }} 
                       onClick={() => setActiveTab(action.tab as any)} 
-                      className="p-8 rounded-[2rem] bg-slate-50/50 hover:bg-white border border-slate-100 hover:border-white hover:shadow-2xl hover:shadow-slate-200 transition-all text-left flex flex-col gap-3 group"
+                      className="p-4 rounded-xl bg-slate-50/50 hover:bg-white border border-slate-100 hover:border-blue-100 hover:shadow-lg hover:shadow-blue-600/5 transition-all text-left flex flex-col gap-1.5 group"
                     >
-                      <div className={`w-14 h-14 rounded-2xl bg-${action.color}-50 text-${action.color}-600 flex items-center justify-center mb-2 border border-${action.color}-100 group-hover:scale-110 transition-transform`}>
-                        <action.icon size={24} strokeWidth={3} />
+                      <div className={`w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center mb-0.5 border border-blue-100 group-hover:scale-110 transition-transform`}>
+                        <action.icon size={14} strokeWidth={3} />
                       </div>
-                      <span className="font-black uppercase tracking-widest text-[11px] text-slate-900">{action.label}</span>
-                      <span className="text-[8px] text-slate-400 font-black uppercase tracking-widest opacity-60">{action.desc}</span>
+                      <span className="font-black uppercase tracking-widest text-[9px] text-slate-900">{action.label}</span>
+                      <span className="text-[7px] text-slate-400 font-black uppercase tracking-widest opacity-60">{action.desc}</span>
                     </motion.button>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-white/80 backdrop-blur-md p-12 rounded-[2.5rem] border border-white shadow-2xl shadow-slate-200/40">
-                <div className="flex justify-between items-center mb-12">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Recent Activity</h3>
+              <div className="bg-white/80 backdrop-blur-md p-8 lg:p-10 rounded-[2rem] border border-white shadow-2xl shadow-slate-200/40">
+                <div className="flex justify-between items-center mb-8">
+                  <h3 className="text-[9px] font-black uppercase tracking-widest text-slate-400">Recent Activity</h3>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {assignments.slice(0, 4).map(a => (
                     <motion.div 
-                      whileHover={{ x: 8, scale: 1.02 }} 
+                      whileHover={{ x: 4, scale: 1.01 }} 
                       key={a.id} 
-                      className="flex gap-6 items-center p-7 rounded-[2rem] bg-slate-50/50 hover:bg-white border border-slate-100 hover:border-white hover:shadow-2xl hover:shadow-slate-200 transition-all cursor-pointer group"
+                      className="flex gap-4 items-center p-4 rounded-2xl bg-slate-50/50 hover:bg-white border border-slate-100 hover:border-blue-100 hover:shadow-xl hover:shadow-blue-600/5 transition-all cursor-pointer group"
                     >
-                      <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-blue-600 shrink-0 border border-slate-100 shadow-sm group-hover:bg-blue-50 transition-colors">
-                        <FileText size={28} strokeWidth={2.5} />
+                      <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-blue-600 shrink-0 border border-slate-100 shadow-sm group-hover:bg-blue-50 transition-colors">
+                        <FileText size={20} strokeWidth={2.5} />
                       </div>
                       <div className="flex-1 overflow-hidden">
-                        <p className="font-black uppercase tracking-widest text-[11px] text-slate-900 truncate mb-1">{formatDisplayString(a.title)}</p>
-                        <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest flex items-center gap-2">
-                          <BookOpen size={12} /> {getSubjectName(a.subjectId)}
+                        <p className="font-black uppercase tracking-widest text-[10px] text-slate-900 truncate mb-0.5">{formatDisplayString(a.title)}</p>
+                        <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest flex items-center gap-2">
+                          <BookOpen size={10} /> {getSubjectName(a.subjectId)}
                         </p>
                       </div>
-                      <div className="text-[9px] font-black uppercase tracking-widest text-orange-600 whitespace-nowrap bg-orange-50 border border-orange-100 px-5 py-3 rounded-full shadow-sm">
+                      <div className="text-[8px] font-black uppercase tracking-widest text-orange-600 whitespace-nowrap bg-orange-50 border border-orange-100 px-3 py-2 rounded-lg shadow-sm">
                         {new Date(a.dueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
                       </div>
                     </motion.div>
@@ -279,42 +279,42 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
                 <h2 className="text-4xl font-black uppercase tracking-tighter text-slate-900 leading-none">Classes & Subjects</h2>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {subjects.map(subject => (
                 <motion.div 
                   key={subject.id} 
-                  whileHover={{ y: -8 }}
-                  className="bg-white p-10 rounded-[2.5rem] shadow-2xl shadow-slate-200/40 border border-white hover:shadow-slate-900/5 transition-all relative overflow-hidden group"
+                  whileHover={{ y: -4 }}
+                  className="bg-white p-5 rounded-[1.5rem] shadow-lg shadow-slate-200/30 border border-white hover:shadow-blue-600/5 transition-all relative overflow-hidden group"
                 >
-                  <div className="absolute top-0 right-0 w-40 h-40 bg-slate-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="flex items-center gap-5 mb-10 relative z-10">
-                    <div className="w-16 h-16 bg-slate-50 text-slate-900 rounded-[1.5rem] flex items-center justify-center shrink-0 shadow-sm border border-slate-100 group-hover:bg-slate-900 group-hover:text-white transition-all">
-                      <BookOpen size={28} strokeWidth={2.5} />
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full blur-3xl -mr-10 -mt-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="flex items-center gap-3 mb-6 relative z-10">
+                    <div className="w-10 h-10 bg-slate-50 text-slate-900 rounded-xl flex items-center justify-center shrink-0 shadow-sm border border-slate-100 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                      <BookOpen size={18} strokeWidth={2.5} />
                     </div>
                     <div>
-                      <h4 className="font-black uppercase tracking-widest text-lg text-slate-900 leading-tight mb-1">{formatDisplayString(subject.name)}</h4>
-                      <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{getClassName(subject.classId)}</p>
+                      <h4 className="font-black uppercase tracking-widest text-xs text-slate-900 leading-tight mb-0.5">{formatDisplayString(subject.name)}</h4>
+                      <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest">{getClassName(subject.classId)}</p>
                     </div>
                   </div>
-                  <div className="pt-8 border-t border-slate-50 space-y-8 relative z-10">
+                  <div className="pt-4 border-t border-slate-50 space-y-4 relative z-10">
                     <div className="flex justify-between items-center">
                       <div className="flex flex-col">
-                        <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">Students</span>
-                        <span className="text-xl font-black text-slate-900">{students.filter(s => s.classId === subject.classId).length}</span>
+                        <span className="text-[7px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Students</span>
+                        <span className="text-sm font-black text-slate-900">{students.filter(s => s.classId === subject.classId).length}</span>
                       </div>
                       <div className="flex flex-col text-right">
-                        <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">Assignments</span>
-                        <span className="text-xl font-black text-slate-900">{assignments.filter(a => a.subjectId === subject.id).length}</span>
+                        <span className="text-[7px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Assignments</span>
+                        <span className="text-sm font-black text-slate-900">{assignments.filter(a => a.subjectId === subject.id).length}</span>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button id={`btn_teacher_assign_${subject.id}`} onClick={() => setActiveTab('assignments')} className="text-slate-900 text-[9px] font-black uppercase tracking-widest hover:text-white transition-all bg-white hover:bg-slate-900 px-6 py-4 rounded-2xl border border-slate-100 shadow-sm text-center">
+                    <div className="grid grid-cols-2 gap-2">
+                      <button id={`btn_teacher_assign_${subject.id}`} onClick={() => setActiveTab('assignments')} className="text-slate-900 text-[7px] font-black uppercase tracking-widest hover:text-white transition-all bg-white hover:bg-blue-600 px-3 py-2 rounded-lg border border-slate-100 shadow-sm text-center">
                         Assignment
                       </button>
-                      <button id={`btn_teacher_results_${subject.id}`} onClick={() => setActiveTab('results')} className="text-slate-900 text-[9px] font-black uppercase tracking-widest hover:text-white transition-all bg-white hover:bg-slate-900 px-6 py-4 rounded-2xl border border-slate-100 shadow-sm text-center">
+                      <button id={`btn_teacher_results_${subject.id}`} onClick={() => setActiveTab('results')} className="text-slate-900 text-[7px] font-black uppercase tracking-widest hover:text-white transition-all bg-white hover:bg-blue-600 px-3 py-2 rounded-lg border border-slate-100 shadow-sm text-center">
                         Results
                       </button>
-                      <button id={`btn_teacher_students_${subject.id}`} onClick={() => setSelectedClassForStudents(subject.classId)} className="col-span-2 text-white text-[9px] font-black uppercase tracking-widest transition-all bg-slate-900 hover:bg-slate-800 px-6 py-4 rounded-2xl shadow-xl shadow-slate-900/10 text-center mt-2">
+                      <button id={`btn_teacher_students_${subject.id}`} onClick={() => setSelectedClassForStudents(subject.classId)} className="col-span-2 text-white text-[7px] font-black uppercase tracking-widest transition-all bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg shadow-md shadow-blue-600/10 text-center">
                         View Student List
                       </button>
                     </div>

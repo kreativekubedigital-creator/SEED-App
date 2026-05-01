@@ -349,47 +349,47 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
           return (
             <motion.div
               key={quiz.id}
-              id={`card_teacher_quiz_${quiz.id}`}
               whileHover={{ y: -4 }}
-              className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 flex flex-col gap-6 group hover:shadow-md transition-all relative overflow-hidden"
+              className="bg-white p-5 rounded-[1.5rem] shadow-sm border border-slate-100 flex flex-col gap-5 group hover:shadow-md transition-all relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -mr-10 -mt-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              
+              <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full blur-3xl -mr-8 -mt-8 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <div className="flex justify-between items-start relative z-10">
-                <span className="inline-block px-4 py-2 bg-blue-50 text-blue-600 text-[8px] font-black uppercase tracking-widest rounded-full border border-blue-100 shadow-sm">
-                  {getSubjectName(quiz.subjectId)}
-                </span>
-                <button 
-                  id={`btn_teacher_quiz_delete_${quiz.id}`}
-                  onClick={() => setQuizToDelete(quiz.id)} 
-                  className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-                >
-                  <Trash2 size={20} />
-                </button>
+                <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl border border-blue-100 shadow-sm">
+                  <Brain size={20} strokeWidth={2.5} />
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    id={`btn_teacher_quiz_delete_${quiz.id}`}
+                    onClick={() => setQuizToDelete(quiz.id)}
+                    className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </div>
-
               <div className="relative z-10">
-                <h4 className="font-black uppercase tracking-widest text-lg text-slate-900 leading-tight mb-1">{formatDisplayString(quiz.title)}</h4>
-                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">
-                  {subject ? getClassName(subject.classId) : 'N/A'}
+                <h4 className="font-black uppercase tracking-widest text-base text-slate-900 leading-tight">{formatDisplayString(quiz.title)}</h4>
+                <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mt-1">
+                  {formatDisplayString(getSubjectName(quiz.subjectId))} <span className="mx-1 text-slate-200">•</span> {formatDisplayString(getClassName(subject?.classId || ''))}
                 </p>
               </div>
-              
-              <div className="pt-6 border-t border-slate-50 flex justify-between items-center relative z-10">
-                <div className="flex gap-2">
-                  <span className="text-[8px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-                    {quiz.questions.length} Qs
-                  </span>
-                  <span className="text-[8px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-                    {quiz.timeLimit || 10} Mins
-                  </span>
+              <div className="flex flex-wrap gap-2 relative z-10">
+                <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 shadow-sm">
+                  <HelpCircle size={12} strokeWidth={3} />
+                  {quiz.questions.length} Questions
                 </div>
-                <button 
+                <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100 shadow-sm">
+                  <Clock size={12} strokeWidth={3} />
+                  {quiz.timeLimit} Mins
+                </div>
+              </div>
+              <div className="pt-5 border-t border-slate-50 relative z-10">
+                <button
                   id={`btn_teacher_quiz_view_results_${quiz.id}`}
                   onClick={() => handleViewResults(quiz.id)}
-                  className="px-4 py-2 rounded-xl bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center gap-2 shadow-lg shadow-blue-500/10 active:scale-[0.98]"
+                  className="w-full py-3.5 rounded-xl bg-blue-600 text-white text-[9px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 active:scale-[0.98]"
                 >
-                  <Eye size={14} strokeWidth={3} /> Results
+                  View Results <ChevronRight size={12} strokeWidth={3} />
                 </button>
               </div>
             </motion.div>

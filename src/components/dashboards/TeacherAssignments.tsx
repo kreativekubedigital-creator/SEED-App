@@ -174,38 +174,38 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
           <motion.div
             key={assignment.id}
             whileHover={{ y: -4 }}
-            className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 flex flex-col gap-6 group hover:shadow-md transition-all relative overflow-hidden"
+            className="bg-white p-5 rounded-[1.5rem] shadow-sm border border-slate-100 flex flex-col gap-5 group hover:shadow-md transition-all relative overflow-hidden"
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -mr-10 -mt-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full blur-3xl -mr-8 -mt-8 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div className="flex justify-between items-start relative z-10">
-              <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl border border-blue-100 shadow-sm">
-                <FileText size={24} strokeWidth={2.5} />
+              <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl border border-blue-100 shadow-sm">
+                <FileText size={20} strokeWidth={2.5} />
               </div>
               <button
                 id={`btn_teacher_assignment_delete_${assignment.id}`}
                 onClick={() => setAssignmentToDelete(assignment.id)}
-                className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
               >
-                <Trash2 size={20} />
+                <Trash2 size={18} />
               </button>
             </div>
             <div className="relative z-10">
-              <h4 className="font-black uppercase tracking-widest text-lg text-slate-900 leading-tight">{formatDisplayString(assignment.title)}</h4>
-              <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">
+              <h4 className="font-black uppercase tracking-widest text-base text-slate-900 leading-tight">{formatDisplayString(assignment.title)}</h4>
+              <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mt-1">
                 {formatDisplayString(getSubjectName(assignment.subjectId))} <span className="mx-1 text-slate-200">•</span> {formatDisplayString(getClassName(assignment.classId))}
               </p>
             </div>
-            <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-orange-600 bg-orange-50 px-4 py-2 rounded-full border border-orange-100 w-fit relative z-10 shadow-sm">
-              <Calendar size={14} strokeWidth={3} />
+            <div className="flex items-center gap-2.5 text-[8px] font-black uppercase tracking-widest text-orange-600 bg-orange-50 px-3 py-1.5 rounded-full border border-orange-100 w-fit relative z-10 shadow-sm">
+              <Calendar size={12} strokeWidth={3} />
               Due: {new Date(assignment.dueDate).toLocaleDateString()}
             </div>
-            <div className="pt-6 border-t border-slate-50 relative z-10">
+            <div className="pt-5 border-t border-slate-50 relative z-10">
               <button
                 id={`btn_teacher_assignment_view_submissions_${assignment.id}`}
                 onClick={() => setViewingSubmissions(assignment.id)}
-                className="w-full py-4 rounded-2xl bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 active:scale-[0.98]"
+                className="w-full py-3.5 rounded-xl bg-blue-600 text-white text-[9px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 active:scale-[0.98]"
               >
-                View Submissions <ChevronRight size={14} strokeWidth={3} />
+                View Submissions <ChevronRight size={12} strokeWidth={3} />
               </button>
             </div>
           </motion.div>
