@@ -340,7 +340,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
 
   return (
   <div className="space-y-5">
-    <div className="text-[10px] text-slate-400 font-mono">v1.0.5 - Updated 01:12</div>
+    <div className="text-xs text-slate-400 font-mono">v1.0.5 - Updated 01:12</div>
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="space-y-5">
           <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
@@ -431,7 +431,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                     className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-text min-w-0"
                   />
                   <div className="flex-1 flex flex-col">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase px-2 mb-1">Resumption Date</label>
+                    <label className="text-xs font-bold text-slate-400 uppercase px-2 mb-1">Resumption Date</label>
                     <input
                       type="date"
                       value={newTermResumptionDate}
@@ -458,7 +458,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                     <div className="flex flex-col">
                       <span className="font-medium text-slate-900">{formatDisplayString(term.name)}</span>
                       {term.resumptionDate && (
-                        <span className="text-[10px] text-slate-400">Resumes: {new Date(term.resumptionDate).toLocaleDateString()}</span>
+                        <span className="text-xs text-slate-400">Resumes: {new Date(term.resumptionDate).toLocaleDateString()}</span>
                       )}
                     </div>
                     <div className="flex items-center gap-1">
@@ -526,7 +526,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                     />
                     <div className="flex items-center justify-between w-full sm:w-auto gap-3">
                       <div className="flex items-center gap-2 flex-1 sm:flex-none justify-end">
-                        <span className="text-xs text-slate-900 font-medium whitespace-nowrap">Max Score:</span>
+                        <span className="text-base text-slate-900 font-bold whitespace-nowrap">Max Score:</span>
                         <input
                           type="number"
                           value={ca.maxScore}
@@ -550,7 +550,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                 </button>
 
                 <div className="pt-4 mt-4 border-t border-gray-200 flex items-center justify-between">
-                  <span className="font-medium text-slate-900 text-sm">Exam Max Score</span>
+                  <span className="font-bold text-slate-900 text-base">Exam Max Score</span>
                   <input
                     type="number"
                     value={gradeScale?.caConfig?.maxExamScore || 70}
@@ -570,8 +570,8 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                   <h4 className="text-sm font-medium text-slate-900 mb-3">Promotion Standards</h4>
                   <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-gray-200">
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium text-slate-900">Promotion Threshold (%)</span>
-                      <span className="text-[10px] text-slate-400">Min. average score to promote to next class</span>
+                      <span className="text-base font-bold text-slate-900">Promotion Threshold (%)</span>
+                      <span className="text-xs text-slate-400 font-medium">Min. average score to promote to next class</span>
                     </div>
                     <input
                       type="number"
@@ -585,7 +585,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
             </div>
 
             <h4 className="text-sm font-medium text-slate-900 mb-4">Grade Scale</h4>
-            <div className="hidden sm:grid grid-cols-12 gap-4 px-4 text-[10px] font-medium text-slate-900 uppercase tracking-widest">
+            <div className="hidden sm:grid grid-cols-12 gap-4 px-4 text-xs font-bold text-slate-950 uppercase tracking-widest">
               <div className="col-span-2">Grade</div>
               <div className="col-span-3">Min Score</div>
               <div className="col-span-3">Max Score</div>
@@ -597,7 +597,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
               {gradeScale?.grades.map((g, idx) => (
                 <div key={idx} className="bg-slate-50 sm:bg-transparent p-4 sm:p-0 rounded-2xl border sm:border-0 border-slate-100 sm:grid sm:grid-cols-12 sm:gap-4 sm:items-center space-y-4 sm:space-y-0">
                   <div className="sm:col-span-2">
-                    <label className="block sm:hidden text-[10px] font-medium text-slate-900 uppercase tracking-widest mb-1">Grade</label>
+                    <label className="block sm:hidden text-xs font-bold text-slate-950 uppercase tracking-widest mb-1">Grade</label>
                     <input
                       type="text"
                       value={g.grade}
@@ -606,7 +606,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                     />
                   </div>
                   <div className="sm:col-span-3">
-                    <label className="block sm:hidden text-[10px] font-medium text-slate-900 uppercase tracking-widest mb-1">Min Score</label>
+                    <label className="block sm:hidden text-xs font-bold text-slate-950 uppercase tracking-widest mb-1">Min Score</label>
                     <input
                       type="number"
                       value={g.minScore}
@@ -615,7 +615,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                     />
                   </div>
                   <div className="sm:col-span-3">
-                    <label className="block sm:hidden text-[10px] font-medium text-slate-900 uppercase tracking-widest mb-1">Max Score</label>
+                    <label className="block sm:hidden text-xs font-bold text-slate-950 uppercase tracking-widest mb-1">Max Score</label>
                     <input
                       type="number"
                       value={g.maxScore}
@@ -624,7 +624,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                     />
                   </div>
                   <div className="sm:col-span-3">
-                    <label className="block sm:hidden text-[10px] font-medium text-slate-900 uppercase tracking-widest mb-1">Remark</label>
+                    <label className="block sm:hidden text-xs font-bold text-slate-950 uppercase tracking-widest mb-1">Remark</label>
                     <input
                       type="text"
                       value={g.remark}

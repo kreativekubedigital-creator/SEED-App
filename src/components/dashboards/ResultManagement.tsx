@@ -281,7 +281,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
       <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Session</label>
+            <label className="text-xs font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Session</label>
             <select
               value={selectedSession}
               onChange={e => setSelectedSession(e.target.value)}
@@ -292,7 +292,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Term</label>
+            <label className="text-xs font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Term</label>
             <select
               value={selectedTerm}
               onChange={e => setSelectedTerm(e.target.value)}
@@ -303,7 +303,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Class</label>
+            <label className="text-xs font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Class</label>
             <select
               value={selectedClass}
               onChange={e => setSelectedClass(e.target.value)}
@@ -316,7 +316,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Subject</label>
+            <label className="text-xs font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Subject</label>
             <select
               value={selectedSubject}
               onChange={e => setSelectedSubject(e.target.value)}
@@ -363,7 +363,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                 {/* Desktop Table */}
                 <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-left">
-                    <thead className="bg-slate-50 dark:bg-slate-800/50 text-[10px] uppercase tracking-widest text-slate-900 dark:text-slate-100 font-medium">
+                    <thead className="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase tracking-widest text-slate-900 dark:text-slate-100 font-medium">
                       <tr>
                         <th className="px-6 py-4">Student</th>
                         {caConfig.cas.map((ca, idx) => (
@@ -383,7 +383,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                           <tr key={student.uid} className={`transition-colors ${activeRow === student.uid ? 'bg-blue-50/30' : 'hover:bg-slate-50 dark:bg-slate-800/50'}`} onFocus={() => setActiveRow(student.uid)} onBlur={() => setActiveRow(null)}>
                             <td className="px-6 py-4">
                               <div className="font-medium text-slate-900 dark:text-slate-100">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</div>
-                              <div className="text-[10px] text-slate-900 dark:text-slate-100 font-medium uppercase tracking-wider">{student.registrationNumber || 'No Reg No'}</div>
+                              <div className="text-xs text-slate-900 dark:text-slate-100 font-medium uppercase tracking-wider">{student.registrationNumber || 'No Reg No'}</div>
                             </td>
                             {caConfig.cas.map((ca, idx) => {
                               const val = score.cas?.[ca.name] !== undefined ? score.cas[ca.name] : (idx === 0 ? score.ca1 : idx === 1 ? score.ca2 : idx === 2 ? score.ca3 : 0);
@@ -425,7 +425,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                               </span>
                             </td>
                             <td className="px-6 py-4">
-                              <span className="text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider">{formatDisplayString(score.remark) || '-'}</span>
+                              <span className="text-xs font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider">{formatDisplayString(score.remark) || '-'}</span>
                             </td>
                           </tr>
                         );
@@ -450,7 +450,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                           )}
                           <div>
                             <p className="font-medium text-sm text-slate-900 dark:text-slate-100">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</p>
-                            <p className="text-[10px] text-slate-900 dark:text-slate-100 font-medium uppercase tracking-wider">{student.registrationNumber || 'No Reg No'}</p>
+                            <p className="text-xs text-slate-900 dark:text-slate-100 font-medium uppercase tracking-wider">{student.registrationNumber || 'No Reg No'}</p>
                           </div>
                         </div>
                         
@@ -459,7 +459,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                             const val = score.cas?.[ca.name] !== undefined ? score.cas[ca.name] : (idx === 0 ? score.ca1 : idx === 1 ? score.ca2 : idx === 2 ? score.ca3 : 0);
                             return (
                               <div key={idx} className="flex flex-col">
-                                <span className="text-[10px] text-slate-900 dark:text-slate-100 text-center mb-1">{formatDisplayString(ca.name)} ({ca.maxScore})</span>
+                                <span className="text-xs text-slate-900 dark:text-slate-100 text-center mb-1">{formatDisplayString(ca.name)} ({ca.maxScore})</span>
                                 <input
                                   type="number"
                                   placeholder="-"
@@ -474,11 +474,11 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                         
                         <div className="grid grid-cols-3 gap-2 pt-3 border-t border-gray-50">
                           <div className="flex flex-col items-center justify-center bg-gray-100/80 rounded-xl p-2">
-                            <span className="text-[10px] text-slate-900 dark:text-slate-100 mb-1 font-medium">CA Total</span>
+                            <span className="text-xs text-slate-900 dark:text-slate-100 mb-1 font-medium">CA Total</span>
                             <span className="font-medium text-slate-900 dark:text-slate-100">{score.caTotal || 0}</span>
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-[10px] text-slate-900 dark:text-slate-100 text-center mb-1">Exam ({caConfig.maxExamScore})</span>
+                            <span className="text-xs text-slate-900 dark:text-slate-100 text-center mb-1">Exam ({caConfig.maxExamScore})</span>
                             <input
                               type="number"
                               placeholder="-"
@@ -488,7 +488,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                             />
                           </div>
                           <div className="flex flex-col items-center justify-center bg-blue-50/80 rounded-xl p-2 border border-blue-100/50">
-                            <span className="text-[10px] text-slate-950 mb-1 font-medium">Final</span>
+                            <span className="text-xs text-slate-950 mb-1 font-medium">Final</span>
                             <span className="font-medium text-slate-950">{score.finalScore || 0}</span>
                           </div>
                         </div>
@@ -507,7 +507,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-slate-900 dark:text-slate-100">Remark</span>
-                            <span className="text-[10px] font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider">{score.remark || '-'}</span>
+                            <span className="text-xs font-medium text-slate-900 dark:text-slate-100 uppercase tracking-wider">{score.remark || '-'}</span>
                           </div>
                         </div>
                       </div>
