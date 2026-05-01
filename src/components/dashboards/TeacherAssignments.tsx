@@ -157,7 +157,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h3 className="text-2xl font-bold tracking-tight text-blue-700">Assignment Management</h3>
+          <h3 className="text-2xl font-bold tracking-tight text-slate-950">Assignment Management</h3>
           <p className="text-xs font-bold tracking-tight text-slate-950 mt-1">Create and manage academic tasks</p>
         </div>
         <button
@@ -190,7 +190,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
               </button>
             </div>
             <div className="relative z-10">
-              <h4 className="font-bold tracking-tight text-base text-blue-800 leading-tight">{formatDisplayString(assignment.title)}</h4>
+              <h4 className="font-bold tracking-tight text-base text-slate-950 leading-tight">{formatDisplayString(assignment.title)}</h4>
               <p className="text-xs text-slate-950 font-bold tracking-tight mt-1">
                 {formatDisplayString(getSubjectName(assignment.subjectId))} <span className="mx-1 text-slate-300">•</span> {formatDisplayString(getClassName(assignment.classId))}
               </p>
@@ -231,7 +231,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
             >
               <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h3 className="text-2xl font-bold tracking-tight text-blue-700">New Assignment</h3>
+                  <h3 className="text-2xl font-bold tracking-tight text-slate-950">New Assignment</h3>
                   <p className="text-xs font-bold tracking-tight text-slate-950 mt-1">Design a new task for your students</p>
                 </div>
                 <button 
@@ -245,7 +245,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
               <form onSubmit={handleCreateAssignment} className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold tracking-tight text-slate-500 ml-1">Title</label>
+                    <label className="text-[10px] font-bold tracking-tight text-slate-950 ml-1">Title</label>
                     <input
                       id="input_teacher_assignment_title"
                       type="text"
@@ -257,7 +257,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold tracking-tight text-slate-500 ml-1">Subject</label>
+                    <label className="text-[10px] font-bold tracking-tight text-slate-950 ml-1">Subject</label>
                     <select
                       required
                       value={newAssignment.subjectId}
@@ -271,7 +271,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                     </select>
                   </div>
                   <div className="md:col-span-2 space-y-2">
-                    <label className="text-xs font-bold tracking-tight text-slate-900 ml-1">Description</label>
+                    <label className="text-xs font-bold tracking-tight text-slate-950 ml-1">Description</label>
                     <textarea
                       id="input_teacher_assignment_description"
                       required
@@ -282,7 +282,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold tracking-tight text-slate-500 ml-1">Due Date</label>
+                    <label className="text-[10px] font-bold tracking-tight text-slate-950 ml-1">Due Date</label>
                     <input
                       type="date"
                       required
@@ -294,18 +294,18 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                 </div>
 
                 <div className="pt-8 border-t border-slate-100">
-                  <h4 className="text-lg font-bold tracking-tight text-slate-900 mb-6">Questions ({newAssignment.questions.length})</h4>
+                  <h4 className="text-lg font-bold tracking-tight text-slate-950 mb-6">Questions ({newAssignment.questions.length})</h4>
                   
                   <div className="space-y-4 mb-8">
                     {newAssignment.questions.map((q, idx) => (
                       <div key={q.id} className="p-6 rounded-3xl bg-slate-50 border border-slate-100 flex justify-between items-start group hover:bg-white hover:shadow-md transition-all">
                         <div>
                           <p className="font-bold tracking-tight text-xs text-slate-900">Q{idx + 1}: {q.text}</p>
-                          <p className="text-[8px] text-blue-600 font-bold tracking-tight mt-1.5 px-2 py-0.5 bg-blue-50 rounded w-fit border border-blue-100">{formatDisplayString(q.type)}</p>
+                          <p className="text-[8px] text-slate-950 font-bold tracking-tight mt-1.5 px-2 py-0.5 bg-blue-50 rounded w-fit border border-blue-100">{formatDisplayString(q.type)}</p>
                           {q.options && (
                             <div className="mt-4 flex flex-wrap gap-2">
                               {q.options.map((opt, i) => (
-                                <span key={i} className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-[10px] font-bold tracking-tight text-slate-500">{opt}</span>
+                                <span key={i} className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-[10px] font-bold tracking-tight text-slate-950">{opt}</span>
                               ))}
                             </div>
                           )}
@@ -324,7 +324,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                   <div className="p-8 rounded-[2.5rem] bg-blue-50/50 border border-blue-100 space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="md:col-span-2 space-y-2">
-                        <label className="text-[10px] font-bold tracking-tight text-slate-500 ml-1">Question Text</label>
+                        <label className="text-[10px] font-bold tracking-tight text-slate-950 ml-1">Question Text</label>
                         <input
                           type="text"
                           value={newQuestion.text}
@@ -334,7 +334,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[10px] font-bold tracking-tight text-slate-500 ml-1">Type</label>
+                        <label className="text-[10px] font-bold tracking-tight text-slate-950 ml-1">Type</label>
                         <select
                           value={newQuestion.type}
                           onChange={e => setNewQuestion({ ...newQuestion, type: e.target.value as any })}
@@ -412,7 +412,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
               <div className="flex justify-between items-center mb-8">
                 <div>
                   <h3 className="text-2xl font-bold tracking-tighter text-slate-900">Student Submissions</h3>
-                  <p className="text-[10px] font-bold tracking-tight text-blue-600 mt-1">
+                  <p className="text-[10px] font-bold tracking-tight text-slate-950 mt-1">
                     {assignments.find(a => a.id === viewingSubmissions)?.title}
                   </p>
                 </div>
@@ -457,7 +457,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                     <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-200 mx-auto mb-4 border border-slate-100 shadow-sm">
                       <User size={40} />
                     </div>
-                    <p className="text-slate-500 font-bold tracking-tight text-[10px]">No submissions yet.</p>
+                    <p className="text-slate-950 font-bold tracking-tight text-[10px]">No submissions yet.</p>
                   </div>
                 )}
               </div>
@@ -477,8 +477,8 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
             >
               <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h3 className="text-2xl font-bold tracking-tighter text-slate-900">Grade Submission</h3>
-                  <p className="text-[10px] font-bold tracking-tight text-blue-600 mt-1">{gradingSubmission.studentName}</p>
+                  <h3 className="text-2xl font-bold tracking-tighter text-slate-950">Grade Submission</h3>
+                  <p className="text-[10px] font-bold tracking-tight text-slate-950 mt-1">{gradingSubmission.studentName}</p>
                 </div>
                 <button 
                   onClick={() => setGradingSubmission(null)} 
@@ -490,7 +490,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
 
               <div className="space-y-8">
                 <div className="space-y-6">
-                  <h4 className="text-lg font-bold tracking-tight text-slate-900">Student Answers</h4>
+                  <h4 className="text-lg font-bold tracking-tight text-slate-950">Student Answers</h4>
                   {(assignments.find(a => a.id === gradingSubmission.assignmentId)?.questions || []).length > 0 ? (
                     (assignments.find(a => a.id === gradingSubmission.assignmentId)?.questions || []).map((q, idx) => {
                       const answer = gradingSubmission.answers.find(a => a.questionId === q.id)?.answer || 'No answer provided';
@@ -498,7 +498,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                         <div key={q.id} className="p-6 rounded-3xl bg-slate-50 border border-slate-100 space-y-4">
                           <p className="font-bold tracking-tight text-xs text-slate-900">Q{idx + 1}: {q.text}</p>
                           <div className="p-5 bg-white rounded-2xl border border-slate-200 text-sm text-slate-700 shadow-sm">
-                            <span className="text-[8px] font-bold text-slate-500 tracking-tight block mb-2">Student Answer</span>
+                            <span className="text-[8px] font-bold text-slate-950 tracking-tight block mb-2">Student Answer</span>
                             {answer}
                           </div>
                           {q.correctAnswer && (
@@ -523,7 +523,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                 <form onSubmit={handleGradeSubmission} className="pt-8 border-t border-slate-100 space-y-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="space-y-3">
-                      <label className="text-[10px] font-bold tracking-tight text-slate-500 ml-1">Academic Score</label>
+                      <label className="text-[10px] font-bold tracking-tight text-slate-950 ml-1">Academic Score</label>
                       <div className="flex items-center gap-4">
                         <input
                           type="number"
@@ -546,7 +546,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                     </div>
                   </div>
                   <div className="space-y-3">
-                    <label className="text-[10px] font-bold tracking-tight text-slate-500 ml-1">Professional Feedback</label>
+                    <label className="text-[10px] font-bold tracking-tight text-slate-950 ml-1">Professional Feedback</label>
                     <textarea
                       value={gradingSubmission.feedback || ''}
                       onChange={e => setGradingSubmission({ ...gradingSubmission, feedback: e.target.value })}
@@ -558,7 +558,7 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
                     <button
                       type="button"
                       onClick={() => setGradingSubmission(null)}
-                      className="order-2 sm:order-1 px-8 py-4 rounded-2xl font-bold tracking-tight text-[11px] text-slate-500 hover:bg-slate-50 transition-all"
+                      className="order-2 sm:order-1 px-8 py-4 rounded-2xl font-bold tracking-tight text-[11px] text-slate-950 hover:bg-slate-50 transition-all"
                     >
                       Cancel
                     </button>
@@ -588,14 +588,14 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
               <div className="w-24 h-24 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-red-100 shadow-sm">
                 <Trash2 size={40} strokeWidth={2.5} />
               </div>
-              <h3 className="text-2xl font-bold tracking-tighter text-slate-900 mb-2">Delete Assignment?</h3>
-              <p className="text-[10px] font-bold tracking-tight text-slate-500 mb-10 leading-relaxed px-4">
+              <h3 className="text-2xl font-bold tracking-tighter text-slate-950 mb-2">Delete Assignment?</h3>
+              <p className="text-[10px] font-bold tracking-tight text-slate-950 mb-10 leading-relaxed px-4">
                 This action is irreversible. All student submissions and grades associated with this task will be permanently removed.
               </p>
               <div className="flex gap-4">
                 <button
                   onClick={() => setAssignmentToDelete(null)}
-                  className="flex-1 py-4 rounded-2xl border border-slate-200 font-bold tracking-tight text-[11px] text-slate-500 hover:bg-slate-50 transition-all"
+                  className="flex-1 py-4 rounded-2xl border border-slate-200 font-bold tracking-tight text-[11px] text-slate-950 hover:bg-slate-50 transition-all"
                 >
                   Cancel
                 </button>

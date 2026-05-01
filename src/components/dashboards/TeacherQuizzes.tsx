@@ -165,14 +165,14 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h3 className="text-2xl font-bold tracking-tight text-blue-700">Assessment Center</h3>
+          <h3 className="text-2xl font-bold tracking-tight text-slate-950">Assessment Center</h3>
           <p className="text-xs font-bold tracking-tight text-slate-950 mt-1">Design and analyze student quizzes</p>
         </div>
         
         <div className="flex flex-col sm:flex-row gap-5 w-full lg:w-auto">
           <div className="relative group min-w-[200px]">
             <select
-              className="w-full appearance-none px-5 py-3 rounded-2xl border border-slate-100 bg-white hover:border-slate-200 focus:border-blue-500 outline-none transition-all font-bold tracking-tight text-xs text-blue-800 cursor-pointer shadow-sm"
+              className="w-full appearance-none px-5 py-3 rounded-2xl border border-slate-100 bg-white hover:border-slate-200 focus:border-blue-500 outline-none transition-all font-bold tracking-tight text-xs text-slate-950 cursor-pointer shadow-sm"
             >
               <option value="">All Classes</option>
               {classes.map(c => <option key={c.id} value={c.id}>{formatDisplayString(c.name)}</option>)}
@@ -199,7 +199,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
           >
               <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h3 className="text-2xl font-bold tracking-tight text-blue-700">New Quiz</h3>
+                  <h3 className="text-2xl font-bold tracking-tight text-slate-950">New Quiz</h3>
                   <p className="text-xs font-bold tracking-tight text-slate-950 mt-1">Design a new assessment for your students</p>
                 </div>
               <button 
@@ -257,7 +257,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
                   
                   <div className="space-y-6">
                       <div className="space-y-2">
-                        <label className="text-[10px] font-bold tracking-tight text-slate-500 ml-1">Question Text</label>
+                        <label className="text-[10px] font-bold tracking-tight text-slate-950 ml-1">Question Text</label>
                         <input
                           type="text"
                           value={newQuestion.text}
@@ -308,7 +308,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
                     id="btn_teacher_quiz_cancel_create"
                     type="button"
                     onClick={() => setShowAddQuiz(false)}
-                    className="order-2 sm:order-1 px-8 py-4 rounded-2xl font-bold tracking-tight text-[11px] text-slate-500 hover:bg-slate-50 transition-all"
+                    className="order-2 sm:order-1 px-8 py-4 rounded-2xl font-bold tracking-tight text-[11px] text-slate-950 hover:bg-slate-50 transition-all"
                   >
                     Cancel
                   </button>
@@ -348,17 +348,17 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
                 </div>
               </div>
               <div className="relative z-10">
-              <h4 className="font-bold tracking-tight text-base text-slate-900 leading-tight">{formatDisplayString(quiz.title)}</h4>
-              <p className="text-[9px] text-slate-500 font-bold tracking-tight mt-1">
+              <h4 className="font-bold tracking-tight text-base text-slate-950 leading-tight">{formatDisplayString(quiz.title)}</h4>
+              <p className="text-[9px] text-slate-950 font-bold tracking-tight mt-1">
                 {formatDisplayString(getSubjectName(quiz.subjectId))} <span className="mx-1 text-slate-200">•</span> {formatDisplayString(getClassName(quiz.classId))}
               </p>
             </div>
               <div className="flex items-center gap-4 relative z-10">
-              <div className="flex items-center gap-2 text-[8px] font-bold tracking-tight text-slate-500 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 shadow-sm">
+              <div className="flex items-center gap-2 text-[8px] font-bold tracking-tight text-slate-950 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 shadow-sm">
                 <Clock size={12} strokeWidth={3} />
                 {quiz.timeLimit} mins
               </div>
-              <div className="flex items-center gap-2 text-[8px] font-bold tracking-tight text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100 shadow-sm">
+              <div className="flex items-center gap-2 text-[8px] font-bold tracking-tight text-slate-950 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100 shadow-sm">
                 <FileQuestion size={12} strokeWidth={3} />
                 {quiz.questions.length} questions
               </div>
@@ -380,7 +380,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
             <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-200 mx-auto mb-4 border border-slate-100 shadow-sm">
               <PlusCircle size={40} />
             </div>
-            <p className="text-slate-500 font-bold tracking-tight text-[10px]">No quizzes created yet.</p>
+            <p className="text-slate-950 font-bold tracking-tight text-[10px]">No quizzes created yet.</p>
           </div>
         )}
       </div>
@@ -397,14 +397,14 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
               <div className="w-24 h-24 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-red-100 shadow-sm">
                 <Trash2 size={40} strokeWidth={2.5} />
               </div>
-              <h3 className="text-2xl font-bold tracking-tighter text-slate-900 mb-2">Delete Quiz?</h3>
-              <p className="text-[10px] font-bold tracking-tight text-slate-500 mb-10 leading-relaxed px-4">
+              <h3 className="text-2xl font-bold tracking-tighter text-slate-950 mb-2">Delete Quiz?</h3>
+              <p className="text-[10px] font-bold tracking-tight text-slate-950 mb-10 leading-relaxed px-4">
                 This action is irreversible. All student performance data and records associated with this quiz will be permanently removed.
               </p>
               <div className="flex gap-4">
                 <button
                   onClick={() => setQuizToDelete(null)}
-                  className="flex-1 py-4 rounded-2xl border border-slate-200 font-bold tracking-tight text-[11px] text-slate-500 hover:bg-slate-50 transition-all"
+                  className="flex-1 py-4 rounded-2xl border border-slate-200 font-bold tracking-tight text-[11px] text-slate-950 hover:bg-slate-50 transition-all"
                 >
                   Cancel
                 </button>
@@ -429,8 +429,8 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
             >
               <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h3 className="text-2xl font-bold tracking-tighter text-slate-900">Quiz Performance</h3>
-                  <p className="text-[10px] font-bold tracking-tight text-blue-600 mt-1">
+                  <h3 className="text-2xl font-bold tracking-tighter text-slate-950">Quiz Performance</h3>
+                  <p className="text-[10px] font-bold tracking-tight text-slate-950 mt-1">
                     {quizzes.find(q => q.id === viewingResults)?.title}
                   </p>
                 </div>

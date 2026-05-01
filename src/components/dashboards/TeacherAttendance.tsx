@@ -127,7 +127,7 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
       <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-10">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-blue-700">Attendance Register</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-slate-950">Attendance Register</h2>
             <p className="text-xs font-bold tracking-tight text-slate-950 mt-1">Mark and monitor daily student presence</p>
           </div>
           
@@ -138,7 +138,7 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
                 id="select_teacher_attendance_class"
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold tracking-tight text-xs text-blue-800"
+                className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold tracking-tight text-xs text-slate-950"
               >
                 {classes.map(c => (
                   <option key={c.id} value={c.id}>{formatDisplayString(c.name)}</option>
@@ -150,7 +150,7 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
               <label className="text-xs font-bold tracking-tight text-slate-950 ml-1">Academic Date</label>
               <div className="flex items-center bg-slate-50 rounded-2xl border border-slate-200 p-1.5 shadow-sm">
                 <button id="btn_teacher_attendance_prev_day" onClick={() => changeDate(-1)} className="p-3 hover:bg-white text-slate-400 hover:text-blue-600 rounded-xl transition-all active:scale-90"><ChevronLeft size={20} strokeWidth={2.5} /></button>
-                <div className="px-6 py-1 flex items-center gap-3 font-bold tracking-tight text-xs text-blue-900 min-w-[180px] justify-center">
+                <div className="px-6 py-1 flex items-center gap-3 font-bold tracking-tight text-xs text-slate-950 min-w-[180px] justify-center">
                   <CalendarIcon size={16} className="text-blue-500" strokeWidth={2.5} />
                   {new Date(selectedDate).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
                 </div>
@@ -172,7 +172,7 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
             <div className="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center text-blue-200 mx-auto mb-6 shadow-sm">
               <AlertCircle size={40} strokeWidth={2.5} />
             </div>
-            <h3 className="text-xl font-bold tracking-tight text-blue-700 mb-2">No Students Found</h3>
+            <h3 className="text-xl font-bold tracking-tight text-slate-950 mb-2">No Students Found</h3>
             <p className="text-xs font-bold tracking-tight text-slate-950">There are no students registered in this class.</p>
           </div>
         ) : (
@@ -190,11 +190,11 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-blue-50 border-b border-blue-100">
-                    <th className="px-8 py-6 text-xs font-bold tracking-tight text-blue-800">Student Roster</th>
-                    <th className="px-4 py-6 text-xs font-bold tracking-tight text-blue-800 text-center w-32">Present</th>
-                    <th className="px-4 py-6 text-xs font-bold tracking-tight text-blue-800 text-center w-32">Absent</th>
-                    <th className="px-4 py-6 text-xs font-bold tracking-tight text-blue-800 text-center w-32">Late</th>
-                    <th className="px-4 py-6 text-xs font-bold tracking-tight text-blue-800 text-center w-32">Excused</th>
+                    <th className="px-8 py-6 text-xs font-bold tracking-tight text-slate-950">Student Roster</th>
+                    <th className="px-4 py-6 text-xs font-bold tracking-tight text-slate-950 text-center w-32">Present</th>
+                    <th className="px-4 py-6 text-xs font-bold tracking-tight text-slate-950 text-center w-32">Absent</th>
+                    <th className="px-4 py-6 text-xs font-bold tracking-tight text-slate-950 text-center w-32">Late</th>
+                    <th className="px-4 py-6 text-xs font-bold tracking-tight text-slate-950 text-center w-32">Excused</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">

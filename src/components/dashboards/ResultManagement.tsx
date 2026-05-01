@@ -411,7 +411,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                                 className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
                               />
                             </td>
-                            <td className="px-4 py-4 bg-blue-50/50 text-center font-medium text-blue-800 border-x border-blue-50/50">
+                            <td className="px-4 py-4 bg-blue-50/50 text-center font-medium text-slate-950 border-x border-blue-50/50">
                               {score.finalScore || 0}
                             </td>
                             <td className="px-4 py-4 text-center">
@@ -488,8 +488,8 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                             />
                           </div>
                           <div className="flex flex-col items-center justify-center bg-blue-50/80 rounded-xl p-2 border border-blue-100/50">
-                            <span className="text-[10px] text-blue-600 mb-1 font-medium">Final</span>
-                            <span className="font-medium text-blue-800">{score.finalScore || 0}</span>
+                            <span className="text-[10px] text-slate-950 mb-1 font-medium">Final</span>
+                            <span className="font-medium text-slate-950">{score.finalScore || 0}</span>
                           </div>
                         </div>
                         
