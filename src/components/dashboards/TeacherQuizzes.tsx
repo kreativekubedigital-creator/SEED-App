@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db, collection, getDocs, query, where, addDoc, doc, deleteDoc, onSnapshot, handleFirestoreError, OperationType } from '../../lib/compatibility';
 import { UserProfile, Quiz, Subject, Class, Result } from '../../types';
-import { Plus, Trash2, CheckCircle2, Circle, CheckSquare, Eye, X } from 'lucide-react';
+import { Plus, Trash2, CheckCircle2, Circle, CheckSquare, Eye, X, PlusCircle, FileQuestion, ChevronRight, Clock, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { sortByFullName, formatDisplayString } from '../../lib/utils';
 

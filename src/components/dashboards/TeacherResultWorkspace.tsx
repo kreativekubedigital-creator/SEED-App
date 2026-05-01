@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { db, collection, query, where, addDoc, updateDoc, doc, onSnapshot, OperationType, handleFirestoreError, writeBatch } from '../../lib/compatibility';
 import { UserProfile, Class, Subject, Result, Session, Term, GradeScale } from '../../types';
-import { Save, Search, ChevronRight, AlertCircle, CheckCircle2, Loader2, Send, RotateCcw, MessageSquare, Copy } from 'lucide-react';
+import { Save, Search, ChevronRight, AlertCircle, CheckCircle2, Loader2, Send, RotateCcw, MessageSquare, Copy, FileText, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { sortByName, sortByFullName, formatDisplayString } from '../../lib/utils';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface TeacherResultWorkspaceProps {
   user: UserProfile;
@@ -16,6 +18,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
   const [allSubjects, setAllSubjects] = useState<Subject[]>([]);
   const [students, setStudents] = useState<UserProfile[]>([]);
   const [gradeScale, setGradeScale] = useState<GradeScale | null>(null);
+  const [school, setSchool] = useState<any>(null);
   
   const [selectedSession, setSelectedSession] = useState('');
   const [selectedTerm, setSelectedTerm] = useState('');
@@ -49,6 +52,10 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
   useEffect(() => {
     if (!user.schoolId) return;
 
+    const unsubSchool = onSnapshot(doc(db, 'schools', user.schoolId), (snap) => {
+      if (snap.exists()) setSchool({ id: snap.id, ...snap.data() });
+    });
+
     const unsubSessions = onSnapshot(collection(db, 'schools', user.schoolId, 'sessions'), (snap) => {
       const data = snap.docs.map(d => ({ id: d.id, ...d.data() } as Session));
       data.sort((a, b) => b.name.localeCompare(a.name));
@@ -76,6 +83,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
     }, (error) => handleFirestoreError(error, OperationType.GET, `schools/${user.schoolId}/gradeScales`));
 
     return () => {
+      unsubSchool();
       unsubSessions();
       unsubClasses();
       unsubSubjects();
@@ -213,34 +221,45 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
     return gradeObj || { grade: 'F', remark: 'Fail' };
   };
 
+  const caConfig = useMemo(() => gradeScale?.caConfig || { 
+    cas: [
+      { name: 'CA1', maxScore: 10 }, 
+      { name: 'CA2', maxScore: 10 }, 
+      { name: 'CA3', maxScore: 20 }
+    ], 
+    maxExamScore: 60 
+  }, [gradeScale]);
+
+  const totalCaMax = useMemo(() => caConfig.cas.reduce((sum, ca) => sum + ca.maxScore, 0), [caConfig]);
+
   const handleScoreChange = (studentId: string, field: string, value: string) => {
-    const numValue = value === '' ? null : Math.max(0, Number(value) || 0);
-    
     const current = scores[studentId] || {
       ca1: null, ca2: null, ca3: null, cas: {}, exam: null, caTotal: 0, finalScore: 0, grade: '', remark: '', status: 'draft'
     };
     
-    let updated = { ...current };
-    const caConfig = gradeScale?.caConfig || { cas: [{ name: 'CA1', maxScore: 10 }, { name: 'CA2', maxScore: 10 }, { name: 'CA3', maxScore: 20 }], maxExamScore: 60 };
-
-    if (field === 'exam') {
-      updated.exam = numValue !== null ? Math.min(caConfig.maxExamScore, numValue) : null;
-    } else if (field.startsWith('ca_')) {
-      const caIndex = parseInt(field.split('_')[1]);
-      const caDef = caConfig.cas[caIndex];
+    const updated = { ...current };
+    
+    if (field.startsWith('ca_')) {
+      const ca_index = parseInt(field.split('_')[1]);
+      const caDef = caConfig.cas[ca_index];
       if (caDef) {
-        updated.cas = { ...updated.cas, [caDef.name]: numValue !== null ? Math.min(caDef.maxScore, numValue) : null };
+        const numValue = value === '' ? null : Math.max(0, Number(value) || 0);
+        const finalVal = numValue !== null ? Math.min(caDef.maxScore, numValue) : null;
+        updated.cas = { ...updated.cas, [caDef.name]: finalVal };
+        
+        // Sync legacy fields for compatibility
+        if (ca_index === 0) updated.ca1 = finalVal;
+        else if (ca_index === 1) updated.ca2 = finalVal;
+        else if (ca_index === 2) updated.ca3 = finalVal;
       }
-    } else {
-      // Legacy
-      if (field === 'ca1') updated.ca1 = numValue !== null ? Math.min(10, numValue) : null;
-      if (field === 'ca2') updated.ca2 = numValue !== null ? Math.min(10, numValue) : null;
-      if (field === 'ca3') updated.ca3 = numValue !== null ? Math.min(20, numValue) : null;
+    } else if (field === 'exam') {
+      const numValue = value === '' ? null : Math.max(0, Number(value) || 0);
+      updated.exam = numValue !== null ? Math.min(caConfig.maxExamScore, numValue) : null;
     }
     
     // Calculate CA Total
     let caTotal = 0;
-    if (caConfig && updated.cas && Object.keys(updated.cas).length > 0) {
+    if (updated.cas && Object.keys(updated.cas).length > 0) {
       caTotal = Object.values(updated.cas).reduce((sum: number, val: any) => sum + (Number(val) || 0), 0);
     } else {
       caTotal = (Number(updated.ca1) || 0) + (Number(updated.ca2) || 0) + (Number(updated.ca3) || 0);
@@ -272,7 +291,6 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
   const applyBulkCa = (caIndex: number, maxScore: number) => {
     const val = Math.min(maxScore, Math.max(0, Number(bulkCa1) || 0));
     const newScores = { ...scores };
-    const caConfig = gradeScale?.caConfig || { cas: [{ name: 'CA1', maxScore: 10 }, { name: 'CA2', maxScore: 10 }, { name: 'CA3', maxScore: 20 }], maxExamScore: 60 };
     const caDef = caConfig.cas[caIndex];
     if (!caDef) return;
     
@@ -280,6 +298,11 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
       const current = newScores[studentId];
       if (current.status === 'draft' || current.status === 'rejected' || !current.status) {
         const updated = { ...current, cas: { ...current.cas, [caDef.name]: val } };
+        
+        // Sync legacy fields
+        if (caIndex === 0) updated.ca1 = val;
+        else if (caIndex === 1) updated.ca2 = val;
+        else if (caIndex === 2) updated.ca3 = val;
         
         let caTotal = 0;
         if (updated.cas) {
@@ -378,6 +401,178 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
     }
   };
 
+  const archiveResults = async () => {
+    if (!window.confirm("Are you sure you want to archive these results? This will make them read-only and historical.")) return;
+    setSaving(true);
+    try {
+      const batch = writeBatch(db);
+      for (const studentId of Object.keys(scores)) {
+        const scoreData = scores[studentId];
+        if (scoreData.id) {
+          const docRef = doc(db, 'schools', user.schoolId, 'results', scoreData.id);
+          batch.update(docRef, { 
+            status: 'archived', 
+            updatedAt: new Date().toISOString() 
+          });
+        }
+      }
+      await batch.commit();
+      showMessage('success', 'Results archived successfully');
+    } catch (err: any) {
+      showMessage('error', `Failed to archive: ${err.message}`);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const generatePDF = () => {
+    if (!selectedSession || !selectedTerm || !selectedClass || !selectedSubject) return;
+    
+    const doc = new jsPDF();
+    const sessionObj = sessions.find(s => s.id === selectedSession);
+    const termObj = terms.find(t => t.id === selectedTerm);
+    const classObj = classes.find(c => c.id === selectedClass);
+    const subjectObj = allSubjects.find(s => s.id === selectedSubject);
+    
+    // Premium Header
+    doc.setFillColor(2, 6, 23); // slate-950
+    doc.rect(0, 0, 210, 45, 'F');
+    
+    doc.setFontSize(26);
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.text(school?.name || 'Academic Institution', 105, 22, { align: 'center' });
+    
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(148, 163, 184); // slate-400
+    doc.text('OFFICIAL ACADEMIC PERFORMANCE REPORT', 105, 32, { align: 'center' });
+    
+    // Meta Info Card
+    doc.setFillColor(248, 250, 252); // slate-50
+    doc.roundedRect(14, 50, 182, 35, 3, 3, 'F');
+    
+    doc.setFontSize(9);
+    doc.setTextColor(100, 116, 139); // slate-500
+    doc.text('REPORT CONTEXT', 20, 58);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(51, 65, 85); // slate-700
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Session: ${sessionObj?.name || 'N/A'}`, 20, 65);
+    doc.text(`Term: ${termObj?.name || 'N/A'}`, 20, 72);
+    doc.text(`Class: ${classObj?.name || 'N/A'}`, 20, 79);
+    
+    doc.text(`Subject: ${subjectObj?.name || 'N/A'}`, 105, 65);
+    doc.text(`Teacher: ${user.firstName} ${user.lastName}`, 105, 72);
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, 105, 79);
+    
+    // Table Data
+    const tableHeaders = ['S/N', 'Student Name', 'Reg No', ...caConfig.cas.map(ca => ca.name), 'CA Total', 'Exam', 'Final', 'Grade', 'Remark'];
+    const tableRows = filteredStudents.map((student, index) => {
+      const score = scores[student.uid] || {};
+      const caValues = caConfig.cas.map((ca, idx) => {
+        const val = score.cas?.[ca.name] !== undefined ? score.cas[ca.name] : (idx === 0 ? score.ca1 : idx === 1 ? score.ca2 : idx === 2 ? score.ca3 : null);
+        return val === null ? '-' : val;
+      });
+      
+      return [
+        index + 1,
+        `${formatDisplayString(student.firstName)} ${formatDisplayString(student.lastName)}`,
+        student.registrationNumber || '-',
+        ...caValues,
+        score.caTotal || 0,
+        score.exam || 0,
+        score.finalScore || 0,
+        score.grade || '-',
+        score.remark || '-'
+      ];
+    });
+    
+    autoTable(doc, {
+      startY: 95,
+      head: [tableHeaders],
+      body: tableRows,
+      theme: 'grid',
+      headStyles: { 
+        fillColor: [2, 6, 23], 
+        textColor: [255, 255, 255], 
+        fontSize: 9,
+        fontStyle: 'bold',
+        halign: 'center'
+      },
+      styles: { 
+        fontSize: 8, 
+        cellPadding: 3,
+        overflow: 'linebreak'
+      },
+      columnStyles: {
+        0: { cellWidth: 10, halign: 'center' },
+        1: { cellWidth: 45 },
+        2: { cellWidth: 25 },
+        ...caConfig.cas.reduce((acc: any, _, idx) => {
+          acc[3 + idx] = { halign: 'center' };
+          return acc;
+        }, {}),
+        [3 + caConfig.cas.length]: { halign: 'center', fontStyle: 'bold' },
+        [4 + caConfig.cas.length]: { halign: 'center' },
+        [5 + caConfig.cas.length]: { halign: 'center', fontStyle: 'bold', fillColor: [248, 250, 252] },
+        [6 + caConfig.cas.length]: { halign: 'center', fontStyle: 'bold' },
+        [7 + caConfig.cas.length]: { halign: 'center' },
+      },
+      alternateRowStyles: {
+        fillColor: [252, 253, 254]
+      }
+    });
+    
+    // Performance Analytics
+    const finalY = (doc as any).lastAutoTable.finalY || 120;
+    
+    if (finalY + 60 > 280) doc.addPage();
+    
+    const scores_list = Object.values(scores).map(s => s.finalScore || 0);
+    const avg = scores_list.length > 0 ? (scores_list.reduce((a, b) => a + b, 0) / scores_list.length).toFixed(1) : '0';
+    const high = scores_list.length > 0 ? Math.max(...scores_list) : '0';
+    const low = scores_list.length > 0 ? Math.min(...scores_list) : '0';
+    const passCount = scores_list.filter(s => s >= 40).length;
+    const passRate = scores_list.length > 0 ? ((passCount / scores_list.length) * 100).toFixed(1) : '0';
+
+    doc.setFillColor(2, 6, 23);
+    doc.rect(14, finalY + 10, 182, 45, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('CLASS PERFORMANCE ANALYTICS', 20, finalY + 20);
+    
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Average Class Score: ${avg}%`, 25, finalY + 30);
+    doc.text(`Highest Score in Class: ${high}%`, 25, finalY + 38);
+    doc.text(`Lowest Score in Class: ${low}%`, 25, finalY + 46);
+    
+    doc.text(`Students Passed: ${passCount} / ${scores_list.length}`, 110, finalY + 30);
+    doc.text(`Overall Pass Rate: ${passRate}%`, 110, finalY + 38);
+    
+    // Signatures
+    const sigY = finalY + 75;
+    doc.setTextColor(51, 65, 85);
+    doc.setFontSize(9);
+    doc.line(14, sigY, 74, sigY);
+    doc.text('Teacher Signature', 14, sigY + 5);
+    
+    doc.line(132, sigY, 192, sigY);
+    doc.text('Principal / H.O.S Signature', 132, sigY + 5);
+    
+    // Footer
+    doc.setFontSize(8);
+    doc.setTextColor(148, 163, 184);
+    doc.text(`Generated by SEEDD Eco-System | ${new Date().toLocaleString()}`, 105, 285, { align: 'center' });
+    
+    doc.save(`${school?.name || 'School'}_${classObj?.name}_${subjectObj?.name}_Report.pdf`);
+    showMessage('success', 'Premium report exported successfully!');
+  };
+
   const isContextSelected = selectedSession && selectedTerm && selectedClass && selectedSubject;
   
   // Determine overall status based on the first student's result (assuming batch submission)
@@ -387,7 +582,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
     return firstScore?.status || 'draft';
   }, [scores, students]);
 
-  const isLocked = ['submitted', 'under_review', 'approved'].includes(overallStatus);
+  const isLocked = ['submitted', 'under_review', 'approved', 'archived'].includes(overallStatus);
   const isRejected = overallStatus === 'rejected';
   const adminComment = useMemo(() => {
     if (students.length === 0 || Object.keys(scores).length === 0) return null;
@@ -400,29 +595,28 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
       case 'under_review': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
       case 'approved': return 'bg-green-100 text-green-700 border-green-200';
       case 'rejected': return 'bg-red-100 text-red-700 border-red-200';
+      case 'archived': return 'bg-slate-900 text-slate-100 border-slate-950';
       default: return 'bg-gray-100 text-slate-900 dark:text-slate-100 border-gray-200';
     }
   };
-
-  const caConfig = gradeScale?.caConfig || { cas: [{ name: 'CA1', maxScore: 10 }, { name: 'CA2', maxScore: 10 }, { name: 'CA3', maxScore: 20 }], maxExamScore: 60 };
-  const totalCaMax = caConfig.cas.reduce((sum, ca) => sum + ca.maxScore, 0);
 
   return (
     <div className="space-y-6">
       {/* Header & Status */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-black tracking-tighter text-slate-950 uppercase leading-none">Result Workspace</h2>
-          <p className="text-sm font-bold tracking-tight text-slate-900 mt-2">Manage and submit academic records</p>
+          <h2 className="text-3xl font-medium tracking-tighter text-slate-950 uppercase leading-none">Result Workspace</h2>
+          <p className="text-sm font-medium tracking-tight text-slate-900 mt-2">Manage and submit academic records</p>
         </div>
         
         {isContextSelected && (
-          <div className={`px-5 py-2.5 rounded-2xl border font-black text-sm tracking-tight flex items-center gap-3 shadow-sm ${getStatusColor(overallStatus)}`}>
+          <div className={`px-5 py-2.5 rounded-2xl border font-medium text-sm tracking-tight flex items-center gap-3 shadow-sm ${getStatusColor(overallStatus)}`}>
             <div className={`w-2 h-2 rounded-full animate-pulse ${
               overallStatus === 'approved' ? 'bg-emerald-500' : 
               overallStatus === 'rejected' ? 'bg-red-500' : 
               overallStatus === 'submitted' ? 'bg-slate-500' : 
               overallStatus === 'under_review' ? 'bg-amber-500' : 
+              overallStatus === 'archived' ? 'bg-slate-950' :
               'bg-slate-300'
             }`} />
             {formatDisplayString(overallStatus)}
@@ -450,62 +644,62 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
       <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-100">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
           <div className="space-y-1.5">
-            <label className="text-base font-bold tracking-tight text-slate-950 ml-1">Academic Session</label>
+            <label className="text-base font-medium tracking-tight text-slate-950 ml-1">Academic Session</label>
             <select
               id="select_teacher_result_session"
               value={selectedSession}
               onChange={(e) => setSelectedSession(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-bold tracking-tight text-base text-slate-950"
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-950"
             >
               <option value="">Select Session</option>
               {sessions.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-base font-bold tracking-tight text-slate-950 ml-1">Term</label>
+            <label className="text-base font-medium tracking-tight text-slate-950 ml-1">Term</label>
             <select
               id="select_teacher_result_term"
               value={selectedTerm}
               onChange={(e) => setSelectedTerm(e.target.value)}
               disabled={!selectedSession}
-              className="w-full px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-bold tracking-tight text-base text-slate-950 disabled:opacity-50"
+              className="w-full px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-950 disabled:opacity-50"
             >
               <option value="">Select Term</option>
               {terms.map(t => <option key={t.id} value={t.id}>{formatDisplayString(t.name)}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-base font-bold tracking-tight text-slate-950 ml-1">Class</label>
+            <label className="text-base font-medium tracking-tight text-slate-950 ml-1">Class</label>
             <select
               id="select_teacher_result_class"
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-bold tracking-tight text-base text-slate-950"
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-950"
             >
               <option value="">Select Class</option>
                {availableClasses.map(c => <option key={c.id} value={c.id}>{formatDisplayString(c.name)}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-base font-bold tracking-tight text-slate-950 ml-1">Subject</label>
+            <label className="text-base font-medium tracking-tight text-slate-950 ml-1">Subject</label>
             <select
               id="select_teacher_result_subject"
               value={selectedSubject}
               onChange={(e) => setSelectedSubject(e.target.value)}
               disabled={!selectedClass}
-              className="w-full px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-bold tracking-tight text-base text-slate-950 disabled:opacity-50"
+              className="w-full px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-950 disabled:opacity-50"
             >
               <option value="">Select Subject</option>
                {availableSubjects.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-base font-bold tracking-tight text-slate-950 ml-1">Payment Filter</label>
+            <label className="text-base font-medium tracking-tight text-slate-950 ml-1">Payment Filter</label>
             <select
               id="select_teacher_result_payment_filter"
               value={paymentFilter}
               onChange={(e) => setPaymentFilter(e.target.value as any)}
-              className="w-full px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-bold tracking-tight text-base text-slate-950"
+              className="w-full px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-950"
             >
               <option value="all">All Students</option>
               <option value="paid">Paid Only</option>
@@ -533,21 +727,21 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
           <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-950 mx-auto mb-6 shadow-sm border border-slate-100">
             <Search size={40} strokeWidth={2.5} />
           </div>
-          <h3 className="text-3xl font-bold tracking-tight text-slate-950 mb-3">Ready to Enter Results?</h3>
-          <p className="text-lg font-bold tracking-tight text-slate-600 max-w-md mx-auto">Please select the session, term, class, and subject to load the academic roster.</p>
+          <h3 className="text-3xl font-medium tracking-tight text-slate-950 mb-3">Ready to Enter Results?</h3>
+          <p className="text-lg font-medium tracking-tight text-slate-600 max-w-md mx-auto">Please select the session, term, class, and subject to load the academic roster.</p>
         </div>
       ) : loading ? (
         <div className="bg-white p-10 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
           <Loader2 className="w-12 h-12 text-slate-950 animate-spin mb-6" />
-          <p className="text-sm font-black tracking-tight text-slate-950">Syncing academic records...</p>
+          <p className="text-sm font-medium tracking-tight text-slate-950">Syncing academic records...</p>
         </div>
       ) : filteredStudents.length === 0 ? (
         <div className="bg-white p-10 rounded-xl shadow-sm border border-slate-100 text-center">
           <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-300 mx-auto mb-6 border border-slate-100 shadow-sm">
             <AlertCircle size={40} strokeWidth={2.5} />
           </div>
-          <h3 className="text-2xl font-bold tracking-tight text-slate-950 mb-3">No Students Found</h3>
-          <p className="text-sm font-black tracking-tight text-slate-950">There are no students registered in this class roster.</p>
+          <h3 className="text-2xl font-medium tracking-tight text-slate-950 mb-3">No Students Found</h3>
+          <p className="text-sm font-medium tracking-tight text-slate-950">There are no students registered in this class roster.</p>
         </div>
       ) : (
         <div className="space-y-6">
@@ -558,7 +752,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                 id="btn_teacher_result_bulk_actions"
                 onClick={() => setShowBulkOptions(!showBulkOptions)}
                 disabled={isLocked}
-                className="px-4 py-2 rounded-xl font-black tracking-tight text-sm bg-slate-50 text-slate-950 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-2.5 disabled:opacity-50 shadow-sm active:scale-95"
+                className="px-4 py-2 rounded-xl font-medium tracking-tight text-sm bg-slate-50 text-slate-950 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-2.5 disabled:opacity-50 shadow-sm active:scale-95"
               >
                 <Copy size={14} strokeWidth={2.5} /> Bulk Actions
               </button>
@@ -571,7 +765,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                     className="absolute top-full left-0 mt-2 p-3 bg-white rounded-xl shadow-2xl border border-slate-100 z-30 w-56"
                   >
-                    <h4 className="font-black tracking-tight text-slate-950 text-sm mb-4">Apply Bulk Scores</h4>
+                    <h4 className="font-medium tracking-tight text-slate-950 text-sm mb-4">Apply Bulk Scores</h4>
                     <div className="space-y-2">
                       {caConfig.cas.map((ca, idx) => (
                         <div key={idx} className="flex gap-2">
@@ -581,12 +775,12 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                             value={bulkCa1}
                             onChange={(e) => setBulkCa1(e.target.value)}
                             placeholder={`${formatDisplayString(ca.name)}`}
-                            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:border-slate-950 outline-none transition-all font-black tracking-tight text-sm text-slate-950"
+                            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:border-slate-950 outline-none transition-all font-medium tracking-tight text-sm text-slate-950"
                           />
                           <button 
                             id={`btn_teacher_result_bulk_apply_${idx}`}
                             onClick={() => applyBulkCa(idx, ca.maxScore)}
-                            className="px-4 py-2.5 bg-slate-950 text-white rounded-lg font-black tracking-tight text-sm hover:bg-black transition-all shadow-lg shadow-slate-950/20"
+                            className="px-4 py-2.5 bg-slate-950 text-white rounded-lg font-medium tracking-tight text-sm hover:bg-black transition-all shadow-lg shadow-slate-950/20"
                           >
                             Apply
                           </button>
@@ -603,16 +797,36 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                 id="btn_teacher_result_save_draft"
                 onClick={() => saveResults('draft')}
                 disabled={saving || isLocked}
-                className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-black tracking-tight text-sm text-slate-950 bg-slate-50 hover:bg-slate-100 border border-slate-200 shadow-sm transition-all flex items-center justify-center gap-2.5 disabled:opacity-50 active:scale-95"
+                className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-medium tracking-tight text-sm text-slate-950 bg-slate-50 hover:bg-slate-100 border border-slate-200 shadow-sm transition-all flex items-center justify-center gap-2.5 disabled:opacity-50 active:scale-95"
               >
                 {saving ? <Loader2 size={12} className="animate-spin" /> : <Save size={14} strokeWidth={2.5} />}
                 Save Draft
               </button>
               <button
+                id="btn_teacher_result_export_pdf"
+                onClick={generatePDF}
+                disabled={!isContextSelected || students.length === 0}
+                className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-medium tracking-tight text-sm text-white bg-blue-600 hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 border border-white/20 flex items-center justify-center gap-2.5 disabled:opacity-50 active:scale-95"
+              >
+                <FileText size={14} strokeWidth={2.5} />
+                Export Report
+              </button>
+              {(overallStatus === 'approved' || overallStatus === 'submitted') && (
+                <button
+                  id="btn_teacher_result_archive"
+                  onClick={archiveResults}
+                  disabled={saving}
+                  className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-medium tracking-tight text-sm text-slate-950 bg-amber-50 hover:bg-amber-100 border border-amber-200 shadow-sm transition-all flex items-center justify-center gap-2.5 disabled:opacity-50 active:scale-95"
+                >
+                  {saving ? <Loader2 size={12} className="animate-spin" /> : <RotateCcw size={14} strokeWidth={2.5} />}
+                  Archive Records
+                </button>
+              )}
+              <button
                 id="btn_teacher_result_submit"
                 onClick={() => saveResults('submitted')}
                 disabled={saving || isLocked}
-                className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-black tracking-tight text-sm text-white bg-slate-950 hover:bg-black transition-all shadow-lg shadow-slate-950/20 border border-white/20 flex items-center justify-center gap-2.5 disabled:opacity-50 active:scale-95"
+                className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-medium tracking-tight text-sm text-white bg-slate-950 hover:bg-black transition-all shadow-lg shadow-slate-950/20 border border-white/20 flex items-center justify-center gap-2.5 disabled:opacity-50 active:scale-95"
               >
                 {saving ? <Loader2 size={12} className="animate-spin" /> : <Send size={14} strokeWidth={2.5} />}
                 Submit Results
@@ -624,15 +838,15 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left border-collapse">
-                <thead className="bg-slate-50 border-b border-slate-100 text-xl font-bold tracking-tight text-slate-950">
+                <thead className="bg-slate-50 border-b border-slate-100 text-xl font-medium tracking-tight text-slate-950">
                   <tr>
                     <th className="px-6 py-5 whitespace-nowrap">Student Roster</th>
                     {caConfig.cas.map((ca, idx) => (
-                      <th key={idx} className="px-2 py-5 text-center w-20">{formatDisplayString(ca.name)}<br/><span className="text-5xl font-black text-slate-950">Max:{ca.maxScore}</span></th>
+                      <th key={idx} className="px-2 py-5 text-center w-20">{formatDisplayString(ca.name)}<br/><span className="text-[10px] font-medium text-slate-950">Max:{ca.maxScore}</span></th>
                     ))}
-                    <th className="px-2 py-5 text-center w-24 bg-slate-100/30">CA Total<br/><span className="text-5xl font-black text-slate-950">Max:{totalCaMax}</span></th>
-                    <th className="px-2 py-5 text-center w-20">Exam<br/><span className="text-5xl font-black text-slate-950">Max:{caConfig.maxExamScore}</span></th>
-                    <th className="px-2 py-5 text-center w-24 bg-slate-950 text-white">Final Score<br/><span className="text-5xl font-black text-white">Max:100</span></th>
+                    <th className="px-2 py-5 text-center w-24 bg-slate-100/30">CA Total<br/><span className="text-[10px] font-medium text-slate-950">Max:{totalCaMax}</span></th>
+                    <th className="px-2 py-5 text-center w-20">Exam<br/><span className="text-[10px] font-medium text-slate-950">Max:{caConfig.maxExamScore}</span></th>
+                    <th className="px-2 py-5 text-center w-24 bg-slate-950 text-white">Final Score<br/><span className="text-[10px] font-medium text-white">Max:100</span></th>
                     <th className="px-6 py-4 text-center w-24">Grade</th>
                   </tr>
                 </thead>
@@ -653,13 +867,13 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                             {student.photoUrl ? (
                               <img src={student.photoUrl} alt={formatDisplayString(student.firstName)} className="w-6 h-6 rounded-lg object-cover border border-white shadow-sm" referrerPolicy="no-referrer" />
                             ) : (
-                              <div className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center font-bold text-slate-950 shrink-0 border border-white shadow-sm text-xs">
+                              <div className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center font-medium text-slate-950 shrink-0 border border-white shadow-sm text-xs">
                                 {formatDisplayString(student.firstName).charAt(0) || '?'}
                               </div>
                             )}
                             <div>
-                              <p className="font-bold tracking-tight text-base text-slate-950 truncate max-w-[120px]">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</p>
-                              <p className="text-base text-slate-500 font-bold mt-0.5">{student.registrationNumber || 'NO ID'}</p>
+                              <p className="font-medium tracking-tight text-base text-slate-950 truncate max-w-[120px]">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</p>
+                              <p className="text-base text-slate-500 font-medium mt-0.5">{student.registrationNumber || 'NO ID'}</p>
                             </div>
                           </div>
                         </td>
@@ -675,13 +889,13 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                                 value={val === null ? '' : val}
                                 onChange={(e) => handleScoreChange(student.uid, `ca_${idx}`, e.target.value)}
                                 disabled={isLocked}
-                                className="w-full text-center px-1 py-2 rounded-lg border border-slate-200 bg-slate-50/40 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none font-bold text-base text-slate-950 transition-all disabled:opacity-40 disabled:bg-transparent cursor-text placeholder:text-slate-300"
+                                className="w-full text-center px-1 py-2 rounded-lg border border-slate-200 bg-slate-50/40 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none font-medium text-base text-slate-950 transition-all disabled:opacity-40 disabled:bg-transparent cursor-text placeholder:text-slate-300"
                               />
                             </td>
                           );
                         })}
                         <td className="px-3 py-3 bg-slate-50/50 text-center">
-                          <span className="font-bold text-slate-950 text-lg">{score.caTotal || 0}</span>
+                          <span className="font-medium text-slate-950 text-lg">{score.caTotal || 0}</span>
                         </td>
                         <td className="px-2 py-3">
                           <input
@@ -692,14 +906,14 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                              value={score.exam === null ? '' : score.exam}
                             onChange={(e) => handleScoreChange(student.uid, 'exam', e.target.value)}
                             disabled={isLocked}
-                            className="w-full text-center px-2 py-2 rounded-lg border border-slate-200 bg-slate-50/40 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none font-bold text-base text-slate-950 transition-all disabled:opacity-40 disabled:bg-transparent cursor-text placeholder:text-slate-300"
+                            className="w-full text-center px-2 py-2 rounded-lg border border-slate-200 bg-slate-50/40 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none font-medium text-base text-slate-950 transition-all disabled:opacity-40 disabled:bg-transparent cursor-text placeholder:text-slate-300"
                           />
                         </td>
                         <td className="px-3 py-3 bg-slate-100 text-center">
-                          <span className="font-bold text-slate-950 text-lg">{score.finalScore || 0}</span>
+                          <span className="font-medium text-slate-950 text-lg">{score.finalScore || 0}</span>
                         </td>
                         <td className="px-6 py-3 text-center">
-                          <span className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg font-bold text-lg tracking-tight shadow-sm border ${
+                          <span className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg font-medium text-lg tracking-tight shadow-sm border ${
                             score.grade === 'A' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                             score.grade === 'B' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                             score.grade === 'C' ? 'bg-slate-100 text-slate-900 border-slate-200' :
@@ -728,13 +942,13 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                       {student.photoUrl ? (
                         <img src={student.photoUrl} alt={formatDisplayString(student.firstName)} className="w-10 h-10 rounded-lg object-cover border border-slate-100" referrerPolicy="no-referrer" />
                        ) : (
-                        <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center font-bold text-slate-950 shrink-0 text-xs">
+                        <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center font-medium text-slate-950 shrink-0 text-xs">
                           {formatDisplayString(student.firstName).charAt(0) || '?'}
                         </div>
                       )}
                       <div>
-                        <p className="font-black tracking-tight text-base text-slate-950">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</p>
-                        <p className="text-base text-slate-950 font-black mt-1">{student.registrationNumber || 'NO ID'}</p>
+                        <p className="font-medium tracking-tight text-base text-slate-950">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</p>
+                        <p className="text-base text-slate-950 font-medium mt-1">{student.registrationNumber || 'NO ID'}</p>
                       </div>
                     </div>
                     
@@ -743,7 +957,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                         const val = score.cas?.[ca.name] !== undefined ? score.cas[ca.name] : (idx === 0 ? score.ca1 : idx === 1 ? score.ca2 : idx === 2 ? score.ca3 : 0);
                         return (
                            <div key={idx} className="flex flex-col gap-1.5">
-                            <span className="text-xl font-black tracking-tight text-slate-950 ml-1">{formatDisplayString(ca.name)} (Max:{ca.maxScore})</span>
+                            <span className="text-xl font-medium tracking-tight text-slate-950 ml-1">{formatDisplayString(ca.name)} (Max:{ca.maxScore})</span>
                             <input
                               id={`input_teacher_result_ca_mobile_${idx}_${student.uid}`}
                               type="number"
@@ -752,7 +966,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                               value={val === 0 && !score.id && !score.cas?.[ca.name] ? '' : val}
                               onChange={(e) => handleScoreChange(student.uid, `ca_${idx}`, e.target.value)}
                               disabled={isLocked}
-                              className="w-full text-center px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 outline-none font-bold text-base text-slate-950 transition-all disabled:opacity-50"
+                              className="w-full text-center px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 outline-none font-medium text-base text-slate-950 transition-all disabled:opacity-50"
                             />
                           </div>
                         );
@@ -761,11 +975,11 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                     
                     <div className="grid grid-cols-3 gap-3 pt-4 border-t border-slate-100">
                       <div className="flex flex-col items-center justify-center bg-slate-50/50 rounded-xl p-3 border border-slate-100/50">
-                        <span className="text-xl font-black tracking-tight text-slate-950 mb-1">Total CA</span>
-                        <span className="font-black text-slate-950 text-base">{score.caTotal || 0}</span>
+                        <span className="text-xl font-medium tracking-tight text-slate-950 mb-1">Total CA</span>
+                        <span className="font-medium text-slate-950 text-base">{score.caTotal || 0}</span>
                       </div>
                       <div className="flex flex-col gap-1.5">
-                        <span className="text-2xl font-black tracking-tight text-slate-950 text-center">Exam (Max:{caConfig.maxExamScore})</span>
+                        <span className="text-2xl font-medium tracking-tight text-slate-950 text-center">Exam (Max:{caConfig.maxExamScore})</span>
                         <input
                           id={`input_teacher_result_exam_mobile_${student.uid}`}
                           type="number"
@@ -774,18 +988,18 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                           value={score.exam === 0 && !score.id ? '' : score.exam}
                           onChange={(e) => handleScoreChange(student.uid, 'exam', e.target.value)}
                           disabled={isLocked}
-                          className="w-full text-center px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 outline-none font-bold text-base text-slate-950 transition-all"
+                          className="w-full text-center px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 outline-none font-medium text-base text-slate-950 transition-all"
                         />
                       </div>
                       <div className="flex flex-col items-center justify-center bg-slate-950 rounded-xl p-3 border border-white/20 shadow-lg shadow-slate-950/20">
-                        <span className="text-xl font-black tracking-tight text-white/70 mb-1">Final</span>
-                        <span className="font-black text-white text-xl">{score.finalScore || 0}</span>
+                        <span className="text-xl font-medium tracking-tight text-white/70 mb-1">Final</span>
+                        <span className="font-medium text-white text-xl">{score.finalScore || 0}</span>
                       </div>
                     </div>
                     
                     <div className="flex justify-between items-center pt-4 border-t border-slate-100">
-                      <span className="text-xl font-black tracking-tight text-slate-950">Letter Grade</span>
-                      <span className={`px-3 py-1.5 rounded-lg font-bold text-base tracking-tight border ${
+                      <span className="text-xl font-medium tracking-tight text-slate-950">Letter Grade</span>
+                      <span className={`px-3 py-1.5 rounded-lg font-medium text-base tracking-tight border ${
                         score.grade === 'A' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                         score.grade === 'B' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                         score.grade === 'C' ? 'bg-slate-100 text-slate-900 border-slate-200' :

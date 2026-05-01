@@ -103,7 +103,7 @@ export interface AssignmentSubmission {
     questionId: string;
     answer: string;
   }[];
-  status: 'submitted' | 'graded';
+  status: 'pending' | 'submitted' | 'graded';
   score?: number;
   totalScore?: number;
   feedback?: string;
@@ -135,6 +135,7 @@ export interface Session {
   name: string; // e.g., "2025/2026"
   schoolId: string;
   isCurrent: boolean;
+  isClosed?: boolean;
   createdAt?: string;
 }
 
@@ -144,6 +145,7 @@ export interface Term {
   schoolId: string;
   sessionId: string;
   isCurrent: boolean;
+  isClosed?: boolean;
   resumptionDate?: string; // ISO date string
   createdAt?: string;
 }
@@ -188,7 +190,7 @@ export interface Result {
   date: string;
   isRevision?: boolean;
   createdAt: string;
-  status?: 'draft' | 'submitted' | 'under_review' | 'approved' | 'rejected';
+  status?: 'draft' | 'submitted' | 'under_review' | 'approved' | 'rejected' | 'archived';
   adminComment?: string;
 }
 

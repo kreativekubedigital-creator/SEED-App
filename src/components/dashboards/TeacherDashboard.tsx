@@ -103,9 +103,9 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
           {school?.logoUrl ? (
             <img src={school.logoUrl} alt={formatDisplayString(school.name)} className="w-10 h-10 rounded-xl object-cover shadow-sm" />
           ) : (
-          <div className="w-12 h-12 bg-slate-950 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-lg shadow-slate-950/20">S</div>
+          <div className="w-12 h-12 bg-slate-950 rounded-xl flex items-center justify-center font-bold text-white text-sm shadow-lg shadow-slate-950/20">S</div>
           )}
-          <span className="font-black tracking-tight text-base text-slate-950 truncate max-w-[150px]">{formatDisplayString(school?.name || 'SEEDD')}</span>
+          <span className="font-bold tracking-tight text-base text-slate-950 truncate max-w-[150px]">{formatDisplayString(school?.name || 'SEEDD')}</span>
         </div>
         <button onClick={onLogout} className="p-3 bg-red-50 text-red-500 rounded-xl transition-all active:scale-95"><LogOut size={20} /></button>
       </div>
@@ -132,11 +132,11 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
                 )}
               </div>
               <div className="flex items-center gap-3 mt-3">
-                <span className="text-sm font-black tracking-tight text-white bg-slate-950 px-5 py-2 rounded-full shadow-lg shadow-slate-950/25">
+                <span className="text-sm font-medium tracking-tight text-white bg-slate-950 px-5 py-2 rounded-full shadow-lg shadow-slate-950/25">
                   Teacher Portal
                 </span>
                 <div className="w-1.5 h-1.5 bg-slate-200 rounded-full"></div>
-                <span className="text-sm font-black tracking-tight text-slate-950">
+                <span className="text-sm font-medium tracking-tight text-slate-950">
                   {user.classId ? getClassName(user.classId) : 'Specialist'}
                 </span>
               </div>
@@ -146,7 +146,7 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
           <div className="flex items-center gap-4 w-full lg:w-auto">
             <button
               onClick={onLogout}
-              className="flex-1 lg:flex-none flex items-center justify-center gap-3 px-10 py-5 rounded-2xl bg-white hover:bg-red-50 text-slate-950 hover:text-red-500 border border-slate-100 shadow-xl shadow-slate-200/20 hover:shadow-red-500/10 transition-all font-black tracking-tight text-sm group"
+              className="flex-1 lg:flex-none flex items-center justify-center gap-3 px-10 py-5 rounded-2xl bg-white hover:bg-red-50 text-slate-950 hover:text-red-500 border border-slate-100 shadow-xl shadow-slate-200/20 hover:shadow-red-500/10 transition-all font-medium tracking-tight text-sm group"
             >
               <LogOut size={18} className="group-hover:translate-x-1 transition-transform" /> Logout
             </button>
@@ -160,10 +160,10 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
               key={tab}
               id={`tab_teacher_${tab}`}
               onClick={() => setActiveTab(tab)}
-              className={`px-2.5 py-1 rounded-xl font-black tracking-tight text-sm transition-all whitespace-nowrap shrink-0 border shadow-sm ${
+              className={`px-3 py-1.5 rounded-xl font-medium tracking-tight text-sm transition-all whitespace-nowrap shrink-0 border shadow-sm ${
                 activeTab === tab
-                  ? 'bg-slate-950 text-white border-slate-950 shadow-xl shadow-slate-950/20 z-10'
-                  : 'bg-white text-slate-950 border-slate-100 hover:bg-slate-50 hover:text-slate-950 hover:border-slate-200'
+                  ? 'bg-blue-600 text-white border-blue-600 shadow-xl shadow-blue-500/20 z-10'
+                  : 'bg-white text-slate-600 border-slate-100 hover:bg-slate-50 hover:text-slate-950 hover:border-slate-200'
               }`}
             >
               {tab === 'subjects' ? 'Subjects' : formatDisplayString(tab)}
@@ -194,7 +194,7 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
                     <div className={`p-3 bg-slate-50 text-slate-950 border border-slate-100 group-hover:scale-110 transition-transform`}>
                       <stat.icon size={20} strokeWidth={2.5} />
                     </div>
-                    <span className="text-slate-950 font-black text-base tracking-tight">{stat.label}</span>
+                    <span className="text-slate-950 font-medium text-base tracking-tight">{stat.label}</span>
                   </div>
                   <p className="text-4xl font-bold tracking-tighter text-slate-950 leading-none relative z-10">{stat.value}</p>
                 </motion.div>
@@ -205,7 +205,7 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
               <div className="bg-white/80 backdrop-blur-md p-12 rounded-[2.5rem] border border-white shadow-2xl shadow-slate-200/40">
                 <div className="flex justify-between items-center mb-12">
-                  <h3 className="text-base font-black tracking-tight text-slate-950 uppercase">Quick Actions</h3>
+                  <h3 className="text-base font-bold tracking-tight text-slate-950 uppercase">Quick Actions</h3>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   {[
@@ -224,7 +224,7 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
                       <div className={`w-12 h-12 rounded-xl bg-slate-50 text-slate-950 flex items-center justify-center mb-1 border border-slate-100 group-hover:scale-110 transition-transform`}>
                         <action.icon size={24} strokeWidth={3} />
                       </div>
-                      <span className="font-black tracking-tight text-base text-slate-950">{action.label}</span>
+                      <span className="font-bold tracking-tight text-base text-slate-950">{action.label}</span>
                       <span className="text-sm text-slate-500 font-bold">{action.desc}</span>
                     </motion.button>
                   ))}
@@ -233,7 +233,7 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
 
               <div className="bg-white/80 backdrop-blur-md p-8 lg:p-10 rounded-[2rem] border border-white shadow-2xl shadow-slate-200/40">
                 <div className="flex justify-between items-center mb-8">
-                  <h3 className="text-base font-black tracking-tight text-slate-950 uppercase">Recent Activity</h3>
+                  <h3 className="text-base font-bold tracking-tight text-slate-950 uppercase">Recent Activity</h3>
                 </div>
                 <div className="space-y-3">
                   {assignments.slice(0, 4).map(a => (
@@ -246,12 +246,12 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
                         <FileText size={20} strokeWidth={2.5} />
                       </div>
                       <div className="flex-1 overflow-hidden">
-                        <p className="font-black tracking-tight text-base text-slate-950 truncate mb-1">{formatDisplayString(a.title)}</p>
+                        <p className="font-bold tracking-tight text-base text-slate-950 truncate mb-1">{formatDisplayString(a.title)}</p>
                         <p className="text-sm text-slate-500 font-bold flex items-center gap-2">
                           <BookOpen size={14} /> {getSubjectName(a.subjectId)}
                         </p>
                       </div>
-                      <div className="text-sm font-black text-slate-950 whitespace-nowrap bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-lg shadow-sm">
+                      <div className="text-sm font-bold text-slate-950 whitespace-nowrap bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-lg shadow-sm">
                         {new Date(a.dueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
                       </div>
                     </motion.div>
@@ -261,7 +261,7 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
                       <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-200 mb-6 border border-slate-100">
                         <FileText size={40} />
                       </div>
-                      <p className="text-slate-950 font-black tracking-tight text-sm">No recent assignments.</p>
+                      <p className="text-slate-950 font-bold tracking-tight text-sm">No recent assignments.</p>
                     </div>
                   )}
                 </div>
@@ -274,7 +274,7 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
             <div className="flex justify-between items-end">
               <div>
-                <h3 className="text-sm font-black tracking-tight text-slate-950 mb-3">Academic Control</h3>
+                <h3 className="text-sm font-bold tracking-tight text-slate-950 mb-3">Academic Control</h3>
                 <h2 className="text-4xl font-bold tracking-tighter text-slate-950 leading-none">Subjects</h2>
               </div>
             </div>
@@ -291,29 +291,29 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
                       <BookOpen size={18} strokeWidth={2.5} />
                     </div>
                     <div className="overflow-hidden">
-                      <h4 className="font-black tracking-tight text-base text-slate-950 leading-tight mb-1 truncate">{formatDisplayString(subject.name)}</h4>
-                      <p className="text-sm text-slate-600 font-black">{getClassName(subject.classId)}</p>
+                      <h4 className="font-bold tracking-tight text-base text-slate-950 leading-tight mb-1 truncate">{formatDisplayString(subject.name)}</h4>
+                      <p className="text-sm text-slate-600 font-bold">{getClassName(subject.classId)}</p>
                     </div>
                   </div>
                   <div className="pt-4 border-t border-slate-50 space-y-4 relative z-10">
                     <div className="flex justify-between items-center">
                       <div className="flex flex-col">
-                        <span className="text-sm font-black tracking-tight text-slate-500 mb-1">Students</span>
-                        <span className="text-base font-black text-slate-950">{students.filter(s => s.classId === subject.classId).length}</span>
+                        <span className="text-sm font-bold tracking-tight text-slate-500 mb-1">Students</span>
+                        <span className="text-base font-bold text-slate-950">{students.filter(s => s.classId === subject.classId).length}</span>
                       </div>
                       <div className="flex flex-col text-right">
-                        <span className="text-sm font-black tracking-tight text-slate-500 mb-1">Assignments</span>
-                        <span className="text-base font-black text-slate-950">{assignments.filter(a => a.subjectId === subject.id).length}</span>
+                        <span className="text-sm font-bold tracking-tight text-slate-500 mb-1">Assignments</span>
+                        <span className="text-base font-bold text-slate-950">{assignments.filter(a => a.subjectId === subject.id).length}</span>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                      <button id={`btn_teacher_assign_${subject.id}`} onClick={() => setActiveTab('assignments')} className="text-slate-950 text-sm font-black tracking-tight hover:text-white transition-all bg-slate-50 hover:bg-slate-950 px-4 py-2.5 rounded-xl border border-slate-200 shadow-sm text-center">
+                      <button id={`btn_teacher_assign_${subject.id}`} onClick={() => setActiveTab('assignments')} className="text-slate-950 text-sm font-bold tracking-tight hover:text-white transition-all bg-slate-50 hover:bg-slate-950 px-4 py-2.5 rounded-xl border border-slate-200 shadow-sm text-center">
                         Assign
                       </button>
-                      <button id={`btn_teacher_results_${subject.id}`} onClick={() => setActiveTab('results')} className="text-slate-950 text-sm font-black tracking-tight hover:text-white transition-all bg-slate-50 hover:bg-slate-950 px-4 py-2.5 rounded-xl border border-slate-200 shadow-sm text-center">
+                      <button id={`btn_teacher_results_${subject.id}`} onClick={() => setActiveTab('results')} className="text-slate-950 text-sm font-bold tracking-tight hover:text-white transition-all bg-slate-50 hover:bg-slate-950 px-4 py-2.5 rounded-xl border border-slate-200 shadow-sm text-center">
                         Results
                       </button>
-                      <button id={`btn_teacher_students_${subject.id}`} onClick={() => setSelectedClassForStudents(subject.classId)} className="col-span-2 text-white text-sm font-black tracking-tight transition-all bg-slate-950 hover:bg-black px-4 py-3 rounded-xl shadow-lg shadow-slate-950/20 text-center border border-white/20">
+                      <button id={`btn_teacher_students_${subject.id}`} onClick={() => setSelectedClassForStudents(subject.classId)} className="col-span-2 text-white text-sm font-bold tracking-tight transition-all bg-slate-950 hover:bg-black px-4 py-3 rounded-xl shadow-lg shadow-slate-950/20 text-center border border-white/20">
                         Student Roster
                       </button>
                     </div>
@@ -325,8 +325,8 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
                   <div className="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center text-slate-200 mx-auto mb-8 shadow-sm border border-slate-100">
                     <BookOpen size={48} />
                   </div>
-                  <p className="text-slate-950 font-black tracking-tight text-base mb-2">No subjects assigned</p>
-                  <p className="text-slate-950 text-sm font-black tracking-tight">Check with the school administrator.</p>
+                  <p className="text-slate-950 font-bold tracking-tight text-base mb-2">No subjects assigned</p>
+                  <p className="text-slate-950 text-sm font-bold tracking-tight">Check with the school administrator.</p>
                 </div>
               )}
             </div>
@@ -345,10 +345,10 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
               >
                  <div className="flex justify-between items-center mb-12">
                   <div>
-                    <h3 className="text-sm font-black tracking-tight text-slate-950 mb-3">Class Population</h3>
+                    <h3 className="text-sm font-bold tracking-tight text-slate-950 mb-3">Class Population</h3>
                     <h2 className="text-4xl font-bold tracking-tighter text-slate-950 leading-none">Student Roster</h2>
                   </div>
-                  <p className="text-sm text-slate-950 font-black mt-4">{getClassName(selectedClassForStudents)}</p>
+                  <p className="text-sm text-slate-950 font-bold mt-4">{getClassName(selectedClassForStudents)}</p>
                   <button 
                     onClick={() => setSelectedClassForStudents(null)}
                     className="p-5 bg-slate-100 hover:bg-slate-950 text-slate-500 hover:text-white rounded-[1.5rem] transition-all active:scale-95"
@@ -367,8 +367,8 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
                         </div>
                       )}
                       <div>
-                        <p className="font-black tracking-tight text-lg text-slate-950">{formatDisplayString(s.firstName)} {formatDisplayString(s.lastName)}</p>
-                        <p className="text-sm text-slate-600 font-black mt-1.5">Reg: {s.registrationNumber || 'N/A'}</p>
+                        <p className="font-bold tracking-tight text-lg text-slate-950">{formatDisplayString(s.firstName)} {formatDisplayString(s.lastName)}</p>
+                        <p className="text-sm text-slate-600 font-bold mt-1.5">Reg: {s.registrationNumber || 'N/A'}</p>
                       </div>
                     </div>
                   ))}
