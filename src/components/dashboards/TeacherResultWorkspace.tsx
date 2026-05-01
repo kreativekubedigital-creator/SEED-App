@@ -595,7 +595,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
       case 'under_review': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
       case 'approved': return 'bg-green-100 text-green-700 border-green-200';
       case 'rejected': return 'bg-red-100 text-red-700 border-red-200';
-      case 'archived': return 'bg-slate-900 text-slate-100 border-slate-950';
+      case 'archived': return 'bg-blue-500 text-slate-100 border-slate-950';
       default: return 'bg-gray-100 text-slate-900 dark:text-slate-100 border-gray-200';
     }
   };
@@ -605,7 +605,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
       {/* Header & Status */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-medium tracking-tighter text-slate-950 uppercase leading-none">Result Workspace</h2>
+          <h2 className="text-3xl font-medium tracking-tighter text-slate-900 uppercase leading-none">Result Workspace</h2>
           <p className="text-sm font-medium tracking-tight text-slate-900 mt-2">Manage and submit academic records</p>
         </div>
         
@@ -616,7 +616,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
               overallStatus === 'rejected' ? 'bg-red-500' : 
               overallStatus === 'submitted' ? 'bg-slate-500' : 
               overallStatus === 'under_review' ? 'bg-amber-500' : 
-              overallStatus === 'archived' ? 'bg-slate-950' :
+              overallStatus === 'archived' ? 'bg-blue-500' :
               'bg-slate-300'
             }`} />
             {formatDisplayString(overallStatus)}
@@ -641,65 +641,65 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
       </AnimatePresence>
 
       {/* Context Selection */}
-      <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-100">
+      <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-200/60">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
           <div className="space-y-1.5">
-            <label className="text-base font-medium tracking-tight text-slate-950 ml-1">Academic Session</label>
+            <label className="text-base font-medium tracking-tight text-slate-900 ml-1">Academic Session</label>
             <select
               id="select_teacher_result_session"
               value={selectedSession}
               onChange={(e) => setSelectedSession(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-950"
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-900"
             >
               <option value="">Select Session</option>
               {sessions.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-base font-medium tracking-tight text-slate-950 ml-1">Term</label>
+            <label className="text-base font-medium tracking-tight text-slate-900 ml-1">Term</label>
             <select
               id="select_teacher_result_term"
               value={selectedTerm}
               onChange={(e) => setSelectedTerm(e.target.value)}
               disabled={!selectedSession}
-              className="w-full px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-950 disabled:opacity-50"
+              className="w-full px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-900 disabled:opacity-50"
             >
               <option value="">Select Term</option>
               {terms.map(t => <option key={t.id} value={t.id}>{formatDisplayString(t.name)}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-base font-medium tracking-tight text-slate-950 ml-1">Class</label>
+            <label className="text-base font-medium tracking-tight text-slate-900 ml-1">Class</label>
             <select
               id="select_teacher_result_class"
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-950"
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-900"
             >
               <option value="">Select Class</option>
                {availableClasses.map(c => <option key={c.id} value={c.id}>{formatDisplayString(c.name)}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-base font-medium tracking-tight text-slate-950 ml-1">Subject</label>
+            <label className="text-base font-medium tracking-tight text-slate-900 ml-1">Subject</label>
             <select
               id="select_teacher_result_subject"
               value={selectedSubject}
               onChange={(e) => setSelectedSubject(e.target.value)}
               disabled={!selectedClass}
-              className="w-full px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-950 disabled:opacity-50"
+              className="w-full px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-900 disabled:opacity-50"
             >
               <option value="">Select Subject</option>
                {availableSubjects.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="text-base font-medium tracking-tight text-slate-950 ml-1">Payment Filter</label>
+            <label className="text-base font-medium tracking-tight text-slate-900 ml-1">Payment Filter</label>
             <select
               id="select_teacher_result_payment_filter"
               value={paymentFilter}
               onChange={(e) => setPaymentFilter(e.target.value as any)}
-              className="w-full px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-950"
+              className="w-full px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-900"
             >
               <option value="all">All Students</option>
               <option value="paid">Paid Only</option>
@@ -723,36 +723,36 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
 
       {/* Main Workspace */}
       {!isContextSelected ? (
-        <div className="bg-white p-10 rounded-xl shadow-sm border border-slate-100 text-center">
-          <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-950 mx-auto mb-6 shadow-sm border border-slate-100">
+        <div className="bg-white p-10 rounded-xl shadow-sm border border-slate-200/60 text-center">
+          <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-900 mx-auto mb-6 shadow-sm border border-slate-200/60">
             <Search size={40} strokeWidth={2.5} />
           </div>
-          <h3 className="text-3xl font-medium tracking-tight text-slate-950 mb-3">Ready to Enter Results?</h3>
+          <h3 className="text-3xl font-medium tracking-tight text-slate-900 mb-3">Ready to Enter Results?</h3>
           <p className="text-lg font-medium tracking-tight text-slate-600 max-w-md mx-auto">Please select the session, term, class, and subject to load the academic roster.</p>
         </div>
       ) : loading ? (
-        <div className="bg-white p-10 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
-          <Loader2 className="w-12 h-12 text-slate-950 animate-spin mb-6" />
-          <p className="text-sm font-medium tracking-tight text-slate-950">Syncing academic records...</p>
+        <div className="bg-white p-10 rounded-xl shadow-sm border border-slate-200/60 flex flex-col items-center justify-center">
+          <Loader2 className="w-12 h-12 text-slate-900 animate-spin mb-6" />
+          <p className="text-sm font-medium tracking-tight text-slate-900">Syncing academic records...</p>
         </div>
       ) : filteredStudents.length === 0 ? (
-        <div className="bg-white p-10 rounded-xl shadow-sm border border-slate-100 text-center">
-          <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-300 mx-auto mb-6 border border-slate-100 shadow-sm">
+        <div className="bg-white p-10 rounded-xl shadow-sm border border-slate-200/60 text-center">
+          <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-300 mx-auto mb-6 border border-slate-200/60 shadow-sm">
             <AlertCircle size={40} strokeWidth={2.5} />
           </div>
-          <h3 className="text-2xl font-medium tracking-tight text-slate-950 mb-3">No Students Found</h3>
-          <p className="text-sm font-medium tracking-tight text-slate-950">There are no students registered in this class roster.</p>
+          <h3 className="text-2xl font-medium tracking-tight text-slate-900 mb-3">No Students Found</h3>
+          <p className="text-sm font-medium tracking-tight text-slate-900">There are no students registered in this class roster.</p>
         </div>
       ) : (
         <div className="space-y-6">
           {/* Action Bar */}
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 bg-white p-2 rounded-xl shadow-sm border border-slate-100">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 bg-white p-2 rounded-xl shadow-sm border border-slate-200/60">
             <div className="relative">
               <button 
                 id="btn_teacher_result_bulk_actions"
                 onClick={() => setShowBulkOptions(!showBulkOptions)}
                 disabled={isLocked}
-                className="px-4 py-2 rounded-xl font-medium tracking-tight text-sm bg-slate-50 text-slate-950 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-2.5 disabled:opacity-50 shadow-sm active:scale-95"
+                className="px-4 py-2 rounded-xl font-medium tracking-tight text-sm bg-slate-50 text-slate-900 hover:bg-slate-100 transition-all border border-slate-200 flex items-center gap-2.5 disabled:opacity-50 shadow-sm active:scale-95"
               >
                 <Copy size={14} strokeWidth={2.5} /> Bulk Actions
               </button>
@@ -763,9 +763,9 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute top-full left-0 mt-2 p-3 bg-white rounded-xl shadow-2xl border border-slate-100 z-30 w-56"
+                    className="absolute top-full left-0 mt-2 p-3 bg-white rounded-xl shadow-2xl border border-slate-200/60 z-30 w-56"
                   >
-                    <h4 className="font-medium tracking-tight text-slate-950 text-sm mb-4">Apply Bulk Scores</h4>
+                    <h4 className="font-medium tracking-tight text-slate-900 text-sm mb-4">Apply Bulk Scores</h4>
                     <div className="space-y-2">
                       {caConfig.cas.map((ca, idx) => (
                         <div key={idx} className="flex gap-2">
@@ -775,12 +775,12 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                             value={bulkCa1}
                             onChange={(e) => setBulkCa1(e.target.value)}
                             placeholder={`${formatDisplayString(ca.name)}`}
-                            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:border-slate-950 outline-none transition-all font-medium tracking-tight text-sm text-slate-950"
+                            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:border-slate-950 outline-none transition-all font-medium tracking-tight text-sm text-slate-900"
                           />
                           <button 
                             id={`btn_teacher_result_bulk_apply_${idx}`}
                             onClick={() => applyBulkCa(idx, ca.maxScore)}
-                            className="px-4 py-2.5 bg-slate-950 text-white rounded-lg font-medium tracking-tight text-sm hover:bg-black transition-all shadow-lg shadow-slate-950/20"
+                            className="px-4 py-2.5 bg-blue-500 text-white rounded-lg font-medium tracking-tight text-sm hover:bg-black transition-all shadow-lg shadow-slate-950/20"
                           >
                             Apply
                           </button>
@@ -797,7 +797,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                 id="btn_teacher_result_save_draft"
                 onClick={() => saveResults('draft')}
                 disabled={saving || isLocked}
-                className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-medium tracking-tight text-sm text-slate-950 bg-slate-50 hover:bg-slate-100 border border-slate-200 shadow-sm transition-all flex items-center justify-center gap-2.5 disabled:opacity-50 active:scale-95"
+                className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-medium tracking-tight text-sm text-slate-900 bg-slate-50 hover:bg-slate-100 border border-slate-200 shadow-sm transition-all flex items-center justify-center gap-2.5 disabled:opacity-50 active:scale-95"
               >
                 {saving ? <Loader2 size={12} className="animate-spin" /> : <Save size={14} strokeWidth={2.5} />}
                 Save Draft
@@ -806,7 +806,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                 id="btn_teacher_result_export_pdf"
                 onClick={generatePDF}
                 disabled={!isContextSelected || students.length === 0}
-                className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-medium tracking-tight text-sm text-white bg-blue-600 hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 border border-white/20 flex items-center justify-center gap-2.5 disabled:opacity-50 active:scale-95"
+                className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-medium tracking-tight text-sm text-white bg-blue-500 hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/20 border border-white/20 flex items-center justify-center gap-2.5 disabled:opacity-50 active:scale-95"
               >
                 <FileText size={14} strokeWidth={2.5} />
                 Export Report
@@ -816,7 +816,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                   id="btn_teacher_result_archive"
                   onClick={archiveResults}
                   disabled={saving}
-                  className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-medium tracking-tight text-sm text-slate-950 bg-amber-50 hover:bg-amber-100 border border-amber-200 shadow-sm transition-all flex items-center justify-center gap-2.5 disabled:opacity-50 active:scale-95"
+                  className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-medium tracking-tight text-sm text-slate-900 bg-amber-50 hover:bg-amber-100 border border-amber-200 shadow-sm transition-all flex items-center justify-center gap-2.5 disabled:opacity-50 active:scale-95"
                 >
                   {saving ? <Loader2 size={12} className="animate-spin" /> : <RotateCcw size={14} strokeWidth={2.5} />}
                   Archive Records
@@ -826,7 +826,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                 id="btn_teacher_result_submit"
                 onClick={() => saveResults('submitted')}
                 disabled={saving || isLocked}
-                className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-medium tracking-tight text-sm text-white bg-slate-950 hover:bg-black transition-all shadow-lg shadow-slate-950/20 border border-white/20 flex items-center justify-center gap-2.5 disabled:opacity-50 active:scale-95"
+                className="flex-1 sm:flex-none px-4 py-2 rounded-xl font-medium tracking-tight text-sm text-white bg-blue-500 hover:bg-black transition-all shadow-lg shadow-slate-950/20 border border-white/20 flex items-center justify-center gap-2.5 disabled:opacity-50 active:scale-95"
               >
                 {saving ? <Loader2 size={12} className="animate-spin" /> : <Send size={14} strokeWidth={2.5} />}
                 Submit Results
@@ -835,18 +835,18 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
           </div>
 
           {/* Results Table */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden">
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left border-collapse">
-                <thead className="bg-slate-50 border-b border-slate-100 text-xl font-medium tracking-tight text-slate-950">
+                <thead className="bg-slate-50 border-b border-slate-200/60 text-base font-medium tracking-tight text-slate-900">
                   <tr>
                     <th className="px-6 py-5 whitespace-nowrap">Student Roster</th>
                     {caConfig.cas.map((ca, idx) => (
-                      <th key={idx} className="px-2 py-5 text-center w-20">{formatDisplayString(ca.name)}<br/><span className="text-[10px] font-medium text-slate-950">Max:{ca.maxScore}</span></th>
+                      <th key={idx} className="px-2 py-5 text-center w-20">{formatDisplayString(ca.name)}<br/><span className="text-[10px] font-medium text-slate-900">Max:{ca.maxScore}</span></th>
                     ))}
-                    <th className="px-2 py-5 text-center w-24 bg-slate-100/30">CA Total<br/><span className="text-[10px] font-medium text-slate-950">Max:{totalCaMax}</span></th>
-                    <th className="px-2 py-5 text-center w-20">Exam<br/><span className="text-[10px] font-medium text-slate-950">Max:{caConfig.maxExamScore}</span></th>
-                    <th className="px-2 py-5 text-center w-24 bg-slate-950 text-white">Final Score<br/><span className="text-[10px] font-medium text-white">Max:100</span></th>
+                    <th className="px-2 py-5 text-center w-24 bg-slate-100/30">CA Total<br/><span className="text-[10px] font-medium text-slate-900">Max:{totalCaMax}</span></th>
+                    <th className="px-2 py-5 text-center w-20">Exam<br/><span className="text-[10px] font-medium text-slate-900">Max:{caConfig.maxExamScore}</span></th>
+                    <th className="px-2 py-5 text-center w-24 bg-blue-500 text-white">Final Score<br/><span className="text-[10px] font-medium text-white">Max:100</span></th>
                     <th className="px-6 py-4 text-center w-24">Grade</th>
                   </tr>
                 </thead>
@@ -858,7 +858,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                     return (
                       <tr 
                         key={student.uid} 
-                        className={`transition-all duration-200 border-b border-slate-50 last:border-0 ${isRowActive ? 'bg-slate-50/20' : 'hover:bg-slate-50/50'}`}
+                        className={`transition-all duration-200 border-b border-slate-50 last:border-0 ${isRowActive ? 'bg-slate-50/20' : 'hover:bg-slate-50/80'}`}
                         onFocus={() => setActiveRow(student.uid)}
                         onBlur={() => setActiveRow(null)}
                       >
@@ -867,13 +867,13 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                             {student.photoUrl ? (
                               <img src={student.photoUrl} alt={formatDisplayString(student.firstName)} className="w-6 h-6 rounded-lg object-cover border border-white shadow-sm" referrerPolicy="no-referrer" />
                             ) : (
-                              <div className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center font-medium text-slate-950 shrink-0 border border-white shadow-sm text-xs">
+                              <div className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center font-medium text-slate-900 shrink-0 border border-white shadow-sm text-xs">
                                 {formatDisplayString(student.firstName).charAt(0) || '?'}
                               </div>
                             )}
                             <div>
-                              <p className="font-medium tracking-tight text-base text-slate-950 truncate max-w-[120px]">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</p>
-                              <p className="text-base text-slate-500 font-medium mt-0.5">{student.registrationNumber || 'NO ID'}</p>
+                              <p className="font-medium tracking-tight text-base text-slate-900 truncate max-w-[120px]">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</p>
+                              <p className="text-sm text-slate-500 font-medium">{student.registrationNumber || 'NO ID'}</p>
                             </div>
                           </div>
                         </td>
@@ -889,13 +889,13 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                                 value={val === null ? '' : val}
                                 onChange={(e) => handleScoreChange(student.uid, `ca_${idx}`, e.target.value)}
                                 disabled={isLocked}
-                                className="w-full text-center px-1 py-2 rounded-lg border border-slate-200 bg-slate-50/40 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none font-medium text-base text-slate-950 transition-all disabled:opacity-40 disabled:bg-transparent cursor-text placeholder:text-slate-300"
+                                className="w-full text-center px-1 py-2 rounded-lg border border-slate-200 bg-slate-50/40 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none font-medium text-base text-slate-900 transition-all disabled:opacity-40 disabled:bg-transparent cursor-text placeholder:text-slate-300"
                               />
                             </td>
                           );
                         })}
-                        <td className="px-3 py-3 bg-slate-50/50 text-center">
-                          <span className="font-medium text-slate-950 text-lg">{score.caTotal || 0}</span>
+                        <td className="px-3 py-3 bg-slate-50/80 text-center">
+                          <span className="font-medium text-slate-900 text-lg">{score.caTotal || 0}</span>
                         </td>
                         <td className="px-2 py-3">
                           <input
@@ -906,11 +906,11 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                              value={score.exam === null ? '' : score.exam}
                             onChange={(e) => handleScoreChange(student.uid, 'exam', e.target.value)}
                             disabled={isLocked}
-                            className="w-full text-center px-2 py-2 rounded-lg border border-slate-200 bg-slate-50/40 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none font-medium text-base text-slate-950 transition-all disabled:opacity-40 disabled:bg-transparent cursor-text placeholder:text-slate-300"
+                            className="w-full text-center px-2 py-2 rounded-lg border border-slate-200 bg-slate-50/40 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none font-medium text-base text-slate-900 transition-all disabled:opacity-40 disabled:bg-transparent cursor-text placeholder:text-slate-300"
                           />
                         </td>
                         <td className="px-3 py-3 bg-slate-100 text-center">
-                          <span className="font-medium text-slate-950 text-lg">{score.finalScore || 0}</span>
+                          <span className="font-medium text-slate-900 text-lg">{score.finalScore || 0}</span>
                         </td>
                         <td className="px-6 py-3 text-center">
                           <span className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg font-medium text-lg tracking-tight shadow-sm border ${
@@ -937,18 +937,18 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
               {students.map((student) => {
                 const score = scores[student.uid] || {};
                 return (
-                  <div key={student.uid} className={`bg-white rounded-xl shadow-sm border ${activeRow === student.uid ? 'border-slate-400 ring-2 ring-slate-950/5' : 'border-slate-100'} p-4 flex flex-col gap-4 transition-all duration-200`} onFocus={() => setActiveRow(student.uid)} onBlur={() => setActiveRow(null)}>
+                  <div key={student.uid} className={`bg-white rounded-xl shadow-sm border ${activeRow === student.uid ? 'border-slate-400 ring-2 ring-slate-950/5' : 'border-slate-200/60'} p-4 flex flex-col gap-4 transition-all duration-200`} onFocus={() => setActiveRow(student.uid)} onBlur={() => setActiveRow(null)}>
                     <div className="flex items-center gap-3">
                       {student.photoUrl ? (
-                        <img src={student.photoUrl} alt={formatDisplayString(student.firstName)} className="w-10 h-10 rounded-lg object-cover border border-slate-100" referrerPolicy="no-referrer" />
+                        <img src={student.photoUrl} alt={formatDisplayString(student.firstName)} className="w-10 h-10 rounded-lg object-cover border border-slate-200/60" referrerPolicy="no-referrer" />
                        ) : (
-                        <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center font-medium text-slate-950 shrink-0 text-xs">
+                        <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center font-medium text-slate-900 shrink-0 text-xs">
                           {formatDisplayString(student.firstName).charAt(0) || '?'}
                         </div>
                       )}
                       <div>
-                        <p className="font-medium tracking-tight text-base text-slate-950">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</p>
-                        <p className="text-base text-slate-950 font-medium mt-1">{student.registrationNumber || 'NO ID'}</p>
+                        <p className="font-medium tracking-tight text-base text-slate-900">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</p>
+                        <p className="text-sm text-slate-500 font-medium mt-0.5">{student.registrationNumber || 'NO ID'}</p>
                       </div>
                     </div>
                     
@@ -957,7 +957,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                         const val = score.cas?.[ca.name] !== undefined ? score.cas[ca.name] : (idx === 0 ? score.ca1 : idx === 1 ? score.ca2 : idx === 2 ? score.ca3 : 0);
                         return (
                            <div key={idx} className="flex flex-col gap-1.5">
-                            <span className="text-xl font-medium tracking-tight text-slate-950 ml-1">{formatDisplayString(ca.name)} (Max:{ca.maxScore})</span>
+                            <span className="text-sm font-medium tracking-tight text-slate-600 ml-1">{formatDisplayString(ca.name)} (Max:{ca.maxScore})</span>
                             <input
                               id={`input_teacher_result_ca_mobile_${idx}_${student.uid}`}
                               type="number"
@@ -966,20 +966,20 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                               value={val === 0 && !score.id && !score.cas?.[ca.name] ? '' : val}
                               onChange={(e) => handleScoreChange(student.uid, `ca_${idx}`, e.target.value)}
                               disabled={isLocked}
-                              className="w-full text-center px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 outline-none font-medium text-base text-slate-950 transition-all disabled:opacity-50"
+                              className="w-full text-center px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 outline-none font-medium text-base text-slate-900 transition-all disabled:opacity-50"
                             />
                           </div>
                         );
                       })}
                     </div>
                     
-                    <div className="grid grid-cols-3 gap-3 pt-4 border-t border-slate-100">
-                      <div className="flex flex-col items-center justify-center bg-slate-50/50 rounded-xl p-3 border border-slate-100/50">
-                        <span className="text-xl font-medium tracking-tight text-slate-950 mb-1">Total CA</span>
-                        <span className="font-medium text-slate-950 text-base">{score.caTotal || 0}</span>
+                    <div className="grid grid-cols-3 gap-3 pt-4 border-t border-slate-200/60">
+                      <div className="flex flex-col items-center justify-center bg-slate-50/80 rounded-xl p-3 border border-slate-200/60/50">
+                        <span className="text-sm font-medium tracking-tight text-slate-600 mb-1">Total CA</span>
+                        <span className="font-medium text-slate-900 text-lg">{score.caTotal || 0}</span>
                       </div>
                       <div className="flex flex-col gap-1.5">
-                        <span className="text-2xl font-medium tracking-tight text-slate-950 text-center">Exam (Max:{caConfig.maxExamScore})</span>
+                        <span className="text-sm font-medium tracking-tight text-slate-600 text-center">Exam (Max:{caConfig.maxExamScore})</span>
                         <input
                           id={`input_teacher_result_exam_mobile_${student.uid}`}
                           type="number"
@@ -988,17 +988,17 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                           value={score.exam === 0 && !score.id ? '' : score.exam}
                           onChange={(e) => handleScoreChange(student.uid, 'exam', e.target.value)}
                           disabled={isLocked}
-                          className="w-full text-center px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 outline-none font-medium text-base text-slate-950 transition-all"
+                          className="w-full text-center px-3 py-3 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 outline-none font-medium text-base text-slate-900 transition-all"
                         />
                       </div>
-                      <div className="flex flex-col items-center justify-center bg-slate-950 rounded-xl p-3 border border-white/20 shadow-lg shadow-slate-950/20">
-                        <span className="text-xl font-medium tracking-tight text-white/70 mb-1">Final</span>
-                        <span className="font-medium text-white text-xl">{score.finalScore || 0}</span>
+                       <div className="flex flex-col items-center justify-center bg-blue-500 rounded-xl p-3 border border-white/20 shadow-lg shadow-slate-950/20">
+                        <span className="text-sm font-medium tracking-tight text-white/70 mb-1">Final</span>
+                        <span className="font-medium text-white text-lg">{score.finalScore || 0}</span>
                       </div>
                     </div>
                     
-                    <div className="flex justify-between items-center pt-4 border-t border-slate-100">
-                      <span className="text-xl font-medium tracking-tight text-slate-950">Letter Grade</span>
+                    <div className="flex justify-between items-center pt-4 border-t border-slate-200/60">
+                      <span className="text-xl font-medium tracking-tight text-slate-900">Letter Grade</span>
                       <span className={`px-3 py-1.5 rounded-lg font-medium text-base tracking-tight border ${
                         score.grade === 'A' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                         score.grade === 'B' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
@@ -1006,7 +1006,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
                         score.grade === 'D' ? 'bg-yellow-50 text-yellow-600 border-yellow-100' :
                         score.grade === 'E' ? 'bg-orange-50 text-orange-600 border-orange-100' :
                         score.grade === 'F' ? 'bg-red-50 text-red-600 border-red-100' :
-                        'bg-slate-50 text-slate-300 border-slate-100'
+                        'bg-slate-50 text-slate-300 border-slate-200/60'
                       }`}>
                         {score.grade || 'N/A'}
                       </span>

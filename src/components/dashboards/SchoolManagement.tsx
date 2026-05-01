@@ -445,13 +445,13 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
     { school.logoUrl ? (
       <img src={ school.logoUrl } alt={ school.name } className="w-10 h-10 rounded-xl object-cover shadow-sm border border-slate-200" referrerPolicy="no-referrer"/>
     ) : (
-      <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-600/20">
+      <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-semibold text-xl shadow-lg shadow-blue-600/20">
         { school.name?.charAt(0) || '?'}
       </div>
     )}
     <div className="overflow-hidden">
-      <h3 className="font-bold text-slate-900 truncate text-sm leading-tight">{ formatDisplayString(school.name) }</h3>
-      <p className="text-[10px] text-blue-600 font-black uppercase tracking-widest mt-1">{ formatDisplayString(school.planId) } Plan</p>
+      <h3 className="font-semibold text-slate-900 truncate text-sm leading-tight">{ formatDisplayString(school.name) }</h3>
+      <p className="text-[10px] text-blue-600 font-semibold uppercase tracking-widest mt-1">{ formatDisplayString(school.planId) } Plan</p>
     </div>
   </div>
 
@@ -463,14 +463,14 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
          setIsMobileMenuOpen(false);
        }}
        className={ cn(
-         "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all w-full text-left group border mb-4",
+         "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all w-full text-left group border mb-4",
          activeTab === 'overview'
            ? "bg-blue-600 text-white border-blue-700 shadow-sm"
            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-transparent"
        )}
      >
        <LayoutDashboard size={ 18 } className="shrink-0 transition-colors" />
-       <span className={cn("font-bold", activeTab === 'overview' ? "text-white" : "text-slate-900")}>Overview</span>
+       <span className={cn("font-semibold", activeTab === 'overview' ? "text-white" : "text-slate-900")}>Overview</span>
      </button>
 
  {/* User Management Section */}
@@ -686,10 +686,10 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  </aside>
 
  {/* Mobile Top Bar */}
- <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white backdrop-blur-md border-b border-slate-100 px-4 flex items-center justify-between z-50">
+ <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white backdrop-blur-md border-b border-slate-200/60 px-4 flex items-center justify-between z-50">
  <div className="flex items-center gap-3">
  { school.logoUrl ? (
- <img src={ school.logoUrl } alt={ formatDisplayString(school.name) } className="w-8 h-8 rounded-lg object-cover shadow-sm border border-slate-100"referrerPolicy="no-referrer"/>
+ <img src={ school.logoUrl } alt={ formatDisplayString(school.name) } className="w-8 h-8 rounded-lg object-cover shadow-sm border border-slate-200/60"referrerPolicy="no-referrer"/>
  ) : (
  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-sm font-medium text-sm">
  { formatDisplayString(school.name)?.charAt(0) ||'?'}
@@ -714,7 +714,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  animate={{ opacity: 1 }}
  exit={{ opacity: 0 }}
  onClick={() => setIsMobileMenuOpen(false)}
- className="lg:hidden fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-[60]"
+ className="lg:hidden fixed inset-0 bg-blue-600/40 backdrop-blur-sm z-[60]"
  />
  <motion.aside
  initial={{ x:'-100%'}}
@@ -726,7 +726,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <div className="flex items-center justify-between mb-8">
  <div className="flex items-center gap-3">
  { school.logoUrl ? (
- <img src={ school.logoUrl } alt={ formatDisplayString(school.name) } className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-blue-100 border border-slate-100"referrerPolicy="no-referrer"/>
+ <img src={ school.logoUrl } alt={ formatDisplayString(school.name) } className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-blue-100 border border-slate-200/60"referrerPolicy="no-referrer"/>
  ) : (
  <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200 font-medium text-xl">
  { formatDisplayString(school.name)?.charAt(0) ||'?'}
@@ -754,14 +754,14 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
          setIsMobileMenuOpen(false);
        }}
        className={ cn(
-         "flex items-center gap-3 px-4 py-4 rounded-2xl text-sm font-bold transition-all w-full text-left group",
+         "flex items-center gap-3 px-4 py-4 rounded-2xl text-sm font-semibold transition-all w-full text-left group",
          activeTab === 'overview'
            ? "bg-blue-600 text-white border-blue-700 shadow-lg shadow-blue-200"
            : "text-slate-600 hover:bg-slate-50"
        )}
      >
        <LayoutDashboard size={ 20 } className="shrink-0" />
-       <span className={cn("font-bold", activeTab === 'overview' ? "text-white" : "text-slate-900")}>Overview</span>
+       <span className={cn("font-semibold", activeTab === 'overview' ? "text-white" : "text-slate-900")}>Overview</span>
      </button>
  
  {/* Re-using the same navigation structure for mobile */}
@@ -864,7 +864,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  setNewUser({ firstName:'', middleName:'', lastName:'', registrationNumber:'', email:'', password:'', role: roleFilter !=='all'? roleFilter as UserRole :'student', classId:'', studentId:'', parentStudentId:'', parentStudentIds: [], _rawParentStudentIds:'', photoUrl:'', dob:''});
  setShowAddUser(true);
  }}
- className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 px-6 md:px-8 py-3 md:py-4 rounded-2xl flex items-center justify-center gap-3 text-sm font-medium shadow-lg shadow-blue-500/30 hover:scale-[1.02] transition-all shrink-0 border border-slate-300"
+ className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 px-6 md:px-8 py-3 md:py-4 rounded-2xl flex items-center justify-center gap-3 text-sm font-medium shadow-lg shadow-blue-500/30 hover:scale-[1.02] transition-all shrink-0 border border-slate-300"
  >
  <UserPlus size={ 20 } /> Add User
  </button>
@@ -912,7 +912,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  </div>
  <div>
  <p className="text-[10px] font-medium text-slate-900 uppercase tracking-wider">{ stat.label }</p>
- <p className="text-lg font-bold text-slate-900 mt-0.5">{ stat.value }</p>
+ <p className="text-lg font-semibold text-slate-900 mt-0.5">{ stat.value }</p>
  </div>
  </div>
  ))}
@@ -936,7 +936,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <action.icon size={16} />
  </div>
  <div className="min-w-0">
- <p className="text-sm font-bold text-slate-900 truncate">{ action.label }</p>
+ <p className="text-sm font-semibold text-slate-900 truncate">{ action.label }</p>
  <p className="text-[10px] text-slate-900 font-medium truncate mt-0.5">{ action.desc }</p>
  </div>
  </div>
@@ -946,7 +946,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  </div>
  ) : activeTab  === 'users'? (
  <div className="bg-white rounded-2xl border border-slate-300 shadow-sm overflow-hidden flex flex-col">
- <div className="p-4 md:p-4 border-b border-slate-100 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-slate-50">
+ <div className="p-4 md:p-4 border-b border-slate-200/60 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-slate-50">
  <div>
  <h3 className="font-medium text-2xl text-slate-900 capitalize">User Directory</h3>
  <p className="text-sm text-slate-900 font-medium mt-1">Manage all school users</p>
@@ -990,7 +990,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  setNewUser({ firstName:'', middleName:'', lastName:'', registrationNumber:'', email:'', password:'', role: roleFilter !=='all'? roleFilter as UserRole :'student', classId:'', studentId:'', parentStudentId:'', parentStudentIds: [], _rawParentStudentIds:'', photoUrl:'', dob:''});
  setShowAddUser(true);
  }}
- className="flex-1 sm:flex-none bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-2xl flex items-center justify-center gap-2 text-sm font-medium shadow-lg shadow-blue-500/30 hover:scale-[1.02] transition-all shrink-0"
+ className="flex-1 sm:flex-none bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 px-6 py-3 rounded-2xl flex items-center justify-center gap-2 text-sm font-medium shadow-lg shadow-blue-500/30 hover:scale-[1.02] transition-all shrink-0"
  >
  <UserPlus size={ 18 } /> Add User
  </button>
@@ -1001,7 +1001,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  {/* Desktop Table */}
  <div className="hidden md:block overflow-x-auto">
  <table className="w-full text-left min-w-[600px]">
- <thead className="bg-slate-50 text-[10px] uppercase text-slate-900 font-medium tracking-[0.2em] border-b border-slate-100">
+ <thead className="bg-slate-50 text-[10px] uppercase text-slate-900 font-medium tracking-[0.2em] border-b border-slate-200/60">
  <tr>
  <th className="px-6 md:px-8 py-4 md:py-5">Name & Email</th>
  <th className="px-6 md:px-8 py-4 md:py-5">Role & Details</th>
@@ -1105,7 +1105,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  initial={{ opacity: 0, y: 10 }}
  animate={{ opacity: 1, y: 0 }}
  transition={{ delay: i * 0.05 }}
- className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 flex flex-col gap-4"
+ className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4 flex flex-col gap-4"
  >
  <div className="flex items-center gap-3">
  { u.photoUrl ? (
@@ -1186,7 +1186,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  </div>
  ) : activeTab  === 'parents'? (
  <div className="bg-white rounded-2xl border border-slate-300 shadow-sm overflow-hidden flex flex-col">
- <div className="p-4 md:p-4 border-b border-slate-100 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-slate-50">
+ <div className="p-4 md:p-4 border-b border-slate-200/60 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-slate-50">
  <div>
  <h3 className="font-medium text-2xl text-slate-900">Parents Directory</h3>
  <p className="text-sm text-slate-900 font-medium mt-1">View and manage parent accounts and their children</p>
@@ -1208,7 +1208,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  setNewUser({ firstName:'', middleName:'', lastName:'', registrationNumber:'', email:'', phone:'', password:'', role:'parent', classId:'', studentId:'', parentStudentId:'', parentStudentIds: [], _rawParentStudentIds:'', photoUrl:'', dob:''});
  setShowAddUser(true);
  }}
- className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-2xl flex items-center justify-center gap-2 text-sm font-medium shadow-lg shadow-blue-500/30 hover:scale-[1.02] transition-all shrink-0"
+ className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 px-6 py-3 rounded-2xl flex items-center justify-center gap-2 text-sm font-medium shadow-lg shadow-blue-500/30 hover:scale-[1.02] transition-all shrink-0"
  >
  <UserPlus size={ 18 } /> Add Parent
  </button>
@@ -1217,7 +1217,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  <div className="w-full">
  <div className="overflow-x-auto">
  <table className="w-full text-left min-w-[600px]">
- <thead className="bg-slate-50 text-[10px] uppercase text-slate-900 font-medium tracking-[0.2em] border-b border-slate-100">
+ <thead className="bg-slate-50 text-[10px] uppercase text-slate-900 font-medium tracking-[0.2em] border-b border-slate-200/60">
  <tr>
  <th className="px-6 md:px-8 py-4 md:py-5">Parent Name</th>
  <th className="px-6 md:px-8 py-4 md:py-5">Contact</th>
@@ -1334,12 +1334,12 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  {/* Add/Edit User Modal */}
  <AnimatePresence>
  { showAddUser && (
- <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-[100] overflow-y-auto">
+ <div className="fixed inset-0 bg-blue-600/40 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-[100] overflow-y-auto">
  <motion.div
  initial={{ scale: 0.95, opacity: 0, y: 20 }}
  animate={{ scale: 1, opacity: 1, y: 0 }}
  exit={{ scale: 0.95, opacity: 0, y: 20 }}
- className="bg-white backdrop-blur-xl p-5 sm:p-8 rounded-2xl sm:rounded-3xl max-w-2xl w-full shadow-2xl my-4 max-h-[95vh] overflow-y-auto border border-slate-100 relative"
+ className="bg-white backdrop-blur-xl p-5 sm:p-8 rounded-2xl sm:rounded-3xl max-w-2xl w-full shadow-2xl my-4 max-h-[95vh] overflow-y-auto border border-slate-200/60 relative"
  >
  <div className="flex justify-between items-start mb-6 sm:mb-8 relative z-10">
  <div>
@@ -1579,7 +1579,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  </button>
  <button
  type="submit"
- className="w-full sm:flex-1 py-4 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 font-medium shadow-md transition-all text-sm border border-slate-300"
+ className="w-full sm:flex-1 py-4 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 font-medium shadow-md transition-all text-sm border border-slate-300"
  >
  { editingUser ?'Save Changes':'Add User'}
  </button>
@@ -1593,12 +1593,12 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  {/* User Details Modal */}
  <AnimatePresence>
  { viewingUser && (
- <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-[110]">
+ <div className="fixed inset-0 bg-blue-600/40 backdrop-blur-sm flex items-center justify-center p-4 z-[110]">
  <motion.div
  initial={{ scale: 0.95, opacity: 0 }}
  animate={{ scale: 1, opacity: 1 }}
  exit={{ scale: 0.95, opacity: 0 }}
- className="bg-white p-8 rounded-3xl max-w-lg w-full shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto"
+ className="bg-white p-8 rounded-3xl max-w-lg w-full shadow-2xl border border-slate-200/60 max-h-[90vh] overflow-y-auto"
  >
  <div className="flex justify-between items-start mb-8">
  <div className="flex items-center gap-4">
@@ -1651,7 +1651,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  {(viewingUser.parentStudentIds || (viewingUser.parentStudentId ? [viewingUser.parentStudentId] : [])).map(sid => {
  const student = users.find(u => u.studentId === sid);
  return (
- <div key={ sid } className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
+ <div key={ sid } className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60">
  <div className="flex items-center gap-3">
  { student?.photoUrl ? (
  <img src={ student.photoUrl } alt="Profile"className="w-8 h-8 rounded-lg object-cover border border-gray-200"referrerPolicy="no-referrer"/>
@@ -1680,7 +1680,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  </div>
  )}
 
- <div className="pt-6 border-t border-slate-100 flex gap-3">
+ <div className="pt-6 border-t border-slate-200/60 flex gap-3">
  <button
  onClick={() => {
  setEditingUser(viewingUser);
@@ -1708,7 +1708,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  {/* Delete Confirmation Modal */}
  <AnimatePresence>
  { userToDelete && (
- <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm">
+ <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-blue-600/50 backdrop-blur-sm">
  <motion.div
  initial={{ opacity: 0, scale: 0.95 }}
  animate={{ opacity: 1, scale: 1 }}

@@ -38,7 +38,7 @@ const LineChart = ({ data }: { data: number[] }) => {
  points={ points }
  />
  </svg>
- <div className="absolute inset-0 flex justify-between items-end text-[10px] text-slate-600 font-bold px-1">
+ <div className="absolute inset-0 flex justify-between items-end text-[10px] text-slate-600 font-semibold px-1">
  {['Jan','Feb','Mar','Apr','May','Jun'].map(m => <span key={ m }>{ m }</span>)}
  </div>
  </div>
@@ -47,7 +47,7 @@ const LineChart = ({ data }: { data: number[] }) => {
 
 const SystemMeter = ({ label, value, color }: { label: string, value: number, color: string }) => (
  <div className="space-y-3">
- <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+ <div className="flex justify-between text-[10px] font-semibold uppercase tracking-widest">
  <span className="text-slate-600">{ label }</span>
  <span className="text-slate-900">{ value }%</span>
  </div>
@@ -367,7 +367,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
   animate={{ opacity: 1 }}
   exit={{ opacity: 0 }}
   onClick={() => setIsSidebarOpen(false)}
-  className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 lg:hidden"
+  className="fixed inset-0 bg-blue-600/40 backdrop-blur-sm z-40 lg:hidden"
   />
   )}
  </AnimatePresence>
@@ -389,7 +389,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <Shield size={ 24 } className="text-white"/>
  </div>
  {(isSidebarOpen || (typeof window !== 'undefined' && window.innerWidth < 1024)) && (
-   <span className="text-xl font-bold tracking-tight text-slate-900">SEEDD Admin</span>
+   <span className="text-xl font-semibold tracking-tight text-slate-900">SEEDD Admin</span>
  )}
  </div>
 
@@ -419,10 +419,10 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  ))}
  </nav>
 
- <div className="p-4 border-t border-slate-100">
+ <div className="p-4 border-t border-slate-200/60">
  <button 
  onClick={ onLogout }
- className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all font-bold text-xs uppercase tracking-widest"
+ className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all font-semibold text-xs uppercase tracking-widest"
  >
  <LogOut size={ 18 } />
  {(isSidebarOpen || (typeof window !== 'undefined' && window.innerWidth < 1024)) && <span>Log Out</span>}
@@ -442,7 +442,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <Menu size={ 20 } />
  </button>
  <div className="h-4 w-px bg-slate-200 mx-2"/>
- <h1 className="text-xs font-black text-slate-600 uppercase tracking-[0.3em]">
+ <h1 className="text-xs font-semibold text-slate-600 uppercase tracking-[0.3em]">
  { activeTab  === 'overview'?'System Overview': 
  activeTab  === 'schools'?'Schools List': 
  activeTab  === 'financials'?'Financial Stats': 
@@ -452,11 +452,11 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 
  <div className="flex items-center gap-6">
  <div className="hidden md:flex flex-col items-end">
- <span className="text-xs font-bold text-slate-900">{ formatDisplayString(user.firstName) } { formatDisplayString(user.lastName) }</span>
- <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Full Admin Access</span>
+ <span className="text-xs font-semibold text-slate-900">{ formatDisplayString(user.firstName) } { formatDisplayString(user.lastName) }</span>
+ <span className="text-[10px] font-semibold text-blue-600 uppercase tracking-widest">Full Admin Access</span>
  </div>
  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 p-0.5">
- <div className="w-full h-full rounded-[10px] bg-white flex items-center justify-center font-bold text-slate-900 text-xs">
+ <div className="w-full h-full rounded-[10px] bg-white flex items-center justify-center font-semibold text-slate-900 text-xs">
  { formatDisplayString(user.firstName)?.charAt(0)}
  </div>
  </div>
@@ -475,7 +475,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  >
  {/* Header */}
  <div>
- <h1 className="text-3xl font-bold text-slate-900 tracking-tight">System Overview</h1>
+ <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">System Overview</h1>
  <p className="text-slate-600 mt-1 font-medium">Global platform health and school statistics.</p>
  </div>
 
@@ -504,14 +504,14 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <stat.icon size={ 20 } />
  </div>
  <span className={ cn(
-"text-[9px] font-bold px-1.5 py-0.5 rounded-full",
+"text-[9px] font-semibold px-1.5 py-0.5 rounded-full",
  stat.trend.startsWith('+') ?"bg-emerald-50 text-emerald-600":"bg-blue-50 text-blue-600"
  )}>
  { stat.trend }
  </span>
  </div>
- <p className="text-xl font-bold text-slate-900 mb-0.5 tracking-tight">{ stat.value }</p>
- <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{ stat.label }</p>
+ <p className="text-xl font-semibold text-slate-900 mb-0.5 tracking-tight">{ stat.value }</p>
+ <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest">{ stat.label }</p>
  </motion.div>
  ))}
  </div>
@@ -521,12 +521,12 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="bg-white border border-slate-200 rounded-3xl p-8 relative overflow-hidden group shadow-sm">
  <div className="flex justify-between items-center mb-4 relative z-10">
  <div>
- <h3 className="text-xl font-bold text-slate-900 tracking-tight">Growth Stats</h3>
+ <h3 className="text-xl font-semibold text-slate-900 tracking-tight">Growth Stats</h3>
  <p className="text-slate-600 text-sm font-medium">Monthly school registration rate</p>
  </div>
  <div className="text-right">
- <p className="text-2xl font-black text-blue-600">+{ Math.round(schools.length * 1.5)}%</p>
- <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Aggregate</p>
+ <p className="text-2xl font-semibold text-blue-600">+{ Math.round(schools.length * 1.5)}%</p>
+ <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest">Aggregate</p>
  </div>
  </div>
  
@@ -535,7 +535,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 
  <div className="bg-white border border-slate-200 rounded-3xl p-8 group shadow-sm">
  <div className="flex items-center justify-between mb-8">
- <h3 className="text-xl font-bold text-slate-900 tracking-tight">Server Health</h3>
+ <h3 className="text-xl font-semibold text-slate-900 tracking-tight">Server Health</h3>
  <Activity size={ 20 } className="text-emerald-500 animate-pulse"/>
  </div>
  <div className="space-y-8">
@@ -549,17 +549,17 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 
  <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 group">
  <div className="flex items-center justify-between mb-8">
- <h3 className="text-xl font-bold text-slate-900">Recent Activity</h3>
+ <h3 className="text-xl font-semibold text-slate-900">Recent Activity</h3>
  <History size={ 20 } className="text-blue-500"/>
  </div>
  <div className="space-y-6">
  { auditLogs.length > 0 ? auditLogs.map((log, i) => (
  <div key={ log.id } className="flex gap-4">
- <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-600 border border-slate-100 group-hover:border-blue-500/30 transition-colors">
+ <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-600 border border-slate-200/60 group-hover:border-blue-500/30 transition-colors">
  <Activity size={ 18 } />
  </div>
  <div className="min-w-0">
- <p className="text-sm font-bold text-slate-900 truncate">{ formatDisplayString(log.action) }</p>
+ <p className="text-sm font-semibold text-slate-900 truncate">{ formatDisplayString(log.action) }</p>
  <p className="text-xs text-slate-600 font-medium truncate">
  { formatDisplayString(log.details) } • { log.createdAt ? new Date(log.createdAt).toLocaleTimeString() :'Recent'}
  </p>
@@ -573,7 +573,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  </div>
  <button 
  onClick={() => setActiveTab('logs')}
- className="w-full mt-8 py-4 bg-slate-50 hover:bg-slate-100 rounded-2xl text-xs font-bold text-blue-600 uppercase tracking-widest transition-all"
+ className="w-full mt-8 py-4 bg-slate-50 hover:bg-slate-100 rounded-2xl text-xs font-semibold text-blue-600 uppercase tracking-widest transition-all"
  >
  View All Logs
  </button>
@@ -592,7 +592,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  {/* Header Section */}
  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
  <div>
- <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Schools List</h2>
+ <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">Schools List</h2>
  <p className="text-slate-600 mt-1 font-medium">Manage and monitor all schools on the platform.</p>
  </div>
  <button
@@ -602,7 +602,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
     setOnboardingStep(1);
     setShowAddSchool(true);
   }}
- className="w-full md:w-auto bg-blue-600 text-white px-8 py-3.5 rounded-2xl flex justify-center items-center gap-3 text-sm font-bold shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:translate-y-[-2px] transition-all active:translate-y-0"
+ className="w-full md:w-auto bg-blue-600 text-white px-8 py-3.5 rounded-2xl flex justify-center items-center gap-3 text-sm font-semibold shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:translate-y-[-2px] transition-all active:translate-y-0"
  >
  <Plus size={ 20 } /> Add New School
  </button>
@@ -610,11 +610,11 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 
  {/* Existing Filter and Search UI wrapped in dark containers */}
  <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
- <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+ <div className="p-6 border-b border-slate-200/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
  <div className="flex items-center gap-4">
- <h3 className="text-xl font-bold text-slate-900">Manage Schools</h3>
+ <h3 className="text-xl font-semibold text-slate-900">Manage Schools</h3>
  { filterStatus !=='all'&& (
- <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+ <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-semibold uppercase tracking-widest flex items-center gap-2">
  { formatDisplayString(filterStatus) }
  <button onClick={() => setFilterStatus('all')} className="hover:text-blue-800"><X size={ 14 } /></button>
  </span>
@@ -627,7 +627,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  placeholder="Filter by name or email..."
  value={ searchQuery }
  onChange={(e) => setSearchQuery(e.target.value)}
- className="w-full pl-11 pr-4 py-3 rounded-2xl bg-slate-50 border border-slate-100 text-slate-900 placeholder-slate-400 focus:border-blue-500 outline-none transition-all font-medium text-sm"
+ className="w-full pl-11 pr-4 py-3 rounded-2xl bg-slate-50 border border-slate-200/60 text-slate-900 placeholder-slate-400 focus:border-blue-500 outline-none transition-all font-medium text-sm"
  />
  </div>
  </div>
@@ -635,7 +635,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  {/* Table content from existing implementation, updated with dark theme classes */}
  <div className="overflow-x-auto">
  <table className="w-full text-left">
- <thead className="bg-slate-50 text-[10px] uppercase text-slate-500 font-black tracking-widest border-b border-slate-100">
+ <thead className="bg-slate-50 text-[10px] uppercase text-slate-500 font-semibold tracking-widest border-b border-slate-200/60">
  <tr>
  <th className="pl-8 pr-4 py-5">School Entity</th>
  <th className="px-4 py-5">Platform Access</th>
@@ -654,7 +654,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  >
  <td className="px-4 py-6 pl-8">
  <div className="flex items-center gap-4">
- <div className="w-12 h-12 rounded-2xl bg-blue-600/10 flex items-center justify-center text-blue-400 font-bold text-xl shadow-inner border border-slate-100 group-hover:scale-110 transition-transform overflow-hidden">
+ <div className="w-12 h-12 rounded-2xl bg-blue-600/10 flex items-center justify-center text-blue-400 font-semibold text-xl shadow-inner border border-slate-200/60 group-hover:scale-110 transition-transform overflow-hidden">
  { school.logoUrl ? (
  <img src={ school.logoUrl } alt={ formatDisplayString(school.name) } className="w-full h-full object-cover"/>
  ) : (
@@ -662,23 +662,23 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  )}
  </div>
  <div className="min-w-0">
- <p className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors truncate">{ formatDisplayString(school.name) }</p>
+ <p className="font-semibold text-sm text-slate-900 group-hover:text-blue-600 transition-colors truncate">{ formatDisplayString(school.name) }</p>
  <p className="text-xs text-slate-600 font-medium truncate">{ school.email }</p>
  </div>
  </div>
  </td>
  <td className="px-4 py-6">
  <div className="flex flex-col gap-1">
- <span className="text-xs font-bold text-slate-900 capitalize flex items-center gap-2">
+ <span className="text-xs font-semibold text-slate-900 capitalize flex items-center gap-2">
  <Globe size={ 12 } className="text-blue-600"/>
  { school.slug }.seedify.name.ng
  </span>
- <span className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">{ formatDisplayString(school.planId) } Tier</span>
+ <span className="text-[10px] text-slate-600 font-semibold uppercase tracking-widest">{ formatDisplayString(school.planId) } Tier</span>
  </div>
  </td>
  <td className="px-4 py-6">
  <span className={ cn(
- "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest inline-block border",
+ "px-3 py-1 rounded-full text-[9px] font-semibold uppercase tracking-widest inline-block border",
   school.status  === 'active'
   ?"bg-emerald-50 text-emerald-600 border-emerald-100 shadow-sm shadow-emerald-100/50"
   :"bg-rose-50 text-rose-600 border-rose-100 shadow-sm shadow-rose-100/50"
@@ -690,14 +690,14 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="flex gap-2 justify-end items-center">
  <button
  onClick={() => setPreviewSchool(school)}
- className="p-2 rounded-xl bg-slate-50 text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-all border border-slate-100"
+ className="p-2 rounded-xl bg-slate-50 text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-all border border-slate-200/60"
  title="Quick Preview"
  >
  <Eye size={ 18 } />
  </button>
  <button
  onClick={() => setSelectedSchoolId(school.id)}
- className="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/10"
+ className="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/10"
  >
  Manage
  </button>
@@ -737,17 +737,17 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  className="space-y-8"
  >
  <div>
- <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Revenue & Billing</h2>
+ <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">Revenue & Billing</h2>
  <p className="text-slate-600 mt-1 font-medium">Track subscriptions and platform earnings.</p>
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
  <div className="lg:col-span-2 bg-white border border-slate-200/60 rounded-[2.5rem] p-8 relative overflow-hidden shadow-sm">
   <div className="flex justify-between items-center mb-8">
-  <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Platform Revenue Growth (MTD)</h3>
+  <h3 className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Platform Revenue Growth (MTD)</h3>
   <div className="text-right">
-  <p className="text-3xl font-black text-slate-900 tracking-tighter">₦{((schools.length * 25000) / 1000).toFixed(0)}k</p>
-  <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mt-1">Est. Monthly Recurring</p>
+  <p className="text-3xl font-semibold text-slate-900 tracking-tighter">₦{((schools.length * 25000) / 1000).toFixed(0)}k</p>
+  <p className="text-[9px] font-semibold text-emerald-600 uppercase tracking-widest mt-1">Est. Monthly Recurring</p>
   </div>
  </div>
  <div className="h-64 flex items-end gap-3">
@@ -758,13 +758,13 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  animate={{ height:`${ h }%`}}
  className="w-full bg-gradient-to-t from-blue-600/20 to-blue-500 rounded-t-xl group-hover:from-blue-500 group-hover:to-blue-400 transition-all shadow-[0_0_20px_rgba(59, 130, 246, 0.1)]"
  />
- <span className="text-[9px] text-slate-600 font-black uppercase tracking-tighter">Wk { i+1 }</span>
+ <span className="text-[9px] text-slate-600 font-semibold uppercase tracking-tighter">Wk { i+1 }</span>
  </div>
  ))}
  </div>
  </div>
  <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8">
- <h3 className="text-xs font-black text-slate-600 uppercase tracking-widest mb-8">Plan Distribution</h3>
+ <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-widest mb-8">Plan Distribution</h3>
  <div className="space-y-8">
  {[
  { label:'Free Tier', count: schools.filter(s => s.planId  === 'free'|| !s.planId).length, color:'bg-slate-500 shadow-slate-500/20'},
@@ -773,11 +773,11 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  { label:'Enterprise', count: schools.filter(s => s.planId  === 'enterprise').length, color:'bg-amber-500 shadow-amber-500/20'},
  ].map((plan, i) => (
  <div key={ i } className="space-y-3">
- <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+ <div className="flex justify-between text-[10px] font-semibold uppercase tracking-widest">
  <span className="text-slate-600">{ plan.label }</span>
  <span className="text-slate-900">{ plan.count } Units ({ Math.round((plan.count / (schools.length || 1)) * 100)}%)</span>
  </div>
- <div className="h-1.5 bg-slate-50 rounded-full overflow-hidden border border-slate-100">
+ <div className="h-1.5 bg-slate-50 rounded-full overflow-hidden border border-slate-200/60">
  <motion.div 
  initial={{ width: 0 }}
  animate={{ width:`${(plan.count / (schools.length || 1)) * 100 }%`}}
@@ -801,7 +801,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  className="space-y-8"
  >
  <div>
- <h2 className="text-3xl font-bold text-slate-900 tracking-tight">System Status</h2>
+ <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">System Status</h2>
  <p className="text-slate-600 mt-1 font-medium">Real-time server and database metrics.</p>
  </div>
 
@@ -816,12 +816,12 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="p-2.5 bg-slate-50 rounded-xl text-blue-400">
  <sys.icon size={ 18 } />
  </div>
- <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-full text-[9px] font-bold uppercase tracking-widest border border-emerald-500/20">
+ <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-full text-[9px] font-semibold uppercase tracking-widest border border-emerald-500/20">
  { sys.status }
  </span>
  </div>
  <div>
- <p className="text-base font-bold text-slate-900">{ sys.label }</p>
+ <p className="text-base font-semibold text-slate-900">{ sys.label }</p>
  <p className="text-[11px] text-slate-600 font-medium mt-0.5">Current Load: { sys.usage }</p>
  </div>
  <div className="h-1 bg-slate-50 rounded-full overflow-hidden">
@@ -842,17 +842,17 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  className="space-y-8"
  >
  <div>
- <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Activity Logs</h2>
+ <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">Activity Logs</h2>
  <p className="text-slate-600 mt-1 font-medium">A permanent record of all admin actions.</p>
  </div>
 
  <div className="bg-slate-50 border border-slate-200 rounded-3xl overflow-hidden">
  <div className="p-8 border-b border-slate-200 flex justify-between items-center bg-white/[0.02]">
  <div>
- <h3 className="text-xl font-bold text-slate-900 tracking-tight">Live Activity Feed</h3>
- <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1">Live updates from system logs</p>
+ <h3 className="text-xl font-semibold text-slate-900 tracking-tight">Live Activity Feed</h3>
+ <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest mt-1">Live updates from system logs</p>
  </div>
- <button className="px-6 py-2.5 bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-blue-600/20 transition-all">Download Logs</button>
+ <button className="px-6 py-2.5 bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-semibold uppercase tracking-widest rounded-xl hover:bg-blue-600/20 transition-all">Download Logs</button>
  </div>
  <div className="divide-y divide-slate-100">
  { auditLogs.length > 0 ? auditLogs.map((log, i) => (
@@ -865,19 +865,19 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 "bg-emerald-500 shadow-emerald-500/50"
  )} />
  <div>
- <p className="text-sm font-bold text-slate-900 group-hover:text-blue-400 transition-colors">{ formatDisplayString(log.action) }</p>
+ <p className="text-sm font-semibold text-slate-900 group-hover:text-blue-400 transition-colors">{ formatDisplayString(log.action) }</p>
  <p className="text-xs text-slate-600 font-medium mt-0.5">{ formatDisplayString(log.details) }</p>
  </div>
  </div>
  <div className="text-right">
- <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest block">{ log.createdAt ? new Date(log.createdAt).toLocaleDateString() :'Today'}</span>
- <span className="text-[10px] font-bold text-slate-700 block">{ log.createdAt ? new Date(log.createdAt).toLocaleTimeString() :'Recent'}</span>
+ <span className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest block">{ log.createdAt ? new Date(log.createdAt).toLocaleDateString() :'Today'}</span>
+ <span className="text-[10px] font-semibold text-slate-700 block">{ log.createdAt ? new Date(log.createdAt).toLocaleTimeString() :'Recent'}</span>
  </div>
  </div>
  )) : (
  <div className="p-20 text-center">
  <History size={ 48 } className="text-slate-800 mx-auto mb-4"/>
- <p className="text-slate-600 font-bold text-sm uppercase tracking-widest">No Security Events Recorded</p>
+ <p className="text-slate-600 font-semibold text-sm uppercase tracking-widest">No Security Events Recorded</p>
  </div>
  )}
  </div>
@@ -891,7 +891,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  {/* Modals */}
  <AnimatePresence>
  { showAddSchool && (
- <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xl flex items-center justify-center p-4 z-[100] overflow-y-auto">
+ <div className="fixed inset-0 bg-blue-600/60 backdrop-blur-xl flex items-center justify-center p-4 z-[100] overflow-y-auto">
  <motion.div
  initial={{ scale: 0.95, opacity: 0, y: 20 }}
  animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -902,8 +902,8 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="w-16 h-16 bg-blue-600/10 border border-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
  <SchoolIcon className="text-blue-500" size={ 32 } />
  </div>
- <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">{ editingSchool ?'Edit School Details':'Add New School'}</h3>
- <p className="text-slate-600 mt-2 font-bold text-xs uppercase tracking-widest">School Setup Wizard</p>
+ <h3 className="text-2xl font-semibold text-slate-900 uppercase tracking-tight">{ editingSchool ?'Edit School Details':'Add New School'}</h3>
+ <p className="text-slate-600 mt-2 font-semibold text-xs uppercase tracking-widest">School Setup Wizard</p>
  </div>
 
 { error && <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm border border-red-100 font-medium">{ error }</div>}
@@ -911,8 +911,8 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <form onSubmit={ handleAddSchool } className="space-y-5">
  { editingSchool || onboardingStep === 1 ? (
  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
- <h4 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-3">
- <div className="w-6 h-6 rounded-full bg-blue-500 text-[10px] flex items-center justify-center font-black">1</div>
+ <h4 className="text-lg font-semibold text-slate-900 mb-6 flex items-center gap-3">
+ <div className="w-6 h-6 rounded-full bg-blue-500 text-[10px] flex items-center justify-center font-semibold">1</div>
  { editingSchool ?'School Details':'School Branding'}
  </h4>
   
@@ -940,7 +940,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
           <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-3 group-hover:scale-110 transition-transform">
             <Upload size={20} className="text-slate-400 group-hover:text-blue-500" />
           </div>
-          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-blue-500">
+          <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-slate-400 group-hover:text-blue-500">
             {isUploadingLogo ? 'Processing...' : 'Upload Logo'}
           </span>
         </>
@@ -958,12 +958,12 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
       className="hidden" 
       accept="image/*" 
     />
-    <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mt-4">Official School Logo</p>
+    <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-[0.2em] mt-4">Official School Logo</p>
     <div className="text-xs text-slate-400 mt-2">{newSchool.slug}.seedify.name.ng</div>
   </div>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
  <div className="space-y-3">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">School Name</label>
+ <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 ml-1">School Name</label>
  <input
  required
  type="text"
@@ -976,66 +976,66 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  : newSchool.slug;
  setNewSchool({ ...newSchool, name: val, slug: newSlug });
  }}
- className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
+ className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-sm"
  placeholder="e.g. Green Valley Academy"
  />
  </div>
  <div className="space-y-3">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">School Email Address</label>
+ <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 ml-1">School Email Address</label>
  <input
  required
  type="email"
  value={ newSchool.email }
  onChange={ e => setNewSchool({ ...newSchool, email: e.target.value })}
- className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
+ className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-sm"
  placeholder="admin@school.com"
  />
  </div>
  </div>
 
  <div className="space-y-3 mb-6">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">School Web Address</label>
+ <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 ml-1">School Web Address</label>
  <div className="flex group">
  <input
  required
  type="text"
  value={ newSchool.slug }
  onChange={ e => setNewSchool({ ...newSchool, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,'') })}
- className="w-full p-5 rounded-l-2xl border-y border-l border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 outline-none transition-all font-bold text-sm"
+ className="w-full p-5 rounded-l-2xl border-y border-l border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 outline-none transition-all font-semibold text-sm"
  placeholder="e.g. green-valley"
  />
- <div className="p-5 bg-slate-100 border border-slate-200 rounded-r-2xl text-slate-600 font-bold text-sm whitespace-nowrap flex items-center">
+ <div className="p-5 bg-slate-100 border border-slate-200 rounded-r-2xl text-slate-600 font-semibold text-sm whitespace-nowrap flex items-center">
  .seedify.name.ng
  </div>
  </div>
  </div>
 
  <div className="space-y-3 mb-6">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">Physical Address</label>
+ <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 ml-1">Physical Address</label>
  <input
  required
  type="text"
  value={ newSchool.address }
  onChange={ e => setNewSchool({ ...newSchool, address: e.target.value })}
- className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
+ className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-sm"
  placeholder="123 Education Way, Lagos"
  />
  </div>
 
  <div className="space-y-3">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">Phone Number</label>
+ <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 ml-1">Phone Number</label>
  <input
  required
  type="tel"
  value={ newSchool.phone }
  onChange={ e => setNewSchool({ ...newSchool, phone: e.target.value })}
- className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
+ className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-sm"
  placeholder="+234..."
  />
  </div>
 
  { editingSchool && (
- <div className="mt-8 pt-8 border-t border-slate-100">
+ <div className="mt-8 pt-8 border-t border-slate-200/60">
  <h4 className="text-lg font-medium text-slate-900 mb-4">Subscription Plan</h4>
  <div className="space-y-4">
  { DEFAULT_PLANS.map(plan => (
@@ -1061,8 +1061,8 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  </motion.div>
  ) : onboardingStep === 2 ? (
  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
- <h4 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-3">
- <div className="w-6 h-6 rounded-full bg-blue-500 text-[10px] flex items-center justify-center font-black">2</div>
+ <h4 className="text-lg font-semibold text-slate-900 mb-6 flex items-center gap-3">
+ <div className="w-6 h-6 rounded-full bg-blue-500 text-[10px] flex items-center justify-center font-semibold">2</div>
  Plan Selection
  </h4>
  <div className="space-y-4">
@@ -1089,10 +1089,10 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  />
  <div className="flex-1">
  <div className="flex justify-between items-center mb-1">
- <p className="font-bold text-slate-900">{ plan.name }</p>
- <p className="text-xs font-black text-blue-500">₦{ plan.price.toLocaleString()} / term</p>
+ <p className="font-semibold text-slate-900">{ plan.name }</p>
+ <p className="text-xs font-semibold text-blue-500">₦{ plan.price.toLocaleString()} / term</p>
  </div>
- <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Support up to { plan.studentLimit } Students</p>
+ <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest">Support up to { plan.studentLimit } Students</p>
  </div>
  </label>
  ))}
@@ -1100,43 +1100,43 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  </motion.div>
  ) : (
  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
- <h4 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-3">
- <div className="w-6 h-6 rounded-full bg-blue-500 text-[10px] flex items-center justify-center font-black">3</div>
+ <h4 className="text-lg font-semibold text-slate-900 mb-6 flex items-center gap-3">
+ <div className="w-6 h-6 rounded-full bg-blue-500 text-[10px] flex items-center justify-center font-semibold">3</div>
  Admin Account Setup
  </h4>
- <p className="text-sm text-slate-600 font-bold mb-8">Create the first admin account for { newSchool.name }.</p>
+ <p className="text-sm text-slate-600 font-semibold mb-8">Create the first admin account for { newSchool.name }.</p>
  
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
  <div className="space-y-3">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">First Name</label>
+ <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 ml-1">First Name</label>
  <input
  required
  type="text"
  value={ adminDetails.firstName }
  onChange={ e => setAdminDetails({ ...adminDetails, firstName: e.target.value })}
- className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
+ className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-sm"
  />
  </div>
  <div className="space-y-3">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">Last Name</label>
+ <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 ml-1">Last Name</label>
  <input
  required
  type="text"
  value={ adminDetails.lastName }
  onChange={ e => setAdminDetails({ ...adminDetails, lastName: e.target.value })}
- className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
+ className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-sm"
  />
  </div>
  </div>
 
  <div className="space-y-3">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 ml-1">Admin Password</label>
+ <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 ml-1">Admin Password</label>
  <input
  required
  type="password"
  value={ adminDetails.password }
  onChange={ e => setAdminDetails({ ...adminDetails, password: e.target.value })}
- className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
+ className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-sm"
  placeholder="Security override required"
  />
  </div>
@@ -1148,7 +1148,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <button
  type="button"
  onClick={() => setOnboardingStep(onboardingStep - 1)}
- className="flex-1 p-5 rounded-[1.5rem] border border-slate-200 font-bold text-slate-600 hover:bg-slate-50 transition-all text-sm uppercase tracking-widest"
+ className="flex-1 p-5 rounded-[1.5rem] border border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-all text-sm uppercase tracking-widest"
  >
  Back
  </button>
@@ -1156,14 +1156,14 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <button
  type="button"
  onClick={() => { setShowAddSchool(false); setEditingSchool(null); setOnboardingStep(1); }}
- className="flex-1 p-5 rounded-[1.5rem] border border-slate-200 font-bold text-slate-600 hover:bg-slate-50 transition-all text-sm uppercase tracking-widest"
+ className="flex-1 p-5 rounded-[1.5rem] border border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-all text-sm uppercase tracking-widest"
  >
  Cancel
  </button>
  )}
  <button
  type="submit"
- className="flex-1 p-5 rounded-[1.5rem] bg-blue-600 text-white font-black shadow-[0_0_30px_rgba(37, 99, 235, 0.3)] hover:bg-blue-700 hover:scale-[1.02] transition-all active:scale-[0.98] text-sm uppercase tracking-[0.1em]"
+ className="flex-1 p-5 rounded-[1.5rem] bg-blue-600 text-white font-semibold shadow-[0_0_30px_rgba(37, 99, 235, 0.3)] hover:bg-blue-700 hover:scale-[1.02] transition-all active:scale-[0.98] text-sm uppercase tracking-[0.1em]"
  >
  { editingSchool ?'Save Changes': onboardingStep < 3 ?'Next Step':'Create School'}
  </button>
@@ -1174,7 +1174,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  )}
 
  { showDeleteConfirm && (
- <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xl flex items-center justify-center p-4 z-[100]">
+ <div className="fixed inset-0 bg-blue-600/60 backdrop-blur-xl flex items-center justify-center p-4 z-[100]">
  <motion.div
  initial={{ scale: 0.95, opacity: 0 }}
  animate={{ scale: 1, opacity: 1 }}
@@ -1184,20 +1184,20 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="w-20 h-20 bg-red-500/10 border border-red-500/20 rounded-3xl flex items-center justify-center mx-auto mb-8">
  <Trash2 className="text-red-500" size={ 40 } />
  </div>
- <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight mb-4">Delete School?</h3>
- <p className="text-slate-600 font-bold text-sm mb-10 leading-relaxed">
- You are about to delete all records for <span className="text-slate-900 font-black">"{ schoolToDelete?.name }"</span>. This action is final and will remove all school data.
+ <h3 className="text-2xl font-semibold text-slate-900 uppercase tracking-tight mb-4">Delete School?</h3>
+ <p className="text-slate-600 font-semibold text-sm mb-10 leading-relaxed">
+ You are about to delete all records for <span className="text-slate-900 font-semibold">"{ schoolToDelete?.name }"</span>. This action is final and will remove all school data.
  </p>
  <div className="flex gap-4">
  <button
                 onClick={() => setShowDeleteConfirm(null)}
- className="flex-1 p-5 rounded-2xl border border-slate-200 font-bold text-slate-600 hover:bg-slate-50 transition-all text-xs uppercase tracking-widest"
+ className="flex-1 p-5 rounded-2xl border border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-all text-xs uppercase tracking-widest"
  >
  Cancel
  </button>
  <button
  onClick={ handleDeleteSchool }
- className="flex-1 p-5 rounded-2xl bg-red-600 text-white font-black shadow-[0_0_30px_rgba(220, 38, 38, 0.3)] hover:bg-red-700 transition-all text-xs uppercase tracking-widest"
+ className="flex-1 p-5 rounded-2xl bg-red-600 text-white font-semibold shadow-[0_0_30px_rgba(220, 38, 38, 0.3)] hover:bg-red-700 transition-all text-xs uppercase tracking-widest"
  >
  Delete School
  </button>
@@ -1224,7 +1224,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center border border-emerald-100">
  <CheckCircle size={ 20 } strokeWidth={3} />
  </div>
- <span className="font-black text-[10px] uppercase tracking-widest">{ success }</span>
+ <span className="font-semibold text-[10px] uppercase tracking-widest">{ success }</span>
  </motion.div>
  )}
  </div>
@@ -1344,21 +1344,21 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto bg-white border border-slate-200 rounded-[2.5rem] shadow-2xl custom-scrollbar"
  >
  {/* Header Section */}
- <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md p-8 border-b border-slate-100 flex items-center justify-between">
+ <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md p-8 border-b border-slate-200/60 flex items-center justify-between">
  <div className="flex items-center gap-6">
- <div className="w-16 h-16 rounded-2xl bg-blue-600/5 border border-blue-500/10 flex items-center justify-center text-blue-600 font-bold text-2xl">
+ <div className="w-16 h-16 rounded-2xl bg-blue-600/5 border border-blue-500/10 flex items-center justify-center text-blue-600 font-semibold text-2xl">
  { school.logoUrl ? <img src={ school.logoUrl } className="w-full h-full object-cover"/> : formatDisplayString(school.name).charAt(0)}
  </div>
  <div>
- <h2 className="text-2xl font-black text-slate-900 tracking-tight">{ formatDisplayString(school.name) } <span className="text-blue-500 font-medium text-lg ml-2">Quick Statistics</span></h2>
- <p className="text-slate-500 font-bold text-xs uppercase tracking-widest flex items-center gap-2 mt-1">
+ <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">{ formatDisplayString(school.name) } <span className="text-blue-500 font-medium text-lg ml-2">Quick Statistics</span></h2>
+ <p className="text-slate-500 font-semibold text-xs uppercase tracking-widest flex items-center gap-2 mt-1">
  <Globe size={ 12 } className="text-blue-500"/> { school.slug }.seedify.name.ng • { formatDisplayString(school.planId).toUpperCase() } TIER
  </p>
  </div>
  </div>
  <button 
  onClick={ onClose }
- className="p-4 rounded-2xl bg-slate-50 text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all border border-slate-100"
+ className="p-4 rounded-2xl bg-slate-50 text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all border border-slate-200/60"
  >
  <X size={ 24 } />
  </button>
@@ -1367,7 +1367,7 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  <div className="p-8 space-y-8">
  {/* Top Row Stats */}
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
- <div className="p-6 rounded-3xl bg-slate-50/50 border border-slate-100 relative overflow-hidden group text-left">
+ <div className="p-6 rounded-3xl bg-slate-50/80 border border-slate-200/60 relative overflow-hidden group text-left">
  <div className="flex justify-between items-start mb-4">
  <div className="p-3 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
  <CreditCard size={ 20 } />
@@ -1377,30 +1377,30 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  <circle cx="24"cy="24"r="20"fill="transparent"stroke="currentColor"strokeWidth="3"className="text-slate-100"/>
  <circle cx="24"cy="24"r="20"fill="transparent"stroke="currentColor"strokeWidth="3"strokeDasharray={ 125.6 } strokeDashoffset={ 125.6 * (1 - stats.feesAwaiting.count/stats.feesAwaiting.total)} className="text-amber-500 transition-all duration-1000"/>
  </svg>
- <span className="absolute text-[10px] font-bold text-amber-500">{ Math.round((stats.feesAwaiting.count/stats.feesAwaiting.total) * 100)}%</span>
+ <span className="absolute text-[10px] font-semibold text-amber-500">{ Math.round((stats.feesAwaiting.count/stats.feesAwaiting.total) * 100)}%</span>
  </div>
  </div>
- <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Fees Awaiting Payment</p>
- <h3 className="text-2xl font-black text-slate-900 mt-1">{ stats.feesAwaiting.count } <span className="text-slate-400 text-lg">/ { stats.feesAwaiting.total }</span></h3>
+ <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest">Fees Awaiting Payment</p>
+ <h3 className="text-2xl font-semibold text-slate-900 mt-1">{ stats.feesAwaiting.count } <span className="text-slate-400 text-lg">/ { stats.feesAwaiting.total }</span></h3>
  </div>
 
- <div className="p-6 rounded-3xl bg-slate-50/50 border border-slate-100 text-left">
+ <div className="p-6 rounded-3xl bg-slate-50/80 border border-slate-200/60 text-left">
  <div className="p-3 rounded-xl bg-blue-500/10 text-blue-500 border border-blue-500/20 w-fit mb-4">
  <LayoutDashboard size={ 20 } />
  </div>
- <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Converted Leads</p>
- <h3 className="text-2xl font-black text-slate-900 mt-1">20 <span className="text-slate-400 text-lg">/ 100</span></h3>
+ <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest">Converted Leads</p>
+ <h3 className="text-2xl font-semibold text-slate-900 mt-1">20 <span className="text-slate-400 text-lg">/ 100</span></h3>
  <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
  <motion.div initial={{ width: 0 }} animate={{ width:'20%'}} className="h-full bg-blue-600"/>
  </div>
  </div>
 
- <div className="p-6 rounded-3xl bg-slate-50/50 border border-slate-100 text-left">
+ <div className="p-6 rounded-3xl bg-slate-50/80 border border-slate-200/60 text-left">
  <div className="p-3 rounded-xl bg-purple-500/10 text-purple-500 border border-purple-500/20 w-fit mb-4">
  <Users size={ 20 } />
  </div>
- <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Staff Present Today</p>
- <h3 className="text-2xl font-black text-slate-900 mt-1">{ Math.floor(stats.staff * 0.9)} <span className="text-slate-400 text-lg">/ { stats.staff }</span></h3>
+ <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest">Staff Present Today</p>
+ <h3 className="text-2xl font-semibold text-slate-900 mt-1">{ Math.floor(stats.staff * 0.9)} <span className="text-slate-400 text-lg">/ { stats.staff }</span></h3>
  <div className="mt-4 flex gap-1">
  {[...Array(8)].map((_, i) => (
  <div key={ i } className={`h-1 flex-1 rounded-full ${ i < 7 ?'bg-purple-500':'bg-slate-200'}`} />
@@ -1408,42 +1408,42 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  </div>
  </div>
 
- <div className="p-6 rounded-3xl bg-slate-50/50 border border-slate-100 text-left">
+ <div className="p-6 rounded-3xl bg-slate-50/80 border border-slate-200/60 text-left">
  <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 w-fit mb-4">
  <Users size={ 20 } />
  </div>
- <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Student Count</p>
- <h3 className="text-2xl font-black text-slate-900 mt-1">{ stats.students }</h3>
- <p className="text-[10px] text-emerald-600 font-bold mt-2 flex items-center gap-1">
+ <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest">Student Count</p>
+ <h3 className="text-2xl font-semibold text-slate-900 mt-1">{ stats.students }</h3>
+ <p className="text-[10px] text-emerald-600 font-semibold mt-2 flex items-center gap-1">
  <Activity size={ 10 } /> Live Population
  </p>
  </div>
 
- <div className="p-6 rounded-3xl bg-slate-50/50 border border-slate-100 text-left">
+ <div className="p-6 rounded-3xl bg-slate-50/80 border border-slate-200/60 text-left">
  <div className="p-3 rounded-xl bg-blue-500/10 text-blue-600 border border-blue-500/20 w-fit mb-4">
  <DollarSign size={ 20 } />
  </div>
- <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Monthly Fees Collection</p>
- <h3 className="text-2xl font-black text-slate-900 mt-1">₦{ stats.monthlyFees.toLocaleString()}</h3>
- <p className="text-[10px] text-slate-400 font-bold mt-2 italic">Current billing cycle</p>
+ <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest">Monthly Fees Collection</p>
+ <h3 className="text-2xl font-semibold text-slate-900 mt-1">₦{ stats.monthlyFees.toLocaleString()}</h3>
+ <p className="text-[10px] text-slate-400 font-semibold mt-2 italic">Current billing cycle</p>
  </div>
  </div>
 
  {/* Main Analytics Grid */}
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
  {/* Fees Collection Chart */}
- <div className="lg:col-span-2 p-8 rounded-[2rem] bg-slate-50/50 border border-slate-100 text-left">
+ <div className="lg:col-span-2 p-8 rounded-[2rem] bg-slate-50/80 border border-slate-200/60 text-left">
  <div className="flex items-center justify-between mb-10">
  <div className="flex items-center gap-4">
  <div className="p-3 rounded-xl bg-blue-600/10 text-blue-600 border border-blue-500/20">
  <Activity size={ 20 } />
  </div>
  <div>
- <h3 className="font-black text-slate-900 tracking-tight">Fee Collection Progress</h3>
- <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Yearly Performance: { new Date().getFullYear()}</p>
+ <h3 className="font-semibold text-slate-900 tracking-tight">Fee Collection Progress</h3>
+ <p className="text-xs text-slate-500 font-semibold uppercase tracking-widest">Yearly Performance: { new Date().getFullYear()}</p>
  </div>
  </div>
- <div className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-400">
+ <div className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-400">
  Daily Update
  </div>
  </div>
@@ -1451,7 +1451,7 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  <div className="h-64 flex items-end justify-between gap-2 px-4 relative">
  {/* Grid Lines */}
  <div className="absolute inset-x-0 top-0 bottom-0 flex flex-col justify-between pointer-events-none opacity-10">
- {[...Array(5)].map((_, i) => <div key={ i } className="w-full h-px bg-slate-900/10"/>)}
+ {[...Array(5)].map((_, i) => <div key={ i } className="w-full h-px bg-blue-600/10"/>)}
  </div>
  
  { stats.monthlyHistory.map((v, i) => (
@@ -1462,11 +1462,11 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  transition={{ delay: i * 0.05, type:'spring', damping: 15 }}
  className="w-full max-w-[24px] bg-gradient-to-t from-blue-600/80 to-blue-400 rounded-lg group-hover/bar:scale-x-125 transition-transform relative"
  >
- <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 rounded-lg bg-blue-600 text-[10px] font-black text-white opacity-0 group-hover/bar:opacity-100 transition-opacity whitespace-nowrap shadow-xl">
+ <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 rounded-lg bg-blue-600 text-[10px] font-semibold text-white opacity-0 group-hover/bar:opacity-100 transition-opacity whitespace-nowrap shadow-xl">
  ₦{(v * 1000).toLocaleString()}
  </div>
  </motion.div>
- <span className="text-[10px] text-slate-600 font-black uppercase tracking-tighter">
+ <span className="text-[10px] text-slate-600 font-semibold uppercase tracking-tighter">
  {['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][i]}
  </span>
  </div>
@@ -1476,14 +1476,14 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
 
  {/* Fees Overview Breakdown */}
  <div className="space-y-4 text-left">
- <div className="p-8 rounded-[2rem] bg-slate-50/50 border border-slate-100 h-full">
+ <div className="p-8 rounded-[2rem] bg-slate-50/80 border border-slate-200/60 h-full">
  <div className="flex items-center gap-4 mb-8">
  <div className="p-3 rounded-xl bg-blue-600/10 text-blue-600 border border-blue-500/20">
  <DollarSign size={ 20 } />
  </div>
  <div>
- <h3 className="font-black text-slate-900 tracking-tight">Fees Overview</h3>
- <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Active Invoices</p>
+ <h3 className="font-semibold text-slate-900 tracking-tight">Fees Overview</h3>
+ <p className="text-xs text-slate-500 font-semibold uppercase tracking-widest">Active Invoices</p>
  </div>
  </div>
 
@@ -1491,8 +1491,8 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  <div>
  <div className="flex justify-between items-end mb-3">
  <div>
- <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest">Unpaid</p>
- <h4 className="text-xl font-black text-slate-900">{ stats.paymentStatus.unpaid } <span className="text-slate-600 text-sm font-bold uppercase ml-1">Invoices</span></h4>
+ <p className="text-[10px] text-slate-600 font-semibold uppercase tracking-widest">Unpaid</p>
+ <h4 className="text-xl font-semibold text-slate-900">{ stats.paymentStatus.unpaid } <span className="text-slate-600 text-sm font-semibold uppercase ml-1">Invoices</span></h4>
  </div>
  </div>
  <div className="h-3 w-full bg-slate-50 rounded-full overflow-hidden">
@@ -1507,8 +1507,8 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  <div>
  <div className="flex justify-between items-end mb-3">
  <div>
- <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest">Partial</p>
- <h4 className="text-xl font-black text-slate-900">{ stats.paymentStatus.partial } <span className="text-slate-600 text-sm font-bold uppercase ml-1">Invoices</span></h4>
+ <p className="text-[10px] text-slate-600 font-semibold uppercase tracking-widest">Partial</p>
+ <h4 className="text-xl font-semibold text-slate-900">{ stats.paymentStatus.partial } <span className="text-slate-600 text-sm font-semibold uppercase ml-1">Invoices</span></h4>
  </div>
  </div>
  <div className="h-3 w-full bg-slate-50 rounded-full overflow-hidden">
@@ -1523,8 +1523,8 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  <div>
  <div className="flex justify-between items-end mb-3">
  <div>
- <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest">Paid</p>
- <h4 className="text-xl font-black text-slate-900">{ stats.paymentStatus.paid } <span className="text-slate-600 text-sm font-bold uppercase ml-1">Invoices</span></h4>
+ <p className="text-[10px] text-slate-600 font-semibold uppercase tracking-widest">Paid</p>
+ <h4 className="text-xl font-semibold text-slate-900">{ stats.paymentStatus.paid } <span className="text-slate-600 text-sm font-semibold uppercase ml-1">Invoices</span></h4>
  </div>
  </div>
  <div className="h-3 w-full bg-slate-50 rounded-full overflow-hidden">
@@ -1542,14 +1542,14 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
 
  {/* Bottom Income Breakdown */}
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 text-left">
- <div className="lg:col-span-1 p-8 rounded-[2rem] bg-white/[0.02] border border-slate-100">
+ <div className="lg:col-span-1 p-8 rounded-[2rem] bg-white/[0.02] border border-slate-200/60">
  <div className="flex items-center gap-4 mb-8">
  <div className="p-3 rounded-xl bg-blue-600/10 text-blue-400 border border-blue-500/20">
  <Activity size={ 20 } />
  </div>
  <div>
- <h3 className="font-black text-slate-900 tracking-tight">Income Sources</h3>
- <p className="text-xs text-slate-600 font-bold uppercase tracking-widest">Revenue Streams</p>
+ <h3 className="font-semibold text-slate-900 tracking-tight">Income Sources</h3>
+ <p className="text-xs text-slate-600 font-semibold uppercase tracking-widest">Revenue Streams</p>
  </div>
  </div>
  
@@ -1586,8 +1586,8 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  <circle cx="50"cy="50"r="30"fill="#ffffff"/>
  </svg>
  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
- <p className="text-[10px] text-slate-600 font-black uppercase tracking-tighter">Total</p>
- <p className="text-sm font-black text-slate-900">₦{(stats.incomeCategories.reduce((s, c) => s + c.amount, 0)).toLocaleString()}</p>
+ <p className="text-[10px] text-slate-600 font-semibold uppercase tracking-tighter">Total</p>
+ <p className="text-sm font-semibold text-slate-900">₦{(stats.incomeCategories.reduce((s, c) => s + c.amount, 0)).toLocaleString()}</p>
  </div>
  </div>
  
@@ -1596,9 +1596,9 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  <div key={ cat.name } className="flex items-center justify-between">
  <div className="flex items-center gap-2">
  <div className="w-2 h-2 rounded-full"style={{ backgroundColor: ['#3b82f6','#8b5cf6','#ec4899','#f59e0b','#10b981'][i % 5] }} />
- <span className="text-xs font-bold text-slate-300">{ formatDisplayString(cat.name) }</span>
+ <span className="text-xs font-semibold text-slate-300">{ formatDisplayString(cat.name) }</span>
  </div>
- <span className="text-xs font-black text-slate-900">₦{ cat.amount.toLocaleString()}</span>
+ <span className="text-xs font-semibold text-slate-900">₦{ cat.amount.toLocaleString()}</span>
  </div>
  ))}
  { stats.incomeCategories.length === 0 && <p className="text-slate-600 text-xs text-center italic">No revenue data recorded</p>}
@@ -1610,11 +1610,11 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  <div className="w-20 h-20 rounded-full bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-6">
  <Shield size={ 40 } />
  </div>
- <h3 className="text-2xl font-black text-slate-900 mb-2">Institutional Integrity Verified</h3>
+ <h3 className="text-2xl font-semibold text-slate-900 mb-2">Institutional Integrity Verified</h3>
  <p className="text-slate-600 max-w-md font-medium leading-relaxed">
  This snapshot represents live operational data. Audit logs indicate total compliance with SEEDD system protocols and security standards.
  </p>
- <button onClick={ onClose } className="mt-8 px-8 py-3 rounded-2xl bg-blue-600 text-white font-bold text-sm hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20">
+ <button onClick={ onClose } className="mt-8 px-8 py-3 rounded-2xl bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20">
  Close Preview
  </button>
  </div>

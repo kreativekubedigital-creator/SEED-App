@@ -87,7 +87,7 @@ export const PromotionManagement = ({ schoolId }: PromotionManagementProps) => {
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col gap-2">
-        <h2 className="text-3xl font-black text-slate-900 tracking-tight">Promotion Management</h2>
+        <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">Promotion Management</h2>
         <p className="text-slate-500">Advance students to their next academic level based on session performance.</p>
       </div>
 
@@ -101,13 +101,13 @@ export const PromotionManagement = ({ schoolId }: PromotionManagementProps) => {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+        <div className="bg-white p-6 rounded-3xl border border-slate-200/60 shadow-sm space-y-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm">
               <Award size={24} />
             </div>
             <div>
-              <h3 className="font-bold text-slate-900">Session Selection</h3>
+              <h3 className="font-semibold text-slate-900">Session Selection</h3>
               <p className="text-xs text-slate-500">Select the academic year to process</p>
             </div>
           </div>
@@ -116,7 +116,7 @@ export const PromotionManagement = ({ schoolId }: PromotionManagementProps) => {
             <select
               value={selectedSession}
               onChange={e => setSelectedSession(e.target.value)}
-              className="w-full px-4 py-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-900 appearance-none cursor-pointer"
+              className="w-full px-4 py-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-slate-900 appearance-none cursor-pointer"
             >
               <option value="">Select Session</option>
               {sessions.map(s => (
@@ -128,8 +128,8 @@ export const PromotionManagement = ({ schoolId }: PromotionManagementProps) => {
 
             <div className="p-4 rounded-2xl bg-blue-50 border border-blue-100 space-y-2">
               <div className="flex justify-between items-center">
-                <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Promotion Threshold</span>
-                <span className="text-sm font-black text-blue-700">{gradeScale?.promotionThreshold || 40}%</span>
+                <span className="text-[10px] font-semibold text-blue-600 uppercase tracking-widest">Promotion Threshold</span>
+                <span className="text-sm font-semibold text-blue-700">{gradeScale?.promotionThreshold || 40}%</span>
               </div>
               <p className="text-[11px] text-blue-600/70 leading-relaxed">
                 Students with a cumulative average below this threshold across all terms in the selected session will repeat their current class.
@@ -138,9 +138,9 @@ export const PromotionManagement = ({ schoolId }: PromotionManagementProps) => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between">
+        <div className="bg-white p-6 rounded-3xl border border-slate-200/60 shadow-sm flex flex-col justify-between">
           <div className="space-y-4">
-            <h3 className="font-bold text-slate-900">Ready to Proceed?</h3>
+            <h3 className="font-semibold text-slate-900">Ready to Proceed?</h3>
             <div className="space-y-3 text-sm text-slate-500">
               <div className="flex gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-slate-300 mt-1.5 shrink-0" />
@@ -160,7 +160,7 @@ export const PromotionManagement = ({ schoolId }: PromotionManagementProps) => {
           <button
             onClick={handlePromoteStudents}
             disabled={promoting || !selectedSession}
-            className="mt-8 w-full p-5 rounded-2xl bg-slate-900 text-white hover:bg-black disabled:opacity-50 transition-all shadow-xl shadow-slate-200 flex items-center justify-center gap-3 group overflow-hidden relative"
+            className="mt-8 w-full p-5 rounded-2xl bg-blue-600 text-white hover:bg-black disabled:opacity-50 transition-all shadow-xl shadow-slate-200 flex items-center justify-center gap-3 group overflow-hidden relative"
           >
             {promoting ? (
               <Loader2 className="animate-spin" size={24} />
@@ -168,7 +168,7 @@ export const PromotionManagement = ({ schoolId }: PromotionManagementProps) => {
               <>
                 <Award size={24} className="group-hover:scale-110 transition-transform" />
                 <div className="text-left">
-                  <p className="font-black text-sm leading-none uppercase tracking-wide">Execute Promotion</p>
+                  <p className="font-semibold text-sm leading-none uppercase tracking-wide">Execute Promotion</p>
                   <p className="text-[10px] opacity-60 font-medium">Finalize Academic Year</p>
                 </div>
               </>
@@ -181,19 +181,19 @@ export const PromotionManagement = ({ schoolId }: PromotionManagementProps) => {
         <div className="bg-emerald-600 p-8 rounded-[2rem] text-white shadow-2xl shadow-emerald-200 relative overflow-hidden animate-in zoom-in duration-500">
           <Award className="absolute -right-8 -bottom-8 w-64 h-64 text-white/10 rotate-12" />
           <div className="relative">
-            <h3 className="text-xl font-black uppercase tracking-widest mb-6 opacity-90">Promotion Results Summary</h3>
+            <h3 className="text-xl font-semibold uppercase tracking-widest mb-6 opacity-90">Promotion Results Summary</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               <div className="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20">
-                <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1">Students Promoted</p>
-                <p className="text-4xl font-black">{promotionResult.promoted}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-widest opacity-80 mb-1">Students Promoted</p>
+                <p className="text-4xl font-semibold">{promotionResult.promoted}</p>
               </div>
               <div className="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20">
-                <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1">Students Graduated</p>
-                <p className="text-4xl font-black">{promotionResult.graduated}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-widest opacity-80 mb-1">Students Graduated</p>
+                <p className="text-4xl font-semibold">{promotionResult.graduated}</p>
               </div>
               <div className="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20">
-                <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1">Students Repeated</p>
-                <p className="text-4xl font-black">{promotionResult.failed}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-widest opacity-80 mb-1">Students Repeated</p>
+                <p className="text-4xl font-semibold">{promotionResult.failed}</p>
               </div>
             </div>
           </div>

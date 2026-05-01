@@ -124,21 +124,21 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
 
   return (
     <div className="space-y-4">
-      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+      <div className="bg-white p-6 rounded-3xl border border-slate-200/60 shadow-sm">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
           <div>
-            <h2 className="text-2xl font-black tracking-tighter text-slate-950 uppercase leading-none">Attendance Register</h2>
-            <p className="text-xs font-bold tracking-tight text-slate-500 mt-1.5 uppercase">Mark and monitor daily student presence</p>
+            <h2 className="text-2xl font-semibold tracking-tighter text-blue-600 uppercase leading-none">Attendance Register</h2>
+            <p className="text-xs font-semibold tracking-tight text-slate-500 mt-1.5 uppercase">Mark and monitor daily student presence</p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
             <div className="flex flex-col gap-1.5 min-w-[200px]">
-              <label className="text-[10px] font-black tracking-widest text-slate-950 ml-1 uppercase">Select Class</label>
+              <label className="text-[10px] font-semibold tracking-widest text-blue-600 ml-1 uppercase">Select Class</label>
               <select
                 id="select_teacher_attendance_class"
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/10 outline-none transition-all font-black tracking-tight text-xs text-slate-950"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 outline-none transition-all font-semibold tracking-tight text-xs text-slate-900"
               >
                 {classes.map(c => (
                   <option key={c.id} value={c.id}>{formatDisplayString(c.name)}</option>
@@ -147,69 +147,73 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
             </div>
             
             <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-black tracking-widest text-slate-950 ml-1 uppercase">Academic Date</label>
+              <label className="text-[10px] font-semibold tracking-widest text-blue-600 ml-1 uppercase">Academic Date</label>
               <div className="flex items-center bg-slate-50 rounded-xl border border-slate-200 p-1 shadow-sm">
-                <button id="btn_teacher_attendance_prev_day" onClick={() => changeDate(-1)} className="p-2 hover:bg-white text-slate-400 hover:text-slate-950 rounded-lg transition-all active:scale-90"><ChevronLeft size={16} strokeWidth={3} /></button>
-                <div className="px-4 py-1 flex items-center gap-2 font-black tracking-tight text-xs text-slate-950 min-w-[150px] justify-center uppercase">
-                  <CalendarIcon size={14} className="text-slate-950" strokeWidth={3} />
+                <button id="btn_teacher_attendance_prev_day" onClick={() => changeDate(-1)} className="p-2 hover:bg-white text-slate-400 hover:text-blue-600 rounded-lg transition-all active:scale-90"><ChevronLeft size={16} strokeWidth={3} /></button>
+                <div className="px-4 py-1 flex items-center gap-2 font-semibold tracking-tight text-xs text-slate-900 min-w-[150px] justify-center uppercase">
+                  <CalendarIcon size={14} className="text-blue-600" strokeWidth={3} />
                   {new Date(selectedDate).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
                 </div>
-                <button id="btn_teacher_attendance_next_day" onClick={() => changeDate(1)} className="p-2 hover:bg-white text-slate-400 hover:text-slate-950 rounded-lg transition-all active:scale-90"><ChevronRight size={16} strokeWidth={3} /></button>
+                <button id="btn_teacher_attendance_next_day" onClick={() => changeDate(1)} className="p-2 hover:bg-white text-slate-400 hover:text-blue-600 rounded-lg transition-all active:scale-90"><ChevronRight size={16} strokeWidth={3} /></button>
               </div>
             </div>
           </div>
         </div>
 
         {message.text && (
-          <div className={`p-4 rounded-xl mb-8 font-black tracking-tight text-xs flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-500 shadow-sm border uppercase ${message.type === 'success' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'}`}>
+          <div className={`p-4 rounded-xl mb-8 font-semibold tracking-tight text-xs flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-500 shadow-sm border uppercase ${message.type === 'success' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'}`}>
             <div className={`w-1.5 h-1.5 rounded-full animate-pulse ${message.type === 'success' ? 'bg-emerald-500' : 'bg-red-500'}`} />
             {message.text}
           </div>
         )}
 
         {students.length === 0 ? (
-          <div className="text-center py-20 bg-slate-50 rounded-3xl border border-slate-100 border-dashed">
+          <div className="text-center py-20 bg-slate-50 rounded-3xl border border-slate-200/60 border-dashed">
             <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-300 mx-auto mb-4 shadow-sm">
               <AlertCircle size={32} strokeWidth={3} />
             </div>
-            <h3 className="text-xl font-black tracking-tighter text-slate-950 mb-1 uppercase">No Students Found</h3>
-            <p className="text-xs font-bold tracking-tight text-slate-500 uppercase">There are no students registered in this class.</p>
+            <h3 className="text-xl font-semibold tracking-tighter text-blue-600 mb-1 uppercase">No Students Found</h3>
+            <p className="text-xs font-semibold tracking-tight text-slate-500 uppercase">There are no students registered in this class.</p>
           </div>
         ) : (
           <>
             <div className="flex flex-wrap gap-3 mb-8">
-              <button id="btn_teacher_attendance_mark_all_present" onClick={() => markAll('present')} className="px-6 py-2.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-xl font-black tracking-tighter text-xs transition-all flex items-center gap-2 shadow-sm border border-emerald-100 active:scale-95 uppercase">
-                <CheckCircle size={14} strokeWidth={3} /> Mark All Present
+              <button
+                id="btn_teacher_attendance_mark_all_present"
+                onClick={() => markAll('present')}
+                className="flex-1 sm:flex-none px-4 py-2 bg-blue-500 hover:bg-black text-white rounded-xl font-medium tracking-tight text-sm transition-all shadow-lg shadow-slate-950/20 flex items-center justify-center gap-2 active:scale-95 border border-white/20"
+              >
+                Mark All Present
               </button>
-              <button id="btn_teacher_attendance_mark_all_absent" onClick={() => markAll('absent')} className="px-6 py-2.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl font-black tracking-tighter text-xs transition-all flex items-center gap-2 shadow-sm border border-red-100 active:scale-95 uppercase">
+              <button id="btn_teacher_attendance_mark_all_absent" onClick={() => markAll('absent')} className="px-6 py-2.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl font-semibold tracking-tighter text-xs transition-all flex items-center gap-2 shadow-sm border border-red-100 active:scale-95 uppercase">
                 <XCircle size={14} strokeWidth={3} /> Mark All Absent
               </button>
             </div>
 
-            <div className="overflow-hidden bg-white rounded-2xl border border-slate-100 shadow-sm mb-8">
+            <div className="overflow-hidden bg-white rounded-2xl border border-slate-200/60 shadow-sm mb-8">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-100">
-                    <th className="px-6 py-4 text-xs font-black tracking-tighter text-slate-950 uppercase">Student Roster</th>
-                    <th className="px-3 py-4 text-[10px] font-black tracking-widest text-slate-400 text-center w-24 uppercase">Present</th>
-                    <th className="px-3 py-4 text-[10px] font-black tracking-widest text-slate-400 text-center w-24 uppercase">Absent</th>
-                    <th className="px-3 py-4 text-[10px] font-black tracking-widest text-slate-400 text-center w-24 uppercase">Late</th>
-                    <th className="px-3 py-4 text-[10px] font-black tracking-widest text-slate-400 text-center w-24 uppercase">Excused</th>
+                  <tr className="bg-slate-50 border-b border-slate-200/60">
+                    <th className="px-6 py-4 text-xs font-semibold tracking-tighter text-blue-500 uppercase">Student Roster</th>
+                    <th className="px-3 py-4 text-[10px] font-semibold tracking-widest text-slate-400 text-center w-24 uppercase">Present</th>
+                    <th className="px-3 py-4 text-[10px] font-semibold tracking-widest text-slate-400 text-center w-24 uppercase">Absent</th>
+                    <th className="px-3 py-4 text-[10px] font-semibold tracking-widest text-slate-400 text-center w-24 uppercase">Late</th>
+                    <th className="px-3 py-4 text-[10px] font-semibold tracking-widest text-slate-400 text-center w-24 uppercase">Excused</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
                   {students.map(student => {
                     const status = attendance[student.uid];
                     return (
-                      <tr key={student.uid} className="hover:bg-slate-50/50 transition-all duration-200">
+                      <tr key={student.uid} className="hover:bg-slate-50/80 transition-all duration-200">
                         <td className="px-6 py-3.5">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-slate-950 text-white flex items-center justify-center font-black text-xs shrink-0 border border-white shadow-sm uppercase">
+                            <div className="w-9 h-9 rounded-xl bg-blue-500 text-white flex items-center justify-center font-semibold text-xs shrink-0 border border-white shadow-sm uppercase">
                               {formatDisplayString(student.firstName)?.[0]}{formatDisplayString(student.lastName)?.[0]}
                             </div>
                             <div>
-                              <p className="font-black tracking-tighter text-sm text-slate-950 uppercase">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</p>
-                              <p className="text-[10px] font-black tracking-tight text-slate-400 uppercase">{student.registrationNumber || 'NO ID'}</p>
+                              <p className="font-medium tracking-tight text-slate-900 group-hover:text-blue-500 transition-colors">{formatDisplayString(student.firstName)} {formatDisplayString(student.lastName)}</p>
+                              <p className="text-[10px] text-slate-400 font-medium">{student.registrationNumber || 'NO ID'}</p>
                             </div>
                           </div>
                         </td>
@@ -260,10 +264,10 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
               <button
                 id="btn_teacher_attendance_save"
                 onClick={saveAttendance}
-                disabled={saving || Object.keys(attendance).length === 0}
-                className="bg-slate-950 text-white px-8 py-3 rounded-xl font-black tracking-tighter text-xs hover:bg-black transition-all shadow-lg shadow-slate-950/20 flex items-center gap-2 disabled:opacity-50 active:scale-95 uppercase"
+                disabled={saving}
+                className="px-6 py-2 bg-blue-500 hover:bg-black text-white rounded-xl font-medium tracking-tight text-sm transition-all shadow-lg shadow-slate-950/20 disabled:opacity-50 flex items-center gap-2 active:scale-95 border border-white/20"
               >
-                {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} strokeWidth={3} />}
+                {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
                 Save Register
               </button>
             </div>

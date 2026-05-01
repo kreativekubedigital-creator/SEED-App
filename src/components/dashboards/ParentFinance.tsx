@@ -143,7 +143,7 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
 
   const OfflinePaymentInfo = ({ invoice }: { invoice: Invoice }) => {
     return (
-      <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
+      <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/60 text-center">
         <Construction size={20} className="mx-auto mb-1 text-orange-400" />
         <p className="text-xs font-medium text-slate-900">Online Payment Pending</p>
         <p className="text-[10px] text-slate-500 mt-1">
@@ -168,27 +168,27 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
     <div className="space-y-12">
       {/* Finance Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Total Outstanding</p>
+        <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200/60 shadow-sm">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 mb-4">Total Outstanding</p>
           <div className="flex items-end gap-2">
-            <h4 className={`text-4xl font-black tracking-tighter ${totalOutstanding > 0 ? 'text-slate-900' : 'text-emerald-600'}`}>
+            <h4 className={`text-4xl font-semibold tracking-tighter ${totalOutstanding > 0 ? 'text-slate-900' : 'text-emerald-600'}`}>
               ₦{totalOutstanding.toLocaleString()}
             </h4>
           </div>
         </div>
-        <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Total Settled</p>
+        <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200/60 shadow-sm">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 mb-4">Total Settled</p>
           <div className="flex items-end gap-2 text-blue-600">
-            <h4 className="text-4xl font-black tracking-tighter">₦{totalPaid.toLocaleString()}</h4>
+            <h4 className="text-4xl font-semibold tracking-tighter">₦{totalPaid.toLocaleString()}</h4>
           </div>
         </div>
-        <div className="bg-white p-8 rounded-[2.5rem] relative overflow-hidden shadow-sm border border-slate-100 hidden lg:block group">
+        <div className="bg-white p-8 rounded-[2.5rem] relative overflow-hidden shadow-sm border border-slate-200/60 hidden lg:block group">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent pointer-events-none transition-opacity group-hover:opacity-100 opacity-0"></div>
           <div className="relative z-10">
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Account Status</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 mb-4">Account Status</p>
             <div className="flex items-center gap-3">
               <div className={`w-3.5 h-3.5 rounded-full border-2 border-white ring-2 ${totalOutstanding > 0 ? 'bg-amber-500 ring-amber-100' : 'bg-emerald-500 ring-emerald-100'} shadow-lg`}></div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-900">
                 {totalOutstanding > 0 ? 'Action Required' : 'All Clear'}
               </span>
             </div>
@@ -198,7 +198,7 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
           
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div className="space-y-8">
-          <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-4">
+          <h4 className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 flex items-center gap-4">
             <div className="p-2 bg-blue-50 rounded-xl text-blue-600 border border-blue-100 shadow-sm"><CreditCard size={ 16 } strokeWidth={2.5} /></div>
             Academic Invoices
           </h4>
@@ -212,38 +212,38 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
               <div 
                 id={`btn_invoice_item_${inv.id}`}
                 key={inv.id} 
-                className={`bg-white p-8 rounded-[2.5rem] border transition-all hover:shadow-xl hover:shadow-blue-500/5 group ${paid ? 'border-emerald-100 shadow-emerald-500/5' : overdue ? 'border-rose-100 shadow-rose-500/5' : 'border-slate-100 shadow-slate-200/30'}`}
+                className={`bg-white p-8 rounded-[2.5rem] border transition-all hover:shadow-xl hover:shadow-blue-500/5 group ${paid ? 'border-emerald-100 shadow-emerald-500/5' : overdue ? 'border-rose-100 shadow-rose-500/5' : 'border-slate-200/60 shadow-slate-200/30'}`}
               >
                 <div className="flex justify-between items-start mb-8">
                   <div>
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">
+                      <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-900">
                         {formatDisplayString(termsMap[inv.sessionId]?.[inv.termId]?.name || inv.termId)} Fees
                       </span>
                       {paid ? (
-                        <span className="bg-emerald-50 text-emerald-600 text-[8px] font-black px-4 py-1.5 rounded-full border border-emerald-100 shadow-sm uppercase tracking-widest">Settled</span>
+                        <span className="bg-emerald-50 text-emerald-600 text-[8px] font-semibold px-4 py-1.5 rounded-full border border-emerald-100 shadow-sm uppercase tracking-widest">Settled</span>
                       ) : overdue ? (
-                        <span className="bg-rose-50 text-rose-600 text-[8px] font-black px-4 py-1.5 rounded-full border border-rose-100 shadow-sm uppercase tracking-widest animate-pulse">Overdue</span>
+                        <span className="bg-rose-50 text-rose-600 text-[8px] font-semibold px-4 py-1.5 rounded-full border border-rose-100 shadow-sm uppercase tracking-widest animate-pulse">Overdue</span>
                       ) : (
-                        <span className="bg-blue-50 text-blue-600 text-[8px] font-black px-4 py-1.5 rounded-full border border-blue-100 shadow-sm uppercase tracking-widest">Pending</span>
+                        <span className="bg-blue-50 text-blue-600 text-[8px] font-semibold px-4 py-1.5 rounded-full border border-blue-100 shadow-sm uppercase tracking-widest">Pending</span>
                       )}
                     </div>
-                    <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest flex items-center gap-2">
+                    <p className="text-[9px] text-slate-400 font-semibold uppercase tracking-widest flex items-center gap-2">
                       <Clock size={11} className="text-blue-500" />
                       Due: {new Date(inv.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className={`text-3xl font-black tracking-tighter ${paid ? 'text-emerald-600' : 'text-slate-900'}`}>
+                    <p className={`text-3xl font-semibold tracking-tighter ${paid ? 'text-emerald-600' : 'text-slate-900'}`}>
                       ₦{balance.toLocaleString()}
                     </p>
-                    <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mt-1.5">Total: ₦{inv.amount.toLocaleString()}</p>
+                    <p className="text-[9px] text-slate-400 font-semibold uppercase tracking-widest mt-1.5">Total: ₦{inv.amount.toLocaleString()}</p>
                   </div>
                 </div>
                 
-                <div className="space-y-3 mb-8 bg-slate-50/50 p-6 rounded-3xl border border-slate-100 border-dashed">
+                <div className="space-y-3 mb-8 bg-slate-50/80 p-6 rounded-3xl border border-slate-200/60 border-dashed">
                   {inv.items.map((item, idx) => (
-                    <div key={idx} className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500">
+                    <div key={idx} className="flex justify-between text-[10px] font-semibold uppercase tracking-widest text-slate-500">
                       <span>{formatDisplayString(item.name)}</span>
                       <span className="text-slate-900">₦{item.amount.toLocaleString()}</span>
                     </div>
@@ -252,11 +252,11 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
 
                 {!paid && (
                   <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200/60 border-dashed text-center relative overflow-hidden">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-900 relative z-10 flex items-center justify-center gap-3">
+                    <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-900 relative z-10 flex items-center justify-center gap-3">
                       <Construction size={16} className="text-amber-500" />
                       Payment Method
                     </p>
-                    <p className="text-[8px] text-slate-500 font-black uppercase tracking-widest mt-3 relative z-10">
+                    <p className="text-[8px] text-slate-500 font-semibold uppercase tracking-widest mt-3 relative z-10">
                       Online gateway is pending. Please visit the school's bursary department for manual settlement.
                     </p>
                   </div>
@@ -266,26 +266,26 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
           })}
           
           {invoices.length === 0 && (
-            <div className="bg-white p-16 rounded-[2.5rem] border border-slate-100 text-center shadow-sm">
+            <div className="bg-white p-16 rounded-[2.5rem] border border-slate-200/60 text-center shadow-sm">
               <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-emerald-600 border border-emerald-100 shadow-sm">
                 <CheckCircle size={32} strokeWidth={2.5} />
               </div>
-              <h4 className="text-slate-900 font-black uppercase tracking-widest text-xs mb-2">No Active Invoices</h4>
-              <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Your ward's account is currently fully settled.</p>
+              <h4 className="text-slate-900 font-semibold uppercase tracking-widest text-xs mb-2">No Active Invoices</h4>
+              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-widest">Your ward's account is currently fully settled.</p>
             </div>
           )}
         </div>
 
         <div className="space-y-8">
-          <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-4">
+          <h4 className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 flex items-center gap-4">
             <div className="p-2 bg-emerald-50 rounded-xl text-emerald-600 border border-emerald-100 shadow-sm"><CheckCircle size={ 16 } strokeWidth={2.5} /></div>
             Payment History
           </h4>
           
-          <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-[2.5rem] border border-slate-200/60 shadow-sm overflow-hidden">
             {payments.length === 0 ? (
               <div className="p-20 text-center">
-                <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">No transaction history found.</p>
+                <p className="text-slate-400 font-semibold uppercase tracking-widest text-[10px]">No transaction history found.</p>
               </div>
             ) : (
               <div className="divide-y divide-slate-50">
@@ -300,15 +300,15 @@ export const ParentFinance = ({ user, studentId }: { user: UserProfile, studentI
                         <CheckCircle size={24} strokeWidth={2.5} />
                       </div>
                       <div>
-                        <p className="font-black text-lg text-slate-900 tracking-tighter">₦{pay.amount.toLocaleString()}</p>
+                        <p className="font-semibold text-lg text-slate-900 tracking-tighter">₦{pay.amount.toLocaleString()}</p>
                         <div className="flex items-center gap-3 mt-1.5">
-                          <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest">{new Date(pay.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                          <p className="text-[8px] text-slate-400 font-semibold uppercase tracking-widest">{new Date(pay.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                           <div className="w-1 h-1 bg-slate-200 rounded-full"></div>
-                          <p className="text-[8px] text-slate-600 font-black uppercase tracking-widest">{formatDisplayString(pay.method)}</p>
+                          <p className="text-[8px] text-slate-600 font-semibold uppercase tracking-widest">{formatDisplayString(pay.method)}</p>
                         </div>
                       </div>
                     </div>
-                    <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 bg-slate-50 border border-slate-100 px-4 py-2 rounded-full shadow-inner">
+                    <span className="text-[8px] font-semibold uppercase tracking-widest text-slate-400 bg-slate-50 border border-slate-200/60 px-4 py-2 rounded-full shadow-inner">
                       REF: {pay.reference.substring(0, 8).toUpperCase()}
                     </span>
                   </div>

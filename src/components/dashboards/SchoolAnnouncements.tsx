@@ -92,10 +92,10 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  return (
  <div className="space-y-5">
  <div className="flex justify-between items-center">
- <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Announcements</h3>
+ <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Announcements</h3>
  <button
  onClick={() => setShowAdd(true)}
- className="bg-blue-600 text-white border border-blue-500 hover:bg-blue-700 px-4 py-2 rounded-2xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-blue-600/20"
+ className="bg-blue-600 text-white border border-blue-500 hover:bg-blue-700 px-4 py-2 rounded-2xl flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-blue-600/20"
  >
  <Plus size={ 14 } strokeWidth={3} /> Post Announcement
  </button>
@@ -111,10 +111,10 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  <Bell size={ 20 } />
  </div>
  <div>
- <p className="font-black text-sm uppercase tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">{ a.title }</p>
+ <p className="font-semibold text-sm uppercase tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">{ a.title }</p>
  <div className="flex items-center gap-2 mt-1.5">
- <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100">{ new Date(a.createdAt).toLocaleString()}</p>
- <span className={`text-[10px] px-2.5 py-1 rounded-full font-black uppercase tracking-widest border ${
+ <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-widest bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200/60">{ new Date(a.createdAt).toLocaleString()}</p>
+ <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold uppercase tracking-widest border ${
  a.isSchoolWide 
  ?'bg-blue-50 text-blue-600 border-blue-200'
  :'bg-indigo-50 text-indigo-600 border-indigo-200'
@@ -135,7 +135,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  </div>
  ))}
  { announcements.length === 0 && (
- <div className="text-center py-16 text-slate-400 bg-slate-50 rounded-2xl border border-slate-200 shadow-sm font-black uppercase tracking-widest flex flex-col items-center justify-center">
+ <div className="text-center py-16 text-slate-400 bg-slate-50 rounded-2xl border border-slate-200 shadow-sm font-semibold uppercase tracking-widest flex flex-col items-center justify-center">
  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-slate-300 mb-4 border border-slate-200 shadow-sm">
  <Bell size={ 24 } />
  </div>
@@ -147,7 +147,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
 
  <AnimatePresence>
  { showAdd && (
- <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+ <div className="fixed inset-0 bg-blue-600/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
  <motion.div
  initial={{ scale: 0.95, opacity: 0, y: 20 }}
  animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -156,8 +156,8 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  >
  
   <form onSubmit={ handleAdd } className="flex flex-col flex-1 overflow-hidden">
-  <div className="flex justify-between items-center p-6 border-b border-slate-100 relative z-10 shrink-0">
-  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900">Post Announcement</h3>
+  <div className="flex justify-between items-center p-6 border-b border-slate-200/60 relative z-10 shrink-0">
+  <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-900">Post Announcement</h3>
   <button onClick={() => setShowAdd(false)} className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-colors">
   <X size={ 20 } />
   </button>
@@ -176,7 +176,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  type="button"
  onClick={() => setTargetType('school')}
  className={ cn(
-"p-3 rounded-2xl border text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2",
+"p-3 rounded-2xl border text-[10px] font-semibold uppercase tracking-widest transition-all flex items-center justify-center gap-2",
   targetType  === 'school'?"bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-600/20":"border-slate-200 text-slate-500 hover:bg-slate-50 bg-white"
  )}
  >
@@ -186,7 +186,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  type="button"
  onClick={() => setTargetType('class')}
  className={ cn(
-"p-3 rounded-2xl border text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2",
+"p-3 rounded-2xl border text-[10px] font-semibold uppercase tracking-widest transition-all flex items-center justify-center gap-2",
   targetType  === 'class'?"bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-600/20":"border-slate-200 text-slate-500 hover:bg-slate-50 bg-white"
  )}
  >
@@ -196,12 +196,12 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
 
  { targetType  === 'class'&& (
  <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-  <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Select Class</label>
+  <label className="block text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Select Class</label>
  <select
  required
  value={ selectedClassId }
  onChange={(e) => setSelectedClassId(e.target.value)}
- className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black text-[10px] uppercase tracking-widest text-slate-900 cursor-pointer appearance-none"
+ className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-[10px] uppercase tracking-widest text-slate-900 cursor-pointer appearance-none"
  >
  <option value="">Choose a class</option>
  { classes.map(c => (
@@ -212,7 +212,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  )}
 
  <div>
-  <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Title</label>
+  <label className="block text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Title</label>
  <input
  type="text"
  required
@@ -223,7 +223,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  />
  </div>
  <div>
-  <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Content</label>
+  <label className="block text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Content</label>
  <div className="bg-white rounded-xl overflow-hidden border border-slate-200 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all">
  <ReactQuill
  theme="snow"
@@ -245,11 +245,11 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  </div>
  </div>
 
- <div className="p-6 border-t border-slate-100 bg-slate-50 shrink-0">
+ <div className="p-6 border-t border-slate-200/60 bg-slate-50 shrink-0">
  <button
  type="submit"
  disabled={ loading }
- className="w-full bg-blue-600 text-white py-4 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-500 transition-all shadow-xl shadow-blue-600/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
+ className="w-full bg-blue-600 text-white py-4 rounded-xl font-semibold uppercase tracking-widest text-[10px] hover:bg-blue-500 transition-all shadow-xl shadow-blue-600/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
  >
  { loading ? (
  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -270,7 +270,7 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  {/* Delete Announcement Modal */}
  <AnimatePresence>
  { announcementToDelete && (
- <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+ <div className="fixed inset-0 bg-blue-600/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
  <motion.div
  initial={{ scale: 0.95, opacity: 0, y: 20 }}
  animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -280,11 +280,11 @@ export const SchoolAnnouncements = ({ school }: { school: School }) => {
  <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-200">
  <Trash2 size={ 24 } />
  </div>
- <h3 className="text-sm font-black uppercase tracking-widest text-slate-900 mb-2">Delete Announcement</h3>
+ <h3 className="text-sm font-semibold uppercase tracking-widest text-slate-900 mb-2">Delete Announcement</h3>
  <p className="text-slate-500 text-xs font-medium mb-8 leading-relaxed">Are you sure you want to delete this announcement? This action cannot be undone.</p>
  <div className="flex gap-4">
- <button onClick={() => setAnnouncementToDelete(null)} className="flex-1 py-3 rounded-xl border border-slate-200 font-black uppercase tracking-widest text-[10px] text-slate-500 hover:bg-slate-50 transition-colors">Cancel</button>
- <button onClick={ handleDelete } className="flex-1 py-3 rounded-xl bg-red-600 text-white font-black uppercase tracking-widest text-[10px] hover:bg-red-500 shadow-xl shadow-red-600/20 transition-all active:scale-95">Delete</button>
+ <button onClick={() => setAnnouncementToDelete(null)} className="flex-1 py-3 rounded-xl border border-slate-200 font-semibold uppercase tracking-widest text-[10px] text-slate-500 hover:bg-slate-50 transition-colors">Cancel</button>
+ <button onClick={ handleDelete } className="flex-1 py-3 rounded-xl bg-red-600 text-white font-semibold uppercase tracking-widest text-[10px] hover:bg-red-500 shadow-xl shadow-red-600/20 transition-all active:scale-95">Delete</button>
  </div>
  </motion.div>
  </div>

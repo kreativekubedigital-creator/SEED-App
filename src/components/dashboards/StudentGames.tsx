@@ -249,7 +249,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
   if (activeGame && gameOver) {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm text-center max-w-2xl mx-auto relative overflow-hidden">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm text-center max-w-2xl mx-auto relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-200/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 bg-emerald-500/5 rounded-full blur-2xl -ml-10 -mb-10"></div>
         
@@ -257,8 +257,8 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           <div className="w-24 h-24 bg-gradient-to-br from-yellow-100 to-amber-200 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-yellow-200/50">
             <Trophy size={48} />
           </div>
-          <h2 className="text-xl font-black uppercase tracking-tighter text-slate-900 mb-3">Game Over!</h2>
-          <p className="text-slate-900/40 font-black uppercase tracking-widest mb-8 text-[10px]">Great job exercising your brain.</p>
+          <h2 className="text-xl font-semibold uppercase tracking-tighter text-slate-900 mb-3">Game Over!</h2>
+          <p className="text-slate-900/40 font-semibold uppercase tracking-widest mb-8 text-[10px]">Great job exercising your brain.</p>
           
           <div className="grid grid-cols-2 gap-4 mb-10">
             <div className="bg-blue-50 border border-blue-100/50 p-4 rounded-2xl">
@@ -274,7 +274,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <button 
               onClick={() => startGame(activeGame)}
-              className="flex items-center justify-center gap-2 bg-blue-600 text-white hover:bg-blue-700 px-8 py-2.5 rounded-full font-medium hover:shadow-lg hover:scale-105 transition-all"
+              className="flex items-center justify-center gap-2 bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 px-8 py-2.5 rounded-full font-medium hover:shadow-lg hover:scale-105 transition-all"
             >
               <RefreshCw size={20} /> Play Again
             </button>
@@ -296,9 +296,9 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
   if (activeGame === 'math') {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-4 md:p-4 rounded-2xl border border-slate-100 shadow-sm max-w-2xl mx-auto text-center">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-4 md:p-4 rounded-2xl border border-slate-200/60 shadow-sm max-w-2xl mx-auto text-center">
         <div className="flex justify-between items-center mb-12">
-          <button onClick={() => setActiveGame(null)} className="flex items-center gap-2 text-slate-900 hover:text-slate-900 transition-colors font-medium bg-white/80 backdrop-blur-sm border border-slate-100 shadow-sm px-3.5 py-1.5 rounded-full">
+          <button onClick={() => setActiveGame(null)} className="flex items-center gap-2 text-slate-900 hover:text-slate-900 transition-colors font-medium bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm px-3.5 py-1.5 rounded-full">
             <ArrowLeft size={20} /> Exit
           </button>
           <div className="flex items-center gap-4">
@@ -311,7 +311,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           </div>
         </div>
 
-        <div className="text-6xl md:text-7xl font-black uppercase tracking-tighter mb-16 text-slate-900 drop-shadow-sm">
+        <div className="text-6xl md:text-7xl font-semibold uppercase tracking-tighter mb-16 text-slate-900 drop-shadow-sm">
           {mathQuestion.num1} <span className="text-blue-600">{mathQuestion.op}</span> {mathQuestion.num2} = ?
         </div>
 
@@ -319,13 +319,13 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           {mathOptions.map((option, i) => {
             let btnClass = "p-4 rounded-2xl text-xl font-medium border transition-all ";
             if (selectedAnswer === null) {
-              btnClass += "border-slate-100 hover:border-blue-400/50 hover:bg-white hover:text-blue-600 hover:shadow-md bg-white/80 backdrop-blur-sm text-slate-900 shadow-sm";
+              btnClass += "border-slate-200/60 hover:border-blue-400/50 hover:bg-white hover:text-blue-600 hover:shadow-md bg-white/80 backdrop-blur-sm text-slate-900 shadow-sm";
             } else if (option === mathQuestion.answer) {
               btnClass += "border-emerald-500 bg-emerald-50/80 text-emerald-600 shadow-sm";
             } else if (option === selectedAnswer) {
               btnClass += "border-red-500 bg-red-50/80 text-red-600 shadow-sm";
             } else {
-              btnClass += "border-slate-100/50 opacity-50 bg-white/60 text-slate-900";
+              btnClass += "border-slate-200/60/50 opacity-50 bg-white/60 text-slate-900";
             }
 
             return (
@@ -348,9 +348,9 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
   if (activeGame === 'word') {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-4 md:p-4 rounded-2xl border border-slate-100 shadow-sm max-w-2xl mx-auto text-center">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-4 md:p-4 rounded-2xl border border-slate-200/60 shadow-sm max-w-2xl mx-auto text-center">
         <div className="flex justify-between items-center mb-12">
-          <button onClick={() => setActiveGame(null)} className="flex items-center gap-2 text-slate-900 hover:text-slate-900 transition-colors font-medium bg-white/80 backdrop-blur-sm border border-slate-100 shadow-sm px-3.5 py-1.5 rounded-full">
+          <button onClick={() => setActiveGame(null)} className="flex items-center gap-2 text-slate-900 hover:text-slate-900 transition-colors font-medium bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm px-3.5 py-1.5 rounded-full">
             <ArrowLeft size={20} /> Exit
           </button>
           <div className="flex items-center gap-4">
@@ -363,9 +363,9 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           </div>
         </div>
 
-        <div className="text-5xl md:text-6xl font-black uppercase tracking-tighter mb-16 text-slate-900 flex justify-center gap-3 md:gap-4 flex-wrap drop-shadow-sm">
+        <div className="text-5xl md:text-6xl font-semibold uppercase tracking-tighter mb-16 text-slate-900 flex justify-center gap-3 md:gap-4 flex-wrap drop-shadow-sm">
           {wordQuestion.word.split('').map((char, i) => (
-            <span key={i} className={`inline-block w-14 md:w-16 h-20 md:h-24 border-b-4 flex items-center justify-center rounded-t-xl ${i === wordQuestion.missingIndex ? 'border-purple-500 text-purple-600 bg-purple-50/80 backdrop-blur-sm' : 'border-slate-100 bg-white/80 backdrop-blur-sm shadow-sm'}`}>
+            <span key={i} className={`inline-block w-14 md:w-16 h-20 md:h-24 border-b-4 flex items-center justify-center rounded-t-xl ${i === wordQuestion.missingIndex ? 'border-purple-500 text-purple-600 bg-purple-50/80 backdrop-blur-sm' : 'border-slate-200/60 bg-white/80 backdrop-blur-sm shadow-sm'}`}>
               {i === wordQuestion.missingIndex ? (selectedLetter || '?') : char}
             </span>
           ))}
@@ -375,13 +375,13 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           {wordQuestion.options.map((option, i) => {
             let btnClass = "p-4 rounded-2xl text-xl font-medium border transition-all ";
             if (selectedLetter === null) {
-              btnClass += "border-slate-100 hover:border-purple-400/50 hover:bg-white hover:text-purple-600 hover:shadow-md bg-white/80 backdrop-blur-sm text-slate-900 shadow-sm";
+              btnClass += "border-slate-200/60 hover:border-purple-400/50 hover:bg-white hover:text-purple-600 hover:shadow-md bg-white/80 backdrop-blur-sm text-slate-900 shadow-sm";
             } else if (option === wordQuestion.word[wordQuestion.missingIndex]) {
               btnClass += "border-emerald-500 bg-emerald-50/80 text-emerald-600 shadow-sm";
             } else if (option === selectedLetter) {
               btnClass += "border-red-500 bg-red-50/80 text-red-600 shadow-sm";
             } else {
-              btnClass += "border-slate-100/50 opacity-50 bg-white/60 text-slate-900";
+              btnClass += "border-slate-200/60/50 opacity-50 bg-white/60 text-slate-900";
             }
 
             return (
@@ -404,9 +404,9 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
   if (activeGame === 'science') {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-4 md:p-4 rounded-2xl border border-slate-100 shadow-sm max-w-2xl mx-auto text-center">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-4 md:p-4 rounded-2xl border border-slate-200/60 shadow-sm max-w-2xl mx-auto text-center">
         <div className="flex justify-between items-center mb-12">
-          <button onClick={() => setActiveGame(null)} className="flex items-center gap-2 text-slate-900 hover:text-slate-900 transition-colors font-medium bg-white/80 backdrop-blur-sm border border-slate-100 shadow-sm px-3.5 py-1.5 rounded-full">
+          <button onClick={() => setActiveGame(null)} className="flex items-center gap-2 text-slate-900 hover:text-slate-900 transition-colors font-medium bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm px-3.5 py-1.5 rounded-full">
             <ArrowLeft size={20} /> Exit
           </button>
           <div className="flex items-center gap-4">
@@ -419,7 +419,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           </div>
         </div>
 
-        <div className="text-xl font-bold uppercase tracking-wide mb-12 text-slate-900 leading-snug">
+        <div className="text-xl font-semibold uppercase tracking-wide mb-12 text-slate-900 leading-snug">
           {scienceQuestion.question}
         </div>
 
@@ -427,13 +427,13 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
           {scienceQuestion.options.map((option, i) => {
             let btnClass = "p-4 rounded-2xl text-xl font-medium border transition-all text-left flex items-center justify-between ";
             if (selectedScienceOption === null) {
-              btnClass += "border-slate-100 hover:border-emerald-400/50 hover:bg-white hover:text-emerald-700 hover:shadow-md bg-white/80 backdrop-blur-sm text-slate-900 shadow-sm";
+              btnClass += "border-slate-200/60 hover:border-emerald-400/50 hover:bg-white hover:text-emerald-700 hover:shadow-md bg-white/80 backdrop-blur-sm text-slate-900 shadow-sm";
             } else if (option === scienceQuestion.answer) {
               btnClass += "border-emerald-500 bg-emerald-50/80 text-emerald-600 shadow-sm";
             } else if (option === selectedScienceOption) {
               btnClass += "border-red-500 bg-red-50/80 text-red-600 shadow-sm";
             } else {
-              btnClass += "border-slate-100/50 opacity-50 bg-white/60 text-slate-900";
+              btnClass += "border-slate-200/60/50 opacity-50 bg-white/60 text-slate-900";
             }
 
             return (
@@ -459,7 +459,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
   return (
     <div className={containerClass}>
-      <div className="flex flex-wrap bg-white p-1 rounded-xl border border-slate-100 w-fit shadow-sm">
+      <div className="flex flex-wrap bg-white p-1 rounded-xl border border-slate-200/60 w-fit shadow-sm">
         {(['play', 'leaderboard', 'rewards', 'badges'] as const).map((tab, index) => {
           const colors = ['bg-orange-100', 'bg-blue-100', 'bg-purple-100', 'bg-pink-100'];
           const colorClass = colors[index % colors.length];
@@ -467,7 +467,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
             <button
               key={tab}
               onClick={() => setGameTab(tab)}
-              className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
+              className={`px-4 py-1.5 rounded-lg text-[10px] font-semibold uppercase tracking-widest transition-all duration-300 ${
                 gameTab === tab ? `${colorClass} text-slate-900 shadow-md` : 'text-slate-900/40 hover:text-slate-900'
               }`}
             >
@@ -484,10 +484,10 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-100/20 rounded-full -ml-32 -mb-32 blur-3xl"></div>
             
             <div className="relative z-10 text-center">
-              <h2 className="text-5xl font-black uppercase tracking-tighter mb-6 drop-shadow-sm">Brain Games</h2>
+              <h2 className="text-5xl font-semibold uppercase tracking-tighter mb-6 drop-shadow-sm">Brain Games</h2>
               <p className="text-xl text-blue-50 max-w-2xl mx-auto leading-relaxed font-medium">
                 Sharpen your mind, reinforce your learning, and earn points for your profile. 
-                Games are tailored to your level: <span className="font-black underline decoration-blue-200/50 underline-offset-4">{classLevel}</span>.
+                Games are tailored to your level: <span className="font-semibold underline decoration-blue-200/50 underline-offset-4">{classLevel}</span>.
               </p>
             </div>
           </div>
@@ -503,11 +503,11 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
               <div className="w-20 h-20 bg-white text-slate-900 rounded-2xl flex items-center justify-center mb-8 transition-all duration-500 shadow-sm group-hover:shadow-md group-hover:scale-110 border border-orange-100 relative z-10">
                 <Calculator size={40} />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-3 group-hover:text-blue-700 transition-colors relative z-10 uppercase tracking-tight">Math Ninja</h3>
+              <h3 className="text-lg font-semibold text-slate-900 mb-3 group-hover:text-blue-700 transition-colors relative z-10 uppercase tracking-tight">Math Ninja</h3>
               <p className="text-slate-600 font-medium mb-8 flex-1 leading-relaxed relative z-10">Quick-fire arithmetic challenges. Addition, subtraction, and more based on your grade.</p>
               <div className="flex items-center justify-between relative z-10">
-                <span className="text-[10px] font-black uppercase tracking-widest text-blue-700 bg-blue-50 px-4 py-1.5 rounded-full border border-blue-100">Math</span>
-                <button className="w-10 h-10 bg-slate-900 text-white rounded-full flex items-center justify-center group-hover:bg-blue-600 transition-all shadow-sm">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-blue-700 bg-blue-50 px-4 py-1.5 rounded-full border border-blue-100">Math</span>
+                <button className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center group-hover:bg-blue-600 transition-all shadow-sm">
                   <Play size={20} fill="currentColor" className="ml-1" />
                 </button>
               </div>
@@ -516,18 +516,18 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
             <motion.div 
               whileHover={{ y: -8, scale: 1.02 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all group cursor-pointer flex flex-col relative overflow-hidden"
+              className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all group cursor-pointer flex flex-col relative overflow-hidden"
               onClick={() => startGame('word')}
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
               <div className="w-20 h-20 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-8 transition-all duration-500 shadow-sm group-hover:shadow-md group-hover:scale-110 border border-purple-100 relative z-10">
                 <BookA size={40} />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-3 group-hover:text-purple-700 transition-colors relative z-10 uppercase tracking-tight">Word Wizard</h3>
+              <h3 className="text-lg font-semibold text-slate-900 mb-3 group-hover:text-purple-700 transition-colors relative z-10 uppercase tracking-tight">Word Wizard</h3>
               <p className="text-slate-600 font-medium mb-8 flex-1 leading-relaxed relative z-10">Vocabulary and spelling puzzles. Find the missing letters in academic and common words.</p>
               <div className="flex items-center justify-between relative z-10">
-                <span className="text-[10px] font-black uppercase tracking-widest text-purple-700 bg-purple-50 px-4 py-1.5 rounded-full border border-purple-100">English</span>
-                <button className="w-10 h-10 bg-slate-900 text-white rounded-full flex items-center justify-center group-hover:bg-purple-600 transition-all shadow-sm">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-purple-700 bg-purple-50 px-4 py-1.5 rounded-full border border-purple-100">English</span>
+                <button className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center group-hover:bg-purple-600 transition-all shadow-sm">
                   <Play size={20} fill="currentColor" className="ml-1" />
                 </button>
               </div>
@@ -536,18 +536,18 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
             <motion.div 
               whileHover={{ y: -8, scale: 1.02 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all group cursor-pointer flex flex-col relative overflow-hidden"
+              className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all group cursor-pointer flex flex-col relative overflow-hidden"
               onClick={() => startGame('science')}
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
               <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-8 transition-all duration-500 shadow-sm group-hover:shadow-md group-hover:scale-110 border border-emerald-100 relative z-10">
                 <Beaker size={40} />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-3 group-hover:text-emerald-700 transition-colors relative z-10 uppercase tracking-tight">Science Explorer</h3>
+              <h3 className="text-lg font-semibold text-slate-900 mb-3 group-hover:text-emerald-700 transition-colors relative z-10 uppercase tracking-tight">Science Explorer</h3>
               <p className="text-slate-600 font-medium mb-8 flex-1 leading-relaxed relative z-10">Discover the wonders of science. Biology, Chemistry, and Physics concepts made fun.</p>
               <div className="flex items-center justify-between relative z-10">
-                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-100">Science</span>
-                <button className="w-10 h-10 bg-slate-900 text-white rounded-full flex items-center justify-center group-hover:bg-emerald-600 transition-all shadow-sm">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-100">Science</span>
+                <button className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center group-hover:bg-emerald-600 transition-all shadow-sm">
                   <Play size={20} fill="currentColor" className="ml-1" />
                 </button>
               </div>
@@ -556,18 +556,18 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
             <motion.div 
               whileHover={{ y: -8, scale: 1.02 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all group cursor-pointer flex flex-col relative overflow-hidden"
+              className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all group cursor-pointer flex flex-col relative overflow-hidden"
               onClick={() => startGame('memory')}
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-pink-50 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
               <div className="w-20 h-20 bg-pink-50 text-pink-600 rounded-2xl flex items-center justify-center mb-8 transition-all duration-500 shadow-sm group-hover:shadow-md group-hover:scale-110 border border-pink-100 relative z-10">
                 <Star size={40} />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-3 group-hover:text-pink-700 transition-colors relative z-10 uppercase tracking-tight">Memory Flip</h3>
+              <h3 className="text-lg font-semibold text-slate-900 mb-3 group-hover:text-pink-700 transition-colors relative z-10 uppercase tracking-tight">Memory Flip</h3>
               <p className="text-slate-600 font-medium mb-8 flex-1 leading-relaxed relative z-10">Train your memory and focus with this classic card matching game. Earn XP and Coins!</p>
               <div className="flex items-center justify-between relative z-10">
-                <span className="text-[10px] font-black uppercase tracking-widest text-pink-700 bg-pink-50 px-4 py-1.5 rounded-full border border-pink-100">Focus</span>
-                <button className="w-10 h-10 bg-slate-900 text-white rounded-full flex items-center justify-center group-hover:bg-pink-600 transition-all shadow-sm">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-pink-700 bg-pink-50 px-4 py-1.5 rounded-full border border-pink-100">Focus</span>
+                <button className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center group-hover:bg-pink-600 transition-all shadow-sm">
                   <Play size={20} fill="currentColor" className="ml-1" />
                 </button>
               </div>
@@ -584,9 +584,9 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
               School Leaderboard
             </h3>
           </div>
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-            <div className="p-4 border-b border-slate-100 bg-slate-50/30">
-              <div className="grid grid-cols-12 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+          <div className="bg-white rounded-3xl border border-slate-200/60 shadow-sm overflow-hidden">
+            <div className="p-4 border-b border-slate-200/60 bg-slate-50/30">
+              <div className="grid grid-cols-12 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
                 <div className="col-span-1">Rank</div>
                 <div className="col-span-7">Student</div>
                 <div className="col-span-2 text-right">Level</div>
@@ -599,20 +599,20 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
                   "grid grid-cols-12 items-center p-4 transition-colors",
                   u.uid === user.uid ? "bg-blue-50/50" : "hover:bg-slate-50/30"
                 )}>
-                  <div className="col-span-1 font-bold text-slate-900">
+                  <div className="col-span-1 font-semibold text-slate-900">
                     {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
                   </div>
                   <div className="col-span-7 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-xs">
                       {formatDisplayString(u.firstName)?.[0]}{formatDisplayString(u.lastName)?.[0]}
                     </div>
                     <div>
-                      <p className="font-bold text-slate-900 text-sm">{formatDisplayString(u.firstName)} {formatDisplayString(u.lastName)}</p>
-                      <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">{u.registrationNumber || 'Student'}</p>
+                      <p className="font-semibold text-slate-900 text-sm">{formatDisplayString(u.firstName)} {formatDisplayString(u.lastName)}</p>
+                      <p className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">{u.registrationNumber || 'Student'}</p>
                     </div>
                   </div>
-                  <div className="col-span-2 text-right font-bold text-slate-900 text-sm">{u.level || 1}</div>
-                  <div className="col-span-2 text-right font-black text-blue-600 text-sm">{u.xp || 0}</div>
+                  <div className="col-span-2 text-right font-semibold text-slate-900 text-sm">{u.level || 1}</div>
+                  <div className="col-span-2 text-right font-semibold text-blue-600 text-sm">{u.xp || 0}</div>
                 </div>
               ))}
               {leaderboard.length === 0 && (
@@ -633,7 +633,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
               Rewards Store
             </h3>
             <div className="bg-purple-50 px-4 py-2 rounded-xl border border-purple-100 flex items-center gap-2">
-              <span className="text-sm font-bold text-purple-700">{user.coins || 0} 🪙</span>
+              <span className="text-sm font-semibold text-purple-700">{user.coins || 0} 🪙</span>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -647,23 +647,23 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
             ].map(item => {
               const isPurchased = user.purchasedItems?.includes(item.id);
               return (
-                <div key={item.id} className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col gap-4">
+                <div key={item.id} className="bg-white p-5 rounded-3xl border border-slate-200/60 shadow-sm flex flex-col gap-4">
                   <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", item.colorClass)}>
                     <item.icon size={24} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900">{formatDisplayString(item.name)}</h4>
+                    <h4 className="font-semibold text-slate-900">{formatDisplayString(item.name)}</h4>
                     <p className="text-xs text-slate-500 mt-1 font-medium">{item.description}</p>
                   </div>
                   <button 
                     disabled={isPurchased || (user.coins || 0) < item.price}
                     onClick={() => handlePurchase(item)}
                     className={cn(
-                      "w-full py-2.5 rounded-xl text-sm font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2",
+                      "w-full py-2.5 rounded-xl text-sm font-semibold uppercase tracking-widest transition-all flex items-center justify-center gap-2",
                       isPurchased 
                         ? "bg-emerald-50 text-emerald-600 cursor-default" 
                         : (user.coins || 0) >= item.price
-                          ? "bg-slate-900 text-white hover:bg-slate-800 shadow-md active:scale-95"
+                          ? "bg-blue-600 text-white hover:bg-slate-800 shadow-md active:scale-95"
                           : "bg-slate-50 text-slate-300 cursor-not-allowed"
                     )}
                   >
@@ -678,11 +678,11 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
 
       {gameTab === 'badges' && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-5">
-          <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm mb-6">
+          <div className="bg-white rounded-2xl p-4 border border-slate-200/60 shadow-sm mb-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
-                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Level Up Hub</h2>
-                <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest mt-1">Compete with friends and earn badges</p>
+                <h2 className="text-2xl font-semibold text-slate-900 uppercase tracking-tighter">Level Up Hub</h2>
+                <p className="text-slate-400 font-semibold text-[10px] uppercase tracking-widest mt-1">Compete with friends and earn badges</p>
               </div>
             </div>
           </div>
@@ -694,21 +694,21 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
                 <motion.div 
                   key={badge.id || index} 
                   whileHover={{ y: -5 }}
-                  className={`${colorClass} p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center text-center gap-3 relative overflow-hidden`}
+                  className={`${colorClass} p-6 rounded-3xl border border-slate-200/60 shadow-sm flex flex-col items-center text-center gap-3 relative overflow-hidden`}
                 >
                   <div className="absolute top-0 right-0 w-24 h-24 bg-white/40 rounded-full blur-2xl -mr-8 -mt-8"></div>
                   <div className="text-5xl mb-2 relative z-10">{badge.icon}</div>
-                  <h4 className="font-bold text-slate-900 text-sm relative z-10">{formatDisplayString(badge.title)}</h4>
+                  <h4 className="font-semibold text-slate-900 text-sm relative z-10">{formatDisplayString(badge.title)}</h4>
                   <p className="text-[10px] text-slate-500 font-medium leading-tight relative z-10">{badge.description}</p>
-                  <div className="mt-auto pt-3 text-[8px] text-slate-400 font-black uppercase tracking-widest relative z-10">
+                  <div className="mt-auto pt-3 text-[8px] text-slate-400 font-semibold uppercase tracking-widest relative z-10">
                     Earned {badge.earnedAt ? (typeof badge.earnedAt.toDate === 'function' ? badge.earnedAt.toDate().toLocaleDateString() : new Date(badge.earnedAt).toLocaleDateString()) : 'N/A'}
                   </div>
                 </motion.div>
               );
             })}
             {badges.length === 0 && (
-              <div className="col-span-full py-20 text-center bg-white rounded-3xl border border-slate-100 shadow-sm">
-                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300 border border-slate-100">
+              <div className="col-span-full py-20 text-center bg-white rounded-3xl border border-slate-200/60 shadow-sm">
+                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300 border border-slate-200/60">
                   <Award size={40} />
                 </div>
                 <p className="text-slate-400 font-medium">You haven't earned any badges yet. Keep studying!</p>

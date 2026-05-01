@@ -222,20 +222,20 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  <div className="flex items-center gap-2 bg-white p-1.5 rounded-full border border-slate-300 shadow-sm">
  <button
  onClick={() => setActiveLevel('primary')}
- className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${ activeLevel  === 'primary'?'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/30':'text-slate-900 hover:text-slate-900 hover:bg-slate-50'}`}
+ className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${ activeLevel  === 'primary'?'bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 shadow-lg shadow-blue-500/30':'text-slate-900 hover:text-slate-900 hover:bg-slate-50'}`}
  >
  Primary
  </button>
  <button
  onClick={() => setActiveLevel('secondary')}
- className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${ activeLevel  === 'secondary'?'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/30':'text-slate-900 hover:text-slate-900 hover:bg-slate-50'}`}
+ className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${ activeLevel  === 'secondary'?'bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 shadow-lg shadow-blue-500/30':'text-slate-900 hover:text-slate-900 hover:bg-slate-50'}`}
  >
  Secondary
  </button>
  </div>
  <button
  onClick={() => setShowAddClass(true)}
- className="bg-blue-600 text-white hover:bg-blue-700 px-3.5 py-1.5 rounded-full flex items-center gap-2 text-sm font-medium hover:scale-105 transition-all"
+ className="bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 px-3.5 py-1.5 rounded-full flex items-center gap-2 text-sm font-medium hover:scale-105 transition-all"
  >
  <Plus size={ 18 } /> Add Class
  </button>
@@ -256,7 +256,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  </div>
  <div>
  <p className="font-medium text-xl text-slate-900 group-hover:text-orange-600 transition-colors">{ formatDisplayString(c.name) }</p>
- <p className="text-sm text-slate-900 font-medium mt-1 bg-slate-50 px-2.5 py-0.5 rounded-full inline-block border border-slate-100">{ classSubjects.length } Subjects</p>
+ <p className="text-sm text-slate-900 font-medium mt-1 bg-slate-50 px-2.5 py-0.5 rounded-full inline-block border border-slate-200/60">{ classSubjects.length } Subjects</p>
  </div>
  </div>
  <div className="flex items-center gap-2 relative z-10">
@@ -282,7 +282,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  initial={{ height: 0, opacity: 0 }}
  animate={{ height:'auto', opacity: 1 }}
  exit={{ height: 0, opacity: 0 }}
- className="border-t border-slate-100 bg-slate-50"
+ className="border-t border-slate-200/60 bg-slate-50"
  >
  <div className="p-4 space-y-5">
  <div className="flex justify-between items-center mb-6">
@@ -302,12 +302,12 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  { classSubjects.map(s => {
  const teacher = teachers.find(t => t.uid === s.teacherId);
  return (
- <div key={ s.id } className="flex justify-between items-center p-4 rounded-2xl bg-white border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all group/subject">
+ <div key={ s.id } className="flex justify-between items-center p-4 rounded-2xl bg-white border border-slate-200/60 hover:border-blue-200 hover:shadow-md transition-all group/subject">
  <div>
  <p className="font-medium text-slate-900 text-lg group-hover/subject:text-blue-600 transition-colors">{ formatDisplayString(s.name) }</p>
  <p className="text-sm text-slate-900 font-medium mt-1 flex items-center gap-2">
  Teacher: 
- <span className="text-slate-900 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100">
+ <span className="text-slate-900 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200/60">
  { teacher ? `${formatDisplayString(teacher.firstName)} ${formatDisplayString(teacher.lastName)}` : 'Unassigned'}
  </span>
  </p>
@@ -341,7 +341,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  })}
  { classes.length === 0 && (
  <div className="col-span-full text-center py-16 text-slate-900 bg-white rounded-2xl border border-slate-300 shadow-sm font-medium flex flex-col items-center justify-center">
- <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-900 mb-4 border border-slate-100">
+ <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-900 mb-4 border border-slate-200/60">
  <BookOpen size={ 20 } />
  </div>
  <p className="text-slate-900 font-medium text-lg">No classes found.</p>
@@ -353,7 +353,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  {/* Add Class Modal */}
  <AnimatePresence>
  { showAddClass && (
- <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+ <div className="fixed inset-0 bg-blue-600/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
  <motion.div
  initial={{ scale: 0.95, opacity: 0, y: 20 }}
  animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -389,7 +389,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  <button
  type="submit"
  disabled={ loading }
- className="w-full bg-blue-600 text-white hover:bg-blue-700 py-2.5 rounded-full font-medium hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
+ className="w-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 py-2.5 rounded-full font-medium hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
  >
  { loading ?'Adding...':'Add Class'}
  </button>
@@ -402,7 +402,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  {/* Edit Class Modal */}
  <AnimatePresence>
  { classToEdit && (
- <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+ <div className="fixed inset-0 bg-blue-600/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
  <motion.div
  initial={{ scale: 0.95, opacity: 0, y: 20 }}
  animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -449,7 +449,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  <button
  type="submit"
  disabled={ loading }
- className="w-full bg-blue-600 text-white hover:bg-blue-700 py-2.5 rounded-full font-medium hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
+ className="w-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 py-2.5 rounded-full font-medium hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
  >
  { loading ?'Updating...':'Update Class'}
  </button>
@@ -462,7 +462,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  {/* Add Subject Modal */}
  <AnimatePresence>
  { showAddSubject && (
- <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+ <div className="fixed inset-0 bg-blue-600/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
  <motion.div
  initial={{ scale: 0.95, opacity: 0, y: 20 }}
  animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -492,7 +492,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  <label className="block text-sm font-medium text-slate-900 mb-3">Preloaded Subjects</label>
  <div className="space-y-2 max-h-48 overflow-y-auto p-4 border border-gray-200/50 rounded-2xl bg-white custom-scrollbar">
  {([...(classes.find(c => c.id === showAddSubject)?.level === 'secondary' ? SECONDARY_SUBJECTS : PRIMARY_SUBJECTS)].sort((a, b) => a.localeCompare(b))).map(subject => (
- <label key={ subject } className="flex items-center gap-3 cursor-pointer p-3 hover:bg-white rounded-xl transition-colors border border-transparent hover:border-slate-100 hover:shadow-sm">
+ <label key={ subject } className="flex items-center gap-3 cursor-pointer p-3 hover:bg-white rounded-xl transition-colors border border-transparent hover:border-slate-200/60 hover:shadow-sm">
  <input
  type="checkbox"
  checked={ selectedPredefinedSubjects.includes(subject)}
@@ -537,7 +537,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  <button
  type="submit"
  disabled={ loading }
- className="w-full bg-blue-600 text-white hover:bg-blue-700 py-2.5 rounded-full font-medium hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
+ className="w-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 py-2.5 rounded-full font-medium hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
  >
  { loading ?'Adding...':'Add Subject'}
  </button>
@@ -550,7 +550,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  {/* Edit Subject Modal */}
  <AnimatePresence>
  { subjectToEdit && (
- <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+ <div className="fixed inset-0 bg-blue-600/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
  <motion.div
  initial={{ scale: 0.95, opacity: 0, y: 20 }}
  animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -598,7 +598,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  <button
  type="submit"
  disabled={ loading }
- className="w-full bg-blue-600 text-white hover:bg-blue-700 py-2.5 rounded-full font-medium hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
+ className="w-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 py-2.5 rounded-full font-medium hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
  >
  { loading ?'Updating...':'Update Subject'}
  </button>
@@ -611,7 +611,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  {/* Delete Class Modal */}
  <AnimatePresence>
  { classToDelete && (
- <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+ <div className="fixed inset-0 bg-blue-600/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
  <motion.div
  initial={{ scale: 0.95, opacity: 0, y: 20 }}
  animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -635,7 +635,7 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  {/* Delete Subject Modal */}
  <AnimatePresence>
  { subjectToDelete && (
- <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+ <div className="fixed inset-0 bg-blue-600/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
  <motion.div
  initial={{ scale: 0.95, opacity: 0, y: 20 }}
  animate={{ scale: 1, opacity: 1, y: 0 }}

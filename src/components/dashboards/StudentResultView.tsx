@@ -129,12 +129,12 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
         <div className="bg-white/80 backdrop-blur-md p-6 md:p-8 rounded-[2.5rem] border border-white/50 shadow-sm">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
-              <h2 className="text-2xl font-black uppercase tracking-tighter text-slate-900">{formatDisplayString(user.firstName)} {formatDisplayString(user.lastName)}</h2>
+              <h2 className="text-2xl font-semibold uppercase tracking-tighter text-slate-900">{formatDisplayString(user.firstName)} {formatDisplayString(user.lastName)}</h2>
               <div className="flex flex-wrap items-center gap-3 mt-2">
-                <span className="px-3 py-1 rounded-full bg-slate-900 text-white font-black uppercase tracking-widest text-[8px]">
+                <span className="px-3 py-1 rounded-full bg-blue-600 text-white font-semibold uppercase tracking-widest text-[8px]">
                   {getClassName(user.classId || '')}
                 </span>
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
                   Reg No: {user.registrationNumber || 'N/A'}
                 </span>
               </div>
@@ -144,7 +144,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                 id="btn_student_result_print_report"
                 onClick={() => setShowReportCard(true)}
                 disabled={results.length === 0}
-                className="flex-1 md:flex-none px-6 py-3.5 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-blue-500/20 active:scale-95"
+                className="flex-1 md:flex-none px-6 py-3.5 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 font-semibold uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-blue-500/20 active:scale-95"
               >
                 <Printer size={18} />
                 Print Report Card
@@ -154,7 +154,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                   id="select_student_result_session"
                   value={selectedSession}
                   onChange={e => setSelectedSession(e.target.value)}
-                  className="w-full appearance-none pl-6 pr-12 py-3.5 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black uppercase tracking-widest text-[10px] text-slate-900 cursor-pointer shadow-sm"
+                  className="w-full appearance-none pl-6 pr-12 py-3.5 rounded-2xl border border-slate-200/60 bg-slate-50 hover:bg-white hover:border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold uppercase tracking-widest text-[10px] text-slate-900 cursor-pointer shadow-sm"
                 >
                   {sessions.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
                 </select>
@@ -165,7 +165,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 mt-10 p-2 bg-slate-50 rounded-[2rem] w-fit border border-slate-100/50">
+          <div className="flex flex-wrap gap-2 mt-10 p-2 bg-slate-50 rounded-[2rem] w-fit border border-slate-200/60/50">
             {['1st Term', '2nd Term', '3rd Term'].map((termName, index) => {
               const term = terms.find(t => t.name === termName);
               const activeStyles = [
@@ -183,7 +183,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                   id={`btn_student_result_term_${index + 1}`}
                   onClick={() => term && setSelectedTerm(term.id)}
                   disabled={!term}
-                  className={`px-8 py-3 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest transition-all border border-transparent ${
+                  className={`px-8 py-3 rounded-[1.5rem] text-[10px] font-semibold uppercase tracking-widest transition-all border border-transparent ${
                     isActive 
                       ? activeStyles[index % activeStyles.length]
                       : 'text-slate-400 hover:text-slate-900'
@@ -200,9 +200,9 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
           <div className="lg:col-span-2 space-y-8">
             <div className="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-white/50 shadow-sm overflow-hidden">
               <div className="px-8 py-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
-                <h3 className="font-black uppercase tracking-widest text-[10px] text-slate-900">Academic Breakdown</h3>
+                <h3 className="font-semibold uppercase tracking-widest text-[10px] text-slate-900">Academic Breakdown</h3>
                 {!loading && results.length > 0 && (
-                  <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-600 font-black uppercase tracking-widest text-[8px]">
+                  <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-600 font-semibold uppercase tracking-widest text-[8px]">
                     {results.length} Subjects
                   </span>
                 )}
@@ -217,7 +217,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                     className="p-32 flex flex-col items-center justify-center text-slate-900"
                   >
                     <div className="w-12 h-12 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin mb-4" />
-                    <p className="font-black uppercase tracking-widest text-[10px]">Processing results...</p>
+                    <p className="font-semibold uppercase tracking-widest text-[10px]">Processing results...</p>
                   </motion.div>
                 ) : (
                   <motion.div
@@ -228,7 +228,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                     {/* Desktop Table */}
                     <div className="hidden md:block overflow-x-auto">
                       <table className="w-full text-left">
-                        <thead className="bg-slate-50/50 text-[9px] font-black uppercase tracking-widest text-slate-400">
+                        <thead className="bg-slate-50/80 text-[9px] font-semibold uppercase tracking-widest text-slate-400">
                           <tr>
                             <th className="pl-8 pr-4 py-5">Subject Name</th>
                             {caConfig.cas.map((ca, idx) => (
@@ -243,21 +243,21 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                         </thead>
                         <tbody className="divide-y divide-slate-50">
                           {results.map(result => (
-                            <tr key={result.id} className="hover:bg-slate-50/50 transition-colors group">
+                            <tr key={result.id} className="hover:bg-slate-50/80 transition-colors group">
                               <td className="pl-8 pr-4 py-6">
-                                <div className="font-black uppercase tracking-tighter text-sm text-slate-900 group-hover:text-blue-600 transition-colors">{getSubjectName(result.subjectId)}</div>
+                                <div className="font-semibold uppercase tracking-tighter text-sm text-slate-900 group-hover:text-blue-600 transition-colors">{getSubjectName(result.subjectId)}</div>
                               </td>
                               {caConfig.cas.map((ca, idx) => {
                                 const val = result.cas?.[ca.name] !== undefined ? result.cas[ca.name] : (idx === 0 ? result.ca1 : idx === 1 ? result.ca2 : idx === 2 ? result.ca3 : null);
                                 return (
-                                  <td key={idx} className="px-4 py-6 text-center font-bold text-slate-900">{val !== null && val !== undefined ? val : '-'}</td>
+                                  <td key={idx} className="px-4 py-6 text-center font-semibold text-slate-900">{val !== null && val !== undefined ? val : '-'}</td>
                                 );
                               })}
-                              <td className="px-4 py-6 text-center font-bold text-slate-900">{result.caTotal || 0}</td>
-                              <td className="px-4 py-6 text-center font-bold text-slate-900">{result.exam !== null && result.exam !== undefined ? result.exam : '-'}</td>
-                              <td className="px-4 py-6 text-center font-black text-blue-600 bg-blue-50/10">{result.finalScore || 0}</td>
+                              <td className="px-4 py-6 text-center font-semibold text-slate-900">{result.caTotal || 0}</td>
+                              <td className="px-4 py-6 text-center font-semibold text-slate-900">{result.exam !== null && result.exam !== undefined ? result.exam : '-'}</td>
+                              <td className="px-4 py-6 text-center font-semibold text-blue-600 bg-blue-50/10">{result.finalScore || 0}</td>
                               <td className="px-4 py-6 text-center">
-                                <span className={`inline-flex items-center justify-center px-4 py-1.5 rounded-full font-black text-[10px] tracking-widest ${
+                                <span className={`inline-flex items-center justify-center px-4 py-1.5 rounded-full font-semibold text-[10px] tracking-widest ${
                                   result.grade === 'A' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' :
                                   result.grade === 'B' ? 'bg-blue-50 text-blue-600 border border-blue-100' :
                                   result.grade === 'C' ? 'bg-amber-50 text-amber-600 border border-amber-100' :
@@ -267,14 +267,14 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                                 </span>
                               </td>
                               <td className="pr-8 pl-4 py-6">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">{formatDisplayString(result.remark || '-')}</span>
+                                <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-900">{formatDisplayString(result.remark || '-')}</span>
                               </td>
                             </tr>
                           ))}
                           {results.length === 0 && (
                             <tr>
                               <td colSpan={caConfig.cas.length + 5} className="py-32 text-center">
-                                <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">No results found for this term</p>
+                                <p className="text-slate-400 font-semibold uppercase tracking-widest text-[10px]">No results found for this term</p>
                               </td>
                             </tr>
                           )}
@@ -285,10 +285,10 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                     {/* Mobile Cards */}
                     <div className="md:hidden flex flex-col gap-4 p-4 bg-slate-50/30">
                       {results.map(result => (
-                        <div key={result.id} className="bg-white rounded-[2rem] shadow-sm border border-slate-100 p-6 flex flex-col gap-6">
+                        <div key={result.id} className="bg-white rounded-[2rem] shadow-sm border border-slate-200/60 p-6 flex flex-col gap-6">
                           <div className="flex items-center justify-between">
-                            <div className="font-black uppercase tracking-tighter text-sm text-slate-900">{getSubjectName(result.subjectId)}</div>
-                            <span className={`inline-flex items-center justify-center px-4 py-1.5 rounded-full font-black text-[10px] tracking-widest ${
+                            <div className="font-semibold uppercase tracking-tighter text-sm text-slate-900">{getSubjectName(result.subjectId)}</div>
+                            <span className={`inline-flex items-center justify-center px-4 py-1.5 rounded-full font-semibold text-[10px] tracking-widest ${
                               result.grade === 'A' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' :
                               result.grade === 'B' ? 'bg-blue-50 text-blue-600 border border-blue-100' :
                               result.grade === 'C' ? 'bg-amber-50 text-amber-600 border border-amber-100' :
@@ -303,8 +303,8 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                               const val = result.cas?.[ca.name] !== undefined ? result.cas[ca.name] : (idx === 0 ? result.ca1 : idx === 1 ? result.ca2 : idx === 2 ? result.ca3 : null);
                               return (
                                 <div key={idx} className="flex flex-col">
-                                  <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">{formatDisplayString(ca.name)} Score</span>
-                                  <span className="font-bold text-slate-900">{val !== null && val !== undefined ? val : '-'}</span>
+                                  <span className="text-[8px] font-semibold uppercase tracking-widest text-slate-400 mb-1">{formatDisplayString(ca.name)} Score</span>
+                                  <span className="font-semibold text-slate-900">{val !== null && val !== undefined ? val : '-'}</span>
                                 </div>
                               );
                             })}
@@ -312,27 +312,27 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
                           
                           <div className="grid grid-cols-3 gap-4">
                             <div className="flex flex-col">
-                              <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">CA Total</span>
-                              <span className="font-bold text-slate-900">{result.caTotal || 0}</span>
+                              <span className="text-[8px] font-semibold uppercase tracking-widest text-slate-400 mb-1">CA Total</span>
+                              <span className="font-semibold text-slate-900">{result.caTotal || 0}</span>
                             </div>
                             <div className="flex flex-col">
-                              <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">Exam</span>
-                              <span className="font-bold text-slate-900">{result.exam !== null && result.exam !== undefined ? result.exam : '-'}</span>
+                              <span className="text-[8px] font-semibold uppercase tracking-widest text-slate-400 mb-1">Exam</span>
+                              <span className="font-semibold text-slate-900">{result.exam !== null && result.exam !== undefined ? result.exam : '-'}</span>
                             </div>
                             <div className="flex flex-col">
-                              <span className="text-[8px] font-black uppercase tracking-widest text-blue-400 mb-1">Final</span>
-                              <span className="font-black text-blue-600">{result.finalScore || 0}</span>
+                              <span className="text-[8px] font-semibold uppercase tracking-widest text-blue-400 mb-1">Final</span>
+                              <span className="font-semibold text-blue-600">{result.finalScore || 0}</span>
                             </div>
                           </div>
                           
                           <div className="flex justify-between items-center pt-4 border-t border-slate-50">
-                            <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Teacher's Remark</span>
-                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">{formatDisplayString(result.remark || '-')}</span>
+                            <span className="text-[8px] font-semibold uppercase tracking-widest text-slate-400">Teacher's Remark</span>
+                            <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-900">{formatDisplayString(result.remark || '-')}</span>
                           </div>
                         </div>
                       ))}
                       {results.length === 0 && (
-                        <div className="py-20 text-center text-slate-400 font-black uppercase tracking-widest text-[10px]">No results available</div>
+                        <div className="py-20 text-center text-slate-400 font-semibold uppercase tracking-widest text-[10px]">No results available</div>
                       )}
                     </div>
                   </motion.div>
@@ -343,12 +343,12 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
 
           <div className="space-y-8">
             <div className="bg-white/80 backdrop-blur-md p-8 rounded-[2.5rem] border border-white/50 shadow-sm">
-              <h3 className="font-black uppercase tracking-widest text-[10px] text-slate-900 mb-10">Performance Overview</h3>
+              <h3 className="font-semibold uppercase tracking-widest text-[10px] text-slate-900 mb-10">Performance Overview</h3>
               <div className="space-y-6">
                 <div className="group flex justify-between items-center p-6 rounded-[2rem] bg-blue-50 border border-blue-100/50 transition-all hover:scale-105">
                   <div>
-                    <p className="text-[8px] font-black uppercase tracking-widest text-blue-400 mb-1">Average Score</p>
-                    <p className="text-3xl font-black tracking-tighter text-blue-600">{stats.average.toFixed(1)}%</p>
+                    <p className="text-[8px] font-semibold uppercase tracking-widest text-blue-400 mb-1">Average Score</p>
+                    <p className="text-3xl font-semibold tracking-tighter text-blue-600">{stats.average.toFixed(1)}%</p>
                   </div>
                   <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-blue-600 shadow-xl shadow-blue-500/10 group-hover:rotate-12 transition-transform">
                     <TrendingUp size={28} />
@@ -357,45 +357,45 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-6 rounded-[2rem] bg-orange-50 border border-orange-100/50">
-                    <p className="text-[8px] font-black uppercase tracking-widest text-orange-400 mb-1">Total Points</p>
-                    <p className="text-2xl font-black tracking-tighter text-orange-600">{stats.total}</p>
+                    <p className="text-[8px] font-semibold uppercase tracking-widest text-orange-400 mb-1">Total Points</p>
+                    <p className="text-2xl font-semibold tracking-tighter text-orange-600">{stats.total}</p>
                   </div>
                   <div className="p-6 rounded-[2rem] bg-purple-50 border border-purple-100/50">
-                    <p className="text-[8px] font-black uppercase tracking-widest text-purple-400 mb-1">Overall Grade</p>
-                    <p className="text-2xl font-black tracking-tighter text-purple-600">{getOverallGrade(stats.average)}</p>
+                    <p className="text-[8px] font-semibold uppercase tracking-widest text-purple-400 mb-1">Overall Grade</p>
+                    <p className="text-2xl font-semibold tracking-tighter text-purple-600">{getOverallGrade(stats.average)}</p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-center gap-4 p-5 rounded-[2rem] bg-white border border-slate-100">
+                  <div className="flex items-center gap-4 p-5 rounded-[2rem] bg-white border border-slate-200/60">
                     <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100">
                       <Star size={24} />
                     </div>
                     <div>
-                      <p className="text-[8px] font-black uppercase tracking-widest text-slate-400">Best Subject</p>
-                      <p className="font-black uppercase tracking-tighter text-sm text-slate-900">{stats.best ? getSubjectName(stats.best.subjectId) : 'N/A'}</p>
+                      <p className="text-[8px] font-semibold uppercase tracking-widest text-slate-400">Best Subject</p>
+                      <p className="font-semibold uppercase tracking-tighter text-sm text-slate-900">{stats.best ? getSubjectName(stats.best.subjectId) : 'N/A'}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 p-5 rounded-[2rem] bg-white border border-slate-100">
+                  <div className="flex items-center gap-4 p-5 rounded-[2rem] bg-white border border-slate-200/60">
                     <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-600 border border-rose-100">
                       <Target size={24} />
                     </div>
                     <div>
-                      <p className="text-[8px] font-black uppercase tracking-widest text-slate-400">Needs Focus</p>
-                      <p className="font-black uppercase tracking-tighter text-sm text-slate-900">{stats.weakest ? getSubjectName(stats.weakest.subjectId) : 'N/A'}</p>
+                      <p className="text-[8px] font-semibold uppercase tracking-widest text-slate-400">Needs Focus</p>
+                      <p className="font-semibold uppercase tracking-tighter text-sm text-slate-900">{stats.weakest ? getSubjectName(stats.weakest.subjectId) : 'N/A'}</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-slate-900 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-slate-900/40 relative overflow-hidden group">
+            <div className="bg-blue-600 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-slate-900/40 relative overflow-hidden group">
               <div className="relative z-10">
                 <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 border border-white/10 group-hover:scale-110 transition-transform">
                   <Award size={32} />
                 </div>
-                <h4 className="text-2xl font-black uppercase tracking-tighter mb-2">Excellence Journey</h4>
+                <h4 className="text-2xl font-semibold uppercase tracking-tighter mb-2">Excellence Journey</h4>
                 <p className="text-slate-400 text-sm leading-relaxed font-medium">
                   Keep up the great work! Your performance in {stats.best ? getSubjectName(stats.best.subjectId) : 'your subjects'} is outstanding.
                 </p>
@@ -414,7 +414,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm print:hidden"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-blue-600/60 backdrop-blur-sm print:hidden"
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
@@ -422,7 +422,7 @@ export const StudentResultView = ({ user }: StudentResultViewProps) => {
               exit={{ scale: 0.95, opacity: 0 }}
               className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
             >
-              <div className="flex items-center justify-between p-6 border-b border-slate-100">
+              <div className="flex items-center justify-between p-6 border-b border-slate-200/60">
                 <h3 className="text-xl font-medium text-slate-900">Student Report Card Preview</h3>
                 <div className="flex items-center gap-3">
                   <button

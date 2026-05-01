@@ -343,7 +343,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
     <div className="text-xs text-slate-400 font-mono">v1.0.5 - Updated 01:12</div>
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="space-y-5">
-          <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm">
                 <Calendar size={20} />
@@ -362,16 +362,16 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
               <button
                 onClick={handleAddSession}
                 disabled={addingSession || !newSessionName.trim()}
-                className="w-full sm:w-auto p-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full sm:w-auto p-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 transition-all shadow-lg shadow-blue-200 flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {addingSession ? <Loader2 className="animate-spin" size={20} /> : <Plus size={20} />}
-                <span className="sm:hidden font-bold">{addingSession ? 'Adding...' : 'Add Session'}</span>
+                <span className="sm:hidden font-semibold">{addingSession ? 'Adding...' : 'Add Session'}</span>
               </button>
             </div>
 
             <div className="space-y-3">
               {sessions.map(session => (
-                <div key={session.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 group">
+                <div key={session.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-200/60 group">
                   <div className="flex items-center gap-3">
                     <span className="font-medium text-slate-900">{formatDisplayString(session.name)}</span>
                     <div className="flex items-center gap-1">
@@ -404,7 +404,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-sm">
                 <Settings size={20} />
@@ -431,7 +431,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                     className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-text min-w-0"
                   />
                   <div className="flex-1 flex flex-col">
-                    <label className="text-xs font-bold text-slate-400 uppercase px-2 mb-1">Resumption Date</label>
+                    <label className="text-xs font-semibold text-slate-400 uppercase px-2 mb-1">Resumption Date</label>
                     <input
                       type="date"
                       value={newTermResumptionDate}
@@ -446,14 +446,14 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                   className="w-full p-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {addingTerm ? <Loader2 className="animate-spin" size={20} /> : <Plus size={20} />}
-                  <span className="font-bold">{addingTerm ? 'Adding...' : 'Add Term'}</span>
+                  <span className="font-semibold">{addingTerm ? 'Adding...' : 'Add Term'}</span>
                 </button>
               </div>
             </div>
 
             <div className="space-y-3">
               {terms.filter(t => t.sessionId === selectedSessionForTerm).map(term => (
-                <div key={term.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 group">
+                <div key={term.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-200/60 group">
                   <div className="flex items-center gap-3">
                     <div className="flex flex-col">
                       <span className="font-medium text-slate-900">{formatDisplayString(term.name)}</span>
@@ -492,7 +492,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
           </div>
         </div>
 
-        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-100 shadow-sm">
+        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200/60 shadow-sm">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm shrink-0">
@@ -511,7 +511,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-slate-50 p-4 sm:p-6 rounded-2xl border border-slate-100 mb-6">
+            <div className="bg-slate-50 p-4 sm:p-6 rounded-2xl border border-slate-200/60 mb-6">
               <h4 className="text-sm font-medium text-slate-900 mb-4">CA & Exam Configuration</h4>
               
               <div className="space-y-4">
@@ -526,7 +526,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                     />
                     <div className="flex items-center justify-between w-full sm:w-auto gap-3">
                       <div className="flex items-center gap-2 flex-1 sm:flex-none justify-end">
-                        <span className="text-base text-slate-900 font-bold whitespace-nowrap">Max Score:</span>
+                        <span className="text-base text-slate-900 font-semibold whitespace-nowrap">Max Score:</span>
                         <input
                           type="number"
                           value={ca.maxScore}
@@ -550,7 +550,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                 </button>
 
                 <div className="pt-4 mt-4 border-t border-gray-200 flex items-center justify-between">
-                  <span className="font-bold text-slate-900 text-base">Exam Max Score</span>
+                  <span className="font-semibold text-slate-900 text-base">Exam Max Score</span>
                   <input
                     type="number"
                     value={gradeScale?.caConfig?.maxExamScore || 70}
@@ -570,7 +570,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                   <h4 className="text-sm font-medium text-slate-900 mb-3">Promotion Standards</h4>
                   <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-gray-200">
                     <div className="flex flex-col">
-                      <span className="text-base font-bold text-slate-900">Promotion Threshold (%)</span>
+                      <span className="text-base font-semibold text-slate-900">Promotion Threshold (%)</span>
                       <span className="text-xs text-slate-400 font-medium">Min. average score to promote to next class</span>
                     </div>
                     <input
@@ -585,7 +585,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
             </div>
 
             <h4 className="text-sm font-medium text-slate-900 mb-4">Grade Scale</h4>
-            <div className="hidden sm:grid grid-cols-12 gap-4 px-4 text-xs font-bold text-slate-950 uppercase tracking-widest">
+            <div className="hidden sm:grid grid-cols-12 gap-4 px-4 text-xs font-semibold text-slate-900 uppercase tracking-widest">
               <div className="col-span-2">Grade</div>
               <div className="col-span-3">Min Score</div>
               <div className="col-span-3">Max Score</div>
@@ -595,9 +595,9 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
             
             <div className="space-y-4">
               {gradeScale?.grades.map((g, idx) => (
-                <div key={idx} className="bg-slate-50 sm:bg-transparent p-4 sm:p-0 rounded-2xl border sm:border-0 border-slate-100 sm:grid sm:grid-cols-12 sm:gap-4 sm:items-center space-y-4 sm:space-y-0">
+                <div key={idx} className="bg-slate-50 sm:bg-transparent p-4 sm:p-0 rounded-2xl border sm:border-0 border-slate-200/60 sm:grid sm:grid-cols-12 sm:gap-4 sm:items-center space-y-4 sm:space-y-0">
                   <div className="sm:col-span-2">
-                    <label className="block sm:hidden text-xs font-bold text-slate-950 uppercase tracking-widest mb-1">Grade</label>
+                    <label className="block sm:hidden text-xs font-semibold text-slate-900 uppercase tracking-widest mb-1">Grade</label>
                     <input
                       type="text"
                       value={g.grade}
@@ -606,7 +606,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                     />
                   </div>
                   <div className="sm:col-span-3">
-                    <label className="block sm:hidden text-xs font-bold text-slate-950 uppercase tracking-widest mb-1">Min Score</label>
+                    <label className="block sm:hidden text-xs font-semibold text-slate-900 uppercase tracking-widest mb-1">Min Score</label>
                     <input
                       type="number"
                       value={g.minScore}
@@ -615,7 +615,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                     />
                   </div>
                   <div className="sm:col-span-3">
-                    <label className="block sm:hidden text-xs font-bold text-slate-950 uppercase tracking-widest mb-1">Max Score</label>
+                    <label className="block sm:hidden text-xs font-semibold text-slate-900 uppercase tracking-widest mb-1">Max Score</label>
                     <input
                       type="number"
                       value={g.maxScore}
@@ -624,7 +624,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                     />
                   </div>
                   <div className="sm:col-span-3">
-                    <label className="block sm:hidden text-xs font-bold text-slate-950 uppercase tracking-widest mb-1">Remark</label>
+                    <label className="block sm:hidden text-xs font-semibold text-slate-900 uppercase tracking-widest mb-1">Remark</label>
                     <input
                       type="text"
                       value={g.remark}
@@ -633,7 +633,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                     />
                   </div>
                   <div className="sm:col-span-1 flex justify-end">
-                    <button onClick={() => removeGradeRow(idx)} className="p-2 text-gray-300 hover:text-red-500 transition-colors bg-white sm:bg-transparent rounded-lg border sm:border-0 border-slate-100">
+                    <button onClick={() => removeGradeRow(idx)} className="p-2 text-gray-300 hover:text-red-500 transition-colors bg-white sm:bg-transparent rounded-lg border sm:border-0 border-slate-200/60">
                       <Trash2 size={18} />
                     </button>
                   </div>

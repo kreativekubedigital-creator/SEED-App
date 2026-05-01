@@ -175,18 +175,18 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
   if (selectedLesson) {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col relative">
+        <div className="bg-white rounded-3xl border border-slate-200/60 shadow-sm overflow-hidden flex flex-col relative">
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-200/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
           <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-500/5 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>
           
-          <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 relative z-10">
+          <div className="p-4 border-b border-slate-200/60 flex justify-between items-center bg-slate-50 relative z-10">
             <div>
-              <h3 className="text-lg font-black uppercase tracking-tighter text-slate-900">{formatDisplayString(selectedLesson.title)}</h3>
-              <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest mt-1">{formatDisplayString(selectedSubject)} • {formatDisplayString(selectedLesson.level)}</p>
+              <h3 className="text-lg font-semibold uppercase tracking-tighter text-slate-900">{formatDisplayString(selectedLesson.title)}</h3>
+              <p className="text-[10px] text-slate-600 font-semibold uppercase tracking-widest mt-1">{formatDisplayString(selectedSubject)} • {formatDisplayString(selectedLesson.level)}</p>
             </div>
             <button 
               onClick={() => setSelectedLesson(null)}
-              className="px-5 py-2.5 rounded-full border border-slate-200 bg-white hover:bg-slate-50 hover:text-slate-900 text-slate-600 transition-all text-[10px] font-black uppercase tracking-widest shadow-sm hover:shadow-md"
+              className="px-5 py-2.5 rounded-full border border-slate-200 bg-white hover:bg-slate-50 hover:text-slate-900 text-slate-600 transition-all text-[10px] font-semibold uppercase tracking-widest shadow-sm hover:shadow-md"
             >
               Exit Lesson
             </button>
@@ -225,7 +225,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                   <button 
                     id="btn_quiz_submit"
                     onClick={handleNextStep}
-                    className="bg-blue-600 text-white hover:bg-blue-700 px-10 py-2.5 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all flex items-center gap-2 mx-auto shadow-lg shadow-blue-200/50"
+                    className="bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 px-10 py-2.5 rounded-full font-semibold uppercase tracking-widest text-[10px] hover:scale-105 transition-all flex items-center gap-2 mx-auto shadow-lg shadow-blue-200/50"
                   >
                     Start Learning <ChevronRight size={14} />
                   </button>
@@ -240,14 +240,14 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                   exit={{ opacity: 0, x: -20 }}
                   className="space-y-6 w-full max-w-2xl"
                 >
-                  <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden">
+                  <div className="p-4 bg-white rounded-2xl border border-slate-200/60 shadow-sm relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-500"></div>
                     <h4 className="text-sm uppercase tracking-widest text-blue-600 font-medium mb-6">The Lesson</h4>
                     <p className="text-2xl md:text-xl font-medium leading-relaxed text-slate-900">{selectedLesson.content}</p>
                   </div>
                   <button 
                     onClick={handleNextStep}
-                    className="bg-blue-600 text-white hover:bg-blue-700 px-10 py-2.5 rounded-full font-medium  hover:scale-105 transition-all flex items-center gap-2 mx-auto"
+                    className="bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 px-10 py-2.5 rounded-full font-medium  hover:scale-105 transition-all flex items-center gap-2 mx-auto"
                   >
                     Got it! <ChevronRight size={20} />
                   </button>
@@ -273,7 +273,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                   </div>
                   <button 
                     onClick={handleNextStep}
-                    className="bg-blue-600 text-white hover:bg-blue-700 px-10 py-2.5 rounded-full font-medium  hover:scale-105 transition-all flex items-center gap-2 mx-auto"
+                    className="bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 px-10 py-2.5 rounded-full font-medium  hover:scale-105 transition-all flex items-center gap-2 mx-auto"
                   >
                     I'm Ready for the Quiz <ChevronRight size={20} />
                   </button>
@@ -312,7 +312,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                             showFeedback 
                               ? idx === sessionQuestions[quizIndex].correctOption
                                 ? 'border-emerald-500 bg-emerald-50'
-                                : 'border-slate-100 bg-slate-50 opacity-60'
+                                : 'border-slate-200/60 bg-slate-50 opacity-60'
                               : 'border-slate-200 hover:border-blue-400 bg-white hover:shadow-md'
                           }`}
                         >
@@ -419,7 +419,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                     <button 
                       id={`btn_lesson_start_${selectedLesson?.id}`}
                       onClick={() => setSelectedLesson(null)}
-                      className="bg-blue-600 text-white hover:bg-blue-700 px-10 py-2.5 rounded-full font-medium  hover:scale-105 transition-all mx-auto"
+                      className="bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 px-10 py-2.5 rounded-full font-medium  hover:scale-105 transition-all mx-auto"
                     >
                       Back to Lessons
                     </button>
@@ -435,13 +435,13 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
 
   return (
     <div className={containerClass}>
-      <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 border border-slate-100 shadow-sm mb-6">
+      <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 border border-slate-200/60 shadow-sm mb-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">My Lessons</h2>
+            <h2 className="text-2xl font-semibold text-slate-900 uppercase tracking-tighter">My Lessons</h2>
             <p className="text-slate-600 font-medium text-xs uppercase tracking-widest mt-1">Explore and learn at your own pace</p>
           </div>
-          <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-100 bg-slate-50 shadow-sm">
+          <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-200/60 bg-slate-50 shadow-sm">
             <Award className="text-yellow-500" size={20} />
             <span className="font-medium text-slate-900">{points} Points</span>
           </div>
@@ -456,7 +456,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('English')}
-            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-100"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-200/60"
           >
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <BookOpen size={160} />
@@ -465,10 +465,10 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
               <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
                 <BookOpen size={16} />
               </div>
-              <h3 className="text-lg font-black uppercase tracking-widest mb-1">English</h3>
-              <p className="text-[10px] font-black text-blue-900/70 uppercase tracking-widest leading-relaxed">Phonics & Grammar</p>
+              <h3 className="text-lg font-semibold uppercase tracking-widest mb-1">English</h3>
+              <p className="text-[10px] font-semibold text-blue-900/70 uppercase tracking-widest leading-relaxed">Phonics & Grammar</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
+            <div className="relative z-10 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
               Explore <ChevronRight size={14} />
             </div>
           </motion.button>
@@ -479,7 +479,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Math')}
-            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-50 to-purple-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-100"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-50 to-purple-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-200/60"
           >
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <Brain size={160} />
@@ -488,10 +488,10 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
               <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
                 <Brain size={16} />
               </div>
-              <h3 className="text-lg font-black uppercase tracking-widest mb-1">Math</h3>
-              <p className="text-[10px] font-black text-indigo-900/70 uppercase tracking-widest leading-relaxed">Numbers & Logic</p>
+              <h3 className="text-lg font-semibold uppercase tracking-widest mb-1">Math</h3>
+              <p className="text-[10px] font-semibold text-indigo-900/70 uppercase tracking-widest leading-relaxed">Numbers & Logic</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
+            <div className="relative z-10 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
               Explore <ChevronRight size={14} />
             </div>
           </motion.button>
@@ -502,7 +502,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Science')}
-            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-50 to-teal-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-100"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-50 to-teal-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-200/60"
           >
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <Microscope size={160} />
@@ -511,10 +511,10 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
               <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
                 <Microscope size={16} />
               </div>
-              <h3 className="text-lg font-black uppercase tracking-widest mb-1">Science</h3>
-              <p className="text-[10px] font-black text-emerald-900/70 uppercase tracking-widest leading-relaxed">Nature & Energy</p>
+              <h3 className="text-lg font-semibold uppercase tracking-widest mb-1">Science</h3>
+              <p className="text-[10px] font-semibold text-emerald-900/70 uppercase tracking-widest leading-relaxed">Nature & Energy</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
+            <div className="relative z-10 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
               Explore <ChevronRight size={14} />
             </div>
           </motion.button>
@@ -525,7 +525,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Social Studies')}
-            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-50 to-red-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-100"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-50 to-red-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-200/60"
           >
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <Globe size={160} />
@@ -534,10 +534,10 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
               <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
                 <Globe size={16} />
               </div>
-              <h3 className="text-lg font-black uppercase tracking-widest mb-1">Social</h3>
-              <p className="text-[10px] font-black text-orange-900/70 uppercase tracking-widest leading-relaxed">Community & Culture</p>
+              <h3 className="text-lg font-semibold uppercase tracking-widest mb-1">Social</h3>
+              <p className="text-[10px] font-semibold text-orange-900/70 uppercase tracking-widest leading-relaxed">Community & Culture</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
+            <div className="relative z-10 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
               Explore <ChevronRight size={14} />
             </div>
           </motion.button>
@@ -548,7 +548,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('ICT')}
-            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-50 to-blue-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-100"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-50 to-blue-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-200/60"
           >
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <Monitor size={160} />
@@ -557,10 +557,10 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
               <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
                 <Monitor size={16} />
               </div>
-              <h3 className="text-lg font-black uppercase tracking-widest mb-1">ICT</h3>
-              <p className="text-[10px] font-black text-cyan-900/70 uppercase tracking-widest leading-relaxed">Coding & Digital</p>
+              <h3 className="text-lg font-semibold uppercase tracking-widest mb-1">ICT</h3>
+              <p className="text-[10px] font-semibold text-cyan-900/70 uppercase tracking-widest leading-relaxed">Coding & Digital</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
+            <div className="relative z-10 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
               Explore <ChevronRight size={14} />
             </div>
           </motion.button>
@@ -571,7 +571,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setSelectedSubject('Civic Education')}
-            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-rose-50 to-pink-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-100"
+            className="group relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-rose-50 to-pink-100 text-slate-900 p-3 text-left flex flex-col justify-between shadow-sm border border-slate-200/60"
           >
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
               <ShieldCheck size={160} />
@@ -580,10 +580,10 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
               <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
                 <ShieldCheck size={16} />
               </div>
-              <h3 className="text-lg font-black uppercase tracking-widest mb-1">Civic</h3>
-              <p className="text-[10px] font-black text-rose-900/70 uppercase tracking-widest leading-relaxed">Rights & Duties</p>
+              <h3 className="text-lg font-semibold uppercase tracking-widest mb-1">Civic</h3>
+              <p className="text-[10px] font-semibold text-rose-900/70 uppercase tracking-widest leading-relaxed">Rights & Duties</p>
             </div>
-            <div className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
+            <div className="relative z-10 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest bg-white/50 w-fit px-4 py-2 rounded-lg backdrop-blur-sm group-hover:bg-white transition-colors">
               Explore <ChevronRight size={14} />
             </div>
           </motion.button>
@@ -594,7 +594,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
             <button 
               id="btn_lesson_back"
               onClick={() => setSelectedSubject(null)}
-              className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors"
+              className="flex items-center gap-3 text-[10px] font-semibold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors"
             >
               <ChevronRight size={20} className="rotate-180" /> Back
             </button>
@@ -603,11 +603,11 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {lessons.length === 0 ? (
-              <div className="col-span-full py-16 text-center bg-white/80 backdrop-blur-md rounded-2xl border border-slate-100 shadow-sm">
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 text-slate-900 shadow-sm border border-slate-100">
+              <div className="col-span-full py-16 text-center bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200/60 shadow-sm">
+                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 text-slate-900 shadow-sm border border-slate-200/60">
                   <BookOpen size={40} />
                 </div>
-                <p className="text-slate-900 font-black uppercase tracking-widest text-sm">No lessons available</p>
+                <p className="text-slate-900 font-semibold uppercase tracking-widest text-sm">No lessons available</p>
                 <p className="text-slate-500 font-medium mt-2 text-[10px] uppercase tracking-widest">Check back later for new content!</p>
               </div>
             ) : (
@@ -624,20 +624,20 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
                      className={`${colorClass} p-8 rounded-[2.5rem] border shadow-sm transition-all group flex flex-col relative overflow-hidden`}
                    >
                      <div className="flex justify-between items-start mb-6 relative z-10">
-                       <span className="text-[10px] font-black text-slate-900 bg-white/80 px-4 py-1.5 rounded-full uppercase tracking-widest border border-white/50 shadow-sm">{formatDisplayString(lesson.level)}</span>
+                       <span className="text-[10px] font-semibold text-slate-900 bg-white/80 px-4 py-1.5 rounded-full uppercase tracking-widest border border-white/50 shadow-sm">{formatDisplayString(lesson.level)}</span>
                        <div className="p-2 bg-white/80 text-slate-900 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity scale-90 group-hover:scale-100 border border-white/50 shadow-sm">
                          <Play size={16} fill="currentColor" />
                        </div>
                      </div>
-                     <h4 className="text-xl font-black uppercase tracking-tighter mb-2 text-slate-900 leading-tight relative z-10">{formatDisplayString(lesson.title)}</h4>
-                     <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest mb-8 line-clamp-2 flex-grow relative z-10">{lesson.content}</p>
+                     <h4 className="text-xl font-semibold uppercase tracking-tighter mb-2 text-slate-900 leading-tight relative z-10">{formatDisplayString(lesson.title)}</h4>
+                     <p className="text-[10px] text-slate-600 font-semibold uppercase tracking-widest mb-8 line-clamp-2 flex-grow relative z-10">{lesson.content}</p>
                      <motion.button 
                        id={`btn_lesson_start_${lesson.id || idx}`}
                        whileHover={{ scale: 1.02 }}
                        whileTap={{ scale: 0.98 }}
                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
                        onClick={() => startLesson(lesson)}
-                       className="w-full py-2.5 rounded-xl bg-white border border-white/50 text-[10px] font-black uppercase tracking-widest text-slate-900 hover:bg-slate-50 transition-all shadow-sm relative z-10"
+                       className="w-full py-2.5 rounded-xl bg-white border border-white/50 text-[10px] font-semibold uppercase tracking-widest text-slate-900 hover:bg-slate-50 transition-all shadow-sm relative z-10"
                      >
                        Start Lesson
                      </motion.button>

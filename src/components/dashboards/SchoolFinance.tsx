@@ -330,7 +330,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
       <div className="w-12 h-12 border-4 border-blue-500/10 border-t-blue-600 rounded-full animate-spin shadow-lg shadow-blue-600/10" />
-      <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] animate-pulse">Initializing Finance Modules</p>
+      <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-[0.2em] animate-pulse">Initializing Finance Modules</p>
     </div>
   );
 
@@ -339,7 +339,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
       {/* Header with quick stats */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-2">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+          <h2 className="text-3xl font-semibold text-slate-900 tracking-tight flex items-center gap-3">
             Financial Management
           </h2>
           <p className="text-sm font-medium text-slate-500 mt-1">Manage structures, invoices, and track revenue collection.</p>
@@ -350,8 +350,8 @@ export const SchoolFinance = ({ school }: { school: School }) => {
               <CheckCircle size={18} />
             </div>
             <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Revenue</p>
-              <p className="text-lg font-black text-slate-900 tracking-tight">₦{payments.reduce((acc, p) => p.status === 'success' ? acc + p.amount : acc, 0).toLocaleString()}</p>
+              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Total Revenue</p>
+              <p className="text-lg font-semibold text-slate-900 tracking-tight">₦{payments.reduce((acc, p) => p.status === 'success' ? acc + p.amount : acc, 0).toLocaleString()}</p>
             </div>
           </div>
         </div>
@@ -368,7 +368,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
             className={cn(
-              "flex-1 min-w-[120px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
+              "flex-1 min-w-[120px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[10px] font-semibold uppercase tracking-widest transition-all whitespace-nowrap",
               activeTab === tab.id
                 ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
                 : "text-slate-500 hover:text-slate-900 hover:bg-slate-50 border border-transparent"
@@ -404,10 +404,10 @@ export const SchoolFinance = ({ school }: { school: School }) => {
           { activeTab  === 'feeStructures'&& (
             <div className="space-y-6">
               <div className="flex justify-between items-center">
-                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Fee Structures</h3>
+                <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Fee Structures</h3>
                 <button 
                   onClick={() => setShowAddFee(true)} 
-                  className="bg-blue-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-blue-600/20"
+                  className="bg-blue-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-blue-600/20"
                 >
                   <Plus size={ 16 } strokeWidth={3} /> Add Fee
                 </button>
@@ -420,21 +420,21 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                     
                     <div className="flex justify-between items-start mb-6 relative z-10">
                       <div>
-                        <h4 className="font-black text-[13px] uppercase tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">{ fee.name }</h4>
-                        <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mt-1">
+                        <h4 className="font-semibold text-[13px] uppercase tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">{ fee.name }</h4>
+                        <p className="text-[9px] text-slate-400 font-semibold uppercase tracking-widest mt-1">
                           {formatDisplayString(termsMap[fee.sessionId]?.[fee.termId]?.name || 'Unknown Term')}
                         </p>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <button 
                           onClick={() => handleEditFee(fee)}
-                          className="p-2 bg-slate-50 hover:bg-blue-50 rounded-xl text-slate-400 hover:text-blue-600 transition-all border border-slate-100"
+                          className="p-2 bg-slate-50 hover:bg-blue-50 rounded-xl text-slate-400 hover:text-blue-600 transition-all border border-slate-200/60"
                         >
                           <Edit2 size={13} strokeWidth={2.5} />
                         </button>
                         <button 
                           onClick={() => handleDeleteFee(fee.id)}
-                          className="p-2 bg-slate-50 hover:bg-rose-50 rounded-xl text-slate-400 hover:text-rose-600 transition-all border border-slate-100"
+                          className="p-2 bg-slate-50 hover:bg-rose-50 rounded-xl text-slate-400 hover:text-rose-600 transition-all border border-slate-200/60"
                         >
                           <Trash2 size={13} strokeWidth={2.5} />
                         </button>
@@ -445,34 +445,34 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                       <div className="space-y-4">
                         <div className="flex items-center gap-2">
                           <Users size={12} className="text-blue-500" />
-                          <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">
+                          <p className="text-[9px] font-semibold uppercase tracking-widest text-slate-500">
                             { fee.classId  === 'all' ? 'All Classes' : classMap[fee.classId]?.name || formatDisplayString(fee.classId) }
                           </p>
                         </div>
                         <div className="flex gap-2">
                           <span className={cn(
-                            "text-[8px] px-2.5 py-1 rounded-lg font-black uppercase tracking-widest border",
+                            "text-[8px] px-2.5 py-1 rounded-lg font-semibold uppercase tracking-widest border",
                             fee.isMandatory 
                               ? "bg-rose-50 text-rose-600 border-rose-100 shadow-sm shadow-rose-100/50"
                               : "bg-emerald-50 text-emerald-600 border-emerald-100 shadow-sm shadow-emerald-100/50"
                           )}>
                             { fee.isMandatory ? 'Mandatory' : 'Optional' }
                           </span>
-                          <span className="text-[8px] bg-slate-50 text-slate-500 px-2.5 py-1 rounded-lg font-black uppercase tracking-widest border border-slate-200/60 shadow-sm">
+                          <span className="text-[8px] bg-slate-50 text-slate-500 px-2.5 py-1 rounded-lg font-semibold uppercase tracking-widest border border-slate-200/60 shadow-sm">
                             { formatDisplayString(fee.category) }
                           </span>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Structure Amount</p>
-                        <span className="text-2xl font-black text-slate-900 tracking-tighter">₦{ fee.amount.toLocaleString()}</span>
+                        <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest mb-1.5">Structure Amount</p>
+                        <span className="text-2xl font-semibold text-slate-900 tracking-tighter">₦{ fee.amount.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
                 ))}
                 { feeStructures.length === 0 && (
                   <div className="col-span-full py-16 text-center bg-white rounded-3xl border border-slate-200 border-dashed">
-                    <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest">No fee structures defined yet.</p>
+                    <p className="text-slate-400 font-semibold text-[10px] uppercase tracking-widest">No fee structures defined yet.</p>
                   </div>
                 )}
               </div>
@@ -482,10 +482,10 @@ export const SchoolFinance = ({ school }: { school: School }) => {
           { activeTab  === 'invoices'&& (
             <div className="space-y-6">
               <div className="flex justify-between items-center">
-                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Student Invoices</h3>
+                <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Student Invoices</h3>
                 <button 
                   onClick={() => setShowGenerateInvoice(true)} 
-                  className="bg-blue-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-blue-600/20"
+                  className="bg-blue-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-blue-600/20"
                 >
                   <FileText size={ 16 } strokeWidth={3} /> Generate Invoices
                 </button>
@@ -495,7 +495,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm">
                     <thead>
-                      <tr className="bg-slate-50 text-slate-500 uppercase tracking-widest text-[10px] font-black border-b border-slate-200/60">
+                      <tr className="bg-slate-50 text-slate-500 uppercase tracking-widest text-[10px] font-semibold border-b border-slate-200/60">
                         <th className="p-6">Student</th>
                         <th className="p-6">Amount</th>
                         <th className="p-6">Paid</th>
@@ -510,27 +510,27 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                         const balance = inv.amount - inv.amountPaid;
 
                         return (
-                          <tr key={ inv.id } className="hover:bg-slate-50/50 transition-colors group cursor-default">
+                          <tr key={ inv.id } className="hover:bg-slate-50/80 transition-colors group cursor-default">
                             <td className="p-6">
                               <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-500 border border-slate-200 group-hover:scale-110 transition-transform">
+                                <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-[10px] font-semibold text-slate-500 border border-slate-200 group-hover:scale-110 transition-transform">
                                   {studentMap[inv.studentId]?.firstName?.[0]}{studentMap[inv.studentId]?.lastName?.[0]}
                                 </div>
                                 <div className="flex flex-col gap-1">
-                                  <span className="font-black text-[13px] uppercase tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">
+                                  <span className="font-semibold text-[13px] uppercase tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">
                                     { formatDisplayString(studentMap[inv.studentId]?.firstName || '') } { formatDisplayString(studentMap[inv.studentId]?.lastName || '') }
                                   </span>
-                                  <span className="text-[9px] text-slate-400 font-black uppercase tracking-widest">
+                                  <span className="text-[9px] text-slate-400 font-semibold uppercase tracking-widest">
                                     { formatDisplayString(sessionMap[inv.sessionId]?.name || '') } • { formatDisplayString(termsMap[inv.sessionId]?.[inv.termId]?.name || 'Unknown Term') }
                                   </span>
                                 </div>
                               </div>
                             </td>
-                            <td className="p-6 font-black text-slate-900">₦{ inv.amount.toLocaleString()}</td>
-                            <td className="p-6 font-black text-emerald-600">₦{ inv.amountPaid.toLocaleString()}</td>
+                            <td className="p-6 font-semibold text-slate-900">₦{ inv.amount.toLocaleString()}</td>
+                            <td className="p-6 font-semibold text-emerald-600">₦{ inv.amountPaid.toLocaleString()}</td>
                             <td className="p-6">
                               <div className="flex flex-col items-center gap-1.5">
-                                <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                                <span className={`px-3 py-1 rounded-full text-[9px] font-semibold uppercase tracking-widest border ${
                                   paid ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                                   inv.amountPaid > 0 ? 'bg-amber-50 text-amber-600 border-amber-100' :
                                   'bg-rose-50 text-rose-600 border-rose-100'
@@ -538,7 +538,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                                   { paid ? <span className="flex items-center gap-1"><CheckCircle size={10} strokeWidth={3} /> FULLY PAID</span> : inv.amountPaid > 0 ? 'PARTIAL' : 'UNPAID' }
                                 </span>
                                 {overdue && !paid && (
-                                  <span className="text-[9px] font-black text-rose-500 flex items-center gap-1 animate-pulse">
+                                  <span className="text-[9px] font-semibold text-rose-500 flex items-center gap-1 animate-pulse">
                                     <Clock size={10} strokeWidth={3} /> OVERDUE
                                   </span>
                                 )}
@@ -546,8 +546,8 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                             </td>
                             <td className="p-6">
                               <div className="flex flex-col gap-1">
-                                <span className="font-black text-slate-700 text-[11px]">{ new Date(inv.dueDate).toLocaleDateString()}</span>
-                                {balance > 0 && <span className="text-[9px] text-amber-600 font-black uppercase tracking-widest">BAL: ₦{balance.toLocaleString()}</span>}
+                                <span className="font-semibold text-slate-700 text-[11px]">{ new Date(inv.dueDate).toLocaleDateString()}</span>
+                                {balance > 0 && <span className="text-[9px] text-amber-600 font-semibold uppercase tracking-widest">BAL: ₦{balance.toLocaleString()}</span>}
                               </div>
                             </td>
                           </tr>
@@ -555,7 +555,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                       })}
                       { invoices.length === 0 && (
                         <tr>
-                          <td colSpan={ 5 } className="p-16 text-center text-slate-400 font-black uppercase tracking-widest text-[10px]">
+                          <td colSpan={ 5 } className="p-16 text-center text-slate-400 font-semibold uppercase tracking-widest text-[10px]">
                             No invoices found.
                           </td>
                         </tr>
@@ -570,10 +570,10 @@ export const SchoolFinance = ({ school }: { school: School }) => {
           { activeTab  === 'payments'&& (
             <div className="space-y-6">
               <div className="flex justify-between items-center">
-                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Payment History</h3>
+                <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Payment History</h3>
                 <button 
                   onClick={() => setShowRecordPayment(true)} 
-                  className="bg-blue-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-blue-600/20"
+                  className="bg-blue-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-blue-600/20"
                 >
                   <Plus size={ 16 } strokeWidth={3} /> Record Payment
                 </button>
@@ -582,7 +582,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm">
                     <thead>
-                      <tr className="bg-slate-50 text-slate-500 uppercase tracking-widest text-[10px] font-black border-b border-slate-200/60">
+                      <tr className="bg-slate-50 text-slate-500 uppercase tracking-widest text-[10px] font-semibold border-b border-slate-200/60">
                         <th className="p-6">Date</th>
                         <th className="p-6">Student</th>
                         <th className="p-6">Amount</th>
@@ -592,25 +592,25 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       { payments.map(pay => (
-                        <tr key={ pay.id } className="hover:bg-slate-50/50 transition-colors group">
+                        <tr key={ pay.id } className="hover:bg-slate-50/80 transition-colors group">
                           <td className="p-6 text-slate-500 font-medium text-xs">{ new Date(pay.date).toLocaleString()}</td>
                           <td className="p-6">
                             <div className="flex flex-col gap-1">
-                              <span className="font-black text-[13px] uppercase tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">
+                              <span className="font-semibold text-[13px] uppercase tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">
                                 { formatDisplayString(studentMap[pay.studentId]?.firstName || '') } { formatDisplayString(studentMap[pay.studentId]?.lastName || '') }
                               </span>
-                              <span className="text-[9px] text-slate-400 font-black uppercase tracking-widest font-mono">REF: { pay.reference }</span>
+                              <span className="text-[9px] text-slate-400 font-semibold uppercase tracking-widest font-mono">REF: { pay.reference }</span>
                             </div>
                           </td>
-                          <td className="p-6 font-black text-slate-900">₦{ pay.amount.toLocaleString()}</td>
+                          <td className="p-6 font-semibold text-slate-900">₦{ pay.amount.toLocaleString()}</td>
                           <td className="p-6">
-                            <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg uppercase tracking-widest border border-blue-100">
+                            <span className="text-[10px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg uppercase tracking-widest border border-blue-100">
                               { formatDisplayString(pay.method) }
                             </span>
                           </td>
                           <td className="p-6">
                             <div className="flex justify-center">
-                              <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                              <span className={`px-3 py-1 rounded-full text-[9px] font-semibold uppercase tracking-widest border ${
                                 pay.status  === 'success' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                                 pay.status  === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100' :
                                 'bg-rose-50 text-rose-600 border-rose-100'
@@ -623,7 +623,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                       ))}
                       { payments.length === 0 && (
                         <tr>
-                          <td colSpan={ 5 } className="p-16 text-center text-slate-400 font-black uppercase tracking-widest text-[10px]">
+                          <td colSpan={ 5 } className="p-16 text-center text-slate-400 font-semibold uppercase tracking-widest text-[10px]">
                             No payments found.
                           </td>
                         </tr>
@@ -640,15 +640,15 @@ export const SchoolFinance = ({ school }: { school: School }) => {
   {/* Add Fee Modal */}
   <AnimatePresence>
     { showAddFee && (
-      <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="fixed inset-0 bg-blue-600/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <motion.div
           initial={{ scale: 0.95, opacity: 0, y: 20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.95, opacity: 0, y: 20 }}
           className="bg-white rounded-3xl w-full max-w-lg shadow-2xl border border-slate-200/60 relative flex flex-col max-h-[90vh] overflow-hidden"
         >
-          <div className="flex justify-between items-center p-8 border-b border-slate-100 relative z-10 shrink-0">
-            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900">{editingFee ? 'Edit Fee Structure' : 'Add Fee Structure'}</h3>
+          <div className="flex justify-between items-center p-8 border-b border-slate-200/60 relative z-10 shrink-0">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-900">{editingFee ? 'Edit Fee Structure' : 'Add Fee Structure'}</h3>
             <button 
               onClick={() => {
                 setShowAddFee(false);
@@ -664,37 +664,37 @@ export const SchoolFinance = ({ school }: { school: School }) => {
           <form onSubmit={ handleSaveFee } className="flex flex-col flex-1 overflow-hidden">
             <div className="flex-1 overflow-y-auto p-8 space-y-6">
               <div>
-                <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Fee Name</label>
+                <label className="block text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Fee Name</label>
                 <input 
                   required 
                   type="text"
                   value={ newFee.name } 
                   onChange={ e => setNewFee({...newFee, name: e.target.value })} 
-                  className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-900 text-sm"
+                  className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-slate-900 text-sm"
                   placeholder="e.g. Tuition Fee"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Amount (₦)</label>
+                  <label className="block text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Amount (₦)</label>
                   <input 
                     required 
                     type="number"
                     min="0"
                     value={ newFee.amount } 
                     onChange={ e => setNewFee({...newFee, amount: Number(e.target.value)})} 
-                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-900 text-sm"
+                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-slate-900 text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Category</label>
+                  <label className="block text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Category</label>
                   <div className="relative">
                     <select 
                       required 
                       value={ newFee.category } 
                       onChange={ e => setNewFee({...newFee, category: e.target.value as any })} 
-                      className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
+                      className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
                     >
                       <option value="tuition">Tuition Fee</option>
                       <option value="activities">Activities Fee</option>
@@ -706,12 +706,12 @@ export const SchoolFinance = ({ school }: { school: School }) => {
               </div>
 
               <div>
-                <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Applicable Class</label>
+                <label className="block text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Applicable Class</label>
                 <div className="relative">
                   <select 
                     value={ newFee.classId } 
                     onChange={ e => setNewFee({...newFee, classId: e.target.value })} 
-                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
+                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
                   >
                     <option value="all">All Classes</option>
                     { classes.map(c => <option key={ c.id } value={ c.id }>{ formatDisplayString(c.name) }</option>)}
@@ -722,13 +722,13 @@ export const SchoolFinance = ({ school }: { school: School }) => {
 
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Session</label>
+                  <label className="block text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Session</label>
                   <div className="relative">
                     <select 
                       required 
                       value={ newFee.sessionId } 
                       onChange={ e => setNewFee({...newFee, sessionId: e.target.value, termId: '' })} 
-                      className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
+                      className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
                     >
                       <option value="">Select Session</option>
                       { sessions.map(s => <option key={ s.id } value={ s.id }>{ formatDisplayString(s.name) }</option>)}
@@ -737,13 +737,13 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Term</label>
+                  <label className="block text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Term</label>
                   <div className="relative">
                     <select 
                       required 
                       value={ newFee.termId } 
                       onChange={ e => setNewFee({...newFee, termId: e.target.value })} 
-                      className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
+                      className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
                     >
                       <option value="">Select Term</option>
                       { newFee.sessionId && Object.values(termsMap[newFee.sessionId] || {}).map((t: any) => (
@@ -755,7 +755,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100 transition-all hover:bg-white hover:border-blue-100 group">
+              <div className="flex items-center gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-200/60 transition-all hover:bg-white hover:border-blue-100 group">
                 <input 
                   type="checkbox"
                   id="isMandatory"
@@ -763,11 +763,11 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                   onChange={ e => setNewFee({...newFee, isMandatory: e.target.checked })} 
                   className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 focus:ring-offset-0 transition-all cursor-pointer"
                 />
-                <label htmlFor="isMandatory" className="text-[10px] font-black uppercase tracking-widest text-slate-600 cursor-pointer group-hover:text-slate-900">Mandatory Fee</label>
+                <label htmlFor="isMandatory" className="text-[10px] font-semibold uppercase tracking-widest text-slate-600 cursor-pointer group-hover:text-slate-900">Mandatory Fee</label>
               </div>
             </div>
 
-            <div className="p-8 border-t border-slate-100 bg-slate-50 shrink-0 flex gap-4">
+            <div className="p-8 border-t border-slate-200/60 bg-slate-50 shrink-0 flex gap-4">
               <button 
                 type="button"
                 onClick={() => {
@@ -775,13 +775,13 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                   setEditingFee(null);
                   setNewFee({ name: '', amount: 0, classId: 'all', isMandatory: true, termId: '', sessionId: '', category: 'tuition' });
                 }}
-                className="flex-1 px-6 py-3.5 rounded-xl border border-slate-200 text-slate-600 font-black uppercase tracking-widest text-[10px] hover:bg-white transition-colors"
+                className="flex-1 px-6 py-3.5 rounded-xl border border-slate-200 text-slate-600 font-semibold uppercase tracking-widest text-[10px] hover:bg-white transition-colors"
               >
                 Cancel
               </button>
               <button 
                 type="submit"
-                className="flex-[2] bg-blue-600 text-white py-3.5 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 active:scale-95"
+                className="flex-[2] bg-blue-600 text-white py-3.5 rounded-xl font-semibold uppercase tracking-widest text-[10px] hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 active:scale-95"
               >
                 {editingFee ? 'Update Fee Structure' : 'Save Fee Structure'}
               </button>
@@ -795,10 +795,10 @@ export const SchoolFinance = ({ school }: { school: School }) => {
   {/* Generate Invoice Modal */}
   <AnimatePresence>
     { showGenerateInvoice && (
-      <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 bg-blue-600/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl border border-slate-200/60">
           <div className="flex justify-between items-center mb-8">
-            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900">Generate Invoices</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-900">Generate Invoices</h3>
             <button onClick={() => setShowGenerateInvoice(false)} className="text-slate-400 hover:text-slate-900 p-2 hover:bg-slate-50 rounded-full transition-colors"><X size={ 20 } /></button>
           </div>
           <div className="space-y-6">
@@ -806,7 +806,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
             
             <div className="space-y-5">
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Session</label>
+                <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Session</label>
                 <div className="relative">
                   <select 
                     value={genSessionId}
@@ -814,7 +814,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                       setGenSessionId(e.target.value);
                       setGenTermId('');
                     }}
-                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 focus:border-blue-500 outline-none bg-slate-50 font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
+                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 focus:border-blue-500 outline-none bg-slate-50 font-semibold text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
                   >
                     <option value="">Select Session</option>
                     { sessions.map(s => <option key={ s.id } value={ s.id }>{ formatDisplayString(s.name) } {s.isCurrent ? '(Current)' : ''}</option>)}
@@ -824,13 +824,13 @@ export const SchoolFinance = ({ school }: { school: School }) => {
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Term</label>
+                <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Term</label>
                 <div className="relative">
                   <select 
                     disabled={!genSessionId}
                     value={genTermId}
                     onChange={e => setGenTermId(e.target.value)}
-                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 focus:border-blue-500 outline-none bg-slate-50 font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer disabled:opacity-50"
+                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 focus:border-blue-500 outline-none bg-slate-50 font-semibold text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer disabled:opacity-50"
                   >
                     <option value="">Select Term</option>
                     { genSessionId && Object.values(termsMap[genSessionId] || {}).map((t: any) => (
@@ -842,12 +842,12 @@ export const SchoolFinance = ({ school }: { school: School }) => {
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Class</label>
+                <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Class</label>
                 <div className="relative">
                   <select 
                     value={genClassId}
                     onChange={e => setGenClassId(e.target.value)}
-                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 focus:border-blue-500 outline-none bg-slate-50 font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
+                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 focus:border-blue-500 outline-none bg-slate-50 font-semibold text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
                   >
                     <option value="all">All Classes</option>
                     { classes.map(c => <option key={ c.id } value={ c.id }>{ formatDisplayString(c.name) }</option>)}
@@ -860,7 +860,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
             <button 
               onClick={() => handleGenerateInvoices(genClassId, genTermId, genSessionId)} 
               disabled={!genSessionId || !genTermId}
-              className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 disabled:opacity-50 disabled:shadow-none mt-4 active:scale-95"
+              className="w-full bg-blue-600 text-white py-4 rounded-2xl font-semibold uppercase tracking-widest text-[10px] hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 disabled:opacity-50 disabled:shadow-none mt-4 active:scale-95"
             >
               Generate Invoices
             </button>
@@ -873,10 +873,10 @@ export const SchoolFinance = ({ school }: { school: School }) => {
   {/* Record Payment Modal */}
   <AnimatePresence>
     { showRecordPayment && (
-      <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 bg-blue-600/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-3xl w-full max-w-lg shadow-2xl border border-slate-200/60 relative flex flex-col max-h-[90vh] overflow-hidden">
-          <div className="flex justify-between items-center p-8 border-b border-slate-100 shrink-0">
-            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900">Record Manual Payment</h3>
+          <div className="flex justify-between items-center p-8 border-b border-slate-200/60 shrink-0">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-900">Record Manual Payment</h3>
             <button 
               onClick={() => {
                 setShowRecordPayment(false);
@@ -893,7 +893,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
 
           <div className="flex-1 overflow-y-auto p-8 space-y-6">
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Select Invoice</label>
+              <label className="block text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Select Invoice</label>
               <div className="relative">
                 <select 
                   value={paymentInvoiceId}
@@ -902,7 +902,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                     const inv = invoices.find(i => i.id === e.target.value);
                     if (inv) setPaymentAmount(inv.amount - inv.amountPaid);
                   }}
-                  className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-900 text-sm appearance-none cursor-pointer"
+                  className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-slate-900 text-sm appearance-none cursor-pointer"
                 >
                   <option value="">Select an invoice...</option>
                   {invoices.filter(inv => inv.status !== 'paid' && inv.amountPaid < inv.amount).map(inv => {
@@ -925,22 +925,22 @@ export const SchoolFinance = ({ school }: { school: School }) => {
               const student = studentMap[inv.studentId];
               const balance = inv.amount - inv.amountPaid;
               return (
-                <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-2">
-                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500">
+                <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200/60 space-y-2">
+                  <div className="flex justify-between text-[10px] font-semibold uppercase tracking-widest text-slate-500">
                     <span>Student</span>
                     <span className="text-slate-900">{student ? `${formatDisplayString(student.firstName)} ${formatDisplayString(student.lastName)}` : inv.studentId}</span>
                   </div>
-                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500">
+                  <div className="flex justify-between text-[10px] font-semibold uppercase tracking-widest text-slate-500">
                     <span>Total Invoice</span>
                     <span className="text-slate-900">₦{inv.amount.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500">
+                  <div className="flex justify-between text-[10px] font-semibold uppercase tracking-widest text-slate-500">
                     <span>Already Paid</span>
                     <span className="text-emerald-600">₦{inv.amountPaid.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500 pt-2 border-t border-slate-200">
+                  <div className="flex justify-between text-[10px] font-semibold uppercase tracking-widest text-slate-500 pt-2 border-t border-slate-200">
                     <span>Outstanding Balance</span>
-                    <span className="text-rose-600 text-sm font-black">₦{balance.toLocaleString()}</span>
+                    <span className="text-rose-600 text-sm font-semibold">₦{balance.toLocaleString()}</span>
                   </div>
                 </div>
               );
@@ -948,22 +948,22 @@ export const SchoolFinance = ({ school }: { school: School }) => {
 
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Amount (₦)</label>
+                <label className="block text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Amount (₦)</label>
                 <input 
                   type="number"
                   min="0"
                   value={paymentAmount}
                   onChange={e => setPaymentAmount(Number(e.target.value))}
-                  className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-900 text-sm"
+                  className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-slate-900 text-sm"
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Payment Method</label>
+                <label className="block text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Payment Method</label>
                 <div className="relative">
                   <select 
                     value={paymentMethod}
                     onChange={e => setPaymentMethod(e.target.value as any)}
-                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
+                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-[10px] uppercase tracking-widest text-slate-900 appearance-none cursor-pointer"
                   >
                     <option value="cash">Cash</option>
                     <option value="transfer">Bank Transfer</option>
@@ -975,18 +975,18 @@ export const SchoolFinance = ({ school }: { school: School }) => {
             </div>
 
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2">Reference / Receipt No. (Optional)</label>
+              <label className="block text-[10px] uppercase tracking-widest font-semibold text-slate-500 mb-2">Reference / Receipt No. (Optional)</label>
               <input 
                 type="text"
                 value={paymentReference}
                 onChange={e => setPaymentReference(e.target.value)}
                 placeholder="e.g. Bank teller number, receipt ID"
-                className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-900 text-sm"
+                className="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-slate-900 text-sm"
               />
             </div>
           </div>
 
-          <div className="p-8 border-t border-slate-100 bg-slate-50 shrink-0 flex gap-4">
+          <div className="p-8 border-t border-slate-200/60 bg-slate-50 shrink-0 flex gap-4">
             <button 
               type="button"
               onClick={() => {
@@ -996,14 +996,14 @@ export const SchoolFinance = ({ school }: { school: School }) => {
                 setPaymentMethod('cash');
                 setPaymentReference('');
               }}
-              className="flex-1 px-6 py-3.5 rounded-xl border border-slate-200 text-slate-600 font-black uppercase tracking-widest text-[10px] hover:bg-white transition-colors"
+              className="flex-1 px-6 py-3.5 rounded-xl border border-slate-200 text-slate-600 font-semibold uppercase tracking-widest text-[10px] hover:bg-white transition-colors"
             >
               Cancel
             </button>
             <button 
               onClick={handleRecordPayment}
               disabled={!paymentInvoiceId || paymentAmount <= 0}
-              className="flex-[2] bg-blue-600 text-white py-3.5 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 disabled:opacity-50 disabled:shadow-none active:scale-95"
+              className="flex-[2] bg-blue-600 text-white py-3.5 rounded-xl font-semibold uppercase tracking-widest text-[10px] hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 disabled:opacity-50 disabled:shadow-none active:scale-95"
             >
               Record Payment
             </button>

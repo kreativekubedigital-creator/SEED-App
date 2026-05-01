@@ -139,7 +139,7 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
 
  return (
  <div className="space-y-6">
- <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 print:hidden">
+ <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60 print:hidden">
  <h2 className="text-xl font-medium text-slate-900 mb-6">Generate Report Cards</h2>
  
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -195,7 +195,7 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
 
  { students.length > 0 && (
  <div className="space-y-6">
- <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 print:hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+ <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60 print:hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
  <Users size={ 20 } />
@@ -215,7 +215,7 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
  </button>
  <button
  onClick={() => window.print()}
- className="flex-1 md:flex-none px-6 py-2.5 rounded-xl bg-gray-900 text-slate-900 font-medium text-sm hover:bg-gray-800 transition-all flex items-center justify-center gap-2 shadow-md"
+ className="flex-1 md:flex-none px-6 py-2.5 rounded-xl bg-blue-600 text-slate-900 font-medium text-sm hover:bg-gray-800 transition-all flex items-center justify-center gap-2 shadow-md"
  >
  <Printer size={ 18 } />
  Print All
@@ -225,12 +225,12 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
 
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 print:hidden">
  { students.map(student => (
- <div key={ student.uid } className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex items-center justify-between group">
+ <div key={ student.uid } className="bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all flex items-center justify-between group">
  <div className="flex items-center gap-3 overflow-hidden">
  { student.photoUrl ? (
  <img src={ student.photoUrl } alt="Profile"className="w-10 h-10 rounded-full object-cover shadow-sm border border-gray-200 shrink-0"referrerPolicy="no-referrer"/>
  ) : (
- <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-900 shrink-0 border border-slate-100">
+ <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-900 shrink-0 border border-slate-200/60">
  { formatDisplayString(student.firstName).charAt(0)}
  </div>
  )}
@@ -255,14 +255,14 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
  {/* Individual Preview Modal */}
  <AnimatePresence>
  { previewStudent && (
- <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm print:hidden">
+ <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-blue-600/60 backdrop-blur-sm print:hidden">
  <motion.div
  initial={{ scale: 0.95, opacity: 0 }}
  animate={{ scale: 1, opacity: 1 }}
  exit={{ scale: 0.95, opacity: 0 }}
  className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
  >
- <div className="flex items-center justify-between p-6 border-b border-slate-100">
+ <div className="flex items-center justify-between p-6 border-b border-slate-200/60">
  <h3 className="text-xl font-medium text-slate-900">Preview: { formatDisplayString(previewStudent.firstName) } { formatDisplayString(previewStudent.lastName) }</h3>
  <div className="flex items-center gap-3">
  <button
@@ -304,14 +304,14 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
  {/* Preview All Modal */}
  <AnimatePresence>
  { showAllPreview && (
- <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm print:hidden">
+ <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-blue-600/60 backdrop-blur-sm print:hidden">
  <motion.div
  initial={{ scale: 0.95, opacity: 0 }}
  animate={{ scale: 1, opacity: 1 }}
  exit={{ scale: 0.95, opacity: 0 }}
  className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
  >
- <div className="flex items-center justify-between p-6 border-b border-slate-100">
+ <div className="flex items-center justify-between p-6 border-b border-slate-200/60">
  <h3 className="text-xl font-medium text-slate-900">Preview All Report Cards</h3>
  <div className="flex items-center gap-3">
  <button
@@ -331,7 +331,7 @@ export const ClassReportCards: React.FC<ClassReportCardsProps> = ({ school }) =>
  </div>
  <div className="p-6 overflow-y-auto space-y-8 bg-slate-50">
  { students.map(student => (
- <div key={ student.uid } className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+ <div key={ student.uid } className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/60">
  <ReportCard
  student={ student }
  school={ school }

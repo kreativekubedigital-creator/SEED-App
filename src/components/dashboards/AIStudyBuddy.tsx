@@ -9,7 +9,7 @@ import { cn, formatDisplayString } from '../../lib/utils';
 
 export const AIStudyBuddy = ({ user, subjects = [], classLevel }: { user: UserProfile, subjects?: Subject[], classLevel?: string }) => {
   const containerClass = "backdrop-blur-md rounded-2xl border border-slate-200 bg-white/95 shadow-xl shadow-slate-200/20 overflow-hidden flex flex-col h-[600px]";
-  const headerClass = "p-4 border-b border-slate-100 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 flex items-center gap-4";
+  const headerClass = "p-4 border-b border-slate-200/60 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 flex items-center gap-4";
 
   const [messages, setMessages] = useState<{ role: 'user' | 'model', text: string }[]>([
     { role: 'model', text: `Hi ${formatDisplayString(user.firstName)}! I'm your AI study buddy. I can help you understand your subjects like ${subjects.slice(0, 3).map(s => s.name).join(', ')}${subjects.length > 3 ? ' and more' : ''}, clarify homework, or answer general questions. How can I help you learn today?` }
@@ -103,7 +103,7 @@ Refuse to answer any inappropriate, harmful, or unsafe questions politely. Keep 
           <Sparkles size={20} />
         </div>
         <div>
-          <h3 className="font-bold text-xl text-slate-900">AI Study Buddy</h3>
+          <h3 className="font-semibold text-xl text-slate-900">AI Study Buddy</h3>
           <p className="text-xs font-medium text-slate-600">Safe, guided help for your subjects and homework.</p>
         </div>
       </div>
@@ -155,7 +155,7 @@ Refuse to answer any inappropriate, harmful, or unsafe questions politely. Keep 
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-4 border-t bg-white border-slate-100">
+      <div className="p-4 border-t bg-white border-slate-200/60">
         <form
           onSubmit={(e) => {
             e.preventDefault();

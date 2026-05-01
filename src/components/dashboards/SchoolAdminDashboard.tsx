@@ -46,9 +46,9 @@ export const SchoolAdminDashboard = ({ user, onLogout }: { user: UserProfile, on
  <div className="w-20 h-20 bg-red-600/10 text-red-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-inner border border-red-500/20">
  <Settings size={ 32 } />
  </div>
- <h2 className="text-2xl font-bold text-slate-900 mb-4">School Not Found</h2>
+ <h2 className="text-2xl font-semibold text-slate-900 mb-4">School Not Found</h2>
  <p className="text-slate-600 font-medium mb-8">We couldn't find the school associated with your account. Please contact support.</p>
- <button onClick={ onLogout } className="w-full bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-600/20 hover:translate-y-[-2px] transition-all active:translate-y-0">
+ <button onClick={ onLogout } className="w-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 px-6 py-3 rounded-xl font-semibold shadow-lg shadow-blue-600/20 hover:translate-y-[-2px] transition-all active:translate-y-0">
  Logout
  </button>
  </div>

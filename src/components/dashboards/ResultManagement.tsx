@@ -278,14 +278,14 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
 
   return (
     <div className="space-y-5">
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+      <div className="bg-white dark:bg-blue-600 p-4 rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-800">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="space-y-1.5">
             <label className="text-xs font-medium uppercase tracking-widest text-slate-900 dark:text-slate-100 ml-1">Session</label>
             <select
               value={selectedSession}
               onChange={e => setSelectedSession(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-blue-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
             >
               <option value="">Select Session</option>
               {sessions.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
@@ -296,7 +296,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
             <select
               value={selectedTerm}
               onChange={e => setSelectedTerm(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-blue-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
             >
               <option value="">Select Term</option>
               {terms.map(t => <option key={t.id} value={t.id}>{formatDisplayString(t.name)}</option>)}
@@ -307,7 +307,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
             <select
               value={selectedClass}
               onChange={e => setSelectedClass(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-blue-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
             >
               <option value="">Select Class</option>
               {classes
@@ -320,7 +320,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
             <select
               value={selectedSubject}
               onChange={e => setSelectedSubject(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-blue-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 dark:text-slate-100 cursor-pointer"
             >
               <option value="">Select Subject</option>
               {subjects.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
@@ -330,8 +330,8 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
       </div>
 
       {selectedSubject && (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
-          <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+        <div className="bg-white dark:bg-blue-600 rounded-2xl border border-slate-200/60 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-slate-200/60 dark:border-slate-800 flex justify-between items-center">
             <h3 className="font-medium text-lg text-slate-900 dark:text-slate-100">Score Entry</h3>
             <button
               onClick={handleSave}
@@ -394,7 +394,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                                     placeholder="-"
                                     value={val === 0 && !score.id && !score.cas?.[ca.name] ? '' : val}
                                     onChange={e => handleScoreChange(student.uid, `ca_${idx}`, e.target.value)}
-                                    className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
+                                    className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-blue-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
                                   />
                                 </td>
                               );
@@ -408,10 +408,10 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                                 placeholder="-"
                                 value={score.exam === 0 && !score.id ? '' : score.exam}
                                 onChange={e => handleScoreChange(student.uid, 'exam', e.target.value)}
-                                className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
+                                className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-blue-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
                               />
                             </td>
-                            <td className="px-4 py-4 bg-blue-50/50 text-center font-medium text-slate-950 border-x border-blue-50/50">
+                            <td className="px-4 py-4 bg-blue-50/50 text-center font-medium text-slate-900 border-x border-blue-50/50">
                               {score.finalScore || 0}
                             </td>
                             <td className="px-4 py-4 text-center">
@@ -439,7 +439,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                   {students.map((student) => {
                     const score = scores[student.uid] || {};
                     return (
-                      <div key={student.uid} className={`bg-white dark:bg-slate-900 rounded-2xl shadow-sm border ${activeRow === student.uid ? 'border-blue-300 bg-blue-50/20 ring-4 ring-blue-500/5' : 'border-gray-200'} p-4 flex flex-col gap-4 transition-all duration-200`} onFocus={() => setActiveRow(student.uid)} onBlur={() => setActiveRow(null)}>
+                      <div key={student.uid} className={`bg-white dark:bg-blue-600 rounded-2xl shadow-sm border ${activeRow === student.uid ? 'border-blue-300 bg-blue-50/20 ring-4 ring-blue-500/5' : 'border-gray-200'} p-4 flex flex-col gap-4 transition-all duration-200`} onFocus={() => setActiveRow(student.uid)} onBlur={() => setActiveRow(null)}>
                         <div className="flex items-center gap-3">
                           {student.photoUrl ? (
                             <img src={student.photoUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover shadow-sm border border-gray-200 shrink-0" referrerPolicy="no-referrer" />
@@ -465,7 +465,7 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                                   placeholder="-"
                                   value={val === 0 && !score.id && !score.cas?.[ca.name] ? '' : val}
                                   onChange={e => handleScoreChange(student.uid, `ca_${idx}`, e.target.value)}
-                                  className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
+                                  className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-blue-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
                                 />
                               </div>
                             );
@@ -484,12 +484,12 @@ export const ResultManagement = ({ user }: ResultManagementProps) => {
                               placeholder="-"
                               value={score.exam === 0 && !score.id ? '' : score.exam}
                               onChange={e => handleScoreChange(student.uid, 'exam', e.target.value)}
-                              className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
+                              className="w-full text-center px-2 py-2.5 rounded-xl border border-gray-200 bg-slate-50 dark:bg-slate-800 hover:border-gray-300 focus:bg-white dark:bg-blue-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none font-medium text-slate-900 dark:text-slate-100 transition-all disabled:opacity-50 disabled:bg-transparent cursor-text placeholder:text-gray-300"
                             />
                           </div>
                           <div className="flex flex-col items-center justify-center bg-blue-50/80 rounded-xl p-2 border border-blue-100/50">
-                            <span className="text-xs text-slate-950 mb-1 font-medium">Final</span>
-                            <span className="font-medium text-slate-950">{score.finalScore || 0}</span>
+                            <span className="text-xs text-slate-900 mb-1 font-medium">Final</span>
+                            <span className="font-medium text-slate-900">{score.finalScore || 0}</span>
                           </div>
                         </div>
                         

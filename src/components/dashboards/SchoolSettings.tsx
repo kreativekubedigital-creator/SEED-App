@@ -86,7 +86,7 @@ export const SchoolSettings = ({ school }: { school: School }) => {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
  <div className="col-span-1 md:col-span-2">
  <label className="block text-sm font-medium text-slate-900 mb-3">School Logo</label>
- <div className="flex gap-4 items-center bg-slate-50 p-4 rounded-2xl border border-slate-100">
+ <div className="flex gap-4 items-center bg-slate-50 p-4 rounded-2xl border border-slate-200/60">
  { formData.logoUrl ? (
  <img src={ formData.logoUrl } alt="School Logo"className="w-20 h-20 rounded-2xl object-cover border-2 border-white shadow-md"referrerPolicy="no-referrer"/>
  ) : (
@@ -138,7 +138,7 @@ export const SchoolSettings = ({ school }: { school: School }) => {
  <button
  type="submit"
  disabled={ loading }
- className="w-full bg-blue-600 text-white hover:bg-blue-700 py-2.5 rounded-full font-medium hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none flex items-center justify-center gap-2 relative z-10 mt-8"
+ className="w-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 py-2.5 rounded-full font-medium hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none flex items-center justify-center gap-2 relative z-10 mt-8"
  >
  <Save size={ 20 } />
  { loading ?'Processing...':'Save Changes'}
