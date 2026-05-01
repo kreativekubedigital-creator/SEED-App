@@ -163,22 +163,16 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
-      {/* Header & Control Panel */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-12">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-black uppercase tracking-tighter text-slate-900">Quiz Portal</h2>
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-2">Design and deploy objective assessments</p>
+          <h3 className="text-2xl font-bold tracking-tight text-blue-700">Assessment Center</h3>
+          <p className="text-xs font-bold tracking-tight text-slate-950 mt-1">Design and analyze student quizzes</p>
         </div>
         
         <div className="flex flex-col sm:flex-row gap-5 w-full lg:w-auto">
           <div className="relative group min-w-[200px]">
             <select
-              id="select_teacher_quiz_class_filter"
-              value={newQuiz.subjectId ? subjects.find(s => s.id === newQuiz.subjectId)?.classId : ''}
-              onChange={(e) => {
-                // This is a filter for the list, not the new quiz
-              }}
-              className="w-full appearance-none pl-6 pr-12 py-4 rounded-2xl border border-slate-100 bg-white hover:border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-black uppercase tracking-widest text-[10px] text-slate-900 cursor-pointer shadow-sm"
+              className="w-full appearance-none px-5 py-3 rounded-2xl border border-slate-100 bg-white hover:border-slate-200 focus:border-blue-500 outline-none transition-all font-bold tracking-tight text-xs text-blue-800 cursor-pointer shadow-sm"
             >
               <option value="">All Classes</option>
               {classes.map(c => <option key={c.id} value={c.id}>{formatDisplayString(c.name)}</option>)}
@@ -186,12 +180,12 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
           </div>
           
           <button
-            id="btn_teacher_create_quiz"
-            onClick={() => setShowAddQuiz(true)}
-            className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-500/20 active:scale-95 transition-all font-black uppercase tracking-widest text-[10px] border border-blue-500"
-          >
-            <Plus size={18} strokeWidth={3} /> Create New Quiz
-          </button>
+          id="btn_teacher_create_quiz"
+          onClick={() => setShowAddQuiz(true)}
+          className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-2xl font-bold tracking-tight text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-500/20 active:scale-95"
+        >
+          <Plus size={16} strokeWidth={3} /> Create Quiz
+        </button>
         </div>
       </div>
 
@@ -203,11 +197,11 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             className="bg-white rounded-[2.5rem] p-8 w-full max-w-4xl shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto"
           >
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h4 className="text-2xl font-black uppercase tracking-tighter text-slate-900">Create New Quiz</h4>
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Design an interactive assessment</p>
-              </div>
+              <div className="flex justify-between items-center mb-8">
+                <div>
+                  <h3 className="text-2xl font-bold tracking-tight text-blue-700">New Quiz</h3>
+                  <p className="text-xs font-bold tracking-tight text-slate-950 mt-1">Design a new assessment for your students</p>
+                </div>
               <button 
                 id="btn_teacher_quiz_close_modal"
                 onClick={() => setShowAddQuiz(false)} 
@@ -218,126 +212,114 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
             </div>
 
             <form onSubmit={handleCreateQuiz} className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Quiz Title</label>
-                  <input
-                    id="input_teacher_quiz_title"
-                    type="text"
-                    required
-                    value={newQuiz.title}
-                    onChange={e => setNewQuiz({ ...newQuiz, title: e.target.value })}
-                    className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
-                    placeholder="e.g. Midterm Math Quiz"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Subject</label>
-                  <select
-                    id="select_teacher_quiz_subject"
-                    required
-                    value={newQuiz.subjectId}
-                    onChange={e => setNewQuiz({ ...newQuiz, subjectId: e.target.value })}
-                    className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
-                  >
-                    <option value="">Select Subject</option>
-                    {subjects.map(s => (
-                      <option key={s.id} value={s.id}>{formatDisplayString(s.name)} ({getClassName(s.classId)})</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Time Limit (Mins)</label>
-                  <input
-                    id="input_teacher_quiz_time_limit"
-                    type="number"
-                    required
-                    min="1"
-                    value={newQuiz.timeLimit}
-                    onChange={e => setNewQuiz({ ...newQuiz, timeLimit: parseInt(e.target.value) || 10 })}
-                    className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-6 pt-8 border-t border-slate-100">
-                <h5 className="font-black uppercase tracking-widest text-slate-900 mb-6">Questions ({newQuiz.questions.length})</h5>
-                {newQuiz.questions.map((q, qIndex) => (
-                  <div key={qIndex} className="bg-slate-50 p-8 rounded-3xl border border-slate-100 relative group hover:bg-white hover:shadow-md transition-all">
-                    {newQuiz.questions.length > 1 && (
-                      <button 
-                        id={`btn_teacher_quiz_remove_question_${qIndex}`}
-                        type="button" 
-                        onClick={() => handleRemoveQuestion(qIndex)}
-                        className="absolute top-6 right-6 text-slate-300 hover:text-red-500 p-2.5 rounded-xl transition-colors"
-                      >
-                        <Trash2 size={20} />
-                      </button>
-                    )}
-                    
-                    <div className="mb-8 pr-12 space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Question {qIndex + 1}</label>
-                      <input
-                        id={`input_teacher_quiz_q${qIndex}`}
-                        type="text"
-                        required
-                        value={q.question}
-                        onChange={e => handleQuestionChange(qIndex, 'question', e.target.value)}
-                        className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-black uppercase tracking-widest text-xs text-slate-900"
-                        placeholder="Enter question text"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {q.options.map((option, oIndex) => (
-                        <div key={oIndex} className="flex items-center gap-4">
-                          <button
-                            id={`btn_teacher_quiz_q${qIndex}_opt${oIndex}`}
-                            type="button"
-                            onClick={() => handleQuestionChange(qIndex, 'correctOption', oIndex)}
-                            className={`p-3 rounded-2xl transition-all border shadow-sm ${q.correctOption === oIndex ? 'text-emerald-600 bg-emerald-50 border-emerald-200 scale-110' : 'text-slate-300 bg-white border-slate-200 hover:text-slate-900 hover:border-slate-300'}`}
-                          >
-                            {q.correctOption === oIndex ? <CheckCircle2 size={20} strokeWidth={2.5} /> : <Circle size={20} strokeWidth={2.5} />}
-                          </button>
-                          <input
-                            id={`input_teacher_quiz_q${qIndex}_opt${oIndex}`}
-                            type="text"
-                            required
-                            value={option}
-                            onChange={e => handleOptionChange(qIndex, oIndex, e.target.value)}
-                            className={`flex-1 px-5 py-4 rounded-2xl border outline-none transition-all font-black uppercase tracking-widest text-[10px] ${q.correctOption === oIndex ? 'border-emerald-500 bg-emerald-50/30 text-emerald-900 shadow-sm' : 'border-slate-200 bg-white hover:border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-slate-900'}`}
-                            placeholder={`Option ${oIndex + 1}`}
-                          />
-                        </div>
-                      ))}
-                    </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold tracking-tight text-slate-500 ml-1">Title</label>
+                    <input
+                      id="input_teacher_quiz_title"
+                      type="text"
+                      required
+                      value={newQuiz.title}
+                      onChange={e => setNewQuiz({ ...newQuiz, title: e.target.value })}
+                      className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-bold tracking-tight text-xs text-slate-900"
+                      placeholder="e.g. Unit 1 Mastery Test"
+                    />
                   </div>
-                ))}
-
-                <button
-                  type="button"
-                  onClick={handleAddQuestion}
-                  className="w-full py-4 rounded-2xl bg-white border border-blue-200 text-blue-600 text-[10px] font-black uppercase tracking-widest hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-sm"
-                >
-                  <Plus size={16} strokeWidth={3} /> Add Another Question
-                </button>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold tracking-tight text-slate-500 ml-1">Subject</label>
+                    <select
+                      required
+                      value={newQuiz.subjectId}
+                      onChange={e => setNewQuiz({ ...newQuiz, subjectId: e.target.value })}
+                      className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-bold tracking-tight text-xs text-slate-900"
+                    >
+                      <option value="">Select Subject</option>
+                      {subjects.map(s => (
+                        <option key={s.id} value={s.id}>{formatDisplayString(s.name)} ({getClassName(s.classId)})</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold tracking-tight text-slate-500 ml-1">Time Limit (Minutes)</label>
+                    <input
+                      type="number"
+                      required
+                      min="1"
+                      value={newQuiz.timeLimit}
+                      onChange={e => setNewQuiz({ ...newQuiz, timeLimit: parseInt(e.target.value) })}
+                      className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-bold tracking-tight text-xs text-slate-900"
+                    />
+                  </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row justify-end gap-3 pt-8 border-t border-slate-100">
-                <button 
-                  type="button" 
-                  onClick={() => setShowAddQuiz(false)} 
-                  className="order-2 sm:order-1 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] text-slate-400 hover:bg-slate-50 transition-all"
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit" 
-                  className="order-1 sm:order-2 px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95"
-                >
-                  Save Quiz
-                </button>
+                <div className="pt-8 border-t border-slate-100">
+                  <h4 className="text-lg font-bold tracking-tight text-slate-900 mb-6">Questions ({newQuiz.questions.length})</h4>
+                  
+                  <div className="space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold tracking-tight text-slate-500 ml-1">Question Text</label>
+                        <input
+                          type="text"
+                          value={newQuestion.text}
+                          onChange={e => setNewQuestion({ ...newQuestion, text: e.target.value })}
+                          className="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-bold tracking-tight text-xs text-slate-900"
+                          placeholder="Enter question text..."
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {newQuestion.options.map((opt, idx) => (
+                          <div key={idx} className="flex gap-2">
+                            <input
+                              type="text"
+                              value={opt}
+                              onChange={e => {
+                                const newOpts = [...newQuestion.options];
+                                newOpts[idx] = e.target.value;
+                                setNewQuestion({ ...newQuestion, options: newOpts });
+                              }}
+                              className="flex-1 px-5 py-3 rounded-xl border border-slate-200 bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-bold tracking-tight text-[10px] text-slate-900"
+                              placeholder={`Option ${idx + 1}`}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setNewQuestion({ ...newQuestion, correctAnswer: opt })}
+                              className={`px-3 rounded-xl transition-all border ${
+                                newQuestion.correctAnswer === opt && opt !== '' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-50 text-slate-300 border-slate-100'
+                              }`}
+                            >
+                              <CheckCircle2 size={16} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <button
+                      id="btn_teacher_quiz_add_question"
+                      type="button"
+                      onClick={handleAddQuestion}
+                      className="w-full mt-6 py-4 rounded-2xl bg-white border border-blue-200 text-blue-600 text-[10px] font-bold tracking-tight hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-sm"
+                    >
+                      <Plus size={16} strokeWidth={3} /> Add Question to Quiz
+                    </button>
               </div>
+
+                <div className="flex flex-col sm:flex-row justify-end gap-3 pt-8 border-t border-slate-100">
+                  <button
+                    id="btn_teacher_quiz_cancel_create"
+                    type="button"
+                    onClick={() => setShowAddQuiz(false)}
+                    className="order-2 sm:order-1 px-8 py-4 rounded-2xl font-bold tracking-tight text-[11px] text-slate-500 hover:bg-slate-50 transition-all"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    id="btn_teacher_quiz_save"
+                    type="submit"
+                    className="order-1 sm:order-2 px-10 py-4 rounded-2xl font-bold tracking-tight text-[11px] bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95"
+                  >
+                    Create Quiz
+                  </button>
+                </div>
             </form>
           </motion.div>
         </div>
@@ -345,14 +327,12 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {quizzes.map(quiz => {
-          const subject = subjects.find(s => s.id === quiz.subjectId);
           return (
             <motion.div
               key={quiz.id}
               whileHover={{ y: -4 }}
               className="bg-white p-5 rounded-[1.5rem] shadow-sm border border-slate-100 flex flex-col gap-5 group hover:shadow-md transition-all relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full blur-3xl -mr-8 -mt-8 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <div className="flex justify-between items-start relative z-10">
                 <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl border border-blue-100 shadow-sm">
                   <Brain size={20} strokeWidth={2.5} />
@@ -368,44 +348,43 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
                 </div>
               </div>
               <div className="relative z-10">
-                <h4 className="font-black uppercase tracking-widest text-base text-slate-900 leading-tight">{formatDisplayString(quiz.title)}</h4>
-                <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mt-1">
-                  {formatDisplayString(getSubjectName(quiz.subjectId))} <span className="mx-1 text-slate-200">•</span> {formatDisplayString(getClassName(subject?.classId || ''))}
-                </p>
+              <h4 className="font-bold tracking-tight text-base text-slate-900 leading-tight">{formatDisplayString(quiz.title)}</h4>
+              <p className="text-[9px] text-slate-500 font-bold tracking-tight mt-1">
+                {formatDisplayString(getSubjectName(quiz.subjectId))} <span className="mx-1 text-slate-200">•</span> {formatDisplayString(getClassName(quiz.classId))}
+              </p>
+            </div>
+              <div className="flex items-center gap-4 relative z-10">
+              <div className="flex items-center gap-2 text-[8px] font-bold tracking-tight text-slate-500 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 shadow-sm">
+                <Clock size={12} strokeWidth={3} />
+                {quiz.timeLimit} mins
               </div>
-              <div className="flex flex-wrap gap-2 relative z-10">
-                <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 shadow-sm">
-                  <HelpCircle size={12} strokeWidth={3} />
-                  {quiz.questions.length} Questions
-                </div>
-                <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100 shadow-sm">
-                  <Clock size={12} strokeWidth={3} />
-                  {quiz.timeLimit} Mins
-                </div>
+              <div className="flex items-center gap-2 text-[8px] font-bold tracking-tight text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100 shadow-sm">
+                <FileQuestion size={12} strokeWidth={3} />
+                {quiz.questions.length} questions
               </div>
+            </div>
               <div className="pt-5 border-t border-slate-50 relative z-10">
                 <button
-                  id={`btn_teacher_quiz_view_results_${quiz.id}`}
-                  onClick={() => handleViewResults(quiz.id)}
-                  className="w-full py-3.5 rounded-xl bg-blue-600 text-white text-[9px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 active:scale-[0.98]"
-                >
-                  View Results <ChevronRight size={12} strokeWidth={3} />
-                </button>
+                id={`btn_teacher_quiz_view_results_${quiz.id}`}
+                onClick={() => setViewingResults(quiz.id)}
+                className="w-full py-3.5 rounded-xl bg-blue-600 text-white text-[10px] font-bold tracking-tight hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 active:scale-[0.98]"
+              >
+                View Performance <ChevronRight size={12} strokeWidth={3} />
+              </button>
               </div>
             </motion.div>
           );
         })}
-        {quizzes.length === 0 && !loading && (
+        {quizzes.length === 0 && (
           <div className="col-span-full py-20 text-center bg-white rounded-[2.5rem] border border-slate-100 border-dashed">
             <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-200 mx-auto mb-4 border border-slate-100 shadow-sm">
-              <CheckSquare size={40} />
+              <PlusCircle size={40} />
             </div>
-            <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">No quizzes created yet.</p>
+            <p className="text-slate-500 font-bold tracking-tight text-[10px]">No quizzes created yet.</p>
           </div>
         )}
       </div>
 
-      {/* Delete Quiz Modal */}
       <AnimatePresence>
         {quizToDelete && (
           <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 z-50">
@@ -418,20 +397,20 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
               <div className="w-24 h-24 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-red-100 shadow-sm">
                 <Trash2 size={40} strokeWidth={2.5} />
               </div>
-              <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900 mb-2">Delete Quiz?</h3>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-10 leading-relaxed px-4">
-                This action is irreversible. All student results and academic records associated with this quiz will be permanently removed.
+              <h3 className="text-2xl font-bold tracking-tighter text-slate-900 mb-2">Delete Quiz?</h3>
+              <p className="text-[10px] font-bold tracking-tight text-slate-500 mb-10 leading-relaxed px-4">
+                This action is irreversible. All student performance data and records associated with this quiz will be permanently removed.
               </p>
               <div className="flex gap-4">
                 <button
                   onClick={() => setQuizToDelete(null)}
-                  className="flex-1 py-4 rounded-2xl border border-slate-200 font-black uppercase tracking-widest text-[10px] text-slate-400 hover:bg-slate-50 transition-all"
+                  className="flex-1 py-4 rounded-2xl border border-slate-200 font-bold tracking-tight text-[11px] text-slate-500 hover:bg-slate-50 transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleDeleteQuiz}
-                  className="flex-1 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] text-white bg-red-600 hover:bg-red-700 transition-all shadow-xl shadow-red-500/20 active:scale-95"
+                  className="flex-1 py-4 rounded-2xl font-bold tracking-tight text-[11px] text-white bg-red-600 hover:bg-red-700 transition-all shadow-xl shadow-red-500/20 active:scale-95"
                 >
                   Confirm Delete
                 </button>
@@ -440,7 +419,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
           </div>
         )}
 
-        {viewingQuizResults && (
+        {viewingResults && (
           <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 z-50">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
@@ -450,13 +429,13 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
             >
               <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900">Quiz Results</h3>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-blue-600 mt-1">
-                    {quizzes.find(q => q.id === viewingQuizResults)?.title}
+                  <h3 className="text-2xl font-bold tracking-tighter text-slate-900">Quiz Performance</h3>
+                  <p className="text-[10px] font-bold tracking-tight text-blue-600 mt-1">
+                    {quizzes.find(q => q.id === viewingResults)?.title}
                   </p>
                 </div>
                 <button 
-                  onClick={() => setViewingQuizResults(null)} 
+                  onClick={() => setViewingResults(null)} 
                   className="p-3 bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-900 rounded-2xl transition-all"
                 >
                   <X size={20} />
@@ -476,8 +455,8 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
                               {result.studentName?.charAt(0)}
                             </div>
                             <div>
-                              <p className="font-black uppercase tracking-widest text-sm text-slate-900">{result.studentName}</p>
-                              <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest mt-1">
+                              <p className="font-bold tracking-tight text-xs text-slate-900">{result.studentName}</p>
+                              <p className="text-[10px] font-bold tracking-tight text-slate-500 mt-1">
                                 Completed: {new Date(result.date).toLocaleDateString()}
                               </p>
                             </div>
@@ -497,11 +476,11 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
                     })}
                   </div>
                 ) : (
-                  <div className="text-center py-20">
+                  <div className="py-20 text-center">
                     <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-200 mx-auto mb-4 border border-slate-100 shadow-sm">
-                      <CheckSquare size={40} />
+                      <Users size={40} />
                     </div>
-                    <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">No students have taken this quiz yet.</p>
+                    <p className="text-slate-500 font-bold tracking-tight text-[10px]">No results yet.</p>
                   </div>
                 )}
               </div>
