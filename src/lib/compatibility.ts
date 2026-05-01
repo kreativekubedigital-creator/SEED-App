@@ -18,6 +18,15 @@ export interface User {
 }
 
 /**
+ * Helper to extract path from string or reference object
+ */
+const getPath = (ref: any): string => {
+  if (!ref) return '';
+  if (typeof ref === 'string') return ref;
+  return ref.path || '';
+};
+
+/**
  * Compatibility Layer for Firebase-to-Supabase migration.
  * This shim allows the application to continue using Firestore/Firebase Auth syntax
  * while the underlying data is handled by Supabase.
@@ -84,19 +93,44 @@ export const updatePassword = async (_user: any, password: string) => {
 };
 
 // Firestore-like shim for Database operations
-export const collection = (_db: any, ...paths: string[]) => paths.join('/');
-export const doc = (_db: any, ...paths: string[]) => paths.join('/');
+export const collection = (db: any, ...pathSegments: string[]) => {
+  const path = pathSegments.join('/').replace(/\/+/g, '/');
+  return { path, type: 'collection' };
+};
 
-export const getDoc = async (path: string) => {
-  const parts = path.split('/');
+export const doc = (db: any, pathOrCollection: any, ...pathSegments: string[]) => {
+  let path = getPath(pathOrCollection);
+  if (pathSegments.length > 0) {
+    path = (path + '/' + pathSegments.join('/')).replace(/\/+/g, '/');
+  }
+
+  const segments = path.split('/').filter(Boolean);
+  if (segments.length % 2 !== 0) {
+    // Auto-generate ID if it's a collection path
+    const randomId = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+    path = (path + '/' + randomId).replace(/\/+/g, '/');
+  }
+
+  return { path, type: 'document', id: path.split('/').pop() };
+};
+
+export const getDoc = async (docRef: any) => {
+  const path = getPath(docRef);
+  const parts = path.split('/').filter(Boolean);
   const id = parts.pop()!;
   const collectionPath = parts.join('/');
-  const data = await DatabaseService.getItemById(collectionPath, id);
-  return {
-    exists: () => !!data,
-    data: () => data as any,
-    id
-  };
+
+  try {
+    const data = await DatabaseService.getItemById(collectionPath, id);
+    return {
+      exists: () => !!data,
+      data: () => data as any,
+      id
+    };
+  } catch (error) {
+    handleFirestoreError(error, OperationType.GET, path);
+    return { exists: () => false, data: () => null, id };
+  }
 };
 
 /**
@@ -111,17 +145,19 @@ const extractQueryMeta = (constraints: any[]) => {
 
   constraints.forEach((c: any) => {
     if (!c) return;
-    if (c.type === 'orderBy') {
-      sortField = c.field;
+    if (c.type === 'orderBy' && c.field) {
+      const field = c.field.replace(/[A-Z]/g, (l: string) => `_${l.toLowerCase()}`);
+      sortField = field;
       sortDirection = c.direction === 'desc' ? 'desc' : 'asc';
     } else if (c.type === 'limit') {
-      limitCount = c.value;
-    } else if (c.op === '==') {
+      limitCount = c.count || c.value;
+    } else if (c.field) {
       const field = c.field.replace(/[A-Z]/g, (l: string) => `_${l.toLowerCase()}`);
-      conditions[field] = c.value;
-    } else if (c.op === 'in') {
-      const field = c.field.replace(/[A-Z]/g, (l: string) => `_${l.toLowerCase()}`);
-      inFilters.push({ field, values: c.value });
+      if (c.op === '==' || !c.op) {
+        conditions[field] = c.value;
+      } else if (c.op === 'in') {
+        inFilters.push({ field, values: c.value });
+      }
     }
   });
 
@@ -174,72 +210,77 @@ const applyPostProcessing = (
 };
 
 export const getDocs = async (queryOrPath: any) => {
-  const path = typeof queryOrPath === 'string' ? queryOrPath : queryOrPath.path;
-  const constraints = typeof queryOrPath === 'string' ? [] : queryOrPath.constraints;
+  const path = getPath(queryOrPath);
+  const constraints = queryOrPath?.constraints || [];
 
   const { conditions, inFilters, sortField, sortDirection, limitCount } = extractQueryMeta(constraints);
 
-  let data = await DatabaseService.getItems(path, conditions);
-  data = applyPostProcessing(data, inFilters, sortField, sortDirection, limitCount);
+  const data = await DatabaseService.getItems(path, conditions);
+  const processed = applyPostProcessing(data, inFilters, sortField, sortDirection, limitCount);
 
   return {
-    docs: data.map((item: any) => ({
+    docs: processed.map((item: any) => ({
       id: item.id,
       data: () => item as any
     })),
-    size: data.length,
-    empty: data.length === 0
+    size: processed.length,
+    empty: processed.length === 0
   };
 };
 
-export const setDoc = async (path: string, data: any, options?: { merge?: boolean }) => {
-  const parts = path.split('/');
+export const setDoc = async (ref: any, data: any, options?: { merge?: boolean }) => {
+  const path = getPath(ref);
+  const parts = path.split('/').filter(Boolean);
   const id = parts.pop()!;
   const collectionPath = parts.join('/');
   return DatabaseService.upsertItem(collectionPath, id, data);
 };
 
-export const addDoc = async (path: string, data: any) => {
+export const addDoc = async (ref: any, data: any) => {
+  const path = getPath(ref);
   return DatabaseService.addItem(path, data);
 };
 
-export const updateDoc = async (path: string, data: any) => {
-  const parts = path.split('/');
+export const updateDoc = async (ref: any, data: any) => {
+  const path = getPath(ref);
+  const parts = path.split('/').filter(Boolean);
   const id = parts.pop()!;
   const collectionPath = parts.join('/');
   return DatabaseService.updateItem(collectionPath, id, data);
 };
 
-export const deleteDoc = async (path: string) => {
-  const parts = path.split('/');
+export const deleteDoc = async (ref: any) => {
+  const path = getPath(ref);
+  const parts = path.split('/').filter(Boolean);
   const id = parts.pop()!;
   const collectionPath = parts.join('/');
   return DatabaseService.deleteItem(collectionPath, id);
 };
 
-export const query = (path: string, ...constraints: any[]) => {
+export const query = (ref: any, ...constraints: any[]) => {
+  const path = getPath(ref);
   return { path, constraints };
 };
 
 export const where = (field: string, op: string, value: any) => ({ field, op, value });
 
 export const onSnapshot = (queryObj: any, callback: any, errorCallback?: (error: any) => void) => {
-  const path = typeof queryObj === 'string' ? queryObj : queryObj.path;
-  const constraints = typeof queryObj === 'string' ? [] : queryObj.constraints;
+  const path = getPath(queryObj);
+  const constraints = queryObj?.constraints || [];
   const isDocument = path.split('/').filter(Boolean).length % 2 === 0;
 
   const { conditions, inFilters, sortField, sortDirection, limitCount } = extractQueryMeta(constraints);
 
   const subscription = DatabaseService.subscribe(path, (data) => {
     try {
-      let processed = applyPostProcessing(data, inFilters, sortField, sortDirection, limitCount);
+      const processed = applyPostProcessing(data, inFilters, sortField, sortDirection, limitCount);
 
       if (isDocument) {
         const item = processed[0] || null;
         callback({
           exists: () => !!item,
           data: () => item as any,
-          id: path.split('/').pop()
+          id: path.split('/').filter(Boolean).pop()
         });
       } else {
         callback({
@@ -344,28 +385,26 @@ export const writeBatch = (_db?: any) => {
   const operations: Array<{ type: 'set' | 'update' | 'delete'; path: string; data?: any; options?: any }> = [];
 
   return {
-    set: (docPath: any, data: any, options?: any) => {
-      operations.push({ type: 'set', path: String(docPath), data, options });
+    set: (ref: any, data: any, options?: any) => {
+      operations.push({ type: 'set', path: getPath(ref), data, options });
     },
-    update: (docPath: any, data: any) => {
-      operations.push({ type: 'update', path: String(docPath), data });
+    update: (ref: any, data: any) => {
+      operations.push({ type: 'update', path: getPath(ref), data });
     },
-    delete: (docPath: any) => {
-      operations.push({ type: 'delete', path: String(docPath) });
+    delete: (ref: any) => {
+      operations.push({ type: 'delete', path: getPath(ref) });
     },
     commit: async () => {
       for (const op of operations) {
-        const parts = op.path.split('/');
+        const parts = op.path.split('/').filter(Boolean);
         const isDocument = parts.length % 2 === 0;
 
         if (op.type === 'set') {
           if (isDocument) {
-            // Document path: upsert with ID
             const id = parts.pop()!;
             const collectionPath = parts.join('/');
             await DatabaseService.upsertItem(collectionPath, id, op.data);
           } else {
-            // Collection path: add new item
             await DatabaseService.addItem(op.path, op.data);
           }
         } else if (op.type === 'update') {

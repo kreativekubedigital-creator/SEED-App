@@ -10,23 +10,35 @@ export class DatabaseService {
   }
 
   private static parsePath(path: string): { table: string; documentId?: string; filters: Record<string, any> } {
+    if (!path) return { table: '', filters: {} };
     const parts = path.split('/').filter(Boolean);
+    if (parts.length === 0) return { table: '', filters: {} };
+
     const isDocument = parts.length % 2 === 0;
     
     const tableIndex = isDocument ? parts.length - 2 : parts.length - 1;
     const rawTable = parts[tableIndex];
+    if (!rawTable) return { table: '', filters: {} };
+    
     const table = this.toSnake(rawTable);
     const documentId = isDocument ? parts[parts.length - 1] : undefined;
     
     const filters: Record<string, any> = {};
-    // Extract filters from the path hierarchy
-    // e.g. schools/123/sessions/456/terms -> { school_id: 123, session_id: 456 }
     for (let i = 0; i < tableIndex; i += 2) {
-      const key = this.toSnake(parts[i].replace(/s$/, '')) + '_id';
-      filters[key] = parts[i + 1];
+      if (parts[i] && parts[i+1]) {
+        const key = this.toSnake(parts[i].replace(/s$/, '')) + '_id';
+        filters[key] = parts[i + 1];
+      }
     }
 
     return { table, documentId, filters };
+  }
+
+  /**
+   * Helper to convert camelCase to snake_case
+   */
+  private static camelToSnake(str: string): string {
+    return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
   }
 
   /**
@@ -35,12 +47,22 @@ export class DatabaseService {
    */
   private static toSnakeCase(obj: any, table?: string): any {
     if (obj === null || obj === undefined) return obj;
-    if (typeof obj === 'string') {
-      const snakeKey = obj.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
-      return (table === 'users' && snakeKey === 'uid') ? 'id' : snakeKey;
+    
+    // Handle Firestore special types
+    if (typeof obj === 'object' && obj.__type === 'timestamp') {
+      return new Date().toISOString();
     }
-    if (typeof obj !== 'object') return obj;
-    if (Array.isArray(obj)) return obj.map(v => this.toSnakeCase(v, table));
+    if (typeof obj === 'object' && obj.__type === 'increment') {
+      return obj.value || 0;
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map(v => this.toSnakeCase(v, table));
+    }
+
+    if (typeof obj !== 'object' || obj instanceof Date) {
+      return obj;
+    }
     
     const source = { ...obj };
     // For users table, if we have uid, move it to id if id is missing, then delete uid
@@ -51,8 +73,13 @@ export class DatabaseService {
 
     const result: any = {};
     for (const key of Object.keys(source)) {
-      const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
-      const finalKey = (table === 'users' && snakeKey === 'uid') ? 'id' : snakeKey;
+      // Only snake_case the key if it's not likely an ID (e.g. 20 chars for Firebase UID)
+      let finalKey = key;
+      if (key.length < 20 || !/[0-9]/.test(key)) {
+        const snakeKey = this.camelToSnake(key);
+        finalKey = (table === 'users' && snakeKey === 'uid') ? 'id' : snakeKey;
+      }
+      
       result[finalKey] = this.toSnakeCase(source[key], table);
     }
     return result;
@@ -100,7 +127,7 @@ export class DatabaseService {
 
     // Apply additional conditions (mapping keys to snake_case)
     Object.entries(conditions).forEach(([key, value]) => {
-      const snakeKey = this.toSnakeCase(key, table);
+      const snakeKey = this.camelToSnake(key);
       finalQuery = finalQuery.eq(snakeKey, value);
     });
 
