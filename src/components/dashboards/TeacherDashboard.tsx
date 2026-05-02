@@ -20,6 +20,13 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
   const [loading, setLoading] = useState(true);
   const [selectedClassForStudents, setSelectedClassForStudents] = useState<string | null>(null);
 
+  const teacherClassIds = Array.from(new Set([
+    ...(user.classId ? [user.classId] : []),
+    ...subjects.map(s => s.classId)
+  ]));
+
+  const teacherClasses = classes.filter(c => teacherClassIds.includes(c.id));
+
   useEffect(() => {
     if (!user.schoolId || !user.uid) {
       setLoading(false);
@@ -379,23 +386,23 @@ export const TeacherDashboard = ({ user, onLogout, school }: { user: UserProfile
         </AnimatePresence>
 
         {activeTab === 'assignments' && (
-          <TeacherAssignments user={user} subjects={subjects} classes={classes} />
+          <TeacherAssignments user={user} subjects={subjects} classes={teacherClasses} />
         )}
 
         {activeTab === 'quizzes' && (
-          <TeacherQuizzes user={user} subjects={subjects} classes={classes} />
+          <TeacherQuizzes user={user} subjects={subjects} classes={teacherClasses} />
         )}
 
         {activeTab === 'results' && (
-          <TeacherResultWorkspace user={user} />
+          <TeacherResultWorkspace user={user} classes={teacherClasses} subjects={subjects} />
         )}
 
         {activeTab === 'attendance' && (
-          <TeacherAttendance user={user} />
+          <TeacherAttendance user={user} classes={teacherClasses} />
         )}
 
         {activeTab === 'timetable' && (
-          <ClassTimetable user={user} mode="view" />
+          <ClassTimetable user={user} mode="view" classes={teacherClasses} />
         )}
       </div>
     </div>

@@ -16,10 +16,10 @@ import { sortByName, sortByFullName, formatDisplayString } from '../../lib/utils
 
 interface TeacherAttendanceProps {
   user: UserProfile;
+  classes: Class[];
 }
 
-const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
-  const [classes, setClasses] = useState<Class[]>([]);
+const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user, classes }) => {
   const [selectedClass, setSelectedClass] = useState<string>('');
   const [students, setStudents] = useState<UserProfile[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
@@ -29,18 +29,13 @@ const TeacherAttendance: React.FC<TeacherAttendanceProps> = ({ user }) => {
   const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
-    if (!user.schoolId) return;
-    const unsubClasses = onSnapshot(collection(db, 'schools', user.schoolId, 'classes'), (snap) => {
-      const clsData = snap.docs.map(d => ({ id: d.id, ...d.data() } as Class));
-      const sortedClasses = sortByName(clsData) as Class[];
-      setClasses(sortedClasses);
-      if (sortedClasses.length > 0 && !selectedClass) {
-        setSelectedClass(sortedClasses[0].id);
-      }
-      setLoading(false);
-    }, (error) => handleFirestoreError(error, OperationType.GET, 'classes'));
-    return () => unsubClasses();
-  }, [user.schoolId]);
+    if (classes.length > 0 && !selectedClass) {
+      // Prioritize user's assigned class if it's in the list
+      const defaultClass = classes.find(c => c.id === user.classId) || classes[0];
+      setSelectedClass(defaultClass.id);
+    }
+    setLoading(false);
+  }, [classes, user.classId]);
 
   useEffect(() => {
     if (!user.schoolId || !selectedClass) return;

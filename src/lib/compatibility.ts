@@ -101,10 +101,23 @@ export const collection = (db: any, ...pathSegments: string[]) => {
 export const doc = (db: any, pathOrCollection: any, ...pathSegments: string[]) => {
   let path = getPath(pathOrCollection);
   if (pathSegments.length > 0) {
-    path = (path + '/' + pathSegments.join('/')).replace(/\/+/g, '/');
+    const joined = pathSegments.join('/');
+    if (joined.includes('//')) {
+       console.warn(`Malformed path detected: ${path}/${joined}`);
+    }
+    path = (path + '/' + joined).replace(/\/+/g, '/');
   }
 
   const segments = path.split('/').filter(Boolean);
+  
+  // Safety check for empty segments that might have been filtered out but indicate a problem
+  if (path.includes('//') || path.startsWith('/') || path.endsWith('/')) {
+     const cleanPath = path.split('/').filter(Boolean).join('/');
+     if (cleanPath.split('/').length < segments.length) {
+       console.error(`Invalid path segments in: "${path}"`);
+     }
+  }
+
   if (segments.length % 2 !== 0) {
     // Auto-generate ID if it's a collection path
     const randomId = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);

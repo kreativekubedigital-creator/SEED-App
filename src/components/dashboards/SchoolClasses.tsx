@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from'react';
-import { db, collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot, query, where, handleFirestoreError, OperationType } from'../../lib/compatibility';
+import { db, collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot, query, where, handleFirestoreError, OperationType, writeBatch, getDocs } from'../../lib/compatibility';
 import { Class, School, Subject, UserProfile } from'../../types';
 import { BookOpen, Plus, Trash2, X, ChevronDown, ChevronUp } from'lucide-react';
 import { motion, AnimatePresence } from'motion/react';
@@ -189,29 +189,126 @@ export const SchoolClasses = ({ school }: { school: School }) => {
  }
  };
 
- const handleDeleteClass = async () => {
- if (!classToDelete) return;
- try {
- await deleteDoc(doc(db,`schools/${ school.id }/classes`, classToDelete));
- } catch (err: any) {
- console.error("Error deleting class:", err);
- handleFirestoreError(err, OperationType.DELETE,`schools/${ school.id }/classes/${ classToDelete }`);
- } finally {
- setClassToDelete(null);
- }
- };
+  const handleDeleteClass = async () => {
+    if (!classToDelete) return;
+    setLoading(true);
+    try {
+      const batch = writeBatch(db);
+      
+      // 1. Delete the class itself
+      batch.delete(doc(db, `schools/${ school.id }/classes`, classToDelete));
+      
+      // 2. Find and delete all subjects for this class
+      const subjectsQuery = query(
+        collection(db, 'schools', school.id, 'subjects'),
+        where('classId', '==', classToDelete)
+      );
+      const subjectsSnap = await getDocs(subjectsQuery);
+      
+      for (const subjectDoc of subjectsSnap.docs) {
+        batch.delete(subjectDoc.ref);
+        
+        // 3. Find and delete all assignments for this subject
+        const assignmentsQuery = query(
+          collection(db, 'schools', school.id, 'assignments'),
+          where('subjectId', '==', subjectDoc.id)
+        );
+        const assignmentsSnap = await getDocs(assignmentsQuery);
+        for (const assignDoc of assignmentsSnap.docs) {
+          batch.delete(assignDoc.ref);
+          
+          // 3.1 Find and delete all submissions for each assignment
+          const submissionsQuery = query(
+            collection(db, 'schools', school.id, 'assignmentSubmissions'),
+            where('assignmentId', '==', assignDoc.id)
+          );
+          const submissionsSnap = await getDocs(submissionsQuery);
+          submissionsSnap.docs.forEach(subDoc => batch.delete(subDoc.ref));
+        }
+        
+        // 4. Find and delete all quizzes for this subject
+        const quizzesQuery = query(
+          collection(db, 'schools', school.id, 'quizzes'),
+          where('subjectId', '==', subjectDoc.id)
+        );
+        const quizzesSnap = await getDocs(quizzesQuery);
+        for (const quizDoc of quizzesSnap.docs) {
+          batch.delete(quizDoc.ref);
+          
+          // 4.1 Find and delete all results for each quiz
+          const resultsQuery = query(
+            collection(db, 'schools', school.id, 'results'),
+            where('quizId', '==', quizDoc.id)
+          );
+          const resultsSnap = await getDocs(resultsQuery);
+          resultsSnap.docs.forEach(resDoc => batch.delete(resDoc.ref));
+        }
+      }
 
- const handleDeleteSubject = async () => {
- if (!subjectToDelete) return;
- try {
- await deleteDoc(doc(db,'schools', school.id,'subjects', subjectToDelete));
- } catch (err: any) {
- console.error("Error deleting subject:", err);
- handleFirestoreError(err, OperationType.DELETE,`subjects/${ subjectToDelete }`);
- } finally {
- setSubjectToDelete(null);
- }
- };
+      await batch.commit();
+    } catch (err: any) {
+      console.error("Error deleting class:", err);
+      handleFirestoreError(err, OperationType.DELETE, `schools/${ school.id }/classes/${ classToDelete }`);
+    } finally {
+      setClassToDelete(null);
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteSubject = async () => {
+    if (!subjectToDelete) return;
+    setLoading(true);
+    try {
+      const batch = writeBatch(db);
+      
+      // 1. Delete the subject itself
+      batch.delete(doc(db, 'schools', school.id, 'subjects', subjectToDelete));
+      
+      // 2. Find and delete all assignments for this subject
+      const assignmentsQuery = query(
+        collection(db, 'schools', school.id, 'assignments'),
+        where('subjectId', '==', subjectToDelete)
+      );
+      const assignmentsSnap = await getDocs(assignmentsQuery);
+      for (const assignDoc of assignmentsSnap.docs) {
+        batch.delete(assignDoc.ref);
+        
+        // 2.1 Find and delete all submissions for each assignment
+        const submissionsQuery = query(
+          collection(db, 'schools', school.id, 'assignmentSubmissions'),
+          where('assignmentId', '==', assignDoc.id)
+        );
+        const submissionsSnap = await getDocs(submissionsQuery);
+        submissionsSnap.docs.forEach(subDoc => batch.delete(subDoc.ref));
+      }
+      
+      // 3. Find and delete all quizzes for this subject
+      const quizzesQuery = query(
+        collection(db, 'schools', school.id, 'quizzes'),
+        where('subjectId', '==', subjectToDelete)
+      );
+      const quizzesSnap = await getDocs(quizzesQuery);
+      for (const quizDoc of quizzesSnap.docs) {
+        batch.delete(quizDoc.ref);
+        
+        // 3.1 Find and delete all results for each quiz
+        const resultsQuery = query(
+          collection(db, 'schools', school.id, 'results'),
+          where('quizId', '==', quizDoc.id)
+        );
+        const resultsSnap = await getDocs(resultsQuery);
+        resultsSnap.docs.forEach(resDoc => batch.delete(resDoc.ref));
+      }
+
+      await batch.commit();
+    } catch (err: any) {
+      console.error("Error deleting subject:", err);
+      handleFirestoreError(err, OperationType.DELETE, `subjects/${ subjectToDelete }`);
+    } finally {
+      setSubjectToDelete(null);
+      setLoading(false);
+    }
+  };
 
  const filteredClasses = classes.filter(c => c.level === activeLevel || (!c.level && activeLevel  === 'primary'));
 

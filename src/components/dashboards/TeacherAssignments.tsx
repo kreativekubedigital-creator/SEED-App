@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db, collection, query, where, onSnapshot, updateDoc, doc, addDoc, deleteDoc, writeBatch, handleFirestoreError, OperationType } from '../../lib/compatibility';
+import { db, collection, getDocs, query, where, onSnapshot, updateDoc, doc, addDoc, deleteDoc, writeBatch, handleFirestoreError, OperationType } from '../../lib/compatibility';
 import { UserProfile, Assignment, AssignmentSubmission, Subject, Class } from '../../types';
 import { 
   Plus, 
@@ -145,7 +145,22 @@ export const TeacherAssignments = ({ user, subjects, classes }: TeacherAssignmen
   const handleDeleteAssignment = async () => {
     if (!assignmentToDelete || !user.schoolId) return;
     try {
-      await deleteDoc(doc(db, 'schools', user.schoolId, 'assignments', assignmentToDelete));
+      const batch = writeBatch(db);
+      
+      // 1. Delete the assignment itself
+      batch.delete(doc(db, 'schools', user.schoolId, 'assignments', assignmentToDelete));
+      
+      // 2. Find and delete all submissions for this assignment
+      const submissionsQuery = query(
+        collection(db, 'schools', user.schoolId, 'assignmentSubmissions'), 
+        where('assignmentId', '==', assignmentToDelete)
+      );
+      const submissionsSnap = await getDocs(submissionsQuery);
+      submissionsSnap.docs.forEach(subDoc => {
+        batch.delete(subDoc.ref);
+      });
+
+      await batch.commit();
       setAssignments(assignments.filter(a => a.id !== assignmentToDelete));
     } catch (error) {
       handleFirestoreError(error, OperationType.DELETE, `assignments/${assignmentToDelete}`);

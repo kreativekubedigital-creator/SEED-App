@@ -36,7 +36,7 @@ import {
   AlertCircle
  } from'lucide-react';
 import { motion, AnimatePresence } from'motion/react';
-import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, where, onSnapshot, OperationType, handleFirestoreError, setDoc, secondaryAuth, createUserWithEmailAndPassword, sendPasswordResetEmail, auth } from'../../lib/compatibility';
+import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, where, onSnapshot, OperationType, handleFirestoreError, setDoc, secondaryAuth, createUserWithEmailAndPassword, sendPasswordResetEmail, auth, writeBatch } from'../../lib/compatibility';
 import { SchoolClasses } from'./SchoolClasses';
 import { SchoolAnnouncements } from'./SchoolAnnouncements';
 import { SchoolSettings } from'./SchoolSettings';
@@ -366,17 +366,65 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  setUserToDelete(uid);
  };
 
- const confirmDelete = async () => {
- if (!userToDelete) return;
- try {
- await deleteDoc(doc(db,'users', userToDelete));
- setSuccess("User removed successfully");
- } catch (error) {
- handleFirestoreError(error, OperationType.DELETE,'users');
- }
- setUserToDelete(null);
- setTimeout(() => setSuccess(null), 3000);
- };
+  const confirmDelete = async () => {
+    if (!userToDelete) return;
+    const userToCleanup = users.find(u => u.uid === userToDelete);
+    
+    setLoading(true);
+    try {
+      const batch = writeBatch(db);
+      
+      // 1. Delete user document
+      batch.delete(doc(db, 'users', userToDelete));
+      
+      if (userToCleanup) {
+        // 2. Cleanup based on role
+        if (userToCleanup.role === 'student') {
+          // Cleanup student submissions
+          const submissionsQuery = query(
+            collection(db, 'schools', school.id, 'assignmentSubmissions'),
+            where('studentId', '==', userToDelete)
+          );
+          const submissionsSnap = await getDocs(submissionsQuery);
+          submissionsSnap.docs.forEach(d => batch.delete(d.ref));
+
+          // Cleanup results
+          const resultsQuery = query(
+            collection(db, 'schools', school.id, 'results'),
+            where('studentId', '==', userToDelete)
+          );
+          const resultsSnap = await getDocs(resultsQuery);
+          resultsSnap.docs.forEach(d => batch.delete(d.ref));
+          
+          // Cleanup invoices
+          const invoicesQuery = query(
+            collection(db, 'schools', school.id, 'invoices'),
+            where('studentId', '==', userToDelete)
+          );
+          const invoicesSnap = await getDocs(invoicesQuery);
+          invoicesSnap.docs.forEach(d => batch.delete(d.ref));
+
+          // Cleanup payments
+          const paymentsQuery = query(
+            collection(db, 'schools', school.id, 'payments'),
+            where('studentId', '==', userToDelete)
+          );
+          const paymentsSnap = await getDocs(paymentsQuery);
+          paymentsSnap.docs.forEach(d => batch.delete(d.ref));
+        }
+      }
+
+      await batch.commit();
+      setSuccess("User removed successfully with all associated data");
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      handleFirestoreError(error, OperationType.DELETE, 'users');
+    } finally {
+      setUserToDelete(null);
+      setLoading(false);
+      setTimeout(() => setSuccess(null), 3000);
+    }
+  };
 
  const handleResetPassword = async (email: string) => {
  try {

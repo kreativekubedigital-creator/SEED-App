@@ -8,12 +8,13 @@ interface ClassTimetableProps {
   user: UserProfile;
   mode: 'view' | 'edit';
   studentClassId?: string; // For students/parents viewing a specific class
+  classes?: Class[]; // Optional, passed for teachers to restrict selection
 }
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-const ClassTimetable: React.FC<ClassTimetableProps> = ({ user, mode, studentClassId }) => {
-  const [classes, setClasses] = useState<Class[]>([]);
+const ClassTimetable: React.FC<ClassTimetableProps> = ({ user, mode, studentClassId, classes: passedClasses }) => {
+  const [internalClasses, setInternalClasses] = useState<Class[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [selectedClass, setSelectedClass] = useState<string>(studentClassId || '');
   const [timetable, setTimetable] = useState<Timetable | null>(null);
@@ -26,6 +27,8 @@ const ClassTimetable: React.FC<ClassTimetableProps> = ({ user, mode, studentClas
     Monday: [], Tuesday: [], Wednesday: [], Thursday: [], Friday: []
   });
 
+  const classes = passedClasses || internalClasses;
+
   useEffect(() => {
     if (!user.schoolId) return;
     
@@ -35,19 +38,26 @@ const ClassTimetable: React.FC<ClassTimetableProps> = ({ user, mode, studentClas
     });
 
     if (mode === 'edit' || !studentClassId) {
-      const unsubClasses = onSnapshot(collection(db, 'schools', user.schoolId, 'classes'), (snap) => {
-        const clsData = snap.docs.map(d => ({ id: d.id, ...d.data() } as Class));
-        const sortedClasses = sortByName(clsData) as Class[];
-        setClasses(sortedClasses);
-        if (sortedClasses.length > 0 && !selectedClass) {
-          setSelectedClass(sortedClasses[0].id);
+      if (passedClasses) {
+        if (passedClasses.length > 0 && !selectedClass) {
+          setSelectedClass(passedClasses[0].id);
         }
         setLoading(false);
-      });
-      return () => {
-        unsubSubjects();
-        unsubClasses();
-      };
+      } else {
+        const unsubClasses = onSnapshot(collection(db, 'schools', user.schoolId, 'classes'), (snap) => {
+          const clsData = snap.docs.map(d => ({ id: d.id, ...d.data() } as Class));
+          const sortedClasses = sortByName(clsData) as Class[];
+          setInternalClasses(sortedClasses);
+          if (sortedClasses.length > 0 && !selectedClass) {
+            setSelectedClass(sortedClasses[0].id);
+          }
+          setLoading(false);
+        });
+        return () => {
+          unsubSubjects();
+          unsubClasses();
+        };
+      }
     } else {
       setLoading(false);
       return () => unsubSubjects();

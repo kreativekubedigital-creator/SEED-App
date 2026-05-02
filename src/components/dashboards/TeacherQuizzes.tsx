@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db, collection, getDocs, query, where, addDoc, doc, deleteDoc, onSnapshot, handleFirestoreError, OperationType } from '../../lib/compatibility';
+import { db, collection, getDocs, query, where, addDoc, doc, deleteDoc, onSnapshot, writeBatch, handleFirestoreError, OperationType } from '../../lib/compatibility';
 import { UserProfile, Quiz, Subject, Class, Result } from '../../types';
 import { Plus, Trash2, CheckCircle2, Circle, CheckSquare, Eye, X, PlusCircle, FileQuestion, ChevronRight, Clock, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -19,6 +19,15 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
     timeLimit: 10,
     questions: [{ question: '', options: ['', '', '', ''], correctOption: 0 }]
   });
+
+  const [selectedClass, setSelectedClass] = useState<string>('');
+
+  useEffect(() => {
+    if (classes.length > 0 && !selectedClass) {
+      // Initialize with 'all' instead of a specific class to give an overview by default
+      setSelectedClass('all');
+    }
+  }, [classes, selectedClass]);
 
   useEffect(() => {
     if (!user.schoolId || !user.uid) {
@@ -127,11 +136,27 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
   const [quizToDelete, setQuizToDelete] = useState<string | null>(null);
 
   const handleDeleteQuiz = async () => {
-    if (!quizToDelete) return;
+    if (!quizToDelete || !user.schoolId) return;
     try {
-      await deleteDoc(doc(db, 'schools', user.schoolId, 'quizzes', quizToDelete));
+      const batch = writeBatch(db);
+      
+      // 1. Delete the quiz itself
+      batch.delete(doc(db, 'schools', user.schoolId, 'quizzes', quizToDelete));
+      
+      // 2. Find and delete all results for this quiz
+      const resultsQuery = query(
+        collection(db, 'schools', user.schoolId, 'results'), 
+        where('quizId', '==', quizToDelete)
+      );
+      const resultsSnap = await getDocs(resultsQuery);
+      resultsSnap.docs.forEach(resDoc => {
+        batch.delete(resDoc.ref);
+      });
+
+      await batch.commit();
+      setQuizzes(quizzes.filter(q => q.id !== quizToDelete));
     } catch (error) {
-      console.error("Error deleting quiz:", error);
+      handleFirestoreError(error, OperationType.DELETE, `quizzes/${quizToDelete}`);
     } finally {
       setQuizToDelete(null);
     }
@@ -172,9 +197,11 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
         <div className="flex items-center gap-2 w-full lg:w-auto">
           <div className="relative group min-w-[160px]">
             <select
+              value={selectedClass}
+              onChange={(e) => setSelectedClass(e.target.value)}
               className="w-full appearance-none px-4 py-2 rounded-xl border border-slate-200 bg-white hover:border-slate-300 focus:border-blue-500 outline-none transition-all font-medium tracking-tighter text-[10px] text-slate-900 cursor-pointer shadow-sm uppercase"
             >
-              <option value="">All Classes</option>
+              <option value="all">ALL CLASSES</option>
               {classes.map(c => <option key={c.id} value={c.id}>{formatDisplayString(c.name)}</option>)}
             </select>
           </div>
@@ -341,7 +368,7 @@ export const TeacherQuizzes = ({ user, subjects, classes }: { user: UserProfile,
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {quizzes.map(quiz => {
+        {quizzes.filter(q => selectedClass === 'all' || q.classId === selectedClass).map(quiz => {
           return (
             <motion.div
               key={quiz.id}

@@ -9,13 +9,13 @@ import autoTable from 'jspdf-autotable';
 
 interface TeacherResultWorkspaceProps {
   user: UserProfile;
+  classes: Class[];
+  subjects: Subject[];
 }
 
-export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) => {
+export const TeacherResultWorkspace = ({ user, classes, subjects: allSubjects }: TeacherResultWorkspaceProps) => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [terms, setTerms] = useState<Term[]>([]);
-  const [classes, setClasses] = useState<Class[]>([]);
-  const [allSubjects, setAllSubjects] = useState<Subject[]>([]);
   const [students, setStudents] = useState<UserProfile[]>([]);
   const [gradeScale, setGradeScale] = useState<GradeScale | null>(null);
   const [school, setSchool] = useState<any>(null);
@@ -64,16 +64,6 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
       if (current && !selectedSession) setSelectedSession(current.id);
     }, (error) => handleFirestoreError(error, OperationType.GET, `schools/${user.schoolId}/sessions`));
 
-    const unsubClasses = onSnapshot(collection(db, 'schools', user.schoolId, 'classes'), (snap) => {
-      const data = snap.docs.map(d => ({ id: d.id, ...d.data() } as Class));
-      setClasses(sortByName(data));
-    }, (error) => handleFirestoreError(error, OperationType.GET, `schools/${user.schoolId}/classes`));
-
-    const unsubSubjects = onSnapshot(collection(db, 'schools', user.schoolId, 'subjects'), (snap) => {
-      const data = snap.docs.map(d => ({ id: d.id, ...d.data() } as Subject));
-      setAllSubjects(sortByName(data));
-    }, (error) => handleFirestoreError(error, OperationType.GET, `schools/${user.schoolId}/subjects`));
-
     const unsubGradeScale = onSnapshot(collection(db, 'schools', user.schoolId, 'gradeScales'), (snap) => {
       if (!snap.empty) {
         setGradeScale({ id: snap.docs[0].id, ...snap.docs[0].data() } as GradeScale);
@@ -85,8 +75,6 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
     return () => {
       unsubSchool();
       unsubSessions();
-      unsubClasses();
-      unsubSubjects();
       unsubGradeScale();
     };
   }, [user.schoolId]);
@@ -112,13 +100,18 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
     );
   }, [classes, allSubjects, user.classId, user.uid, user.role]);
 
+  const teacherClassIds = useMemo(() => availableClasses.map(c => c.id), [availableClasses]);
+
   const availableSubjects = useMemo(() => {
     if (!selectedClass) return [];
+    if (selectedClass === 'all') {
+      return allSubjects.filter(s => s.teacherId === user.uid || (user.role !== 'teacher' && teacherClassIds.includes(s.classId)));
+    }
     if (user.role !== 'teacher') return allSubjects.filter(s => s.classId === selectedClass);
     return allSubjects.filter(s => 
       s.classId === selectedClass && (s.teacherId === user.uid || user.classId === selectedClass)
     );
-  }, [allSubjects, selectedClass, user.uid, user.classId, user.role]);
+  }, [allSubjects, selectedClass, user.uid, user.classId, user.role, teacherClassIds]);
 
   useEffect(() => {
     if (!selectedClass) {
@@ -131,7 +124,15 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
       setSelectedSubject('');
     }
 
-    const unsubStudents = onSnapshot(query(collection(db, 'users'), where('schoolId', '==', user.schoolId), where('classId', '==', selectedClass)), (snap) => {
+    const classFilter = selectedClass === 'all' 
+      ? where('classId', 'in', teacherClassIds)
+      : where('classId', '==', selectedClass);
+
+    const unsubStudents = onSnapshot(query(
+      collection(db, 'users'), 
+      where('schoolId', '==', user.schoolId), 
+      classFilter
+    ), (snap) => {
       const data = snap.docs.map(d => ({ uid: d.id, ...d.data() } as UserProfile)).filter(u => u.role === 'student');
       setStudents(sortByFullName(data));
     }, (error) => handleFirestoreError(error, OperationType.GET, 'users'));
@@ -139,15 +140,19 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
     return () => {
       unsubStudents();
     };
-  }, [selectedClass, user.schoolId, availableSubjects]);
+  }, [selectedClass, user.schoolId, availableSubjects, teacherClassIds]);
 
   useEffect(() => {
     if (!selectedSession || !selectedTerm || !selectedClass || !selectedSubject || students.length === 0) return;
 
     setLoading(true);
+    const classFilter = selectedClass === 'all'
+      ? where('classId', 'in', teacherClassIds)
+      : where('classId', '==', selectedClass);
+
     const qResults = query(
       collection(db, 'schools', user.schoolId, 'results'),
-      where('classId', '==', selectedClass)
+      classFilter
     );
 
     const unsubResults = onSnapshot(qResults, (snap) => {
@@ -162,6 +167,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
       const initialScores: Record<string, Partial<Result>> = {};
       students.forEach(student => {
         initialScores[student.uid] = existingScores[student.uid] || {
+          classId: student.classId, // Ensure classId is preserved
           ca1: null, ca2: null, ca3: null, cas: {}, exam: null, caTotal: 0, finalScore: 0, grade: '', remark: '', status: 'draft'
         };
       });
@@ -173,7 +179,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
     });
 
     return () => unsubResults();
-  }, [selectedSession, selectedTerm, selectedClass, selectedSubject, students, user.schoolId]);
+  }, [selectedSession, selectedTerm, selectedClass, selectedSubject, students, user.schoolId, teacherClassIds]);
 
   useEffect(() => {
     if (!selectedSession || !selectedTerm || !selectedClass || !user.schoolId) {
@@ -181,9 +187,13 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
       return;
     }
 
+    const classFilter = selectedClass === 'all'
+      ? where('classId', 'in', teacherClassIds)
+      : where('classId', '==', selectedClass);
+
     const qInvoices = query(
       collection(db, 'schools', user.schoolId, 'invoices'),
-      where('classId', '==', selectedClass),
+      classFilter,
       where('sessionId', '==', selectedSession),
       where('termId', '==', selectedTerm)
     );
@@ -198,7 +208,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
     }, (error) => handleFirestoreError(error, OperationType.GET, `schools/${user.schoolId}/invoices`));
 
     return () => unsubInvoices();
-  }, [selectedSession, selectedTerm, selectedClass, user.schoolId]);
+  }, [selectedSession, selectedTerm, selectedClass, user.schoolId, teacherClassIds]);
 
   const filteredStudents = useMemo(() => {
     if (paymentFilter === 'all') return students;
@@ -347,6 +357,11 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
       return;
     }
 
+    if (!user.schoolId) {
+      showMessage('error', 'School ID is missing. Please contact support.');
+      return;
+    }
+
     setSaving(true);
     try {
       const batch = writeBatch(db);
@@ -358,10 +373,11 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
           continue;
         }
 
+        const student = students.find(s => s.uid === studentId);
         const resultData = {
           studentId,
           subjectId: selectedSubject,
-          classId: selectedClass,
+          classId: scoreData.classId || student?.classId || (selectedClass !== 'all' ? selectedClass : ''),
           schoolId: user.schoolId,
           sessionId: selectedSession,
           termId: selectedTerm,
@@ -403,6 +419,12 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
 
   const archiveResults = async () => {
     if (!window.confirm("Are you sure you want to archive these results? This will make them read-only and historical.")) return;
+    
+    if (!user.schoolId) {
+      showMessage('error', 'School ID is missing. Please contact support.');
+      return;
+    }
+
     setSaving(true);
     try {
       const batch = writeBatch(db);
@@ -677,6 +699,7 @@ export const TeacherResultWorkspace = ({ user }: TeacherResultWorkspaceProps) =>
               className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50/30 focus:bg-white focus:border-slate-950 focus:ring-4 focus:ring-slate-950/5 outline-none transition-all font-medium tracking-tight text-base text-slate-900"
             >
               <option value="">Select Class</option>
+              {availableClasses.length > 1 && <option value="all">All My Classes</option>}
                {availableClasses.map(c => <option key={c.id} value={c.id}>{formatDisplayString(c.name)}</option>)}
             </select>
           </div>

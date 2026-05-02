@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile, School, Invoice, Payment } from'../../types';
 import { DEFAULT_PLANS } from'../../constants';
-import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, OperationType, handleFirestoreError, query, where, onSnapshot, secondaryAuth, createUserWithEmailAndPassword, setDoc, logAuditAction, limit, orderBy } from'../../lib/compatibility';
+import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, OperationType, handleFirestoreError, query, where, onSnapshot, secondaryAuth, createUserWithEmailAndPassword, setDoc, logAuditAction, limit, orderBy, writeBatch } from'../../lib/compatibility';
 import { LogOut, Plus, Shield, CreditCard, Users, School as SchoolIcon, Trash2, CheckCircle, Settings, Search, MoreVertical, ExternalLink, ArrowRight, LayoutDashboard, X, Activity, History, Database, Globe, DollarSign, Menu, Eye, Upload } from'lucide-react';
 import { SchoolManagement } from'./SchoolManagement';
 import { sortByName, cn, formatDisplayString } from'../../lib/utils';
@@ -309,15 +309,55 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  const handleDeleteSchool = async () => {
  if (!showDeleteConfirm) return;
  const id = showDeleteConfirm;
- try {
+    setLoading(true);
+    try {
  setError(null);
  const schoolToPurge = schools.find(s => s.id === id);
- await deleteDoc(doc(db,'schools', id));
+      // We'll use a chunked batch approach to handle large amounts of data (Firestore limit 500 per batch)
+      let batch = writeBatch(db);
+      let count = 0;
+      
+      const commitIfNeeded = async () => {
+        if (count >= 400) {
+          await batch.commit();
+          batch = writeBatch(db);
+          count = 0;
+        }
+      };
+
+      // 1. Delete all users for this school
+      const usersQuery = query(collection(db, 'users'), where('schoolId', '==', id));
+      const usersSnap = await getDocs(usersQuery);
+      for (const userDoc of usersSnap.docs) {
+        batch.delete(userDoc.ref);
+        count++;
+        await commitIfNeeded();
+      }
+      
+      // 2. Delete all sub-collections
+      const collectionsToCleanup = [
+        'classes', 'subjects', 'assignments', 'assignmentSubmissions', 
+        'quizzes', 'results', 'sessions', 'terms', 'announcements', 
+        'attendanceRecords', 'timetables', 'feeStructures', 'invoices', 'payments'
+      ];
+      
+      for (const collName of collectionsToCleanup) {
+        const collSnap = await getDocs(collection(db, 'schools', id, collName));
+        for (const docSnap of collSnap.docs) {
+          batch.delete(docSnap.ref);
+          count++;
+          await commitIfNeeded();
+        }
+      }
+      
+      // 3. Finally delete the school document itself
+      batch.delete(doc(db, 'schools', id));
+      await batch.commit();
  if (schoolToPurge) {
  await logAuditAction('DELETE_SCHOOL',`Deleted school: ${ schoolToPurge.name }`, id,'school');
  }
- setSuccess("School deleted successfully");
- } catch (error) {
+      setSuccess("School deleted successfully with all associated data");
+    } catch (error: any) {
  console.error("Failed to delete school:", error);
  try {
  handleFirestoreError(error, OperationType.DELETE,'schools');
@@ -325,7 +365,8 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  setError(`Failed to delete school: ${ err.message }`);
  }
  }
- setShowDeleteConfirm(null);
+    setLoading(false);
+    setShowDeleteConfirm(null);
  setTimeout(() => setSuccess(null), 3000);
  };
 

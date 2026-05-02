@@ -10,15 +10,24 @@ export class DatabaseService {
   }
 
   private static parsePath(path: string): { table: string; documentId?: string; filters: Record<string, any> } {
-    if (!path) return { table: '', filters: {} };
+    if (!path) {
+      throw new Error("Invalid path: Path is empty or undefined");
+    }
     const parts = path.split('/').filter(Boolean);
-    if (parts.length === 0) return { table: '', filters: {} };
+    if (parts.length === 0) {
+      throw new Error(`Invalid path: "${path}" contains no valid segments`);
+    }
 
     const isDocument = parts.length % 2 === 0;
     
     const tableIndex = isDocument ? parts.length - 2 : parts.length - 1;
+    if (tableIndex < 0) {
+      throw new Error(`Invalid path: "${path}" is too short to determine a table name`);
+    }
     const rawTable = parts[tableIndex];
-    if (!rawTable) return { table: '', filters: {} };
+    if (!rawTable) {
+      throw new Error(`Invalid path: Could not determine table name from "${path}"`);
+    }
     
     const table = this.toSnake(rawTable);
     const documentId = isDocument ? parts[parts.length - 1] : undefined;
