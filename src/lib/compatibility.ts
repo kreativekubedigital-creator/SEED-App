@@ -228,7 +228,8 @@ export const getDocs = async (queryOrPath: any) => {
 
   const { conditions, inFilters, sortField, sortDirection, limitCount } = extractQueryMeta(constraints);
 
-  const data = await DatabaseService.getItems(path, conditions);
+  const data = await DatabaseService.getItems(path, conditions, inFilters);
+
   const processed = applyPostProcessing(data, inFilters, sortField, sortDirection, limitCount);
 
   return {
@@ -285,6 +286,7 @@ export const onSnapshot = (queryObj: any, callback: any, errorCallback?: (error:
   const { conditions, inFilters, sortField, sortDirection, limitCount } = extractQueryMeta(constraints);
 
   const subscription = DatabaseService.subscribe(path, (data) => {
+
     try {
       const processed = applyPostProcessing(data, inFilters, sortField, sortDirection, limitCount);
 
@@ -309,7 +311,8 @@ export const onSnapshot = (queryObj: any, callback: any, errorCallback?: (error:
       if (errorCallback) errorCallback(err);
       else console.error('onSnapshot processing error:', err);
     }
-  }, conditions);
+  }, conditions, inFilters);
+
 
   return () => {
     supabase.removeChannel(subscription);

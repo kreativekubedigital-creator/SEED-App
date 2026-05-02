@@ -10,15 +10,17 @@ import { motion, AnimatePresence, useScroll, useTransform } from'motion/react';
 import { cn, formatDisplayString } from'./lib/utils';
 
 
-// Dashboards
-import { SuperAdminDashboard } from'./components/dashboards/SuperAdminDashboard';
-import { SchoolAdminDashboard } from'./components/dashboards/SchoolAdminDashboard';
-import { TeacherDashboard } from'./components/dashboards/TeacherDashboard';
-import { StudentDashboard } from'./components/dashboards/StudentDashboard';
-import { ParentDashboard } from'./components/dashboards/ParentDashboard';
-import { UserProfile as UserProfileComponent } from'./components/UserProfile';
-import { LandingPage } from'./components/LandingPage';
-import { PasswordChangeModal } from './components/PasswordChangeModal';
+
+// Dashboards - Lazy Loaded
+const SuperAdminDashboard = React.lazy(() => import('./components/dashboards/SuperAdminDashboard').then(m => ({ default: m.SuperAdminDashboard })));
+const SchoolAdminDashboard = React.lazy(() => import('./components/dashboards/SchoolAdminDashboard').then(m => ({ default: m.SchoolAdminDashboard })));
+const TeacherDashboard = React.lazy(() => import('./components/dashboards/TeacherDashboard').then(m => ({ default: m.TeacherDashboard })));
+const StudentDashboard = React.lazy(() => import('./components/dashboards/StudentDashboard').then(m => ({ default: m.StudentDashboard })));
+const ParentDashboard = React.lazy(() => import('./components/dashboards/ParentDashboard').then(m => ({ default: m.ParentDashboard })));
+const UserProfileComponent = React.lazy(() => import('./components/UserProfile').then(m => ({ default: m.UserProfile })));
+const LandingPage = React.lazy(() => import('./components/LandingPage').then(m => ({ default: m.LandingPage })));
+const PasswordChangeModal = React.lazy(() => import('./components/PasswordChangeModal').then(m => ({ default: m.PasswordChangeModal })));
+
 const SUPER_ADMIN_EMAILS = ['kreativekubesolutions@gmail.com', 'seedd.ng@gmail.com', 'abahjohnakor@gmail.com'];
 
 // --- Components ---
@@ -1150,17 +1152,19 @@ export default function App() {
   )}
   {!isDashboardView && !tenantSchool && !['/login', '/super-admin'].includes(location.pathname) && <Navbar user={ user } onLogout={ handleLogout } tenantSchool={ tenantSchool } logoVariant={ logoVariant } />}
  <main className={ cn("flex-grow", isDashboardView && "pt-0") }>
- <AnimatePresence mode="wait">
- <Routes location={ location } key={ location.pathname }>
- <Route path="/" element={ tenantSchool ? <Navigate to="/login" /> : <PageWrapper><LandingPage /></PageWrapper> } />
- <Route path="/login" element={ (user?.schoolId || user?.role === 'super_admin') ? <Navigate to="/dashboard" /> : <PageWrapper><LoginPage onLogin={ setUser } tenantSchool={ tenantSchool } subdomainNotFound={ subdomainNotFound } logoVariant={ logoVariant } /></PageWrapper> } />
- <Route path="/super-admin"element={ user ? <Navigate to="/dashboard"/> : <PageWrapper><LoginPage onLogin={ setUser } tenantSchool={ tenantSchool } subdomainNotFound={ subdomainNotFound } logoVariant={ logoVariant } /></PageWrapper>} />
- <Route path="/dashboard/*"element={ user?.schoolId || user?.role  === 'super_admin'? <PageWrapper><DashboardRouter user={ user } onLogout={ handleLogout } /></PageWrapper> : <Navigate to="/login"/>} />
- <Route path="/announcements"element={ user ? <PageWrapper><AnnouncementsPage user={ user } /></PageWrapper> : <Navigate to="/login"/>} />
- <Route path="/profile"element={ user ? <PageWrapper><UserProfileComponent user={ user } onUpdate={ setUser } /></PageWrapper> : <Navigate to="/login"/>} />
- <Route path="*"element={<Navigate to="/"/>} />
- </Routes>
- </AnimatePresence>
+  <AnimatePresence mode="wait">
+  <React.Suspense fallback={<LoadingScreen />}>
+  <Routes location={ location } key={ location.pathname }>
+  <Route path="/" element={ tenantSchool ? <Navigate to="/login" /> : <PageWrapper><LandingPage /></PageWrapper> } />
+  <Route path="/login" element={ (user?.schoolId || user?.role === 'super_admin') ? <Navigate to="/dashboard" /> : <PageWrapper><LoginPage onLogin={ setUser } tenantSchool={ tenantSchool } subdomainNotFound={ subdomainNotFound } logoVariant={ logoVariant } /></PageWrapper> } />
+  <Route path="/super-admin"element={ user ? <Navigate to="/dashboard"/> : <PageWrapper><LoginPage onLogin={ setUser } tenantSchool={ tenantSchool } subdomainNotFound={ subdomainNotFound } logoVariant={ logoVariant } /></PageWrapper>} />
+  <Route path="/dashboard/*"element={ user?.schoolId || user?.role  === 'super_admin'? <PageWrapper><DashboardRouter user={ user } onLogout={ handleLogout } /></PageWrapper> : <Navigate to="/login"/>} />
+  <Route path="/announcements"element={ user ? <PageWrapper><AnnouncementsPage user={ user } /></PageWrapper> : <Navigate to="/login"/>} />
+  <Route path="/profile"element={ user ? <PageWrapper><UserProfileComponent user={ user } onUpdate={ setUser } /></PageWrapper> : <Navigate to="/login"/>} />
+  <Route path="*"element={<Navigate to="/"/>} />
+  </Routes>
+  </React.Suspense>
+  </AnimatePresence>
  </main>
  {!isDashboardView && (
  <footer className="bg-white border-t border-slate-200 py-12 text-center transition-colors">

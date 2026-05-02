@@ -119,7 +119,7 @@ export class DatabaseService {
     return result;
   }
 
-  static async getItems<T>(path: string, conditions: Record<string, any> = {}): Promise<T[]> {
+  static async getItems<T>(path: string, conditions: Record<string, any> = {}, inFilters: { field: string, values: any[] }[] = []): Promise<T[]> {
     const { table, documentId, filters } = this.parsePath(path);
     let query = supabase.from(table).select('*');
 
@@ -140,10 +140,17 @@ export class DatabaseService {
       finalQuery = finalQuery.eq(snakeKey, value);
     });
 
+    // Apply in-filters
+    inFilters.forEach(({ field, values }) => {
+      const snakeKey = this.camelToSnake(field);
+      finalQuery = finalQuery.in(snakeKey, values);
+    });
+
     const { data, error } = await finalQuery;
     if (error) throw error;
     return this.toCamelCase(data, table) as T[];
   }
+
 
   static async getItemById<T>(path: string, id: string): Promise<T | null> {
     const { table } = this.parsePath(path);
@@ -267,11 +274,11 @@ export class DatabaseService {
     if (error) throw error;
   }
 
-  static subscribe(path: string, callback: (data: any[]) => void, conditions: Record<string, any> = {}) {
+  static subscribe(path: string, callback: (data: any[]) => void, conditions: Record<string, any> = {}, inFilters: { field: string, values: any[] }[] = []) {
     const { table, documentId, filters: pathFilters } = this.parsePath(path);
     
     // Initial fetch
-    this.getItems(path, conditions).then(callback).catch(err => {
+    this.getItems(path, conditions, inFilters).then(callback).catch(err => {
       console.error(`Initial fetch error for ${path}:`, err);
     });
 
@@ -279,16 +286,23 @@ export class DatabaseService {
     const allFilters = { ...pathFilters, ...conditions };
     
     // Create a filter string for Supabase real-time
-    // Note: Supabase real-time filters are limited. We'll use the most specific one available.
+    // Note: Supabase real-time filters are limited to simple equality and a single filter usually
+    // but some versions support multiple filters. For maximum compatibility, we use the most unique one.
     let filterString = undefined;
     if (documentId) {
       filterString = `id=eq.${documentId}`;
     } else {
-      // Use the first available filter for the subscription
-      const firstFilter = Object.entries(allFilters)[0];
-      if (firstFilter) {
-        const [key, value] = firstFilter;
-        const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      // Use school_id or class_id if available, as they are likely indexed and restrictive
+      const preferredKeys = ['school_id', 'class_id', 'teacher_id', 'student_id'];
+      let bestKey = Object.keys(allFilters).find(k => preferredKeys.includes(this.camelToSnake(k)));
+      
+      if (!bestKey) {
+        bestKey = Object.keys(allFilters)[0];
+      }
+
+      if (bestKey) {
+        const value = allFilters[bestKey];
+        const snakeKey = this.camelToSnake(bestKey);
         filterString = `${snakeKey}=eq.${value}`;
       }
     }
@@ -302,8 +316,9 @@ export class DatabaseService {
         table,
         filter: filterString
       }, () => {
-        this.getItems(path, conditions).then(callback);
+        this.getItems(path, conditions, inFilters).then(callback);
       })
       .subscribe();
   }
+
 }
