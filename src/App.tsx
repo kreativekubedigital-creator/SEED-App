@@ -462,6 +462,15 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className="w-full max-w-md bg-white/5 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-6 md:p-8 relative z-10 overflow-hidden"
       >
+        {/* Close Button */}
+        <button 
+          onClick={() => navigate('/')}
+          className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors z-20 group"
+          title="Close"
+        >
+          <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+        </button>
+
         {/* Top Glow Edge */}
         <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
         
@@ -722,6 +731,15 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="w-full max-w-md bg-white/5 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-6 md:p-8 relative z-10 overflow-hidden"
         >
+          {/* Close Button */}
+          <button 
+            onClick={() => navigate('/')}
+            className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors z-20 group"
+            title="Close"
+          >
+            <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+          </button>
+
           {/* Top Glow Edge */}
           <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
           
@@ -820,11 +838,20 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
  animate={{ opacity: 1, scale: 1 }}
       className="w-full max-w-md bg-white/5 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-6 md:p-8 relative z-10 overflow-hidden"
     >
+      {/* Close Button */}
+      <button 
+        onClick={() => navigate('/')}
+        className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors z-20 group"
+        title="Close"
+      >
+        <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+      </button>
+
       {/* Top Glow Edge */}
       <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
       
         <div className="text-center mb-8">
-          <Logo variant="white" size="md" className="mx-auto mb-4 h-8 md:h-10 relative z-10" />
+          <Logo variant="white" size="md" className="mx-auto mb-4 h-8 md:h-12 relative z-10" />
           <h2 className="text-2xl font-bold text-white tracking-tight font-space">System Login</h2>
           <p className="text-slate-400 text-sm mt-3 font-medium">Access your educational ecosystem</p>
         </div>

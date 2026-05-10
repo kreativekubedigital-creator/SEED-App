@@ -426,12 +426,16 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
   !isSidebarOpen && "lg:w-20"
   )}
  >
- <div className="pt-10 pb-8 px-4 flex flex-col items-center justify-center gap-4 border-b border-slate-200">
-    <Logo variant="black" size="md" className="shrink-0" />
-   {(isSidebarOpen || (typeof window !== 'undefined' && window.innerWidth < 1024)) && (
-     <span className="text-sm font-bold tracking-[0.2em] uppercase text-slate-500 text-center">Admin Dashboard</span>
-   )}
- </div>
+  <div className="flex flex-col items-center justify-center p-8 border-b border-white/5 bg-white/[0.02]">
+    <div className="relative mb-4 group">
+      <div className="absolute -inset-4 bg-blue-500/10 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+      <Logo variant="white" size="lg" className="h-10 w-auto relative z-10 transition-transform duration-500 group-hover:scale-110" />
+    </div>
+    <div className="text-center">
+      <h2 className="text-xs font-black text-blue-400 uppercase tracking-[0.4em] mb-1">Admin Dashboard</h2>
+      <p className="text-[10px] text-slate-500 font-medium uppercase tracking-[0.2em] opacity-50">System Command v2.0</p>
+    </div>
+  </div>
 
  <nav className="flex-1 px-3 py-6 space-y-2 overflow-y-auto">
  { tabs.map((tab) => (

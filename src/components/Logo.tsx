@@ -14,6 +14,8 @@ interface LogoProps {
 }
 
 export const Logo: React.FC<LogoProps> = ({ variant = 'black', className = '', size = 'md', customLogo }) => {
+  const [error, setError] = React.useState(false);
+  
   const sizeClasses = {
     sm: 'h-8',
     md: 'h-10',
@@ -30,11 +32,18 @@ export const Logo: React.FC<LogoProps> = ({ variant = 'black', className = '', s
     }
   }
 
+  // Fallback to black logo if white logo fails
+  // On dark backgrounds (like login), we use a filter to keep the fallback visible if it's the black logo
   return (
     <img 
-      src={logoSrc} 
-      alt="Logo" 
-      className={cn(`${sizeClasses[size]} w-auto object-contain`, className)}
+      src={error ? logoBlack : logoSrc} 
+      alt="SEEDD Logo" 
+      className={cn(
+        `${sizeClasses[size]} w-auto object-contain`, 
+        error && variant === 'white' && "brightness-0 invert", // If white logo fails, make black logo white via filter
+        className
+      )}
+      onError={() => !error && setError(true)}
       referrerPolicy="no-referrer"
     />
   );
