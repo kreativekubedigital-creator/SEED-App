@@ -743,7 +743,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full max-w-md bg-white/5 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-6 md:p-8 relative z-10 overflow-hidden"
+          className="w-full max-w-md bg-white/5 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-6 relative z-10 overflow-hidden"
         >
           {/* Close Button */}
           <button 
@@ -764,36 +764,36 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
           {/* Top Glow Edge */}
           <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
           
-          <div className="text-center mb-8">
-            <div className="w-12 h-12 bg-blue-600/20 border border-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
-              <Shield className="text-blue-400" size={24} />
+          <div className="text-center mb-6">
+            <div className="w-10 h-10 bg-blue-600/20 border border-blue-500/20 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-inner">
+              <Shield className="text-blue-400" size={20} />
             </div>
             
-            <h1 className="text-3xl font-bold text-white tracking-tight mb-2 font-space">System Command</h1>
-            <p className="text-blue-400 font-bold text-[10px] tracking-[0.4em] uppercase">SEEDD Super Admin Portal</p>
+            <h1 className="text-2xl font-bold text-white tracking-tight mb-1 font-space">System Command</h1>
+            <p className="text-blue-400 font-bold text-[9px] tracking-[0.4em] uppercase">SEEDD Super Admin Portal</p>
           </div>
 
           {error && (
             <motion.div 
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              className="mb-8 p-5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-2xl text-xs font-bold text-center flex items-center justify-center gap-3"
+              className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-[10px] font-bold text-center flex items-center justify-center gap-3"
             >
-              <AlertTriangle size={16} />
+              <AlertTriangle size={14} />
               {error}
             </motion.div>
           )}
 
-          <form onSubmit={handleEmailAuth} className="space-y-6">
+          <form onSubmit={handleEmailAuth} className="space-y-4">
             <div className="space-y-2">
               <div className="relative group">
-                <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={20} strokeWidth={1.5} />
+                <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={18} strokeWidth={1.5} />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter admin identifier"
-                  className="w-full h-14 pl-14 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium"
+                  className="w-full h-12 pl-12 pr-6 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium text-sm"
                   required
                 />
               </div>
@@ -801,13 +801,13 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
 
             <div className="space-y-2">
               <div className="relative group">
-                <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={20} strokeWidth={1.5} />
+                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors" size={18} strokeWidth={1.5} />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Auth Token"
-                  className="w-full h-14 pl-14 pr-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium tracking-widest"
+                  className="w-full h-12 pl-12 pr-6 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium tracking-widest text-sm"
                   required
                 />
               </div>
@@ -816,31 +816,38 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-14 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center transition-all text-base mt-6"
+              className="w-full h-12 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold shadow-2xl shadow-blue-600/20 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center transition-all text-sm mt-4"
             >
               {loading ? "Decrypting..." : "Access System Core"}
             </button>
 
-            <div className="relative py-6">
+            <div className="relative py-4">
               <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
-              <div className="relative flex justify-center text-[10px] uppercase font-black tracking-[0.4em]"><span className="bg-[#050811] px-6 text-slate-500">Secure SSO</span></div>
+              <div className="relative flex justify-center text-[9px] uppercase font-black tracking-[0.4em]"><span className="bg-[#050811] px-4 text-slate-500">Secure SSO</span></div>
             </div>
 
             <button
               type="button"
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] disabled:opacity-50 group"
+              className="w-full h-12 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-xl flex items-center justify-center gap-4 transition-all active:scale-[0.98] disabled:opacity-50 group"
             >
-              <img src="https://www.google.com/favicon.ico" alt="Google" className="w-6 h-6 grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
-              <span className="font-bold text-xs uppercase tracking-widest">Sign in with Google</span>
+              <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5 grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+              <span className="font-bold text-[10px] uppercase tracking-widest">Sign in with Google</span>
             </button>
           </form>
 
-          <div className="mt-8 text-center">
+          <div className="mt-6 text-center">
             <button
-              onClick={() => navigate('/')}
-              className="text-[10px] font-black text-slate-500 hover:text-blue-400 uppercase tracking-[0.4em] transition-colors"
+              onClick={() => {
+                const hostname = window.location.hostname;
+                if (hostname.includes('seedify.name.ng') && hostname !== 'seedify.name.ng' && hostname !== 'www.seedify.name.ng') {
+                  window.location.href = 'https://seedify.name.ng';
+                } else {
+                  navigate('/');
+                }
+              }}
+              className="text-[9px] font-black text-slate-500 hover:text-blue-400 uppercase tracking-[0.4em] transition-colors"
             >
               Return to Portal
             </button>
