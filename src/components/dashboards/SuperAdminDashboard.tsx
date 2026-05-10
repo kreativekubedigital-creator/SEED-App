@@ -526,10 +526,10 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  exit={{ opacity: 0, y: -10 }}
  className="space-y-8"
  >
- {/* Header */}
-  <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">System Overview</h1>
-  <p className="text-slate-600 mt-1 font-medium">Global platform health and school statistics.</p>
- </div>
+  <div className="mb-8">
+    <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">System Overview</h1>
+    <p className="text-slate-600 mt-1 font-medium">Global platform health and school statistics.</p>
+  </div>
 
  {/* Stats Grid */}
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
