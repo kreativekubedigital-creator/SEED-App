@@ -7,6 +7,7 @@ import { LogOut, Plus, Shield, CreditCard, Users, School as SchoolIcon, Trash2, 
 import { SchoolManagement } from'./SchoolManagement';
 import { sortByName, cn, formatDisplayString } from'../../lib/utils';
 import { StorageService } from '../../services/storageService';
+import { Logo } from '../Logo';
 
 const LineChart = ({ data }: { data: number[] }) => {
  const max = Math.max(...data);
@@ -426,12 +427,10 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
   )}
  >
  <div className="p-6 flex items-center gap-4 border-b border-slate-200">
- <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
- <Shield size={ 24 } className="text-white"/>
- </div>
- {(isSidebarOpen || (typeof window !== 'undefined' && window.innerWidth < 1024)) && (
-   <span className="text-xl font-semibold tracking-tight text-slate-900">SEEDD Admin</span>
- )}
+    <Logo variant="black" size="md" className="shrink-0" />
+   {(isSidebarOpen || (typeof window !== 'undefined' && window.innerWidth < 1024)) && (
+     <span className="text-xl font-bold tracking-tight text-slate-900">SEEDD Dashboard</span>
+   )}
  </div>
 
  <nav className="flex-1 px-3 py-6 space-y-2 overflow-y-auto">
