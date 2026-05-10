@@ -426,10 +426,10 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
   !isSidebarOpen && "lg:w-20"
   )}
  >
- <div className="p-6 flex items-center gap-4 border-b border-slate-200">
+ <div className="pt-10 pb-8 px-4 flex flex-col items-center justify-center gap-4 border-b border-slate-200">
     <Logo variant="black" size="md" className="shrink-0" />
    {(isSidebarOpen || (typeof window !== 'undefined' && window.innerWidth < 1024)) && (
-     <span className="text-xl font-bold tracking-tight text-slate-900">SEEDD Dashboard</span>
+     <span className="text-sm font-bold tracking-[0.2em] uppercase text-slate-500 text-center">Admin Dashboard</span>
    )}
  </div>
 
