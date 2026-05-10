@@ -413,7 +413,7 @@ export const LandingPage = () => {
             {[
               {
                 title: "Unified Data Infrastructure",
-                desc: "All your institutional data—students, staff, academics, finance—in one secure, centralized system.",
+                desc: "All your institutional data—students, staff, academics, finance—in one secure, centralized platform.",
                 icon: FileText
               },
               {
@@ -635,7 +635,7 @@ export const LandingPage = () => {
                   {[
                     { label: 'Institutions', value: '120+' },
                     { label: 'Students Managed', value: '250K+' },
-                    { label: 'System Uptime', value: '98.9%' },
+                    { label: 'Platform Uptime', value: '98.9%' },
                     { label: 'Expert Support', value: '24/7' }
                   ].map((stat, i) => (
                     <div key={i} className="space-y-1">
@@ -657,7 +657,7 @@ export const LandingPage = () => {
             <div className="col-span-1 lg:col-span-2 space-y-10">
               <Logo variant="white" size="md" />
               <p className="text-2xl text-white/50 font-medium max-w-sm leading-relaxed">
-                The intelligent nervous system for the next generation of academic excellence.
+                The smart foundation for the next generation of academic excellence.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-16 lg:col-span-2">

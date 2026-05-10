@@ -433,7 +433,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
     </div>
     <div className="text-center">
       <h2 className="text-xs font-black text-blue-400 uppercase tracking-[0.4em] mb-1">Admin Dashboard</h2>
-      <p className="text-[10px] text-slate-500 font-medium uppercase tracking-[0.2em] opacity-50">System Command v2.0</p>
+      <p className="text-[10px] text-slate-500 font-medium uppercase tracking-[0.2em] opacity-50">Platform Management v2.0</p>
     </div>
   </div>
 
@@ -1656,7 +1656,7 @@ const SchoolPreviewModal = ({ school, onClose }: { school: School; onClose: () =
  </div>
  <h3 className="text-2xl font-semibold text-slate-900 mb-2">Institutional Integrity Verified</h3>
  <p className="text-slate-600 max-w-md font-medium leading-relaxed">
- This snapshot represents live operational data. Audit logs indicate total compliance with SEEDD system protocols and security standards.
+          This snapshot represents live operational data. Activity logs show full platform compliance and secure operation.
  </p>
  <button onClick={ onClose } className="mt-8 px-8 py-3 rounded-2xl bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20">
  Close Preview

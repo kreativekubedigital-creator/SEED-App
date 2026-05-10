@@ -769,8 +769,8 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
               <Shield className="text-blue-400" size={20} />
             </div>
             
-            <h1 className="text-2xl font-bold text-white tracking-tight mb-1 font-space">System Command</h1>
-            <p className="text-blue-400 font-bold text-[9px] tracking-[0.4em] uppercase">SEEDD Super Admin Portal</p>
+            <h1 className="text-2xl font-bold text-white tracking-tight mb-1 font-space">Super Admin Login</h1>
+            <p className="text-blue-400 font-bold text-[9px] tracking-[0.4em] uppercase">SEEDD Platform Management</p>
           </div>
 
           {error && (
@@ -818,12 +818,12 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
               disabled={loading}
               className="w-full h-12 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold shadow-2xl shadow-blue-600/20 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center transition-all text-sm mt-4"
             >
-              {loading ? "Decrypting..." : "Access System Core"}
+              {loading ? "Signing in..." : "Access Dashboard"}
             </button>
 
             <div className="relative py-4">
               <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
-              <div className="relative flex justify-center text-[9px] uppercase font-black tracking-[0.4em]"><span className="bg-[#050811] px-4 text-slate-500">Secure SSO</span></div>
+              <div className="relative flex justify-center text-[9px] uppercase font-black tracking-[0.4em]"><span className="bg-[#050811] px-4 text-slate-500">Secure Login</span></div>
             </div>
 
             <button
@@ -849,7 +849,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
               }}
               className="text-[9px] font-black text-slate-500 hover:text-blue-400 uppercase tracking-[0.4em] transition-colors"
             >
-              Return to Portal
+              Back to Home
             </button>
           </div>
         </motion.div>
