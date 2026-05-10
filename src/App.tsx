@@ -11,15 +11,28 @@ import { cn, formatDisplayString } from'./lib/utils';
 
 
 
+// Helper for lazy loading with retry logic to handle stale chunks after deployment
+const lazyWithRetry = (componentImport: () => Promise<any>) =>
+  React.lazy(async () => {
+    try {
+      return await componentImport();
+    } catch (error) {
+      console.error("Chunk load failed, forcing reload:", error);
+      // If the error is a "Failed to fetch" (chunk loading error), reload the page to get latest manifest
+      window.location.reload();
+      return { default: () => null }; // Return a dummy component while reloading
+    }
+  });
+
 // Dashboards - Lazy Loaded
-const SuperAdminDashboard = React.lazy(() => import('./components/dashboards/SuperAdminDashboard').then(m => ({ default: m.SuperAdminDashboard })));
-const SchoolAdminDashboard = React.lazy(() => import('./components/dashboards/SchoolAdminDashboard').then(m => ({ default: m.SchoolAdminDashboard })));
-const TeacherDashboard = React.lazy(() => import('./components/dashboards/TeacherDashboard').then(m => ({ default: m.TeacherDashboard })));
-const StudentDashboard = React.lazy(() => import('./components/dashboards/StudentDashboard').then(m => ({ default: m.StudentDashboard })));
-const ParentDashboard = React.lazy(() => import('./components/dashboards/ParentDashboard').then(m => ({ default: m.ParentDashboard })));
-const UserProfileComponent = React.lazy(() => import('./components/UserProfile').then(m => ({ default: m.UserProfile })));
-const LandingPage = React.lazy(() => import('./components/LandingPage').then(m => ({ default: m.LandingPage })));
-const PasswordChangeModal = React.lazy(() => import('./components/PasswordChangeModal').then(m => ({ default: m.PasswordChangeModal })));
+const SuperAdminDashboard = lazyWithRetry(() => import('./components/dashboards/SuperAdminDashboard').then(m => ({ default: m.SuperAdminDashboard })));
+const SchoolAdminDashboard = lazyWithRetry(() => import('./components/dashboards/SchoolAdminDashboard').then(m => ({ default: m.SchoolAdminDashboard })));
+const TeacherDashboard = lazyWithRetry(() => import('./components/dashboards/TeacherDashboard').then(m => ({ default: m.TeacherDashboard })));
+const StudentDashboard = lazyWithRetry(() => import('./components/dashboards/StudentDashboard').then(m => ({ default: m.StudentDashboard })));
+const ParentDashboard = lazyWithRetry(() => import('./components/dashboards/ParentDashboard').then(m => ({ default: m.ParentDashboard })));
+const UserProfileComponent = lazyWithRetry(() => import('./components/UserProfile').then(m => ({ default: m.UserProfile })));
+const LandingPage = lazyWithRetry(() => import('./components/LandingPage').then(m => ({ default: m.LandingPage })));
+const PasswordChangeModal = lazyWithRetry(() => import('./components/PasswordChangeModal').then(m => ({ default: m.PasswordChangeModal })));
 
 const SUPER_ADMIN_EMAILS = ['kreativekubesolutions@gmail.com', 'seedd.ng@gmail.com', 'abahjohnakor@gmail.com'];
 
