@@ -464,8 +464,15 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
       >
         {/* Close Button */}
         <button 
-          onClick={() => navigate('/')}
-          className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors z-20 group"
+          onClick={() => {
+            const hostname = window.location.hostname;
+            if (hostname.includes('seedify.name.ng') && hostname !== 'seedify.name.ng' && hostname !== 'www.seedify.name.ng') {
+              window.location.href = 'https://seedify.name.ng';
+            } else {
+              navigate('/');
+            }
+          }}
+          className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors z-30 group"
           title="Close"
         >
           <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
@@ -477,7 +484,14 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
         <div className="w-full">
           <div className="mb-8 text-center">
             <button 
-              onClick={() => navigate('/')}
+              onClick={() => {
+                const hostname = window.location.hostname;
+                if (hostname.includes('seedify.name.ng') && hostname !== 'seedify.name.ng' && hostname !== 'www.seedify.name.ng') {
+                  window.location.href = 'https://seedify.name.ng';
+                } else {
+                  navigate('/');
+                }
+              }}
               className="mb-8 text-blue-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2 mx-auto hover:text-blue-300 transition-colors"
             >
               <ArrowLeft size={14} /> Back to Portal
@@ -733,8 +747,15 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
         >
           {/* Close Button */}
           <button 
-            onClick={() => navigate('/')}
-            className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors z-20 group"
+            onClick={() => {
+              const hostname = window.location.hostname;
+              if (hostname.includes('seedify.name.ng') && hostname !== 'seedify.name.ng' && hostname !== 'www.seedify.name.ng') {
+                window.location.href = 'https://seedify.name.ng';
+              } else {
+                navigate('/');
+              }
+            }}
+            className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors z-30 group"
             title="Close"
           >
             <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
