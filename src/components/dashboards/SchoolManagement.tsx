@@ -63,6 +63,8 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  const [showAddUser, setShowAddUser] = useState(false);
  const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
  const [viewingUser, setViewingUser] = useState<UserProfile | null>(null);
+ const [sessions, setSessions] = useState<any[]>([]);
+ const [initializing, setInitializing] = useState(false);
  const [newUser, setNewUser] = useState<Partial<UserProfile> & { password?: string, _rawParentStudentIds?: string }>({ 
  firstName:'', 
  middleName:'', 
@@ -233,11 +235,33 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  setClasses(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Class)));
  });
 
+ // Real-time sessions listener
+ const unsubSessions = onSnapshot(collection(db, `schools/${school.id}/sessions`), (snap) => {
+ setSessions(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+ });
+
  return () => {
  unsubUsers();
  unsubClasses();
+ unsubSessions();
  };
  }, [school.id]);
+
+  const handleQuickSetup = async () => {
+    if (!window.confirm("This will initialize your school with a default academic session, terms, and grading scales. Proceed?")) return;
+    
+    setInitializing(true);
+    try {
+      const { initializeSchoolData } = await import('../../services/schoolInitialization');
+      await initializeSchoolData(school.id);
+      setSuccess("Quick Setup complete! Your school has been initialized with default data.");
+    } catch (err: any) {
+      console.error("Quick setup failed:", err);
+      setError(`Quick setup failed: ${err.message}`);
+    } finally {
+      setInitializing(false);
+    }
+  };
 
  const sortedClasses = useMemo(() => 
  sortByName([...classes]), 
@@ -922,9 +946,40 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  )}
  </header>
 
- { activeTab  === 'overview'? (
- <div className="space-y-5 md:space-y-12">
- {/* School Info Card */}
+  { activeTab  === 'overview'? (
+  <div className="space-y-5 md:space-y-12">
+    {/* Initialization Alert */}
+    {!loading && sessions.length === 0 && (
+      <div className="bg-blue-600 p-8 md:p-12 rounded-[2.5rem] text-white shadow-2xl shadow-blue-200 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl group-hover:scale-110 transition-transform duration-700" />
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="max-w-xl">
+            <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/20 shadow-xl">
+              <Settings className="animate-spin-slow" size={28} />
+            </div>
+            <h3 className="text-3xl font-bold tracking-tight mb-3">Complete Your Setup</h3>
+            <p className="text-blue-50 font-medium leading-relaxed opacity-90 text-sm">
+              Your institutional environment is active, but academic sessions and grading scales are not yet configured. Run the quick setup to enable all platform features.
+            </p>
+          </div>
+          
+          <button
+            onClick={handleQuickSetup}
+            disabled={initializing}
+            className="w-full md:w-auto px-10 py-5 bg-white text-blue-600 rounded-2xl font-bold uppercase tracking-widest text-[10px] hover:bg-black hover:text-white transition-all shadow-2xl flex items-center justify-center gap-3 group/btn disabled:opacity-50 active:scale-95"
+          >
+            {initializing ? (
+              <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Plus size={18} strokeWidth={3} className="group-hover/btn:rotate-90 transition-transform" />
+            )}
+            {initializing ? 'Initializing...' : 'Run Quick Setup'}
+          </button>
+        </div>
+      </div>
+    )}
+
+  {/* School Info Card */}
  <div className="bg-white p-4 md:p-4 rounded-2xl md:rounded-2xl border border-slate-300 shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-4 relative overflow-hidden">
  
 

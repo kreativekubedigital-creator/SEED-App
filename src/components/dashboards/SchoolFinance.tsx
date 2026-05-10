@@ -8,12 +8,13 @@ import { FeeAnalytics } from './FeeAnalytics';
 
 export const SchoolFinance = ({ school }: { school: School }) => {
   const [activeTab, setActiveTab] = useState<'feeAnalytics' | 'feeStructures' | 'invoices' | 'payments'>('feeAnalytics');
- const [feeStructures, setFeeStructures] = useState<FeeStructure[]>([]);
- const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [feeStructures, setFeeStructures] = useState<FeeStructure[]>([]);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [classes, setClasses] = useState<Class[]>([]);
   const [students, setStudents] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [initializing, setInitializing] = useState(false);
   const [sessions, setSessions] = useState<any[]>([]);
   const [termsMap, setTermsMap] = useState<Record<string, Record<string, any>>>({});
 
@@ -147,6 +148,22 @@ export const SchoolFinance = ({ school }: { school: School }) => {
       Object.values(termUnsubs).forEach(unsub => unsub());
     };
   }, [school.id]);
+
+  const handleQuickSetup = async () => {
+    if (!window.confirm("This will initialize your school with a default academic session, terms, and grading scales. Proceed?")) return;
+    
+    setInitializing(true);
+    try {
+      const { initializeSchoolData } = await import('../../services/schoolInitialization');
+      await initializeSchoolData(school.id);
+      alert("Quick Setup complete! Your school has been initialized with default data.");
+    } catch (err: any) {
+      console.error("Quick setup failed:", err);
+      alert(`Quick setup failed: ${err.message}`);
+    } finally {
+      setInitializing(false);
+    }
+  };
 
   // Handle pre-selection of session and term for invoice generation
   useEffect(() => {
@@ -398,26 +415,58 @@ export const SchoolFinance = ({ school }: { school: School }) => {
       {/* Tabs */}
       <div className="flex gap-2 p-1.5 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200/60 mb-8 overflow-x-auto no-scrollbar shadow-sm sticky top-0 z-30">
         {[
-          { id: 'feeAnalytics', label: 'Fee Analytics', icon: BarChart2 },
-          { id: 'feeStructures', label: 'Fee Structures', icon: Plus },
+          { id: 'feeAnalytics', label: 'Financial Overview', icon: BarChart2 },
+          { id: 'feeStructures', label: 'Fee Structures', icon: CreditCard },
           { id: 'invoices', label: 'Invoices', icon: FileText },
-          { id: 'payments', label: 'Payments', icon: CreditCard },
-        ].map((tab) => (
+          { id: 'payments', label: 'Payment Records', icon: History }
+        ].map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
-            className={cn(
-              "flex-1 min-w-[120px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[10px] font-semibold uppercase tracking-widest transition-all whitespace-nowrap",
-              activeTab === tab.id
-                ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
-                : "text-slate-500 hover:text-slate-900 hover:bg-slate-50 border border-transparent"
-            )}
+            className={`px-6 py-3 rounded-xl flex items-center gap-3 text-[11px] font-bold uppercase tracking-widest transition-all whitespace-nowrap ${
+              activeTab === tab.id 
+                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 scale-[1.02]' 
+                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+            }`}
           >
-            <tab.icon size={14} />
+            <tab.icon size={16} strokeWidth={2.5} />
             {tab.label}
           </button>
         ))}
       </div>
+
+      {/* Empty State / Initialization Prompt */}
+      {sessions.length === 0 && (
+        <div className="bg-blue-600 p-12 rounded-[2.5rem] text-white shadow-2xl shadow-blue-200 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl group-hover:scale-110 transition-transform duration-700" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full -ml-24 -mb-24 blur-2xl" />
+          
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="max-w-xl text-center md:text-left">
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 mx-auto md:mx-0 border border-white/20 shadow-xl">
+                <Settings className="animate-spin-slow" size={32} />
+              </div>
+              <h3 className="text-3xl font-bold tracking-tight mb-4">Initial Setup Required</h3>
+              <p className="text-blue-50 font-medium leading-relaxed opacity-90">
+                Welcome to your school's financial portal. To get started, we need to set up your initial academic session and grading scales.
+              </p>
+            </div>
+            
+            <button
+              onClick={handleQuickSetup}
+              disabled={initializing}
+              className="px-10 py-5 bg-white text-blue-600 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-black hover:text-white transition-all shadow-2xl flex items-center gap-3 group/btn disabled:opacity-50"
+            >
+              {initializing ? (
+                <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Plus size={18} strokeWidth={3} className="group-hover/btn:rotate-90 transition-transform" />
+              )}
+              {initializing ? 'Initializing...' : 'Run Quick Setup'}
+            </button>
+          </div>
+        </div>
+      )}
 
       <AnimatePresence mode="wait">
         <motion.div
