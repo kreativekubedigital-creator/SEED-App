@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile, School, Invoice, Payment } from'../../types';
 import { DEFAULT_PLANS } from'../../constants';
 import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, OperationType, handleFirestoreError, query, where, onSnapshot, secondaryAuth, createUserWithEmailAndPassword, setDoc, logAuditAction, limit, orderBy, writeBatch } from'../../lib/compatibility';
+import { initializeSchoolData } from '../../services/schoolInitialization';
 import { LogOut, Plus, Shield, CreditCard, Users, School as SchoolIcon, Trash2, CheckCircle, Settings, Search, MoreVertical, ExternalLink, ArrowRight, LayoutDashboard, X, Activity, History, Database, Globe, DollarSign, Menu, Eye, Upload } from'lucide-react';
 import { SchoolManagement } from'./SchoolManagement';
 import { sortByName, cn, formatDisplayString } from'../../lib/utils';
@@ -249,6 +250,14 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  
  await setDoc(doc(db,'users', newUid), adminUserData);
  await secondaryAuth.signOut(); // Clean up secondary auth session
+
+ // 3. Initialize School Data (Sessions, Terms, Grade Scales, etc.)
+ try {
+   await initializeSchoolData(schoolDocRef.id);
+ } catch (initError) {
+   console.error("Warning: School data initialization partially failed:", initError);
+   // We don't fail the whole process if initialization fails, but we log it
+ }
 
  await logAuditAction('CREATE_SCHOOL',`Created school: ${ schoolData.name } with admin ${ trimmedEmail }`, schoolDocRef.id,'school');
 

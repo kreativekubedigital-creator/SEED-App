@@ -58,29 +58,48 @@ export const SchoolFinance = ({ school }: { school: School }) => {
       if (mounted) setLoading(false);
     }, 8000); // Fail-safe timeout
 
+    const handleDataReceived = () => {
+      if (mounted) setLoading(false);
+    };
+
     const handleError = (error: any, source: string) => {
       console.error(`Finance module error (${source}):`, error);
       if (mounted) setLoading(false);
     };
 
     const unsubFees = onSnapshot(collection(db, `schools/${school.id}/feeStructures`), (snap) => {
-      if (mounted) setFeeStructures(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as FeeStructure)));
+      if (mounted) {
+        setFeeStructures(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as FeeStructure)));
+        handleDataReceived();
+      }
     }, (err) => handleError(err, 'feeStructures'));
 
     const unsubInvoices = onSnapshot(collection(db, `schools/${school.id}/invoices`), (snap) => {
-      if (mounted) setInvoices(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Invoice)));
+      if (mounted) {
+        setInvoices(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Invoice)));
+        handleDataReceived();
+      }
     }, (err) => handleError(err, 'invoices'));
 
     const unsubPayments = onSnapshot(collection(db, `schools/${school.id}/payments`), (snap) => {
-      if (mounted) setPayments(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Payment)));
+      if (mounted) {
+        setPayments(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Payment)));
+        handleDataReceived();
+      }
     }, (err) => handleError(err, 'payments'));
 
     const unsubClasses = onSnapshot(collection(db, `schools/${school.id}/classes`), (snap) => {
-      if (mounted) setClasses(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Class)));
+      if (mounted) {
+        setClasses(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Class)));
+        handleDataReceived();
+      }
     }, (err) => handleError(err, 'classes'));
 
     const unsubStudents = onSnapshot(query(collection(db, 'users'), where('schoolId', '==', school.id), where('role', '==', 'student')), (snap) => {
-      if (mounted) setStudents(snap.docs.map(doc => ({ uid: doc.id, ...doc.data() } as UserProfile)));
+      if (mounted) {
+        setStudents(snap.docs.map(doc => ({ uid: doc.id, ...doc.data() } as UserProfile)));
+        handleDataReceived();
+      }
     }, (err) => handleError(err, 'students'));
 
     // Handle session and term listeners cleanly
@@ -89,6 +108,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
       if (!mounted) return;
       const sessData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       setSessions(sessData);
+      handleDataReceived();
       
       // Clear old term unsubs that are no longer in sessData
       Object.keys(termUnsubs).forEach(id => {
