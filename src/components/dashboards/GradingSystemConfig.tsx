@@ -125,7 +125,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
       setTimeout(() => setMessage(null), 3000);
     } catch (err: any) {
       console.error('Error adding session:', err);
-      setMessage({ type: 'error', text: `Failed to add session: ${err.message || 'Unknown database error'}` });
+      setMessage({ type: 'error', text: `Failed to add session: ${err.message || 'Unexpected platform error'}` });
     } finally {
       setAddingSession(false);
     }
@@ -199,7 +199,7 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
       setTimeout(() => setMessage(null), 3000);
     } catch (err: any) {
       console.error('Error adding term:', err);
-      setMessage({ type: 'error', text: `Failed to add term: ${err.message || 'Unknown database error'}` });
+      setMessage({ type: 'error', text: `Failed to add term: ${err.message || 'Unexpected platform error'}` });
     } finally {
       setAddingTerm(false);
     }

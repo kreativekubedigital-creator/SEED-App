@@ -53,25 +53,40 @@ export const SchoolFinance = ({ school }: { school: School }) => {
   const [genClassId, setGenClassId] = useState('all');
 
   useEffect(() => {
+    let mounted = true;
+    const loadTimeout = setTimeout(() => {
+      if (mounted) setLoading(false);
+    }, 8000); // Fail-safe timeout
+
+    const handleError = (error: any, source: string) => {
+      console.error(`Finance module error (${source}):`, error);
+      if (mounted) setLoading(false);
+    };
+
     const unsubFees = onSnapshot(collection(db, `schools/${school.id}/feeStructures`), (snap) => {
-      setFeeStructures(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as FeeStructure)));
-    });
+      if (mounted) setFeeStructures(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as FeeStructure)));
+    }, (err) => handleError(err, 'feeStructures'));
+
     const unsubInvoices = onSnapshot(collection(db, `schools/${school.id}/invoices`), (snap) => {
-      setInvoices(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Invoice)));
-    });
+      if (mounted) setInvoices(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Invoice)));
+    }, (err) => handleError(err, 'invoices'));
+
     const unsubPayments = onSnapshot(collection(db, `schools/${school.id}/payments`), (snap) => {
-      setPayments(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Payment)));
-    });
+      if (mounted) setPayments(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Payment)));
+    }, (err) => handleError(err, 'payments'));
+
     const unsubClasses = onSnapshot(collection(db, `schools/${school.id}/classes`), (snap) => {
-      setClasses(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Class)));
-    });
+      if (mounted) setClasses(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Class)));
+    }, (err) => handleError(err, 'classes'));
+
     const unsubStudents = onSnapshot(query(collection(db, 'users'), where('schoolId', '==', school.id), where('role', '==', 'student')), (snap) => {
-      setStudents(snap.docs.map(doc => ({ uid: doc.id, ...doc.data() } as UserProfile)));
-    });
+      if (mounted) setStudents(snap.docs.map(doc => ({ uid: doc.id, ...doc.data() } as UserProfile)));
+    }, (err) => handleError(err, 'students'));
 
     // Handle session and term listeners cleanly
     const termUnsubs: Record<string, () => void> = {};
     const unsubSessions = onSnapshot(collection(db, `schools/${school.id}/sessions`), (snap) => {
+      if (!mounted) return;
       const sessData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       setSessions(sessData);
       
@@ -87,18 +102,22 @@ export const SchoolFinance = ({ school }: { school: School }) => {
       sessData.forEach(sess => {
         if (!termUnsubs[sess.id]) {
           termUnsubs[sess.id] = onSnapshot(collection(db, `schools/${school.id}/sessions/${sess.id}/terms`), (termSnap) => {
+            if (!mounted) return;
             const terms = termSnap.docs.map(d => ({ id: d.id, ...d.data() }));
             setTermsMap(prev => ({
               ...prev,
               [sess.id]: terms.reduce((acc, t) => ({ ...acc, [t.id]: t }), {})
             }));
-          });
+          }, (err) => console.error(`Term listener error for session ${sess.id}:`, err));
         }
       });
       setLoading(false);
-    });
+      clearTimeout(loadTimeout);
+    }, (err) => handleError(err, 'sessions'));
 
     return () => { 
+      mounted = false;
+      clearTimeout(loadTimeout);
       unsubFees(); 
       unsubInvoices(); 
       unsubPayments(); 
@@ -330,7 +349,7 @@ export const SchoolFinance = ({ school }: { school: School }) => {
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
       <div className="w-12 h-12 border-4 border-blue-500/10 border-t-blue-600 rounded-full animate-spin shadow-lg shadow-blue-600/10" />
-      <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-[0.2em] animate-pulse">Initializing Finance Modules</p>
+      <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-[0.2em] animate-pulse">Setting up your finance dashboard</p>
     </div>
   );
 

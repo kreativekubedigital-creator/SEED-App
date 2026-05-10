@@ -113,13 +113,14 @@ export const checkBadges = async (userId: string) => {
   return newBadges;
 };
 
-export const addXP = async (userId: string, type: keyof typeof XP_REWARDS, metadata: any = {}) => {
+export const addXP = async (userId: string, type: keyof typeof XP_REWARDS, metadata: any = {}, schoolId?: string) => {
   const userRef = doc(db, 'users', userId);
   const userSnap = await getDoc(userRef);
   
   if (!userSnap.exists()) return;
   
   const userData = userSnap.data() as UserProfile;
+  const effectiveSchoolId = schoolId || userData.schoolId;
   let xpToAdd = XP_REWARDS[type];
   let coinsToAdd = COIN_REWARDS[type];
 
@@ -150,6 +151,7 @@ export const addXP = async (userId: string, type: keyof typeof XP_REWARDS, metad
   // Log activity
   await addDoc(collection(db, 'users', userId, 'activities'), {
     uid: userId,
+    school_id: effectiveSchoolId,
     type: type.toLowerCase(),
     pointsEarned: xpToAdd,
     coinsEarned: coinsToAdd,
@@ -163,12 +165,13 @@ export const addXP = async (userId: string, type: keyof typeof XP_REWARDS, metad
   return { leveledUp: newLevel > oldLevel, newLevel };
 };
 
-export const saveMemoryFlipScore = async (userId: string, firstName: string, lastName: string, scoreData: any) => {
+export const saveMemoryFlipScore = async (userId: string, firstName: string, lastName: string, scoreData: any, schoolId?: string) => {
   const scoreRef = collection(db, 'memoryFlipScores');
   const score = (scoreData.level * 10000) - (scoreData.moves * 10) - scoreData.time;
   
   await addDoc(scoreRef, {
     userId,
+    school_id: schoolId,
     firstName,
     lastName,
     ...scoreData,
@@ -192,13 +195,14 @@ export const getMemoryFlipLeaderboard = async (limitCount: number = 10) => {
   }));
 };
 
-export const updateStreak = async (userId: string) => {
+export const updateStreak = async (userId: string, schoolId?: string) => {
   const userRef = doc(db, 'users', userId);
   const userSnap = await getDoc(userRef);
   
   if (!userSnap.exists()) return;
   
   const userData = userSnap.data() as UserProfile;
+  const effectiveSchoolId = schoolId || userData.schoolId;
   const today = new Date().toISOString().split('T')[0];
   const lastActivity = userData.lastActivityDate;
   
@@ -227,6 +231,7 @@ export const updateStreak = async (userId: string) => {
   // Log daily login
   await addDoc(collection(db, 'users', userId, 'activities'), {
     uid: userId,
+    school_id: effectiveSchoolId,
     type: 'daily_login',
     pointsEarned: XP_REWARDS.DAILY_LOGIN,
     coinsEarned: COIN_REWARDS.DAILY_LOGIN,
@@ -239,13 +244,14 @@ export const updateStreak = async (userId: string) => {
   return newStreak;
 };
 
-export const purchaseItem = async (userId: string, itemId: string, cost: number) => {
+export const purchaseItem = async (userId: string, itemId: string, cost: number, schoolId?: string) => {
   const userRef = doc(db, 'users', userId);
   const userSnap = await getDoc(userRef);
   
   if (!userSnap.exists()) throw new Error('User not found');
   
   const userData = userSnap.data() as UserProfile;
+  const effectiveSchoolId = schoolId || userData.schoolId;
   const currentCoins = userData.coins || 0;
   const purchasedItems = userData.purchasedItems || [];
   
@@ -260,6 +266,7 @@ export const purchaseItem = async (userId: string, itemId: string, cost: number)
   // Log purchase
   await addDoc(collection(db, 'users', userId, 'activities'), {
     uid: userId,
+    school_id: effectiveSchoolId,
     type: 'purchase',
     coinsSpent: cost,
     itemId,

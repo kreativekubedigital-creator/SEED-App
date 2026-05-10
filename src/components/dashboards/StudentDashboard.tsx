@@ -45,7 +45,7 @@ export const StudentDashboard = ({ user, onLogout, school }: { user: UserProfile
 
   useEffect(() => {
     if (user.uid) {
-      updateStreak(user.uid).catch(console.error);
+      updateStreak(user.uid, user.schoolId).catch(console.error);
     }
   }, [user.uid]);
 

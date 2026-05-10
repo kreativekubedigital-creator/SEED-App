@@ -145,7 +145,7 @@ export const MemoryFlipGame: React.FC<MemoryFlipGameProps> = ({ user, onExit }) 
           mode,
           moves,
           time
-        }).then(() => {
+        }, user.schoolId).then(() => {
           getMemoryFlipLeaderboard().then(setLeaderboard).catch(console.error);
         }).catch(console.error);
 
@@ -158,7 +158,7 @@ export const MemoryFlipGame: React.FC<MemoryFlipGameProps> = ({ user, onExit }) 
           time,
           calculatedXp: xp,
           calculatedCoins: coins
-        }).catch(console.error);
+        }, user.schoolId).catch(console.error);
       }
     }
   }, [matches, totalPairs, completed, user.uid, user.firstName, user.lastName, mode, level, moves, time]);

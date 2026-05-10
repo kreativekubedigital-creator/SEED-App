@@ -137,7 +137,7 @@ export const StudentQuizzes = ({ user, subjects, classLevel }: { user: UserProfi
       
       // Award XP if passed (>= 50%)
       if (calculatedScore / activeQuiz.questions.length >= 0.5) {
-        addXP(user.uid, 'QUIZ_PASS', { quizId: activeQuiz.id, title: activeQuiz.title }).catch(console.error);
+        addXP(user.uid, 'QUIZ_PASS', { quizId: activeQuiz.id, title: activeQuiz.title }, user.schoolId).catch(console.error);
       }
       
       setScore({ score: calculatedScore, total: activeQuiz.questions.length });

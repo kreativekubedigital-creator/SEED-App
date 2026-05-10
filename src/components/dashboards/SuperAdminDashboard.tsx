@@ -395,8 +395,8 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  { id:'overview', label:'Overview', icon: LayoutDashboard },
  { id:'schools', label:'Schools', icon: SchoolIcon },
  { id:'financials', label:'Financials', icon: DollarSign },
- { id:'logs', label:'Activity Logs', icon: History },
- { id:'system', label:'System Status', icon: Activity },
+ { id: 'logs', label: 'Activity Insights', icon: History },
+ { id: 'system', label: 'Ecosystem Health', icon: Shield },
  ] as const;
 
  return (
@@ -490,7 +490,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  { activeTab  === 'overview'?'System Overview': 
  activeTab  === 'schools'?'Schools List': 
  activeTab  === 'financials'?'Financial Stats': 
- activeTab  === 'logs'?'Activity Logs':'System Status'}
+ activeTab  === 'logs'?'Activity Insights':'Ecosystem Health'}
  </h1>
  </div>
 
@@ -518,9 +518,8 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  className="space-y-8"
  >
  {/* Header */}
- <div>
- <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">System Overview</h1>
- <p className="text-slate-600 mt-1 font-medium">Global platform health and school statistics.</p>
+  <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">System Overview</h1>
+  <p className="text-slate-600 mt-1 font-medium">Global platform health and school statistics.</p>
  </div>
 
  {/* Stats Grid */}
@@ -565,8 +564,8 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  <div className="bg-white border border-slate-200 rounded-3xl p-8 relative overflow-hidden group shadow-sm">
  <div className="flex justify-between items-center mb-4 relative z-10">
  <div>
- <h3 className="text-xl font-semibold text-slate-900 tracking-tight">Growth Stats</h3>
- <p className="text-slate-600 text-sm font-medium">Monthly school registration rate</p>
+ <h3 className="text-xl font-semibold text-slate-900 tracking-tight">Platform Growth</h3>
+ <p className="text-slate-600 text-sm font-medium">School Community Expansion Rate</p>
  </div>
  <div className="text-right">
  <p className="text-2xl font-semibold text-blue-600">+{ Math.round(schools.length * 1.5)}%</p>
@@ -579,14 +578,14 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 
  <div className="bg-white border border-slate-200 rounded-3xl p-8 group shadow-sm">
  <div className="flex items-center justify-between mb-8">
- <h3 className="text-xl font-semibold text-slate-900 tracking-tight">Server Health</h3>
+ <h3 className="text-xl font-semibold text-slate-900 tracking-tight">Platform Health</h3>
  <Activity size={ 20 } className="text-emerald-500 animate-pulse"/>
  </div>
  <div className="space-y-8">
- <SystemMeter label="Processor Load" value={ systemMetrics.processor } color="bg-blue-600 shadow-blue-600/20"/>
- <SystemMeter label="Database Activity" value={ systemMetrics.database } color="bg-emerald-600 shadow-emerald-600/20"/>
- <SystemMeter label="Logic Engine" value={ systemMetrics.logic } color="bg-purple-600 shadow-purple-600/20"/>
- <SystemMeter label="Storage Usage" value={ systemMetrics.storage } color="bg-amber-600 shadow-amber-600/20"/>
+ <SystemMeter label="System Efficiency" value={ systemMetrics.processor } color="bg-blue-600 shadow-blue-600/20"/>
+ <SystemMeter label="Data Ecosystem Activity" value={ systemMetrics.database } color="bg-emerald-600 shadow-emerald-600/20"/>
+ <SystemMeter label="Intelligence Flow" value={ systemMetrics.logic } color="bg-purple-600 shadow-purple-600/20"/>
+ <SystemMeter label="Digital Storage" value={ systemMetrics.storage } color="bg-amber-600 shadow-amber-600/20"/>
  </div>
  </div>
  </div>
@@ -846,13 +845,13 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  >
  <div>
  <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">System Status</h2>
- <p className="text-slate-600 mt-1 font-medium">Real-time server and database metrics.</p>
+ <p className="text-slate-600 mt-1 font-medium">Real-time platform performance insights.</p>
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {[
  { label:'Compute Engine', status:'Operational', usage:'24%', icon: Activity },
- { label:'Cloud SQL Cluster', status:'Operational', usage:'12%', icon: Database },
+ { label:'Encrypted Data Core', status:'Operational', usage:'12%', icon: Database },
  { label:'Asset Storage', status:'Healthy', usage:'8.4TB', icon: Globe },
  ].map((sys, i) => (
  <div key={ i } className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col gap-4">
@@ -880,54 +879,76 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  { activeTab  === 'logs'&& (
  <motion.div
  key="logs"
- initial={{ opacity: 0, x: 20 }}
- animate={{ opacity: 1, x: 0 }}
- exit={{ opacity: 0, x: -20 }}
- className="space-y-8"
- >
- <div>
- <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">Activity Logs</h2>
- <p className="text-slate-600 mt-1 font-medium">A permanent record of all admin actions.</p>
- </div>
-
- <div className="bg-slate-50 border border-slate-200 rounded-3xl overflow-hidden">
- <div className="p-8 border-b border-slate-200 flex justify-between items-center bg-white/[0.02]">
- <div>
- <h3 className="text-xl font-semibold text-slate-900 tracking-tight">Live Activity Feed</h3>
- <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest mt-1">Live updates from system logs</p>
- </div>
- <button className="px-6 py-2.5 bg-blue-600/10 border border-blue-500/20 text-blue-400 text-[10px] font-semibold uppercase tracking-widest rounded-xl hover:bg-blue-600/20 transition-all">Download Logs</button>
- </div>
- <div className="divide-y divide-slate-100">
- { auditLogs.length > 0 ? auditLogs.map((log, i) => (
- <div key={ log.id } className="p-6 px-8 flex items-center justify-between hover:bg-white/[0.01] transition-all group">
- <div className="flex items-center gap-6">
- <div className={ cn(
-"w-2.5 h-2.5 rounded-full shadow-[0_0_12px]",
- log.action?.includes('DELETE') ?"bg-red-500 shadow-red-500/50":
- log.action?.includes('UPDATE') ?"bg-amber-500 shadow-amber-500/50":
-"bg-emerald-500 shadow-emerald-500/50"
- )} />
- <div>
- <p className="text-sm font-semibold text-slate-900 group-hover:text-blue-400 transition-colors">{ formatDisplayString(log.action) }</p>
- <p className="text-xs text-slate-600 font-medium mt-0.5">{ formatDisplayString(log.details) }</p>
- </div>
- </div>
- <div className="text-right">
- <span className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest block">{ log.createdAt ? new Date(log.createdAt).toLocaleDateString() :'Today'}</span>
- <span className="text-[10px] font-semibold text-slate-700 block">{ log.createdAt ? new Date(log.createdAt).toLocaleTimeString() :'Recent'}</span>
- </div>
- </div>
- )) : (
- <div className="p-20 text-center">
- <History size={ 48 } className="text-slate-800 mx-auto mb-4"/>
- <p className="text-slate-600 font-semibold text-sm uppercase tracking-widest">No Security Events Recorded</p>
- </div>
- )}
- </div>
- </div>
- </motion.div>
- )}
+ { activeTab === 'logs' && (
+    <motion.div
+      key="logs"
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      className="space-y-8"
+    >
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">Activity Insights</h2>
+          <p className="text-slate-600 mt-1 font-medium">Real-time overview of critical platform activities.</p>
+        </div>
+        <button className="px-6 py-2.5 bg-blue-600/10 border border-blue-500/20 text-blue-600 text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-blue-600/20 transition-all">
+          Export Insights
+        </button>
+      </div>
+      
+      <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="border-b border-slate-100 bg-slate-50/50">
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Admin</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Action Event</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Details</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Ecosystem</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {auditLogs.length === 0 ? (
+                <tr>
+                  <td colSpan={ 5 } className="px-6 py-12 text-center text-slate-500 font-medium italic">No activity recorded yet.</td>
+                </tr>
+              ) : (
+                auditLogs.map((log, i) => (
+                  <tr key={ i } className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="font-semibold text-slate-900">{ log.adminName || 'System Core'}</div>
+                      <div className="text-[10px] text-slate-500 font-medium">{ log.adminEmail || 'automated@seedd.ai'}</div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={ cn(
+                        "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider",
+                        log.action?.includes('CREATE') ? "bg-emerald-50 text-emerald-600 border border-emerald-100" :
+                        log.action?.includes('DELETE') ? "bg-rose-50 text-rose-600 border border-rose-100" :
+                        "bg-blue-50 text-blue-600 border border-blue-100"
+                      )}>
+                        { log.action?.replace(/_/g, ' ') || 'SYSTEM EVENT' }
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-slate-700 max-w-xs truncate font-medium">{ log.details || 'System event triggered'}</div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-slate-600 font-semibold">{ log.schoolName || 'Global Ecosystem'}</div>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-slate-500 font-medium">
+                      { log.timestamp ? new Date(log.timestamp.seconds * 1000).toLocaleString() : 'Just now' }
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </motion.div>
+  )}
  </AnimatePresence>
  </div>
  </div>

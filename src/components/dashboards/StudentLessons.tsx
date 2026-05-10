@@ -111,7 +111,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
       }
       
       // Streak Bonus (if applicable)
-      const currentStreak = await updateStreak(user.uid);
+      const currentStreak = await updateStreak(user.uid, user.schoolId);
       if (currentStreak && currentStreak > 1) {
         bonus += 10;
       }
@@ -134,6 +134,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
         totalQuestions: sessionQuestions.length,
         xpEarned: totalXP,
         coinsEarned: totalCoins,
+        school_id: user.schoolId,
         completedAt: new Date().toISOString()
       };
 
@@ -148,7 +149,7 @@ export const StudentLessons = ({ user, classLevel }: { user: UserProfile, classL
         title: selectedLesson?.title,
         calculatedXp: totalXP,
         calculatedCoins: totalCoins
-      });
+      }, user.schoolId);
 
       setStep('reward');
     } catch (error) {

@@ -481,6 +481,8 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
             const hostname = window.location.hostname;
             if (hostname.includes('seedify.name.ng') && hostname !== 'seedify.name.ng' && hostname !== 'www.seedify.name.ng') {
               window.location.href = 'https://seedify.name.ng';
+            } else if (hostname === 'localhost' || hostname === '127.0.0.1') {
+              window.location.href = '/';
             } else {
               navigate('/');
             }
@@ -501,6 +503,8 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
                 const hostname = window.location.hostname;
                 if (hostname.includes('seedify.name.ng') && hostname !== 'seedify.name.ng' && hostname !== 'www.seedify.name.ng') {
                   window.location.href = 'https://seedify.name.ng';
+                } else if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                  window.location.href = '/';
                 } else {
                   navigate('/');
                 }
@@ -580,7 +584,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                       <span>Verifying...</span>
                     </div>
-                  ) : "Sign In Account"}
+                  ) : "Enter SEEDD Ecosystem"}
                 </button>
               </form>
             </div>
@@ -764,32 +768,33 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
               const hostname = window.location.hostname;
               if (hostname.includes('seedify.name.ng') && hostname !== 'seedify.name.ng' && hostname !== 'www.seedify.name.ng') {
                 window.location.href = 'https://seedify.name.ng';
+              } else if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                window.location.href = '/';
               } else {
                 navigate('/');
               }
             }}
-            className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors z-30 group"
-            title="Close"
+            className="absolute top-6 right-6 p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-all z-30 cursor-pointer"
           >
-            <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+            <X size={24} />
           </button>
 
           {/* Top Glow Edge */}
           <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
           
-          <div className="text-center mb-6">
-            <div className="w-10 h-10 bg-blue-600/20 border border-blue-500/20 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-inner">
-              <Shield className="text-blue-400" size={20} />
+          <div className="text-center mb-4">
+            <div className="flex justify-center mb-4">
+              <Logo variant="white" size="md" className="h-8" />
             </div>
             
-            <h1 className="text-2xl font-bold text-white tracking-tight mb-1 font-space">Super Admin Login</h1>
-            <p className="text-blue-400 font-bold text-[9px] tracking-[0.4em] uppercase">SEEDD Platform Management</p>
+            <h1 className="text-2xl font-bold text-white tracking-tight mb-1 font-space">Platform Core Access</h1>
+            <p className="text-blue-400 font-bold text-[9px] tracking-[0.4em] uppercase">SEEDD Ecosystem Management</p>
           </div>
 
           {error && (
             <motion.div 
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
               className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-[10px] font-bold text-center flex items-center justify-center gap-3"
             >
               <AlertTriangle size={14} />
@@ -819,7 +824,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Auth Token"
+                  placeholder="Secure Access Code"
                   className="w-full h-12 pl-12 pr-6 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 transition-all font-medium tracking-widest text-sm"
                   required
                 />
@@ -882,10 +887,10 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
       {/* Close Button */}
       <button 
         onClick={() => navigate('/')}
-        className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors z-20 group"
+        className="absolute top-6 right-6 p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-all z-30 cursor-pointer"
         title="Close"
       >
-        <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+        <X size={24} />
       </button>
 
       {/* Top Glow Edge */}
@@ -899,8 +904,8 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
 
       {error && (
         <motion.div 
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
           className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-2xl text-xs font-bold text-center flex items-center justify-center gap-3"
         >
           <AlertTriangle size={16} />

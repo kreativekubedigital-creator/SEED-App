@@ -36,7 +36,7 @@ export const AIStudyBuddy = ({ user, subjects = [], classLevel }: { user: UserPr
 
     try {
       // Award XP for chat
-      addXP(user.uid, 'AI_CHAT').catch(console.error);
+      addXP(user.uid, 'AI_CHAT', {}, user.schoolId).catch(console.error);
 
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
       

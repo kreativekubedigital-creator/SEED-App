@@ -44,7 +44,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
   const handlePurchase = async (item: any) => {
     if (!user.uid) return;
     try {
-      await purchaseItem(user.uid, item.id, item.price);
+      await purchaseItem(user.uid, item.id, item.price, user.schoolId);
       alert(`Successfully purchased ${formatDisplayString(item.name)}!`);
     } catch (error: any) {
       alert(error.message);
@@ -188,7 +188,7 @@ export const StudentGames = ({ user, classLevel: initialClassLevel }: StudentGam
       try {
         // Award XP
         if (finalScore >= 5) {
-          addXP(user.uid, 'GAME_WIN', { gameType: activeGame, score: finalScore }).catch(console.error);
+          addXP(user.uid, 'GAME_WIN', { gameType: activeGame, score: finalScore }, user.schoolId).catch(console.error);
         }
       } catch (error) {
         console.error("Error updating points:", error);
