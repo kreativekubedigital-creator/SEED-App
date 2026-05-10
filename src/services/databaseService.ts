@@ -69,7 +69,12 @@ export class DatabaseService {
       return obj.map(v => this.toSnakeCase(v, table));
     }
 
-    if (typeof obj !== 'object' || obj instanceof Date) {
+    if (typeof obj !== 'object' || obj instanceof Date || obj === null) {
+      return obj;
+    }
+    
+    // Don't process non-plain objects (like Blobs, Files, etc.)
+    if (obj.constructor && obj.constructor.name !== 'Object' && !Array.isArray(obj)) {
       return obj;
     }
     
@@ -99,7 +104,13 @@ export class DatabaseService {
    * Special handling: maps 'id' to 'uid' for the users table to maintain Firebase compatibility.
    */
   private static toCamelCase(obj: any, table?: string): any {
-    if (obj === null || typeof obj !== 'object') return obj;
+    if (obj === null || typeof obj !== 'object' || obj instanceof Date) return obj;
+    
+    // Don't process non-plain objects
+    if (obj.constructor && obj.constructor.name !== 'Object' && !Array.isArray(obj)) {
+      return obj;
+    }
+
     if (Array.isArray(obj)) return obj.map(v => this.toCamelCase(v, table));
 
     const result: any = {};

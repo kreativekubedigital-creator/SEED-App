@@ -885,9 +885,6 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  </motion.div>
  )}
 
- { activeTab  === 'logs'&& (
- <motion.div
- key="logs"
  { activeTab === 'logs' && (
     <motion.div
       key="logs"
