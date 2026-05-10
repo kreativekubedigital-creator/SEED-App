@@ -473,7 +473,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-md bg-white/5 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-6 md:p-8 relative z-10 overflow-hidden"
+        className="w-full max-w-md bg-white/5 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-5 md:p-8 relative z-10"
       >
         {/* Close Button */}
         <button 
@@ -497,7 +497,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
         <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
         
         <div className="w-full">
-          <div className="mb-8 text-center">
+          <div className="mb-6 text-center">
             <button 
               onClick={() => {
                 const hostname = window.location.hostname;
@@ -521,8 +521,8 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
                 <SchoolIcon size={32} strokeWidth={1.5} />
               </div>
             )}
-            <h2 className="text-3xl font-bold text-white mb-2 font-space tracking-tight">Welcome Back</h2>
-            <p className="text-slate-400 font-medium text-sm">
+            <h2 className="text-2xl font-bold text-white mb-1 font-space tracking-tight">Welcome Back</h2>
+            <p className="text-slate-400 font-medium text-xs">
               Securely access <span className="text-blue-400 font-bold">{tenantSchool.name}</span>
             </p>
           </div>
@@ -577,7 +577,7 @@ const SchoolLoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-14 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center transition-all mt-6 text-base"
+                  className="w-full h-12 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold shadow-2xl shadow-blue-600/20 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center transition-all mt-4 text-sm"
                 >
                   {loading ? (
                     <div className="flex items-center gap-3">
@@ -760,7 +760,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full max-w-md bg-white/5 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-6 relative z-10 overflow-hidden"
+          className="w-full max-w-md bg-white/5 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 p-5 md:p-8 relative z-10"
         >
           {/* Close Button */}
           <button 
@@ -782,7 +782,7 @@ const LoginPage = ({ onLogin, tenantSchool, subdomainNotFound, logoVariant }: { 
           {/* Top Glow Edge */}
           <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
           
-          <div className="text-center mb-4">
+          <div className="text-center mb-6">
             <div className="flex justify-center mb-4">
               <Logo variant="white" size="md" className="h-8" />
             </div>
