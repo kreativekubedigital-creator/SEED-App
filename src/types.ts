@@ -147,6 +147,9 @@ export interface Term {
   isCurrent: boolean;
   isClosed?: boolean;
   resumptionDate?: string; // ISO date string
+  startDate?: string;
+  endDate?: string;
+  order?: number;
   createdAt?: string;
 }
 

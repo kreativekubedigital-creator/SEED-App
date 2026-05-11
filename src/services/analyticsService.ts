@@ -18,89 +18,114 @@ export interface AnalyticsData {
 }
 
 export const fetchSchoolAnalytics = async (schoolId: string, sessionId?: string, termId?: string): Promise<AnalyticsData> => {
-  // 1. Fetch Basic Collections
-  const usersSnap = await getDocs(query(collection(db, 'users'), where('schoolId', '==', schoolId)));
-  const users = usersSnap.docs.map(d => d.data() as UserProfile);
-  
-  const classesSnap = await getDocs(collection(db, 'schools', schoolId, 'classes'));
-  const classes = classesSnap.docs.map(d => ({ id: d.id, ...d.data() } as Class));
+  try {
+    // 1. Prepare queries
+    let resultsQuery = query(collection(db, 'schools', schoolId, 'results'));
+    if (sessionId) resultsQuery = query(resultsQuery, where('sessionId', '==', sessionId));
+    if (termId) resultsQuery = query(resultsQuery, where('termId', '==', termId));
 
-  const subjectsSnap = await getDocs(collection(db, 'schools', schoolId, 'subjects'));
-  const subjects = subjectsSnap.docs.map(d => ({ id: d.id, ...d.data() } as Subject));
+    // 2. Fetch all required data in parallel
+    const [
+      usersSnap,
+      classesSnap,
+      resultsSnap,
+      attendanceSnap,
+      invoicesSnap,
+      paymentsSnap
+    ] = await Promise.all([
+      getDocs(query(collection(db, 'users'), where('schoolId', '==', schoolId))),
+      getDocs(collection(db, 'schools', schoolId, 'classes')),
+      getDocs(resultsQuery),
+      getDocs(collection(db, 'schools', schoolId, 'attendance')),
+      getDocs(collection(db, 'schools', schoolId, 'invoices')),
+      getDocs(collection(db, 'schools', schoolId, 'payments'))
+    ]);
 
-  // 2. Fetch Performance Data
-  let resultsQuery = query(collection(db, 'schools', schoolId, 'results'));
-  if (sessionId) resultsQuery = query(resultsQuery, where('sessionId', '==', sessionId));
-  if (termId) resultsQuery = query(resultsQuery, where('termId', '==', termId));
-  const resultsSnap = await getDocs(resultsQuery);
-  const results = resultsSnap.docs.map(d => d.data() as Result);
+    // 3. Extract data
+    const users = usersSnap.docs.map(d => d.data() as UserProfile);
+    const classes = classesSnap.docs.map(d => ({ id: d.id, ...d.data() } as Class));
+    const results = resultsSnap.docs.map(d => d.data() as Result);
+    const attendanceRecords = attendanceSnap.docs.map(d => ({ id: d.id, ...d.data() } as AttendanceRecord));
+    const invoices = invoicesSnap.docs.map(d => d.data() as Invoice);
+    const payments = paymentsSnap.docs.map(d => d.data() as Payment);
 
-  // 3. Fetch Finance Data
-  const invoicesSnap = await getDocs(collection(db, 'schools', schoolId, 'invoices'));
-  const invoices = invoicesSnap.docs.map(d => d.data() as Invoice);
-  const paymentsSnap = await getDocs(collection(db, 'schools', schoolId, 'payments'));
-  const payments = paymentsSnap.docs.map(d => d.data() as Payment);
+    // 4. Counts
+    const studentCount = users.filter(u => u.role === 'student').length;
+    const teacherCount = users.filter(u => u.role === 'teacher').length;
 
-  // 4. Fetch Attendance Data
-  const attendanceSnap = await getDocs(collection(db, 'schools', schoolId, 'attendance'));
-  const attendanceRecords = attendanceSnap.docs.map(d => d.data() as AttendanceRecord);
-
-  // --- PROCESSING ---
-
-  // Counts
-  const students = users.filter(u => u.role === 'student');
-  const teachers = users.filter(u => u.role === 'teacher');
-
-  // Attendance Rates
-  const calculateAttendanceRate = (records: AttendanceRecord[]) => {
-    if (records.length === 0) return 0;
-    let totalPossible = 0;
-    let totalPresent = 0;
-    records.forEach(rec => {
-      Object.values(rec.records).forEach(status => {
-        totalPossible++;
-        if (status === 'present' || status === 'late') totalPresent++;
+    // 5. Attendance Calculation
+    const calculateAttendanceRate = (records: AttendanceRecord[]) => {
+      if (!records || records.length === 0) return 0;
+      let totalPossible = 0;
+      let totalPresent = 0;
+      records.forEach(rec => {
+        if (rec.records && typeof rec.records === 'object') {
+          Object.values(rec.records).forEach(status => {
+            totalPossible++;
+            if (status === 'present' || status === 'late') totalPresent++;
+          });
+        }
       });
-    });
-    return totalPossible > 0 ? (totalPresent / totalPossible) * 100 : 0;
-  };
-  const studentAttendanceRate = calculateAttendanceRate(attendanceRecords);
+      return totalPossible > 0 ? Math.round((totalPresent / totalPossible) * 100) : 0;
+    };
+    const studentAttendanceRate = calculateAttendanceRate(attendanceRecords);
 
-  // Academics
-  const classPerformance = classes.map(c => {
-    const classResults = results.filter(r => r.classId === c.id);
-    const avg = classResults.length > 0 ? classResults.reduce((sum, r) => sum + (r.finalScore || r.score || 0), 0) / classResults.length : 0;
-    return { name: c.name, score: Math.round(avg) };
-  }).sort((a, b) => b.score - a.score);
+    // 6. Academic Performance
+    const classRankings = classes.map(c => {
+      const classResults = results.filter(r => r.classId === c.id);
+      const avg = classResults.length > 0 
+        ? classResults.reduce((sum, r) => sum + (r.finalScore || r.score || 0), 0) / classResults.length 
+        : 0;
+      return { name: c.name, score: Math.round(avg) };
+    }).sort((a, b) => b.score - a.score).slice(0, 10);
 
-  // Finance
-  const totalExpected = invoices.reduce((sum, inv) => sum + inv.amount, 0);
-  const totalCollected = payments.filter(p => p.status === 'success').reduce((sum, p) => sum + p.amount, 0);
-  const outstanding = Math.max(0, totalExpected - totalCollected);
+    // 7. Grade Distribution
+    const grades = ['A', 'B', 'C', 'D', 'F'];
+    const gradeDistribution = grades.map(g => ({
+      name: g,
+      value: results.filter(r => r.grade === g).length
+    }));
 
-  // Grade Distribution
-  const grades = ['A', 'B', 'C', 'D', 'F'];
-  const gradeDist = grades.map(g => ({
-    name: g,
-    value: results.filter(r => r.grade === g).length
-  }));
+    // 8. Financials
+    const totalExpected = invoices.reduce((sum, inv) => sum + (inv.amount || 0), 0);
+    const totalCollected = payments.filter(p => p.status === 'success').reduce((sum, p) => sum + p.amount, 0);
+    const outstanding = Math.max(0, totalExpected - totalCollected);
 
-  return {
-    overview: {
-      students: { total: students.length },
-      teachers: { total: teachers.length },
-      finance: { totalExpected, totalCollected, outstanding },
-      attendance: { studentRate: studentAttendanceRate }
-    },
-    academics: {
-      classRankings: classPerformance.slice(0, 10),
-      gradeDistribution: gradeDist
-    },
-    finance: {
-      paymentStatus: [
-        { name: 'Paid', value: totalCollected, color: '#10b981' },
-        { name: 'Pending', value: outstanding, color: '#f59e0b' }
-      ]
-    }
-  };
+    return {
+      overview: {
+        students: { total: studentCount },
+        teachers: { total: teacherCount },
+        finance: { totalExpected, totalCollected, outstanding },
+        attendance: { studentRate: studentAttendanceRate }
+      },
+      academics: {
+        classRankings,
+        gradeDistribution
+      },
+      finance: {
+        paymentStatus: [
+          { name: 'Paid', value: totalCollected, color: '#10b981' },
+          { name: 'Pending', value: outstanding, color: '#f59e0b' }
+        ]
+      }
+    };
+  } catch (error) {
+    console.error("Critical error in fetchSchoolAnalytics:", error);
+    // Return safe defaults
+    return {
+      overview: {
+        students: { total: 0 },
+        teachers: { total: 0 },
+        finance: { totalExpected: 0, totalCollected: 0, outstanding: 0 },
+        attendance: { studentRate: 0 }
+      },
+      academics: {
+        classRankings: [],
+        gradeDistribution: []
+      },
+      finance: {
+        paymentStatus: []
+      }
+    };
+  }
 };

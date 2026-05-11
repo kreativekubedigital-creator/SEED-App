@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { 
   Users, GraduationCap, CreditCard, Calendar, TrendingUp, 
   BarChart2, PieChart as PieIcon, RefreshCw, Filter, ChevronRight,
-  ArrowUpRight, ArrowDownRight, Activity
+  ArrowUpRight, ArrowDownRight, Activity, AlertTriangle
 } from "lucide-react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
@@ -36,52 +36,77 @@ export const SchoolAnalytics: React.FC<SchoolAnalyticsProps> = ({ school, sessio
     }
   }, [sessions, selectedSession]);
 
+  const [error, setError] = useState<string | null>(null);
+
   const loadData = async () => {
+    if (!school?.id) return;
     setLoading(true);
+    setError(null);
     try {
+      console.log("Fetching analytics for school:", school.id, "Session:", selectedSession, "Term:", selectedTerm);
       const analytics = await fetchSchoolAnalytics(school.id, selectedSession, selectedTerm);
       setData(analytics);
-    } catch (error) {
-      console.error("Error loading analytics:", error);
+    } catch (err: any) {
+      console.error("Error loading analytics:", err);
+      setError(err.message || "Failed to load dashboard data");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadData();
-  }, [selectedSession, selectedTerm]);
+    if (selectedSession || sessions.length === 0) {
+      loadData();
+    }
+  }, [selectedSession, selectedTerm, school.id]);
 
   if (loading && !data) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[500px] space-y-6">
         <div className="relative">
-          <div className="w-20 h-20 border-4 border-blue-500/10 border-t-blue-600 rounded-full animate-spin" />
-          <Activity className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-600 animate-pulse" size={28} />
+          <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full animate-pulse" />
+          <div className="relative w-16 h-16 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin" />
         </div>
-        <div className="text-center">
-          <p className="text-lg font-bold text-slate-900 animate-pulse">Aggregating Intelligence...</p>
-          <p className="text-sm text-slate-500 font-medium">Processing real-time operational data</p>
-        </div>
+        <p className="text-slate-500 font-medium animate-pulse">Calculating intelligence insights...</p>
       </div>
     );
   }
 
-  if (!data) {
-    if (!loading && sessions.length === 0) {
-      return (
-        <div className="flex flex-col items-center justify-center p-12 bg-white/50 backdrop-blur-sm rounded-3xl border border-white/20 shadow-xl text-center space-y-4">
-          <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-2">
-            <Activity size={32} />
-          </div>
-          <h3 className="text-xl font-bold text-gray-900">No Academic Data Yet</h3>
-          <p className="text-gray-500 max-w-md mx-auto">
-            Initialize your school to see intelligence insights. Go to settings and click "Quick Setup" to get started.
-          </p>
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[500px] p-8 text-center">
+        <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mb-4">
+          <AlertTriangle size={32} />
         </div>
-      );
-    }
-    return null;
+        <h3 className="text-xl font-bold text-slate-900 mb-2">Analysis Failed</h3>
+        <p className="text-slate-500 max-w-md mb-6">{error}</p>
+        <button 
+          onClick={loadData}
+          className="px-6 py-2 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
+
+  if (!data || (sessions.length === 0 && !loading)) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[500px] bg-white/50 backdrop-blur-sm rounded-[2.5rem] border border-dashed border-slate-200 p-12 text-center">
+        <div className="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center mb-6">
+          <TrendingUp size={40} className="text-blue-600" />
+        </div>
+        <h3 className="text-xl font-bold text-gray-900">No Academic Data Yet</h3>
+        <p className="text-gray-500 max-w-md mx-auto mb-8">
+          Initialize your school to see intelligence insights. Go to settings and click "Quick Setup" to get started.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <button className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold shadow-lg shadow-blue-600/20 hover:scale-105 transition-all">
+            Get Started
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
