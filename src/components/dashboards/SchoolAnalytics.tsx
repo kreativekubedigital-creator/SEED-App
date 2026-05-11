@@ -78,7 +78,7 @@ export const SchoolAnalytics: React.FC<SchoolAnalyticsProps> = ({ school, sessio
         <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mb-4">
           <AlertTriangle size={32} />
         </div>
-        <h3 className="text-xl font-bold text-slate-900 mb-2">Analysis Failed</h3>
+        <h3 className="text-xl font-semibold text-slate-900 mb-2">Analysis Failed</h3>
         <p className="text-slate-500 max-w-md mb-6">{error}</p>
         <button 
           onClick={loadData}
@@ -96,12 +96,12 @@ export const SchoolAnalytics: React.FC<SchoolAnalyticsProps> = ({ school, sessio
         <div className="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center mb-6">
           <TrendingUp size={40} className="text-blue-600" />
         </div>
-        <h3 className="text-xl font-bold text-gray-900">No Academic Data Yet</h3>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">No Academic Data Yet</h3>
         <p className="text-gray-500 max-w-md mx-auto mb-8">
           Initialize your school to see intelligence insights. Go to settings and click "Quick Setup" to get started.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
-          <button className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold shadow-lg shadow-blue-600/20 hover:scale-105 transition-all">
+          <button className="px-6 py-3 bg-blue-600 text-white rounded-xl font-medium shadow-lg shadow-blue-600/20 hover:scale-105 transition-all">
             Get Started
           </button>
         </div>
@@ -118,33 +118,33 @@ export const SchoolAnalytics: React.FC<SchoolAnalyticsProps> = ({ school, sessio
       {/* Executive Header & Intelligent Filters */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-white/40 backdrop-blur-md p-6 rounded-[2rem] border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)]">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-            <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em]">Operational Intelligence</span>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+            <span className="text-[10px] font-semibold text-blue-600/80 uppercase tracking-[0.2em]">Operational Intelligence</span>
           </div>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight font-space uppercase">Intelligence Dashboard</h2>
-          <p className="text-sm text-slate-500 font-semibold italic">Strategic insights for {school.name}</p>
+          <h2 className="text-2xl font-semibold text-slate-900 tracking-tight font-space">Intelligence Dashboard</h2>
+          <p className="text-sm text-slate-400 font-medium italic">Strategic insights for {school.name}</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
           <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm p-1.5 rounded-2xl border border-slate-200 shadow-sm flex-grow lg:flex-grow-0">
             <div className="flex items-center gap-2 pl-3 pr-2">
               <Filter size={14} className="text-slate-400" />
-              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Filter</span>
+              <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest">Filter</span>
             </div>
-            <div className="w-px h-6 bg-slate-200" />
+            <div className="w-px h-6 bg-slate-100" />
             <select 
               value={selectedSession}
               onChange={(e) => setSelectedSession(e.target.value)}
-              className="bg-transparent text-xs font-black text-slate-800 focus:outline-none py-2 px-3 cursor-pointer appearance-none hover:text-blue-600 transition-colors"
+              className="bg-transparent text-xs font-semibold text-slate-700 focus:outline-none py-2 px-3 cursor-pointer appearance-none hover:text-blue-600 transition-colors"
             >
               {sessions.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
-            <div className="w-px h-4 bg-slate-200" />
+            <div className="w-px h-4 bg-slate-100" />
             <select 
               value={selectedTerm}
               onChange={(e) => setSelectedTerm(e.target.value)}
-              className="bg-transparent text-xs font-black text-slate-800 focus:outline-none py-2 px-3 cursor-pointer appearance-none hover:text-blue-600 transition-colors"
+              className="bg-transparent text-xs font-semibold text-slate-700 focus:outline-none py-2 px-3 cursor-pointer appearance-none hover:text-blue-600 transition-colors"
             >
               <option value="">Full Academic Cycle</option>
               {activeTerms.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
@@ -213,17 +213,17 @@ export const SchoolAnalytics: React.FC<SchoolAnalyticsProps> = ({ school, sessio
         >
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h3 className="text-xl font-black text-slate-900 flex items-center gap-2 uppercase tracking-tight">
-                <div className="p-2 bg-emerald-100 text-emerald-600 rounded-xl">
-                  <TrendingUp size={20} />
+              <h3 className="text-xl font-semibold text-slate-900 flex items-center gap-3 tracking-tight">
+                <div className="p-2 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100/50">
+                  <TrendingUp size={18} />
                 </div>
                 Revenue Stream
               </h3>
-              <p className="text-sm text-slate-500 font-bold mt-1">Financial health & collection efficiency</p>
+              <p className="text-sm text-slate-400 font-medium mt-1">Financial health & collection efficiency</p>
             </div>
             <div className="flex flex-col items-end">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Efficiency Rate</span>
-              <span className="text-2xl font-black text-emerald-500">
+              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-1">Efficiency Rate</span>
+              <span className="text-2xl font-semibold text-emerald-500">
                 {Math.round((data.overview.finance.totalCollected / data.overview.finance.totalExpected) * 100)}%
               </span>
             </div>
@@ -259,26 +259,26 @@ export const SchoolAnalytics: React.FC<SchoolAnalyticsProps> = ({ school, sessio
           </div>
 
           <div className="mt-8 grid grid-cols-2 gap-6">
-            <div className="p-5 bg-gradient-to-br from-emerald-50 to-white rounded-3xl border border-emerald-100 shadow-sm">
+            <div className="p-5 bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-                <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Net Collection</p>
+                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Net Collection</p>
               </div>
-              <p className="text-2xl font-black text-slate-900">₦{data.overview.finance.totalCollected.toLocaleString()}</p>
-              <div className="flex items-center gap-1 mt-1 text-emerald-600">
+              <p className="text-2xl font-semibold text-slate-900">₦{data.overview.finance.totalCollected.toLocaleString()}</p>
+              <div className="flex items-center gap-1 mt-1 text-emerald-600/80">
                 <ArrowUpRight size={14} />
-                <span className="text-[10px] font-bold">Stable Growth</span>
+                <span className="text-[10px] font-medium">Stable Growth</span>
               </div>
             </div>
-            <div className="p-5 bg-gradient-to-br from-amber-50 to-white rounded-3xl border border-amber-100 shadow-sm">
+            <div className="p-5 bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
-                <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest">Total Outstanding</p>
+                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Total Outstanding</p>
               </div>
-              <p className="text-2xl font-black text-slate-900">₦{data.overview.finance.outstanding.toLocaleString()}</p>
-              <div className="flex items-center gap-1 mt-1 text-amber-600">
+              <p className="text-2xl font-semibold text-slate-900">₦{data.overview.finance.outstanding.toLocaleString()}</p>
+              <div className="flex items-center gap-1 mt-1 text-amber-600/80">
                 <ArrowDownRight size={14} />
-                <span className="text-[10px] font-bold">Recovery Needed</span>
+                <span className="text-[10px] font-medium">Recovery Needed</span>
               </div>
             </div>
           </div>
@@ -292,9 +292,9 @@ export const SchoolAnalytics: React.FC<SchoolAnalyticsProps> = ({ school, sessio
           className="lg:col-span-5 bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.2)] flex flex-col h-[500px] text-white"
         >
           <div className="mb-8">
-            <h3 className="text-xl font-black flex items-center gap-2 uppercase tracking-tight">
-              <div className="p-2 bg-blue-500/20 text-blue-400 rounded-xl border border-blue-500/20">
-                <BarChart2 size={20} />
+            <h3 className="text-xl font-semibold flex items-center gap-3 tracking-tight">
+              <div className="p-2 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/10">
+                <BarChart2 size={18} />
               </div>
               Class Pulse
             </h3>
@@ -326,12 +326,12 @@ export const SchoolAnalytics: React.FC<SchoolAnalyticsProps> = ({ school, sessio
 
           <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Top Performer</p>
-              <p className="text-lg font-bold text-blue-400">{data.academics.classRankings[0]?.name || 'N/A'}</p>
+              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-1">Top Performer</p>
+              <p className="text-lg font-semibold text-blue-400">{data.academics.classRankings[0]?.name || 'N/A'}</p>
             </div>
             <div className="text-right">
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Mean Score</p>
-              <p className="text-2xl font-black text-white">
+              <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-1">Mean Score</p>
+              <p className="text-2xl font-semibold text-white">
                 {Math.round(data.academics.classRankings.reduce((a, b) => a + b.score, 0) / (data.academics.classRankings.length || 1))}%
               </p>
             </div>
@@ -348,13 +348,13 @@ export const SchoolAnalytics: React.FC<SchoolAnalyticsProps> = ({ school, sessio
           className="bg-white/80 backdrop-blur-md p-8 rounded-[2.5rem] border border-white shadow-sm"
         >
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-lg font-black text-slate-900 flex items-center gap-2 uppercase tracking-tight">
-              <div className="p-2 bg-purple-100 text-purple-600 rounded-xl">
-                <PieIcon size={20} />
+            <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-3 tracking-tight">
+              <div className="p-2 bg-purple-50 text-purple-600 rounded-xl border border-purple-100/50">
+                <PieIcon size={18} />
               </div>
               Grade Velocity
             </h3>
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Academic Quality</span>
+            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-[0.2em]">Academic Quality</span>
           </div>
           
           <div className="flex flex-col md:flex-row items-center gap-8">
@@ -385,12 +385,12 @@ export const SchoolAnalytics: React.FC<SchoolAnalyticsProps> = ({ school, sessio
             
             <div className="w-full md:w-1/2 grid grid-cols-2 gap-4">
               {data.academics.gradeDistribution.map((grade) => (
-                <div key={grade.name} className="flex flex-col p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                <div key={grade.name} className="flex flex-col p-3 rounded-2xl bg-white border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
                   <div className="flex items-center gap-2 mb-1">
-                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: GRADE_COLORS[grade.name as keyof typeof GRADE_COLORS] }} />
-                    <span className="text-xs font-black text-slate-600">Grade {grade.name}</span>
+                    <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: GRADE_COLORS[grade.name as keyof typeof GRADE_COLORS] }} />
+                    <span className="text-[10px] font-semibold text-slate-500 uppercase">Grade {grade.name}</span>
                   </div>
-                  <span className="text-xl font-black text-slate-900">{grade.value}</span>
+                  <span className="text-xl font-semibold text-slate-900">{grade.value}</span>
                 </div>
               ))}
             </div>
@@ -403,38 +403,38 @@ export const SchoolAnalytics: React.FC<SchoolAnalyticsProps> = ({ school, sessio
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="bg-blue-600 p-8 rounded-[2.5rem] text-white shadow-[0_20px_50px_rgba(37,99,235,0.3)] relative overflow-hidden group"
+          className="bg-slate-900 p-8 rounded-[2.5rem] text-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] relative overflow-hidden group border border-slate-800"
         >
           {/* Decorative shapes */}
-          <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
-          <div className="absolute bottom-[-20%] left-[-10%] w-48 h-48 bg-blue-400/20 rounded-full blur-2xl" />
+          <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-blue-600/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
+          <div className="absolute bottom-[-20%] left-[-10%] w-48 h-48 bg-blue-400/5 rounded-full blur-2xl" />
 
           <div className="relative z-10 h-full flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <Activity size={24} className="text-blue-200" />
-                <span className="text-xs font-black uppercase tracking-[0.3em] text-blue-100">Operational Excellence</span>
+                <Activity size={20} className="text-blue-400" />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-500">Operational Excellence</span>
               </div>
-              <h3 className="text-3xl font-black tracking-tight mb-4 leading-tight uppercase">System Stability <br/> Is Optimal</h3>
-              <p className="text-blue-100 font-medium text-sm leading-relaxed max-w-[80%]">
+              <h3 className="text-3xl font-semibold tracking-tight mb-4 leading-tight">System Stability <br/> Is Optimal</h3>
+              <p className="text-slate-400 font-medium text-sm leading-relaxed max-w-[80%]">
                 Current data flow indicates 98.4% institutional digitization. Academic and financial subsystems are fully synchronized.
               </p>
             </div>
 
-            <div className="mt-8 pt-8 border-t border-white/10 grid grid-cols-2 gap-6">
+            <div className="mt-8 pt-8 border-t border-slate-800 grid grid-cols-2 gap-6">
               <div>
-                <p className="text-[10px] font-black text-blue-200 uppercase tracking-widest mb-1">System Health</p>
+                <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-2">System Health</p>
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl font-black">99.9%</span>
-                  <div className="h-1.5 w-12 bg-white/20 rounded-full overflow-hidden">
-                    <div className="h-full w-full bg-emerald-400" />
+                  <span className="text-2xl font-semibold">99.9%</span>
+                  <div className="h-1 w-12 bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-full w-full bg-emerald-500/80" />
                   </div>
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-black text-blue-200 uppercase tracking-widest mb-1">Network Status</p>
-                <div className="flex items-center gap-2 text-emerald-400 font-bold uppercase tracking-widest text-[10px]">
-                  <div className="w-2 h-2 bg-emerald-400 rounded-full animate-ping" />
+                <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-2">Network Status</p>
+                <div className="flex items-center gap-2 text-emerald-500/80 font-medium uppercase tracking-widest text-[10px]">
+                  <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                   Online
                 </div>
               </div>
@@ -475,20 +475,20 @@ const MetricCard: React.FC<{
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
-      whileHover={{ y: -5, scale: 1.01 }}
-      className="bg-white/80 backdrop-blur-md p-6 rounded-[2rem] border border-white shadow-[0_10px_30px_rgba(0,0,0,0.03)] group transition-all duration-500 relative overflow-hidden"
+      whileHover={{ y: -5 }}
+      className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-[0_10px_40px_rgba(0,0,0,0.02)] group transition-all duration-500 relative overflow-hidden"
     >
-      <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-        <Icon size={80} strokeWidth={1} />
+      <div className="absolute -top-4 -right-4 p-4 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity rotate-12">
+        <Icon size={120} strokeWidth={1} />
       </div>
       
       <div className="flex items-center justify-between mb-6 relative z-10">
-        <div className={cn("p-3.5 rounded-2xl border transition-all duration-500 group-hover:scale-110", colorMap[color as keyof typeof colorMap])}>
-          <Icon size={22} />
+        <div className={cn("p-3 rounded-2xl border-0 shadow-sm transition-all duration-500 group-hover:scale-110", colorMap[color as keyof typeof colorMap])}>
+          <Icon size={20} />
         </div>
         <div className={cn(
-          "flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border",
-          isPositive ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-red-50 text-red-600 border-red-100"
+          "flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider border",
+          isPositive ? "bg-emerald-50 text-emerald-600/80 border-emerald-100" : "bg-red-50 text-red-600/80 border-red-100"
         )}>
           {isPositive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
           {trend}
@@ -496,8 +496,8 @@ const MetricCard: React.FC<{
       </div>
       
       <div className="relative z-10">
-        <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1 group-hover:text-slate-500 transition-colors">{title}</p>
-        <h4 className="text-3xl font-black text-slate-900 tracking-tighter group-hover:scale-105 origin-left transition-transform duration-500">{value}</h4>
+        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-[0.15em] mb-1 group-hover:text-slate-500 transition-colors">{title}</p>
+        <h4 className="text-3xl font-semibold text-slate-900 tracking-tight group-hover:translate-x-1 transition-transform duration-500">{value}</h4>
       </div>
     </motion.div>
   );
