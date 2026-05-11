@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from'react';
-import { School, UserProfile, UserRole, Class, Subject } from'../../types';
+import { School, UserProfile, UserRole, Class, Subject, Session, Term } from '../../types';
 import Papa from'papaparse';
 import { 
  ArrowLeft, 
@@ -244,7 +244,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
     
     // For each session, listen to its terms
     sessionsList.forEach(session => {
-      onSnapshot(query(collection(db, `schools/${school.id}/terms`), where('sessionId', '==', session.id)), (termSnap) => {
+      onSnapshot(collection(db, `schools/${school.id}/sessions`, session.id, 'terms'), (termSnap) => {
         const terms = termSnap.docs.map(d => ({ id: d.id, ...d.data() } as Term));
         const termDict = terms.reduce((acc, t) => ({ ...acc, [t.id]: t }), {});
         setTermsMap(prev => ({ ...prev, [session.id]: termDict }));

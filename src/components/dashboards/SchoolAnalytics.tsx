@@ -30,6 +30,12 @@ export const SchoolAnalytics: React.FC<SchoolAnalyticsProps> = ({ school, sessio
     return Object.values(termsMap[selectedSession] || {}).sort((a, b) => (a.order || 0) - (b.order || 0));
   }, [selectedSession, termsMap]);
 
+  useEffect(() => {
+    if (!selectedSession && sessions.length > 0) {
+      setSelectedSession(sessions[0].id);
+    }
+  }, [sessions, selectedSession]);
+
   const loadData = async () => {
     setLoading(true);
     try {
@@ -61,7 +67,22 @@ export const SchoolAnalytics: React.FC<SchoolAnalyticsProps> = ({ school, sessio
     );
   }
 
-  if (!data) return null;
+  if (!data) {
+    if (!loading && sessions.length === 0) {
+      return (
+        <div className="flex flex-col items-center justify-center p-12 bg-white/50 backdrop-blur-sm rounded-3xl border border-white/20 shadow-xl text-center space-y-4">
+          <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-2">
+            <Activity size={32} />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900">No Academic Data Yet</h3>
+          <p className="text-gray-500 max-w-md mx-auto">
+            Initialize your school to see intelligence insights. Go to settings and click "Quick Setup" to get started.
+          </p>
+        </div>
+      );
+    }
+    return null;
+  }
 
   return (
     <motion.div 
