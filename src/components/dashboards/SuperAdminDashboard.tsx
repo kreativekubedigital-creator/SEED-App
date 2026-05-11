@@ -79,6 +79,12 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
  const [error, setError] = useState<string | null>(null);
  const [success, setSuccess] = useState<string | null>(null);
+ const [academicSetup, setAcademicSetup] = useState({
+    yearName: `${new Date().getFullYear()}/${new Date().getFullYear() + 1} Academic Session`,
+    termName: 'First Term',
+    resumptionDate: `${new Date().getFullYear()}-09-09`,
+    vacationDate: `${new Date().getFullYear()}-12-13`
+  });
  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
  const [searchQuery, setSearchQuery] = useState('');
  const [filterStatus, setFilterStatus] = useState<'all'|'active'|'inactive'>('all');
@@ -192,10 +198,10 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  const handleAddSchool = async (e: React.FormEvent) => {
  e.preventDefault();
  
- if (!editingSchool && onboardingStep < 3) {
- setOnboardingStep(onboardingStep + 1);
- return;
- }
+  if (!editingSchool && onboardingStep < 4) {
+  setOnboardingStep(onboardingStep + 1);
+  return;
+  }
 
  const schoolData = {
  ...newSchool,
@@ -253,11 +259,16 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
 
  // 3. Initialize School Data (Sessions, Terms, Grade Scales, etc.)
  try {
-   await initializeSchoolData(schoolDocRef.id);
- } catch (initError) {
-   console.error("Warning: School data initialization partially failed:", initError);
-   // We don't fail the whole process if initialization fails, but we log it
- }
+    await initializeSchoolData(schoolDocRef.id, {
+      sessionName: academicSetup.yearName,
+      termName: academicSetup.termName,
+      startDate: academicSetup.resumptionDate,
+      endDate: academicSetup.vacationDate
+    });
+  } catch (initError) {
+    console.error("Warning: School data initialization partially failed:", initError);
+    // We don't fail the whole process if initialization fails, but we log it
+  }
 
  await logAuditAction('CREATE_SCHOOL',`Created school: ${ schoolData.name } with admin ${ trimmedEmail }`, schoolDocRef.id,'school');
 
@@ -268,6 +279,12 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  setOnboardingStep(1);
  setNewSchool({ name:'', slug:'', email:'', address:'', phone:'', planId:'free', logoUrl: ''});
  setAdminDetails({ firstName:'', lastName:'', password:''});
+ setAcademicSetup({
+    yearName: `${new Date().getFullYear()}/${new Date().getFullYear() + 1} Academic Session`,
+    termName: 'First Term',
+    resumptionDate: `${new Date().getFullYear()}-09-09`,
+    vacationDate: `${new Date().getFullYear()}-12-13`
+  });
  } catch (error: any) {
  console.error("Failed to save school:", error);
  if (error.code  === 'auth/email-already-in-use') {
@@ -1169,7 +1186,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  ))}
  </div>
  </motion.div>
- ) : (
+ ) : onboardingStep === 3 ? (
  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
  <h4 className="text-lg font-semibold text-slate-900 mb-6 flex items-center gap-3">
  <div className="w-6 h-6 rounded-full bg-blue-500 text-[10px] flex items-center justify-center font-semibold">3</div>
@@ -1212,6 +1229,65 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  />
  </div>
  </motion.div>
+ ) : (
+ <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+ <h4 className="text-lg font-semibold text-slate-900 mb-6 flex items-center gap-3">
+ <div className="w-6 h-6 rounded-full bg-blue-500 text-[10px] flex items-center justify-center font-semibold">4</div>
+ Academic Session Setup
+ </h4>
+ <p className="text-sm text-slate-600 font-semibold mb-8">Initialize the school with its current academic calendar.</p>
+ 
+ <div className="space-y-5">
+ <div className="space-y-3">
+ <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 ml-1">Academic Year Name</label>
+ <input
+ required
+ type="text"
+ value={ academicSetup.yearName }
+ onChange={ e => setAcademicSetup({ ...academicSetup, yearName: e.target.value })}
+ className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-sm"
+ placeholder="e.g. 2024/2025 Academic Session"
+ />
+ </div>
+
+ <div className="space-y-3">
+ <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 ml-1">Current Term</label>
+ <select
+ required
+ value={ academicSetup.termName }
+ onChange={ e => setAcademicSetup({ ...academicSetup, termName: e.target.value })}
+ className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-sm appearance-none"
+ >
+ <option value="First Term">First Term</option>
+ <option value="Second Term">Second Term</option>
+ <option value="Third Term">Third Term</option>
+ </select>
+ </div>
+
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+ <div className="space-y-3">
+ <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 ml-1">Resumption Date</label>
+ <input
+ required
+ type="date"
+ value={ academicSetup.resumptionDate }
+ onChange={ e => setAcademicSetup({ ...academicSetup, resumptionDate: e.target.value })}
+ className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-sm"
+ />
+ </div>
+ <div className="space-y-3">
+ <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 ml-1">Vacation Date</label>
+ <input
+ required
+ type="date"
+ value={ academicSetup.vacationDate }
+ onChange={ e => setAcademicSetup({ ...academicSetup, vacationDate: e.target.value })}
+ className="w-full p-5 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-semibold text-sm"
+ />
+ </div>
+ </div>
+ </div>
+ </motion.div>
  )}
 
  <div className="flex gap-4 pt-8">
@@ -1236,7 +1312,7 @@ export const SuperAdminDashboard = ({ user, onLogout }: { user: UserProfile, onL
  type="submit"
  className="flex-1 p-5 rounded-[1.5rem] bg-blue-600 text-white font-semibold shadow-[0_0_30px_rgba(37, 99, 235, 0.3)] hover:bg-blue-700 hover:scale-[1.02] transition-all active:scale-[0.98] text-sm uppercase tracking-[0.1em]"
  >
- { editingSchool ?'Save Changes': onboardingStep < 3 ?'Next Step':'Create School'}
+ { editingSchool ?'Save Changes': onboardingStep < 4 ?'Next Step':'Create School'}
  </button>
  </div>
  </form>

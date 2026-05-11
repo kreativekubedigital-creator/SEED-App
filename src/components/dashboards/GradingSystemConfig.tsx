@@ -17,6 +17,9 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
   const [newSessionName, setNewSessionName] = useState('');
   const [newTermName, setNewTermName] = useState('');
   const [newTermResumptionDate, setNewTermResumptionDate] = useState('');
+  const [newTermVacationDate, setNewTermVacationDate] = useState('');
+  const [editingTermId, setEditingTermId] = useState<string | null>(null);
+  const [editTermData, setEditTermData] = useState({ name: '', resumptionDate: '', endDate: '' });
   const [selectedSessionForTerm, setSelectedSessionForTerm] = useState('');
   
   const [hasAutoSelected, setHasAutoSelected] = useState(false);
@@ -190,11 +193,13 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
         schoolId: schoolId,
         sessionId: selectedSessionForTerm,
         resumptionDate: newTermResumptionDate || null,
+        endDate: newTermVacationDate || null,
         isCurrent: sessionTerms.length === 0
       });
       
       setNewTermName('');
       setNewTermResumptionDate('');
+      setNewTermVacationDate('');
       setMessage({ type: 'success', text: 'Term added successfully' });
       setTimeout(() => setMessage(null), 3000);
     } catch (err: any) {
@@ -231,11 +236,24 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
     }
   };
 
-  const handleEditTerm = async (term: Term) => {
-    const newName = window.prompt('Enter new term name:', term.name);
-    if (!newName || newName.trim() === '' || newName === term.name) return;
+  const startEditTerm = (term: Term) => {
+    setEditingTermId(term.id);
+    setEditTermData({
+      name: term.name,
+      resumptionDate: term.resumptionDate || '',
+      endDate: term.endDate || ''
+    });
+  };
+
+  const handleUpdateTerm = async (id: string, sessionId: string) => {
+    if (!editTermData.name.trim()) return;
     try {
-      await updateDoc(doc(db, 'schools', schoolId, 'sessions', term.sessionId, 'terms', term.id), { name: newName.trim() });
+      await updateDoc(doc(db, 'schools', schoolId, 'sessions', sessionId, 'terms', id), {
+        name: editTermData.name.trim(),
+        resumptionDate: editTermData.resumptionDate || null,
+        endDate: editTermData.endDate || null
+      });
+      setEditingTermId(null);
       setMessage({ type: 'success', text: 'Term updated successfully' });
       setTimeout(() => setMessage(null), 3000);
     } catch (err: any) {
@@ -422,70 +440,133 @@ export const GradingSystemConfig = ({ schoolId }: GradingSystemConfigProps) => {
                 {sessions.map(s => <option key={s.id} value={s.id}>{formatDisplayString(s.name)}</option>)}
               </select>
               <div className="flex flex-col gap-3">
-                <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex flex-col gap-3">
                   <input
                     type="text"
                     placeholder="e.g. 1st Term"
                     value={newTermName}
                     onChange={e => setNewTermName(e.target.value)}
-                    className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-text min-w-0"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-text"
                   />
-                  <div className="flex-1 flex flex-col">
-                    <label className="text-xs font-semibold text-slate-400 uppercase px-2 mb-1">Resumption Date</label>
-                    <input
-                      type="date"
-                      value={newTermResumptionDate}
-                      onChange={e => setNewTermResumptionDate(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-text"
-                    />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="flex flex-col">
+                      <label className="text-[10px] font-black text-slate-400 uppercase px-2 mb-1 tracking-widest">Resumption Date</label>
+                      <input
+                        type="date"
+                        value={newTermResumptionDate}
+                        onChange={e => setNewTermResumptionDate(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-text"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="text-[10px] font-black text-slate-400 uppercase px-2 mb-1 tracking-widest">Vacation Date</label>
+                      <input
+                        type="date"
+                        value={newTermVacationDate}
+                        onChange={e => setNewTermVacationDate(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-slate-50 hover:border-gray-300 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium text-slate-900 cursor-text"
+                      />
+                    </div>
                   </div>
                 </div>
                 <button
                   onClick={handleAddTerm}
                   disabled={addingTerm || !newTermName.trim() || !selectedSessionForTerm}
-                  className="w-full p-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full p-4 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 disabled:opacity-50 font-bold uppercase tracking-widest text-xs"
                 >
-                  {addingTerm ? <Loader2 className="animate-spin" size={20} /> : <Plus size={20} />}
-                  <span className="font-semibold">{addingTerm ? 'Adding...' : 'Add Term'}</span>
+                  {addingTerm ? <Loader2 className="animate-spin" size={20} /> : <Plus size={16} />}
+                  <span>{addingTerm ? 'Adding...' : 'Initialize Term'}</span>
                 </button>
               </div>
             </div>
 
             <div className="space-y-3">
               {terms.filter(t => t.sessionId === selectedSessionForTerm).map(term => (
-                <div key={term.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-200/60 group">
-                  <div className="flex items-center gap-3">
-                    <div className="flex flex-col">
-                      <span className="font-medium text-slate-900">{formatDisplayString(term.name)}</span>
-                      {term.resumptionDate && (
-                        <span className="text-xs text-slate-400">Resumes: {new Date(term.resumptionDate).toLocaleDateString()}</span>
-                      )}
+                <div key={term.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200/60 group">
+                  {editingTermId === term.id ? (
+                    <div className="space-y-4">
+                      <input
+                        type="text"
+                        value={editTermData.name}
+                        onChange={e => setEditTermData({ ...editTermData, name: e.target.value })}
+                        className="w-full px-4 py-2 rounded-lg border border-blue-500 outline-none font-medium text-sm"
+                      />
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Resumption</label>
+                          <input
+                            type="date"
+                            value={editTermData.resumptionDate}
+                            onChange={e => setEditTermData({ ...editTermData, resumptionDate: e.target.value })}
+                            className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Vacation</label>
+                          <input
+                            type="date"
+                            value={editTermData.endDate}
+                            onChange={e => setEditTermData({ ...editTermData, endDate: e.target.value })}
+                            className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleUpdateTerm(term.id, term.sessionId)}
+                          className="flex-1 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold uppercase tracking-widest"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => setEditingTermId(null)}
+                          className="flex-1 py-2 bg-slate-200 text-slate-600 rounded-lg text-xs font-bold uppercase tracking-widest"
+                        >
+                          Cancel
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <button 
-                        onClick={() => handleEditTerm(term)}
-                        className="p-1.5 text-slate-400 hover:text-indigo-600 transition-colors"
-                        title="Edit Term"
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-slate-900">{formatDisplayString(term.name)}</span>
+                          <div className="flex items-center gap-4 mt-1">
+                            {term.resumptionDate && (
+                              <span className="text-[10px] font-bold text-blue-500 uppercase tracking-tighter">Resumes: {new Date(term.resumptionDate).toLocaleDateString()}</span>
+                            )}
+                            {term.endDate && (
+                              <span className="text-[10px] font-bold text-amber-500 uppercase tracking-tighter">Vacation: {new Date(term.endDate).toLocaleDateString()}</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button 
+                            onClick={() => startEditTerm(term)}
+                            className="p-1.5 text-slate-400 hover:text-indigo-600 transition-colors"
+                            title="Edit Term"
+                          >
+                            <Edit2 size={14} />
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteTerm(term.id, term.sessionId)}
+                            className="p-1.5 text-slate-400 hover:text-red-600 transition-colors"
+                            title="Delete Term"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleSetCurrentTerm(term.id, term.sessionId)}
+                        className={`px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${
+                          term.isCurrent ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        }`}
                       >
-                        <Edit2 size={14} />
-                      </button>
-                      <button 
-                        onClick={() => handleDeleteTerm(term.id, term.sessionId)}
-                        className="p-1.5 text-slate-400 hover:text-red-600 transition-colors"
-                        title="Delete Term"
-                      >
-                        <Trash2 size={14} />
+                        {term.isCurrent ? 'Current' : 'Activate'}
                       </button>
                     </div>
-                  </div>
-                  <button
-                    onClick={() => handleSetCurrentTerm(term.id, term.sessionId)}
-                    className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                      term.isCurrent ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-slate-900 hover:bg-gray-300'
-                    }`}
-                  >
-                    {term.isCurrent ? 'Current' : 'Set Current'}
-                  </button>
+                  )}
                 </div>
               ))}
             </div>

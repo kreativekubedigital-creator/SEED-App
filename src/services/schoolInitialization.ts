@@ -4,13 +4,18 @@ import { db, collection, addDoc, setDoc, doc } from '../lib/compatibility';
  * Initializes a new school with default configuration and data structures.
  * This ensures that new tenants have a working environment immediately after creation.
  */
-export const initializeSchoolData = async (schoolId: string) => {
+export const initializeSchoolData = async (schoolId: string, config?: { 
+  sessionName?: string, 
+  termName?: string, 
+  startDate?: string, 
+  endDate?: string 
+}) => {
   console.log(`[SchoolInitializer] Initializing data for school: ${schoolId}`);
 
   try {
-    // 1. Create Default Academic Session (Current Year)
+    // 1. Create Default Academic Session (Current Year or provided)
     const currentYear = new Date().getFullYear();
-    const sessionName = `${currentYear}/${currentYear + 1} Academic Session`;
+    const sessionName = config?.sessionName || `${currentYear}/${currentYear + 1} Academic Session`;
     
     const sessionRef = await addDoc(collection(db, 'schools', schoolId, 'sessions'), {
       name: sessionName,
@@ -20,11 +25,16 @@ export const initializeSchoolData = async (schoolId: string) => {
     });
 
     const sessionId = (sessionRef as any).id;
-    console.log(`[SchoolInitializer] Created default session: ${sessionId}`);
+    console.log(`[SchoolInitializer] Created session: ${sessionId}`);
 
     // 2. Create Default Terms for the session
     const terms = [
-      { name: '1st Term', isCurrent: true, startDate: `${currentYear}-09-01`, endDate: `${currentYear}-12-15` },
+      { 
+        name: config?.termName || '1st Term', 
+        isCurrent: true, 
+        startDate: config?.startDate || `${currentYear}-09-01`, 
+        endDate: config?.endDate || `${currentYear}-12-15` 
+      },
       { name: '2nd Term', isCurrent: false, startDate: `${currentYear + 1}-01-10`, endDate: `${currentYear + 1}-04-10` },
       { name: '3rd Term', isCurrent: false, startDate: `${currentYear + 1}-05-01`, endDate: `${currentYear + 1}-07-30` }
     ];
