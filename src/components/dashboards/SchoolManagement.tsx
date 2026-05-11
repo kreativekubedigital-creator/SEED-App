@@ -45,6 +45,7 @@ import { ClassReportCards } from'./ClassReportCards';
 import ClassTimetable from'./ClassTimetable';
 import { SchoolFinance } from './SchoolFinance';
 import { PromotionManagement } from './PromotionManagement';
+import { SchoolAnalytics } from './SchoolAnalytics';
 import { sortByName, sortByFullName, cn, formatDisplayString } from'../../lib/utils';
 
 interface SchoolManagementProps {
@@ -64,6 +65,7 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
  const [viewingUser, setViewingUser] = useState<UserProfile | null>(null);
  const [sessions, setSessions] = useState<any[]>([]);
+ const [termsMap, setTermsMap] = useState<Record<string, Record<string, Term>>>({});
  const [initializing, setInitializing] = useState(false);
  const [newUser, setNewUser] = useState<Partial<UserProfile> & { password?: string, _rawParentStudentIds?: string }>({ 
  firstName:'', 
@@ -235,10 +237,20 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  setClasses(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Class)));
  });
 
- // Real-time sessions listener
- const unsubSessions = onSnapshot(collection(db, `schools/${school.id}/sessions`), (snap) => {
- setSessions(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
- });
+  // Real-time sessions listener
+  const unsubSessions = onSnapshot(collection(db, `schools/${school.id}/sessions`), (snap) => {
+    const sessionsList = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Session));
+    setSessions(sessionsList);
+    
+    // For each session, listen to its terms
+    sessionsList.forEach(session => {
+      onSnapshot(query(collection(db, `schools/${school.id}/terms`), where('sessionId', '==', session.id)), (termSnap) => {
+        const terms = termSnap.docs.map(d => ({ id: d.id, ...d.data() } as Term));
+        const termDict = terms.reduce((acc, t) => ({ ...acc, [t.id]: t }), {});
+        setTermsMap(prev => ({ ...prev, [session.id]: termDict }));
+      });
+    });
+  });
 
  return () => {
  unsubUsers();
@@ -947,107 +959,12 @@ export const SchoolManagement = ({ school, onBack, currentUserRole ='super_admin
  </header>
 
   { activeTab  === 'overview'? (
-  <div className="space-y-5 md:space-y-12">
-    {/* Initialization Alert */}
-    {!loading && sessions.length === 0 && (
-      <div className="bg-blue-600 p-8 md:p-12 rounded-[2.5rem] text-white shadow-2xl shadow-blue-200 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl group-hover:scale-110 transition-transform duration-700" />
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="max-w-xl">
-            <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/20 shadow-xl">
-              <Settings className="animate-spin-slow" size={28} />
-            </div>
-            <h3 className="text-3xl font-bold tracking-tight mb-3">Complete Your Setup</h3>
-            <p className="text-blue-50 font-medium leading-relaxed opacity-90 text-sm">
-              Your institutional environment is active, but academic sessions and grading scales are not yet configured. Run the quick setup to enable all platform features.
-            </p>
-          </div>
-          
-          <button
-            onClick={handleQuickSetup}
-            disabled={initializing}
-            className="w-full md:w-auto px-10 py-5 bg-white text-blue-600 rounded-2xl font-bold uppercase tracking-widest text-[10px] hover:bg-black hover:text-white transition-all shadow-2xl flex items-center justify-center gap-3 group/btn disabled:opacity-50 active:scale-95"
-          >
-            {initializing ? (
-              <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <Plus size={18} strokeWidth={3} className="group-hover/btn:rotate-90 transition-transform" />
-            )}
-            {initializing ? 'Initializing...' : 'Run Quick Setup'}
-          </button>
-        </div>
-      </div>
-    )}
-
-  {/* School Info Card */}
- <div className="bg-white p-4 md:p-4 rounded-2xl md:rounded-2xl border border-slate-300 shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-4 relative overflow-hidden">
- 
-
- <div className="flex items-center gap-4 relative z-10">
- <div className="p-3 md:p-4 bg-indigo-50 rounded-2xl text-indigo-600 shrink-0 shadow-sm border border-indigo-100/50"><Mail size={ 20 } /></div>
- <div className="overflow-hidden">
- <p className="text-[10px] font-medium uppercase tracking-widest text-slate-900">Email</p>
- <p className="font-medium text-sm text-slate-900 truncate mt-1">{ school.email }</p>
- </div>
- </div>
- <div className="flex items-center gap-4 relative z-10">
- <div className="p-3 md:p-4 bg-purple-50 rounded-2xl text-purple-600 shrink-0 shadow-sm border border-purple-100/50"><Phone size={ 20 } /></div>
- <div className="overflow-hidden">
- <p className="text-[10px] font-medium uppercase tracking-widest text-slate-900">Phone</p>
- <p className="font-medium text-sm text-slate-900 truncate mt-1">{ school.phone }</p>
- </div>
- </div>
- </div>
-
- {/* Stats Grid */}
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
- {[
- { label: 'School Admins', value: stats.admins, icon: ShieldCheck, colorClass: 'from-blue-50 to-blue-100 text-blue-600 border-blue-200/50' },
- { label: 'Teachers', value: stats.teachers, icon: Users, colorClass: 'from-indigo-50 to-indigo-100 text-indigo-600 border-indigo-200/50' },
- { label: 'Students', value: stats.students, icon: GraduationCap, colorClass: 'from-purple-50 to-purple-100 text-purple-600 border-purple-100/50' },
- { label: 'Parents', value: stats.parents, icon: Users, colorClass: 'from-pink-50 to-pink-100 text-pink-600 border-pink-100/50' },
- { label: 'Total Revenue', value: `₦${stats.totalRevenue.toLocaleString()}`, icon: CreditCard, colorClass: 'from-emerald-50 to-emerald-100 text-emerald-600 border-emerald-100/50' },
- { label: 'Outstanding Fees', value: `₦${stats.outstandingFees.toLocaleString()}`, icon: AlertCircle, colorClass: 'from-amber-50 to-amber-100 text-amber-600 border-amber-100/50' },
- ].map(stat => (
- <div key={ stat.label } className="bg-white p-3 rounded-2xl border border-slate-300 shadow-sm flex items-center gap-4 hover:shadow-md hover:-translate-y-1 transition-all duration-300">
- <div className={`w-8 h-8 bg-gradient-to-br ${ stat.colorClass } rounded-xl flex items-center justify-center shadow-sm border`}>
- <stat.icon size={16} />
- </div>
- <div>
- <p className="text-[10px] font-medium text-slate-900 uppercase tracking-wider">{ stat.label }</p>
- <p className="text-lg font-semibold text-slate-900 mt-0.5">{ stat.value }</p>
- </div>
- </div>
- ))}
- </div>
- {/* Quick Actions */}
- <div>
- <h3 className="text-[10px] font-medium text-slate-900 mb-4 uppercase tracking-wider">Quick Actions</h3>
- <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- {[
- { label:'Manage Students', desc:'Add, edit & assign students', icon: Users, tab:'users', role:'student', colorClass:'from-blue-50 to-blue-100 text-blue-600 border-blue-200/50'},
- { label:'Manage Teachers', desc:'Add & manage teachers', icon: Users, tab:'users', role:'teacher', colorClass:'from-indigo-50 to-indigo-100 text-indigo-600 border-indigo-200/50'},
- { label:'Classes & Subjects', desc:'Set up school structure', icon: BookOpen, tab:'classes', colorClass:'from-purple-50 to-purple-100 text-purple-600 border-purple-200/50'},
- ...(currentUserRole  === 'school_admin'|| currentUserRole  === 'super_admin'? [
- { label:'Announcements', desc:'Post school-wide updates', icon: Bell, tab:'announcements', colorClass:'from-pink-50 to-pink-100 text-pink-600 border-pink-200/50'},
- { label:'Manage Users', desc:'Create & manage user accounts', icon: Users, tab:'users', role:'all', colorClass:'from-rose-50 to-rose-100 text-rose-600 border-rose-200/50'},
- { label:'School Settings', desc:'Update school info & logo', icon: Settings, tab:'settings', colorClass:'from-orange-50 to-orange-100 text-orange-600 border-orange-200/50'}
- ] : [])
- ].map(action => (
- <div key={ action.label } onClick={() => { setActiveTab(action.tab as any); if (action.role) setRoleFilter(action.role as any); }} className="bg-white p-3 rounded-2xl border border-slate-300 shadow-sm flex items-center gap-4 hover:border-blue-200 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-pointer min-w-0 group">
- <div className={`w-8 h-8 bg-gradient-to-br ${ action.colorClass } rounded-xl flex items-center justify-center shrink-0 shadow-sm border group-hover:scale-110 transition-transform duration-300`}>
- <action.icon size={16} />
- </div>
- <div className="min-w-0">
- <p className="text-sm font-semibold text-slate-900 truncate">{ action.label }</p>
- <p className="text-[10px] text-slate-900 font-medium truncate mt-0.5">{ action.desc }</p>
- </div>
- </div>
- ))}
- </div>
- </div>
- </div>
- ) : activeTab  === 'users'? (
+    <SchoolAnalytics 
+      school={school} 
+      sessions={sessions} 
+      termsMap={termsMap} 
+    />
+  ) : activeTab  === 'users'? (
  <div className="bg-white rounded-2xl border border-slate-300 shadow-sm overflow-hidden flex flex-col">
  <div className="p-4 md:p-4 border-b border-slate-200/60 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-slate-50">
  <div>
