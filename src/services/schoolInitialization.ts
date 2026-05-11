@@ -28,22 +28,39 @@ export const initializeSchoolData = async (schoolId: string, config?: {
     console.log(`[SchoolInitializer] Created session: ${sessionId}`);
 
     // 2. Create Default Terms for the session
-    const terms = [
-      { 
-        name: config?.termName || '1st Term', 
-        isCurrent: true, 
-        startDate: config?.startDate || `${currentYear}-09-01`, 
-        endDate: config?.endDate || `${currentYear}-12-15` 
-      },
-      { name: '2nd Term', isCurrent: false, startDate: `${currentYear + 1}-01-10`, endDate: `${currentYear + 1}-04-10` },
-      { name: '3rd Term', isCurrent: false, startDate: `${currentYear + 1}-05-01`, endDate: `${currentYear + 1}-07-30` }
-    ];
+    const termNames = ['First Term', 'Second Term', 'Third Term'];
+    const currentTermName = config?.termName || 'First Term';
+    
+    for (const name of termNames) {
+      const isCurrent = name === currentTermName;
+      let startDate = '';
+      let endDate = '';
 
-    for (const term of terms) {
+      if (isCurrent) {
+        startDate = config?.startDate || `${currentYear}-09-01`;
+        endDate = config?.endDate || `${currentYear}-12-15`;
+      } else {
+        // Default dates for other terms
+        if (name === 'First Term') {
+          startDate = `${currentYear}-09-01`;
+          endDate = `${currentYear}-12-15`;
+        } else if (name === 'Second Term') {
+          startDate = `${currentYear + 1}-01-10`;
+          endDate = `${currentYear + 1}-04-10`;
+        } else {
+          startDate = `${currentYear + 1}-05-01`;
+          endDate = `${currentYear + 1}-07-30`;
+        }
+      }
+
       await addDoc(collection(db, 'schools', schoolId, 'sessions', sessionId, 'terms'), {
-        ...term,
+        name,
+        isCurrent,
+        startDate,
+        endDate,
         schoolId: schoolId,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        order: termNames.indexOf(name) + 1
       });
     }
     console.log(`[SchoolInitializer] Created default terms for session ${sessionId}`);
