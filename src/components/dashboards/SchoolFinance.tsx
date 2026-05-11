@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from'react';
 import { db, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, where, onSnapshot, OperationType, handleFirestoreError } from '../../lib/compatibility';
 import { School, FeeStructure, Invoice, Payment, Class, UserProfile } from '../../types';
-import { Plus, Edit2, Trash2, FileText, CheckCircle, Clock, Search, X, BarChart2, ChevronDown, Users, CreditCard, Settings } from 'lucide-react';
+import { Plus, Edit2, Trash2, FileText, CheckCircle, Clock, Search, X, BarChart2, ChevronDown, Users, CreditCard, Settings, History } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn, formatDisplayString } from '../../lib/utils';
 import { FeeAnalytics } from './FeeAnalytics';
